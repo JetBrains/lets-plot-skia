@@ -1,0 +1,23 @@
+package jetbrains.datalore.vis.svgMapper.skia.mapper.drawing
+
+import kotlin.properties.ReadOnlyProperty
+import kotlin.reflect.KProperty
+
+class DependencyProperty<T>(
+    private val delegate: () -> T
+) : ReadOnlyProperty<Any?, T> {
+    private var isDirty: Boolean = false
+    private var value: T = delegate()
+
+    fun invalidate() {
+        isDirty = true
+    }
+
+    override fun getValue(thisRef: Any?, property: KProperty<*>): T {
+        if (isDirty) {
+            isDirty = false
+            value = delegate()
+        }
+        return value
+    }
+}

@@ -1,0 +1,7 @@
+/build
+/src/main/jniLibs/arm64-v8a/kotlin/
+/src/main/jniLibs/arm64-v8a/kotlinx/coroutines/
+/src/main/jniLibs/x86_64/kotlin/
+/src/main/jniLibs/x86_64/kotlinx/coroutines/
+/src/main/jniLibs/arm64-v8a/DebugProbesKt.bin
+/src/main/jniLibs/x86_64/DebugProbesKt.bin
