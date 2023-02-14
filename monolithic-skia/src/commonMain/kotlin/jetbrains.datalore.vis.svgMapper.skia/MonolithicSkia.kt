@@ -2,6 +2,7 @@ package jetbrains.datalore.vis.svgMapper.skia
 
 import jetbrains.datalore.base.geometry.DoubleVector
 import jetbrains.datalore.plot.MonolithicCommon
+import jetbrains.datalore.plot.builder.config.FigureBuildInfo
 import jetbrains.datalore.plot.config.PlotConfig
 import jetbrains.datalore.plot.config.PlotConfigClientSide
 import jetbrains.datalore.plot.server.config.BackendSpecTransformUtil
@@ -12,7 +13,7 @@ object MonolithicSkia {
         plotSize: DoubleVector?,
         plotMaxWidth: Double?,
         computationMessagesHandler: ((List<String>) -> Unit)
-    ): Result<List<MonolithicCommon.PlotBuildInfo>> {
+    ): Result<List<FigureBuildInfo>> {
         try {
             @Suppress("NAME_SHADOWING")
             val plotSpec = processSpecs(plotSpec, frontendOnly = false)
@@ -32,7 +33,7 @@ object MonolithicSkia {
         plotSize: DoubleVector?,
         plotMaxWidth: Double?,
         computationMessagesHandler: ((List<String>) -> Unit)
-    ): Result<List<MonolithicCommon.PlotBuildInfo>> {
+    ): Result<List<FigureBuildInfo>> {
         try {
             val buildResult = MonolithicCommon.buildPlotsFromProcessedSpecs(
                 plotSpec,
@@ -55,7 +56,7 @@ object MonolithicSkia {
 
     @Suppress("SameParameterValue")
     private fun processSpecs(plotSpec: MutableMap<String, Any>, frontendOnly: Boolean): MutableMap<String, Any> {
-        PlotConfig.assertPlotSpecOrErrorMessage(plotSpec)
+        PlotConfig.assertFigSpecOrErrorMessage(plotSpec)
         if (PlotConfig.isFailure(plotSpec)) {
             return plotSpec
         }

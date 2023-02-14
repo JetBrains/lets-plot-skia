@@ -5,7 +5,6 @@ import android.os.Bundle
 import android.view.ViewGroup.LayoutParams
 import android.widget.LinearLayout
 import jetbrains.datalore.base.geometry.DoubleVector
-import jetbrains.datalore.plot.MonolithicCommon
 import jetbrains.datalore.plotDemo.model.plotConfig.Area
 import jetbrains.datalore.vis.svgMapper.common.DemoModelA
 import jetbrains.datalore.vis.svgMapper.skia.plotView
@@ -24,11 +23,13 @@ class MainActivity : Activity() {
         //layout.addView(svgView(DemoModelB.createModel()))
         //layout.addView(addSvg("Demo C", DemoModelC.createModel()))
 
+
         layout.addView(
             plotView(
-                plotSpec = MonolithicCommon.processRawSpecs(Area().plotSpecList().first(), frontendOnly = false),
-                plotSize = DoubleVector(400.0, 300.0)
-            )
+                plotSpec = Area().plotSpecList().first(),
+                plotSize = DoubleVector(400.0, 300.0),
+                null
+            ) {  }
         )
     }
 }

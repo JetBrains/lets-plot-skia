@@ -19,6 +19,5 @@ internal class SkiaWidgetView(
             (height * density).toInt()
         )
         skiaWidget.nativeLayer.attachTo(this)
-
     }
 }

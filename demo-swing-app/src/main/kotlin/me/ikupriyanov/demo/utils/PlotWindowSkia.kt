@@ -1,7 +1,6 @@
 package me.ikupriyanov.demo.utils
 
 import jetbrains.datalore.base.geometry.DoubleVector
-import jetbrains.datalore.plot.MonolithicCommon
 import jetbrains.datalore.vis.svgMapper.skia.plotComponent
 import java.awt.Component
 import java.awt.Dimension
@@ -71,9 +70,8 @@ class PlotWindowSkia(
 
 
     private fun createPlotComponent(rawSpec: MutableMap<String, Any>, plotSize: DoubleVector?): JComponent {
-        val processedSpec = MonolithicCommon.processRawSpecs(rawSpec, frontendOnly = false)
         val plotPanel = plotComponent(
-            processedSpec = processedSpec,
+            plotSpec = rawSpec,
             plotSize
         )
 

@@ -9,13 +9,13 @@ import jetbrains.datalore.vis.svgMapper.skia.svgComponent
 
 @Composable
 fun plot(
-    processedSpec: MutableMap<String, Any>,
+    plotSpec: MutableMap<String, Any>,
     modifier: Modifier = Modifier,
 ) {
     SwingPanel(
         modifier = modifier,
         factory = {
-            plotComponent(processedSpec)
+            plotComponent(plotSpec)
         }
     )
 }
