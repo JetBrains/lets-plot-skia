@@ -2,7 +2,7 @@ package jetbrains.datalore.vis.svgMapper.skia
 
 import jetbrains.datalore.base.geometry.DoubleVector
 import jetbrains.datalore.vis.svg.SvgSvgElement
-import jetbrains.datalore.vis.svgMapper.skia.MonolithicAndroid.buildPlotFromRawSpecs
+import jetbrains.datalore.vis.svgMapper.skia.MonolithicSwing.buildPlotFromRawSpecs
 import org.jetbrains.skiko.SkiaLayer
 import javax.swing.JComponent
 
