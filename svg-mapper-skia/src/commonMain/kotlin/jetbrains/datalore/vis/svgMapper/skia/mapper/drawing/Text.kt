@@ -56,6 +56,7 @@ internal class Text : Figure() {
         strokePaint?.let { canvas.drawTextLine(textLine, x + cx, y + cy, it) }
     }
 
+    // Used in tooltip to get actual size. Modify with caution.
     override fun doGetBounds(): Rect {
         val bbox = font.measureText(text)
         return Rect.makeLTRB(
@@ -63,8 +64,7 @@ internal class Text : Figure() {
             bbox.top + y + cy,
             bbox.right + x + cx,
             bbox.bottom + y + cy
-        )//.offset(absoluteOffsetX, absoluteOffsetY)
-        //return Rect.makeXYWH(x + cx, y + cy, textLine.width, textLine.capHeight).offset(absoluteOffsetX, absoluteOffsetY)
+        )
     }
 
     enum class VerticalAlignment {

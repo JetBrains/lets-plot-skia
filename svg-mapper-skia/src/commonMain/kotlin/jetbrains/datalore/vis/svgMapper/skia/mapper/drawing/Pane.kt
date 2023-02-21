@@ -24,6 +24,7 @@ class Pane: Parent() {
     }
 
     override fun doGetBounds(): Rect {
+        // FIXME: should be zero. Only elements that can draw themself should report bbox.
         return Rect.makeXYWH(x, y, width, height).offset(absoluteOffsetX, absoluteOffsetY)
     }
 }

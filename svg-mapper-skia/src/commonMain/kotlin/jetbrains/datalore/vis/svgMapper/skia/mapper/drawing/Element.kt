@@ -43,6 +43,10 @@ abstract class Element: Drawable() {
     }
 
     protected open fun doDraw(canvas: Canvas) {}
+
+    // FIXME: position mostly local to parent, but should be absolute.
+    // Used by SvgSkiaPeer.getBBox via `bounds` property.
+    // Also used by skia for rendering optimization. Now works only because of Pane, reporting whole canvas size.
     protected open fun doGetBounds(): Rect { return Rect.makeWH(0.0f, 0.0f)}
 
     protected fun repaint() {
