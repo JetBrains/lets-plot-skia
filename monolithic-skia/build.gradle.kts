@@ -27,21 +27,32 @@ kotlin {
                 compileOnly("org.jetbrains.skiko:skiko:$skiko_version")
                 implementation(project(":svg-mapper-skia"))
 
+                // Property, SimpleComposite
                 compileOnly("org.jetbrains.lets-plot:base-portable:$lets_plot_version") { isTransitive = false }
-                compileOnly("org.jetbrains.lets-plot:base:$lets_plot_version") { isTransitive = false }
+
+                // Mapper, MappingContext
                 compileOnly("org.jetbrains.lets-plot:mapper-core:$lets_plot_version") { isTransitive = false }
+
+                // SvgSvgElement, SvgNodeContainer, SvgGElement, SvgTextElement, etc
                 compileOnly("org.jetbrains.lets-plot:vis-svg-portable:$lets_plot_version") { isTransitive = false }
-                compileOnly("org.jetbrains.lets-plot:vis-svg-mapper:$lets_plot_version") { isTransitive = false }
-                compileOnly("org.jetbrains.lets-plot:vis-canvas:$lets_plot_version") { isTransitive = false }
-                compileOnly("org.jetbrains.lets-plot:plot-common-portable:$lets_plot_version") { isTransitive = false }
-                compileOnly("org.jetbrains.lets-plot:plot-base-portable:$lets_plot_version") { isTransitive = false }
-                // PlotAssembler, PlotSvgComponent, PlotContainerPortable, MouseEventPeer
+
+                // FigureBuildInfo, CompositeFigureSvgRoot, PlotSvgRoot, PlotAssembler, PlotSvgComponent, PlotContainerPortable, MouseEventPeer
                 compileOnly("org.jetbrains.lets-plot:plot-builder-portable:$lets_plot_version") { isTransitive = false }
+
                 // PlotContainer
                 compileOnly("org.jetbrains.lets-plot:plot-builder:$lets_plot_version") { isTransitive = false }
+
                 // MonolithicCommon, PlotConfig, PlotsBuildResult
                 compileOnly("org.jetbrains.lets-plot:plot-config-portable:$lets_plot_version") { isTransitive = false }
-            }
+
+                // > Task :monolithic-skia:compileKotlinJs FAILED
+                // java.lang.IllegalStateException: FATAL ERROR: Could not find "org.jetbrains.lets-plot:xxx" in [/Users/ikupriyanov/Library/Application Support/kotlin/daemon]
+                //        at org.jetbrains.kotlin.ir.backend.js.KlibKt$toResolverLogger$1.fatal(klib.kt:110)
+                compileOnly("org.jetbrains.lets-plot:base:$lets_plot_version") { isTransitive = false }
+                compileOnly("org.jetbrains.lets-plot:vis-svg-mapper:$lets_plot_version") { isTransitive = false }
+                compileOnly("org.jetbrains.lets-plot:plot-base-portable:$lets_plot_version") { isTransitive = false }
+                compileOnly("org.jetbrains.lets-plot:plot-common-portable:$lets_plot_version") { isTransitive = false }
+                compileOnly("org.jetbrains.lets-plot:vis-canvas:$lets_plot_version") { isTransitive = false }            }
         }
 
         val jvmMain by getting {

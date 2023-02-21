@@ -6,7 +6,7 @@ import android.widget.LinearLayout
 import android.widget.TextView
 import jetbrains.datalore.base.geometry.DoubleVector
 import jetbrains.datalore.plot.MonolithicCommon
-import jetbrains.datalore.plot.builder.config.FigureBuildInfo
+import jetbrains.datalore.plot.builder.FigureBuildInfo
 import jetbrains.datalore.plot.config.FailureHandler
 
 internal object MonolithicAndroid {

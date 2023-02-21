@@ -1,9 +1,9 @@
 package jetbrains.datalore.vis.svgMapper.skia
 
 import jetbrains.datalore.base.geometry.DoubleVector
+import jetbrains.datalore.plot.builder.FigureBuildInfo
 import jetbrains.datalore.plot.builder.PlotContainer
 import jetbrains.datalore.plot.builder.PlotSvgRoot
-import jetbrains.datalore.plot.builder.config.FigureBuildInfo
 import jetbrains.datalore.plot.builder.subPlots.CompositeFigureSvgRoot
 import javax.swing.JComponent
 import javax.swing.SwingUtilities
@@ -12,6 +12,8 @@ class FigureToSkia(
     private val buildInfo: FigureBuildInfo
 ) {
     fun eval(): JComponent {
+        val buildInfo = buildInfo.layoutedByOuterSize()
+
         // TODO: livemap
         //buildInfo.injectLiveMapProvider { tiles: List<List<GeomLayer>>, spec: Map<String, Any> ->
         //    val cursorServiceConfig = CursorServiceConfig()
