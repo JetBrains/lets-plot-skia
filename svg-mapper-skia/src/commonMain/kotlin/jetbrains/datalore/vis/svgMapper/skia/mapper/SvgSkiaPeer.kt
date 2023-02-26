@@ -15,7 +15,7 @@ import jetbrains.datalore.vis.svg.SvgPlatformPeer
 import jetbrains.datalore.vis.svg.SvgTextContent
 import jetbrains.datalore.vis.svgMapper.skia.mapper.drawing.Element
 
-class SvgSkiaPeer : SvgPlatformPeer {
+internal class SvgSkiaPeer : SvgPlatformPeer {
     private val myMappingMap = HashMap<SvgNode, Mapper<out SvgNode, out Element>>()
     var styleSheet: StyleSheet? = null
         private set
@@ -89,7 +89,7 @@ class SvgSkiaPeer : SvgPlatformPeer {
         ensureSourceRegistered(element as SvgNode)
         val target = myMappingMap[element]!!.target
 
-        return target.bounds.let {
+        return target.localBounds.let {
             DoubleRectangle(
                 it.left.toDouble(),
                 it.top.toDouble(),

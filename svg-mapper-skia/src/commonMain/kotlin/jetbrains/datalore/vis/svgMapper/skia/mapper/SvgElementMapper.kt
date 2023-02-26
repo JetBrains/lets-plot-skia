@@ -14,7 +14,7 @@ import jetbrains.datalore.vis.svg.event.SvgAttributeEvent
 import jetbrains.datalore.vis.svg.event.SvgEventSpec
 import jetbrains.datalore.vis.svgMapper.skia.mapper.drawing.Element
 
-open class SvgElementMapper<SourceT : SvgElement, TargetT : Element>(
+internal open class SvgElementMapper<SourceT : SvgElement, TargetT : Element>(
     source: SourceT,
     target: TargetT,
     peer: SvgSkiaPeer

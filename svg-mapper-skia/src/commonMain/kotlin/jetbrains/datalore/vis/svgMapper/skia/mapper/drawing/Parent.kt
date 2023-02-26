@@ -11,13 +11,7 @@ import jetbrains.datalore.base.observable.collections.list.ObservableList
 import jetbrains.datalore.base.observable.event.EventHandler
 import org.jetbrains.skia.Canvas
 
-abstract class Parent: Element() {
-    protected val translateX: Float = transform?.translate?.x ?: 0f
-    protected val translateY: Float = transform?.translate?.y ?: 0f
-
-    abstract val offsetX: Float
-    abstract val offsetY: Float
-
+internal abstract class Parent: Element() {
     val children: ObservableList<Element> = ObservableArrayList()
 
     init {
@@ -29,18 +23,12 @@ abstract class Parent: Element() {
         })
     }
 
+    // TODO: split visual tree and logical tree.
+    // Logical parent should not affect dirty regions
+    // Only visible children should report dirty regions
     override fun doDraw(canvas: Canvas) {
         children.forEach {
-            it.draw(canvas)
+            it.drawable.onDraw(canvas)
         }
     }
-
-//    override fun onGetBounds(): Rect {
-//        val rects = children.map { it.bounds }
-//        val left = rects.minOfOrNull { it.left } ?: 0.0f
-//        val top = rects.minOfOrNull { it.top } ?: 0.0f
-//        val right = rects.maxOfOrNull { it.right } ?: 0.0f
-//        val bottom = rects.maxOfOrNull { it.bottom } ?: 0.0f
-//        return Rect(left, top, right, bottom).offset(getTranslate())
-//    }
 }

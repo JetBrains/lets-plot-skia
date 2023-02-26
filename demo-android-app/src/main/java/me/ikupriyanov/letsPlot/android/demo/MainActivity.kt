@@ -6,9 +6,7 @@ import android.view.ViewGroup.LayoutParams
 import android.widget.LinearLayout
 import jetbrains.datalore.base.geometry.DoubleVector
 import jetbrains.datalore.plotDemo.model.plotConfig.Area
-import jetbrains.datalore.vis.svgMapper.common.DemoModelA
 import jetbrains.datalore.vis.svgMapper.skia.plotView
-import jetbrains.datalore.vis.svgMapper.skia.svgView
 
 class MainActivity : Activity() {
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -19,7 +17,7 @@ class MainActivity : Activity() {
         layout.layoutParams = LinearLayout.LayoutParams(LayoutParams.MATCH_PARENT, LayoutParams.WRAP_CONTENT)
         setContentView(layout, layout.layoutParams)
 
-        layout.addView(svgView(DemoModelA.createModel()))
+        //layout.addView(svgView(DemoModelA.createModel()))
         //layout.addView(svgView(DemoModelB.createModel()))
         //layout.addView(addSvg("Demo C", DemoModelC.createModel()))
 

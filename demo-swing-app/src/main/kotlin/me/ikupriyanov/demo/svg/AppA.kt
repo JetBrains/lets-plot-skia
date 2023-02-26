@@ -4,5 +4,5 @@ import jetbrains.datalore.vis.svgMapper.common.DemoModelA
 import me.ikupriyanov.demo.utils.SvgWindowSkia
 
 fun main() {
-    SvgWindowSkia( "SwingSkia DemoA", listOf(DemoModelA.createModel()))
+    SvgWindowSkia( "SwingSkia DemoA", listOf(DemoModelA.createModel())).open()
 }

@@ -8,6 +8,10 @@ package jetbrains.datalore.vis.svgMapper.skia.mapper.drawing
 import org.jetbrains.skia.*
 
 internal class Text : Figure() {
+    init {
+        fill = Color4f(Color.BLACK)
+    }
+
     var textOrigin: VerticalAlignment? by visualProp(null)
     var textAlignment: HorizontalAlignment? by visualProp(null)
     var x: Float by visualProp(0.0f)
@@ -39,10 +43,6 @@ internal class Text : Figure() {
         FontMgr.default.matchFamiliesStyle(fontFamily.toTypedArray(), fontStyle) ?: Typeface.makeDefault()
     }
 
-    init {
-        fill = Color4f(Color.BLACK)
-    }
-
     private val font by dependencyProp(Text::typeface, Text::fontSize) {
         Font(typeface, fontSize)
     }
@@ -56,16 +56,17 @@ internal class Text : Figure() {
         strokePaint?.let { canvas.drawTextLine(textLine, x + cx, y + cy, it) }
     }
 
-    // Used in tooltip to get actual size. Modify with caution.
-    override fun doGetBounds(): Rect {
-        val bbox = font.measureText(text)
-        return Rect.makeLTRB(
-            bbox.left + x + cx,
-            bbox.top + y + cy,
-            bbox.right + x + cx,
-            bbox.bottom + y + cy
-        )
-    }
+    override val localBounds: Rect
+        get() = font.measureText(text).let { bbox ->
+            Rect.makeLTRB(
+                bbox.left + x + cx,
+                bbox.top + y + cy,
+                bbox.right + x + cx,
+                bbox.bottom + y + cy
+            )
+        }
+
+    override fun repr(): String = text
 
     enum class VerticalAlignment {
         TOP,

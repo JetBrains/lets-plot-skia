@@ -11,7 +11,7 @@ import jetbrains.datalore.mapper.core.MappingContext
 import jetbrains.datalore.vis.svg.SvgNode
 import jetbrains.datalore.vis.svgMapper.skia.mapper.drawing.Element
 
-open class SvgNodeMapper<SourceT : SvgNode, TargetT : Element>(
+internal open class SvgNodeMapper<SourceT : SvgNode, TargetT : Element>(
         source: SourceT,
         target: TargetT,
         protected val peer: SvgSkiaPeer

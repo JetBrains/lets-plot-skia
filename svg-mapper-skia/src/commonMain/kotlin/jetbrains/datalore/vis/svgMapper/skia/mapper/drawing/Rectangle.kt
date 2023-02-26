@@ -22,7 +22,6 @@ internal class Rectangle: Figure() {
         strokePaint?.let { canvas.drawRect(rect, it) }
     }
 
-    override fun doGetBounds(): Rect {
-        return Rect.makeXYWH(x, y, width, height).offset(absoluteOffsetX, absoluteOffsetY)
-    }
+    override val localBounds: Rect
+        get() = Rect.makeXYWH(x, y, width, height)
 }

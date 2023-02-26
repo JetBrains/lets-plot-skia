@@ -8,13 +8,12 @@ package jetbrains.datalore.vis.svgMapper.skia.mapper.drawing
 import org.jetbrains.skia.Canvas
 import org.jetbrains.skia.Rect
 
-class Pane: Parent() {
+
+internal class Pane: Parent() {
     var x: Float by visualProp(0.0f)
     var y: Float by visualProp(0.0f)
     var width: Float by visualProp(0.0f)
     var height: Float by visualProp(0.0f)
-    override val offsetX: Float get() = translateX + x
-    override val offsetY: Float get() = translateY + y
 
     override fun doDraw(canvas: Canvas) {
         canvas.save()
@@ -23,8 +22,6 @@ class Pane: Parent() {
         canvas.restore()
     }
 
-    override fun doGetBounds(): Rect {
-        // FIXME: should be zero. Only elements that can draw themself should report bbox.
-        return Rect.makeXYWH(x, y, width, height).offset(absoluteOffsetX, absoluteOffsetY)
-    }
+    override val localBounds: Rect
+        get() = Rect.makeXYWH(x, y, width, height)
 }

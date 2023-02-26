@@ -12,45 +12,62 @@ import kotlin.reflect.KProperty
 
 internal typealias SkPath = org.jetbrains.skia.Path
 
-internal const val INIFITY_BOUNDS = false
+internal abstract class Element {
+    val drawable: Drawable = object : Drawable() {
+        override fun onDraw(canvas: Canvas?) {
+            if (canvas == null) return
+            if (!isVisible) return
 
-abstract class Element: Drawable() {
+            canvas.save()
+            // TODO: use screenTransform?
+            transform?.let(canvas::concat)
+            clipPath?.let(canvas::clipPath)
+            doDraw(canvas)
+            canvas.restore()
+        }
+
+        override fun onGetBounds(): Rect = screenBounds
+    }
+
     var parent: Parent? by visualProp(null)
     var styleClass: List<String>? by visualProp(null)
     var transform: Matrix33? by visualProp(null)
     var clipPath: SkPath? by visualProp(null)
     var isVisible: Boolean by visualProp(true)
 
+    // TODO: perf. Update only if changed
+    open val localBounds: Rect = Rect.Companion.makeWH(0f, 0f)
+
+    // TODO: perf. Update only if changed
+    open val screenBounds: Rect
+        get() = screenTransform.apply(localBounds)
+
+    // TODO: perf. Cache. Update only on a transform change in a tree.
+    val screenTransform: Matrix33
+        get() =
+            parents
+                .mapNotNull(Parent::transform)
+                .fold(Matrix33.IDENTITY, Matrix33::makeConcat)
+                .makeConcat(transform ?: Matrix33.IDENTITY)
+
     private val propertyDeps = mutableMapOf<KProperty<*>, MutableList<DependencyProperty<*>>>()
-
-    final override fun onDraw(canvas: Canvas?) {
-        if (canvas == null) return
-        if (!isVisible) return
-
-        canvas.save()
-        transform?.let(canvas::concat)
-        clipPath?.let(canvas::clipPath)
-        doDraw(canvas)
-        canvas.restore()
-    }
-
-    final override fun onGetBounds(): Rect {
-        return if (INIFITY_BOUNDS) {
-            Rect.Companion.makeWH(1000f, 1000f)
-        } else {
-            doGetBounds()
-        }
-    }
 
     protected open fun doDraw(canvas: Canvas) {}
 
-    // FIXME: position mostly local to parent, but should be absolute.
-    // Used by SvgSkiaPeer.getBBox via `bounds` property.
-    // Also used by skia for rendering optimization. Now works only because of Pane, reporting whole canvas size.
-    protected open fun doGetBounds(): Rect { return Rect.makeWH(0.0f, 0.0f)}
+    // TODO: perf. Update only on a tree change
+    private val parents: List<Parent>
+        get() {
+            var p = parent
+            val parents = mutableListOf<Parent>()
+            while (p != null) {
+                parents.add(0, p)
+                p = p.parent
+            }
+            return parents
+        }
 
     protected fun repaint() {
-        notifyDrawingChanged()
+        drawable.notifyDrawingChanged()
     }
 
     protected fun <T> visualProp(initialValue: T): ReadWriteProperty<Any?, T> =
@@ -68,7 +85,18 @@ abstract class Element: Drawable() {
             }
         }
 
+    protected open fun repr(): String? = null
+
     override fun toString(): String {
-        return "class: ${this::class.simpleName}, absOffset($absoluteOffsetX, $absoluteOffsetY)"
+        val repr = repr()?.let { ", $it" }
+        return "class: ${this::class.simpleName}${repr ?: ""}${
+            transform?.mat?.let {
+                ", transform: ${
+                    it.joinToString(
+                        transform = Float::toString
+                    )
+                }"
+            } ?: ""
+        }"
     }
 }

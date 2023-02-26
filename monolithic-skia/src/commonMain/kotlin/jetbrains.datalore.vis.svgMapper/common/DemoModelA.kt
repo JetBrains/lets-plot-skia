@@ -67,6 +67,24 @@ object DemoModelA {
         path.fillColor().set(Color.LIGHT_BLUE)
         svgRoot.children().add(path)
 
+        svgRoot.children().add(
+            SvgGElement().apply {
+                transform().set(
+                    SvgTransformBuilder()
+                        .translate(100.0, 400.0)
+                        .rotate(90.0)
+                        .build()
+                )
+                children().add(
+                    SvgTextElement(20.0, 25.0, "Nested rotated").apply {
+                        addClass("TEXT2")
+                        stroke().set(SvgColors.CORAL)
+                        strokeWidth().set(1.0)
+                    }
+                )
+            }
+        )
+
         return SvgSvgElement(500.0, 500.0).apply {
             children().add(svgRoot)
         }

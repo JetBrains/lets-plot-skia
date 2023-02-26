@@ -19,10 +19,11 @@ internal class Path: Figure() {
 
         fillPaint?.let { canvas.drawPath(skiaPath!!, it) }
         strokePaint?.let { canvas.drawPath(skiaPath!!, it) }
-
     }
 
-    override fun doGetBounds(): Rect {
-        return skiaPath?.bounds?.offset(absoluteOffsetX, absoluteOffsetY) ?: Rect.Companion.makeWH(0.0f, 0.0f)
-    }
+    override val localBounds: Rect
+        get() {
+            val path = skiaPath ?: return Rect.Companion.makeWH(0.0f, 0.0f)
+            return (strokePaint?.getFillPath(path) ?: path).bounds
+        }
 }

@@ -11,7 +11,7 @@ import jetbrains.datalore.mapper.core.Synchronizers
 import jetbrains.datalore.vis.svg.SvgSvgElement
 import jetbrains.datalore.vis.svgMapper.skia.mapper.drawing.Pane
 
-class SvgSvgElementMapper(
+internal class SvgSvgElementMapper(
     source: SvgSvgElement,
     peer: SvgSkiaPeer
 ) : SvgElementMapper<SvgSvgElement, Pane>(source, createTargetContainer(), peer) {

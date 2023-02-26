@@ -6,9 +6,8 @@
 package jetbrains.datalore.vis.svgMapper.skia.mapper.drawing
 
 import org.jetbrains.skia.Canvas
+import org.jetbrains.skia.Path
 import org.jetbrains.skia.Rect
-import kotlin.math.max
-import kotlin.math.min
 
 internal class Line: Figure() {
     var x0: Float by visualProp(0.0f)
@@ -20,7 +19,10 @@ internal class Line: Figure() {
         strokePaint?.let { canvas.drawLine(x0, y0, x1, y1, it) }
     }
 
-    override fun doGetBounds(): Rect {
-        return Rect.makeLTRB(min(x0, x1), min(y0, y1), max(x0, x1), max(y0, y1)).offset(absoluteOffsetX, absoluteOffsetY)
-    }
+    override val localBounds: Rect
+        get() {
+            // TODO: pref. Cache.
+            val path = Path().moveTo(x0, y0).lineTo(x1, y1)
+            return (strokePaint?.getFillPath(path) ?: path).bounds
+        }
 }

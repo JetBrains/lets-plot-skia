@@ -2,76 +2,38 @@ package jetbrains.datalore.vis.svgMapper.skia.mapper.drawing
 
 import org.jetbrains.skia.Matrix33
 import org.jetbrains.skia.Point
+import org.jetbrains.skia.Rect
 
-internal val Matrix33.translate: Point get() = Point(mat[2], mat[5])
-
-internal val Element.absoluteOffsetX: Float get() {
-    val totalParentsOffsetX = when (parent) {
-        null -> 0f
-        is Parent -> (parent as Parent).let { p -> p.offsetX + p.parents.sumOf { it.offsetX.toDouble() } }.toFloat()
-        else -> parent!!.absoluteOffsetX
-    }
-    return totalParentsOffsetX + (transform?.translate?.x ?: 0f)
+internal fun sdot(a: Float, b: Float, c: Float, d: Float): Float {
+    return a * b + c * d
 }
 
-internal val Element.absoluteOffsetY: Float get() {
-    val totalParentsOffsetY = when (parent) {
-        null -> 0f
-        is Parent -> (parent as Parent).let { p -> p.offsetY + p.parents.sumOf { it.offsetY.toDouble() } }.toFloat()
-        else -> parent!!.absoluteOffsetY
-    }
-    return totalParentsOffsetY + (transform?.translate?.y ?: 0f)
+internal const val scaleX = 0
+internal const val skewX  = 1
+internal const val transX = 2
+internal const val skewY  = 3
+internal const val scaleY = 4
+internal const val transY = 5
+internal const val persp0 = 6
+internal const val persp1 = 7
+internal const val persp2 = 8
+
+
+internal fun Matrix33.apply(sx: Float, sy: Float): Point {
+    val x = sdot(sx, mat[scaleX], sy, mat[skewX])  + mat[transX]
+    val y = sdot(sx, mat[skewY],  sy, mat[scaleY]) + mat[transY]
+    val z = (sdot(sx, mat[persp0], sy, mat[persp1]) + mat[persp2]).let { if (it != 0f) 1 / it else it }
+    return Point(x * z, y * z)
 }
 
+internal fun Matrix33.apply(r: Rect): Rect {
+    val lt = apply(r.left, r.top)
+    val rt = apply(r.right, r.top)
+    val rb = apply(r.right, r.bottom)
+    val lb = apply(r.left, r.bottom)
 
-internal val Element.parents: List<Parent> get() {
-    val res = mutableListOf<Parent>()
+    val xs = listOf(lt.x, rt.x, rb.x, lb.x)
+    val ys = listOf(lt.y, rt.y, rb.y, lb.y)
 
-    var root = parent
-    while (root != null) {
-        res.add(root)
-        root = root.parent
-    }
-    return res
-}
-
-internal fun traceTree(el: Element): String {
-    val buffer = StringBuilder()
-
-    val root = when (el.parent) {
-        null -> el
-        else -> el.parents.lastOrNull()
-    } ?: return ""
-
-    traceNode(root, 0, buffer)
-
-    return buffer.toString()
-}
-
-internal fun traceNode(el: Element, indent: Int = 0, buffer: StringBuilder = StringBuilder()): StringBuilder {
-    buffer.appendLine(" ".repeat(indent) + el.toString())
-    if (el is Parent) {
-        el.children.forEach { traceNode(it, indent + 1, buffer) }
-    }
-    return buffer
-}
-
-@Suppress("unused")
-internal fun traceElement(el: Element): String {
-    val elements = mutableListOf(el)
-
-    var root = when (el.parent) {
-        null -> el
-        else -> el.parents.lastOrNull()
-    }
-
-    while (root != null) {
-        elements.add(root)
-        root = root.parent
-    }
-
-    return elements
-        .reversed()
-        .mapIndexed { index, it -> " ".repeat(index) + it.toString() }
-        .joinToString(separator = "\n")
+    return Rect.makeLTRB(xs.min(), ys.min(), xs.max(), ys.max())
 }
