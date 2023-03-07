@@ -2,14 +2,13 @@ package jetbrains.datalore.vis.svgMapper.skia
 
 import android.content.Context
 import android.view.View
-import android.widget.LinearLayout
 import android.widget.TextView
 import jetbrains.datalore.base.geometry.DoubleVector
 import jetbrains.datalore.plot.MonolithicCommon
 import jetbrains.datalore.plot.builder.FigureBuildInfo
 import jetbrains.datalore.plot.config.FailureHandler
 
-internal object MonolithicAndroid {
+object MonolithicAndroid {
     fun Context.buildPlotFromRawSpecs(
         plotSpec: MutableMap<String, Any>,
         plotSize: DoubleVector?,
@@ -17,9 +16,8 @@ internal object MonolithicAndroid {
         computationMessagesHandler: ((List<String>) -> Unit)
     ): View {
         return try {
-            @Suppress("NAME_SHADOWING")
-            val plotSpec = MonolithicCommon.processRawSpecs(plotSpec, frontendOnly = false)
-            buildPlotFromProcessedSpecs(plotSpec, plotSize, plotMaxWidth, computationMessagesHandler)
+            val processedPlotSpec = MonolithicCommon.processRawSpecs(plotSpec, frontendOnly = false)
+            return buildPlotFromProcessedSpecs(processedPlotSpec, plotSize, plotMaxWidth, computationMessagesHandler)
         } catch (e: RuntimeException) {
             handleException(e)
         }
@@ -49,10 +47,7 @@ internal object MonolithicAndroid {
             return if (success.buildInfos.size == 1) {
                 // a single plot
                 val buildInfo = success.buildInfos[0]
-                val plotView = FigureToSkia(buildInfo, plotSize, plotMaxWidth).eval(this)
-                LinearLayout(this).apply {
-                    addView(plotView)
-                }
+                FigureToSkia(buildInfo).eval(this)
             } else {
                 // ggbunch
                 buildGGBunchComponent(success.buildInfos)

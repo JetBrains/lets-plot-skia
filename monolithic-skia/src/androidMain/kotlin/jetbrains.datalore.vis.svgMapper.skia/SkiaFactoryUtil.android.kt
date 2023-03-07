@@ -2,23 +2,22 @@ package jetbrains.datalore.vis.svgMapper.skia
 
 import android.content.Context
 import android.view.View
-import jetbrains.datalore.base.geometry.DoubleVector
+import jetbrains.datalore.plot.MonolithicCommon
 import jetbrains.datalore.vis.svg.SvgSvgElement
-import jetbrains.datalore.vis.svgMapper.skia.MonolithicAndroid.buildPlotFromRawSpecs
 import org.jetbrains.skiko.SkiaLayer
 import org.jetbrains.skiko.SkikoGestureEventKind
 
 fun Context.svgView(svg: SvgSvgElement): View {
-    return SkiaWidgetView(this, androidSkiaWidget(svg), null, null)
+    return SkiaWidgetView(this, androidSkiaWidget(svg))
 }
 
 fun Context.plotView(
-    plotSpec: MutableMap<String, Any>,
-    plotSize: DoubleVector? = null,
-    plotMaxWidth: Double? = null,
-    computationMessagesHandler: ((List<String>) -> Unit)
+    rawPlotSpec: MutableMap<String, Any>,
+    preserveAspectRatio: Boolean = true,
+    computationMessagesHandler: ((List<String>) -> Unit) = {}
 ): View {
-    return buildPlotFromRawSpecs(plotSpec, plotSize, plotMaxWidth, computationMessagesHandler)
+    val processedSpec = MonolithicCommon.processRawSpecs(rawPlotSpec, frontendOnly = false)
+    return PlotView(this, processedSpec, preserveAspectRatio, computationMessagesHandler)
 }
 
 internal fun androidSkiaWidget(svg: SvgSvgElement): SkiaWidget {
@@ -30,6 +29,6 @@ internal fun androidSkiaWidget(svg: SvgSvgElement): SkiaWidget {
             SkikoGestureEventKind.LONGPRESS
         )
         skiaLayer.skikoView = skikoView
+        skiaLayer.needRedraw()
     }
 }
-

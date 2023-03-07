@@ -10,8 +10,6 @@ import jetbrains.datalore.plot.builder.subPlots.CompositeFigureSvgRoot
 
 internal class FigureToSkia(
     private val buildInfo: FigureBuildInfo,
-    private val plotSize: DoubleVector? = null,
-    private val plotMaxWidth: Double? = null,
 ) {
     fun eval(ctx: Context): View {
         val buildInfo = buildInfo.layoutedByOuterSize()
@@ -38,7 +36,7 @@ internal class FigureToSkia(
             val plotContainer = PlotContainer(svgRoot)
             val skiaWidget = androidSkiaWidget(plotContainer.svg)
             skiaWidget.setMouseEventListener { s, e -> plotContainer.mouseEventPeer.dispatch(s, e) }
-            return SkiaWidgetView(this, skiaWidget, plotSize, null)
+            return SkiaWidgetView(this, skiaWidget)
         }
     }
 

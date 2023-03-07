@@ -30,10 +30,11 @@ class SkiaWidget(
     private val rootMapper = SvgSvgElementMapper(svg, SvgSkiaPeer())
     private var mouseEventHandler: (MouseEventSpec, MouseEvent) -> Unit = EMPTY_MOUSE_EVENT_HANDLER
 
-    val skikoView = object : SkikoView {
+    private val skikoView = object : SkikoView {
         override fun onRender(canvas: Canvas, width: Int, height: Int, nanoTime: Long) {
             canvas.scale(nativeLayer.contentScale, nativeLayer.contentScale)
             canvas.drawDrawable(rootMapper.target.drawable)
+            //traverse(rootMapper.target).filter { it is Figure }.forEach { canvas.drawDrawable(it.drawable, it.screenTransform) }
         }
 
         override fun onGestureEvent(event: SkikoGestureEvent) {
@@ -64,10 +65,10 @@ class SkiaWidget(
         }
     }
 
-    private fun traverse(element: Element): List<Element> {
+    private fun traverse(element: Element): Sequence<Element> {
         return when (element) {
-            is Parent -> element.children + element.children.flatMap(::traverse)
-            else -> listOf(element)
+            is Parent -> element.children.asSequence() + element.children.asSequence().flatMap(::traverse)
+            else -> sequenceOf(element)
         }
     }
 
@@ -76,33 +77,33 @@ class SkiaWidget(
         initialize(nativeLayer, skikoView)
 
         if (DebugOptions.DRAW_BBOX) {
-            traverse(rootMapper.target)
+            val bboxes = traverse(rootMapper.target)
                 .filterNot { it is Group && it.transform == null }
                 .filterNot { it is Rectangle && it.x == 0f && it.y == 0f }
-                .forEach {
+                .map {
                     val bounds = it.screenBounds
-                    svg.children().add(
-                        SvgRectElement().apply {
-                            x().set(bounds.left.toDouble())
-                            y().set(bounds.top.toDouble())
-                            width().set(bounds.width.toDouble())
-                            height().set(bounds.height.toDouble())
+                    SvgRectElement().apply {
+                        x().set(bounds.left.toDouble())
+                        y().set(bounds.top.toDouble())
+                        width().set(bounds.width.toDouble())
+                        height().set(bounds.height.toDouble())
 
-                            val color = when (it) {
-                                is Group -> Color.BLACK
-                                is Text -> Color.GREEN
-                                is Rectangle -> Color.BLUE
-                                is Circle -> Color.ORANGE
-                                is Line -> Color.RED
-                                else -> Color.MAGENTA
-                            }.let { color -> Colors.darker(color, Random.nextDouble(from = 0.7, until = 1.0))!! }
+                        val color = when (it) {
+                            is Group -> Color.BLACK
+                            is Text -> Color.GREEN
+                            is Rectangle -> Color.BLUE
+                            is Circle -> Color.ORANGE
+                            is Line -> Color.RED
+                            else -> Color.MAGENTA
+                        }.let { color -> Colors.darker(color, Random.nextDouble(from = 0.7, until = 1.0))!! }
 
-                            strokeColor().set(color)
-                            fillColor().set(color.changeAlpha(20))
+                        strokeColor().set(color)
+                        fillColor().set(color.changeAlpha(20))
 
-                        }
-                    )
-                }
+                    }
+                }.toList()
+
+            svg.children().addAll(bboxes)
         }
     }
 
@@ -112,35 +113,37 @@ class SkiaWidget(
 
     fun width() = (svg.width().get() ?: 0.0)
     fun height() = (svg.height().get() ?: 0.0)
+
+    private fun SkikoGestureEvent.toMouseEvent(): MouseEvent {
+        return MouseEvent(
+            x = x.toInt(),
+            y = y.toInt(),
+            button = Button.NONE,
+            modifiers = emptyModifiers()
+        )
+    }
+
+    private fun SkikoPointerEvent.toMouseEvent(): MouseEvent {
+        return MouseEvent(
+            x = x.toInt(),
+            y = y.toInt(),
+            button = when (button) {
+                SkikoMouseButtons.LEFT -> Button.LEFT
+                SkikoMouseButtons.MIDDLE -> Button.MIDDLE
+                SkikoMouseButtons.RIGHT -> Button.RIGHT
+                SkikoMouseButtons.NONE -> Button.NONE
+                else -> Button.NONE.also { println("Unsupported button: $button") }
+            },
+            modifiers = KeyModifiers(
+                isCtrl = modifiers.has(SkikoInputModifiers.CONTROL),
+                isAlt = modifiers.has(SkikoInputModifiers.ALT),
+                isShift = modifiers.has(SkikoInputModifiers.SHIFT),
+                isMeta = modifiers.has(SkikoInputModifiers.META)
+            )
+        )
+    }
+
 }
 
 val EMPTY_MOUSE_EVENT_HANDLER: (MouseEventSpec, MouseEvent) -> Unit = { _, _ -> }
 
-private fun SkikoGestureEvent.toMouseEvent(): MouseEvent {
-    return MouseEvent(
-        x = x.toInt(),
-        y = y.toInt(),
-        button = Button.NONE,
-        modifiers = emptyModifiers()
-    )
-}
-
-private fun SkikoPointerEvent.toMouseEvent(): MouseEvent {
-    return MouseEvent(
-        x = x.toInt(),
-        y = y.toInt(),
-        button = when (button) {
-            SkikoMouseButtons.LEFT -> Button.LEFT
-            SkikoMouseButtons.MIDDLE -> Button.MIDDLE
-            SkikoMouseButtons.RIGHT -> Button.RIGHT
-            SkikoMouseButtons.NONE -> Button.NONE
-            else -> Button.NONE.also { println("Unsupported button: $button") }
-        },
-        modifiers = KeyModifiers(
-            isCtrl = modifiers.has(SkikoInputModifiers.CONTROL),
-            isAlt = modifiers.has(SkikoInputModifiers.ALT),
-            isShift = modifiers.has(SkikoInputModifiers.SHIFT),
-            isMeta = modifiers.has(SkikoInputModifiers.META)
-        )
-    )
-}
