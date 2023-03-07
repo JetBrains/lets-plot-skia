@@ -29,6 +29,5 @@ internal fun androidSkiaWidget(svg: SvgSvgElement): SkiaWidget {
             SkikoGestureEventKind.LONGPRESS
         )
         skiaLayer.skikoView = skikoView
-        skiaLayer.needRedraw()
     }
 }
