@@ -8,7 +8,7 @@ plugins {
 val lets_plot_version: String by extra
 
 kotlin {
-    jvm {}
+    jvm()
     sourceSets {
         named("jvmMain") {
             dependencies {

@@ -11,14 +11,7 @@ val lets_plot_version: String by extra
 val skiko_version: String by extra
 
 kotlin {
-    jvm {
-    }
-
-    js(IR) {
-        browser()
-        binaries.executable()
-    }
-
+    jvm()
     android()
 
     sourceSets {
@@ -74,12 +67,6 @@ kotlin {
         val androidMain by getting {
             dependencies {
                 implementation("org.jetbrains.skiko:skiko-android:$skiko_version")
-            }
-        }
-
-        val jsMain by getting {
-            dependencies {
-                implementation("io.github.microutils:kotlin-logging-js:2.0.5") // TODO remove with other { isTransitive = false }
             }
         }
     }

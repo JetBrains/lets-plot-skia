@@ -6,7 +6,7 @@ plugins {
 val lets_plot_version: String by extra
 val skiko_version: String by extra
 
-val osName = System.getProperty("os.name")
+val osName = System.getProperty("os.name")!!
 val hostOs = when {
     osName == "Mac OS X" -> "macos"
     osName.startsWith("Win") -> "windows"
@@ -14,15 +14,11 @@ val hostOs = when {
     else -> error("Unsupported OS: $osName")
 }
 
-val osArch = System.getProperty("os.arch")
-var hostArch = when (osArch) {
+var hostArch = when (val osArch = System.getProperty("os.arch")) {
     "x86_64", "amd64" -> "x64"
     "aarch64" -> "arm64"
     else -> error("Unsupported arch: $osArch")
 }
-
-val host = "${hostOs}-${hostArch}"
-
 
 dependencies {
     implementation("org.jetbrains.skiko:skiko:$skiko_version")
