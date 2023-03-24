@@ -78,8 +78,8 @@ class SkiaWidget(
 
         if (DebugOptions.DRAW_BBOX) {
             val bboxes = traverse(rootMapper.target)
-                .filterNot { it is Group && it.transform == null } // fills whole area and distracts other bboxes
-                .filterNot { it is Rectangle && it.x == 0f && it.y == 0f } // fills whole area and distracts other bboxes
+                .filterNot { it is Group && it.transform == null }
+                .filterNot { it is Rectangle && it.x == 0f && it.y == 0f }
                 .map {
                     val bounds = it.screenBounds
                     SvgRectElement().apply {
