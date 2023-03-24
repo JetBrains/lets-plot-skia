@@ -26,9 +26,10 @@ val host = "${hostOs}-${hostArch}"
 dependencies {
     implementation("org.jetbrains.skiko:skiko:$skiko_version")
     implementation(project(":svg-mapper-skia"))
-    implementation(project(":monolithic-skia"))
+    implementation(project(":monolithic-skia-desktop"))
 
     implementation("org.jetbrains.skiko:skiko-awt-runtime-$hostOs-$hostArch:$skiko_version")
+
     implementation("org.jetbrains.lets-plot:base:$lets_plot_version") { isTransitive = false }
     implementation("org.jetbrains.lets-plot:base-portable:$lets_plot_version") { isTransitive = false }
     implementation("org.jetbrains.lets-plot:plot-base-portable:$lets_plot_version") { isTransitive = false }

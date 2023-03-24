@@ -1,3 +1,8 @@
+/*
+ * Copyright (c) 2023. JetBrains s.r.o.
+ * Use of this source code is governed by the MIT license that can be found in the LICENSE file.
+ */
+
 import java.util.*
 
 buildscript {
@@ -30,6 +35,18 @@ allprojects {
             }
         }
     }
+
+    tasks.withType<org.jetbrains.kotlin.gradle.tasks.KotlinCompile>().all {
+        kotlinOptions {
+            jvmTarget = "11"
+        }
+    }
+
+    tasks.withType<JavaCompile>().all {
+        sourceCompatibility = "11"
+        targetCompatibility = "11"
+    }
+
 }
 
 subprojects {
