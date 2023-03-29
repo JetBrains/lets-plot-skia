@@ -4,11 +4,12 @@ import android.content.Context
 import android.view.View
 import jetbrains.datalore.plot.MonolithicCommon
 import jetbrains.datalore.vis.svg.SvgSvgElement
+import jetbrains.datalore.vis.svgMapper.skia.mapper.SvgSkiaWidget
 import org.jetbrains.skiko.SkiaLayer
 import org.jetbrains.skiko.SkikoGestureEventKind
 
 fun Context.svgView(svg: SvgSvgElement): View {
-    return SkiaWidgetView(this, androidSkiaWidget(svg))
+    return SvgView(this, androidSkiaWidget(svg))
 }
 
 fun Context.plotView(
@@ -20,8 +21,8 @@ fun Context.plotView(
     return PlotView(this, processedSpec, preserveAspectRatio, computationMessagesHandler)
 }
 
-internal fun androidSkiaWidget(svg: SvgSvgElement): SkiaWidget {
-    return SkiaWidget(svg, SkiaLayer()) { skiaLayer, skikoView ->
+internal fun androidSkiaWidget(svg: SvgSvgElement): SvgSkiaWidget {
+    return SvgSkiaWidget(svg, SkiaLayer()) { skiaLayer, skikoView ->
         skiaLayer.gesturesToListen = arrayOf(
             SkikoGestureEventKind.PAN,
             SkikoGestureEventKind.DOUBLETAP,

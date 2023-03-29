@@ -36,7 +36,7 @@ internal class FigureToSkia(
             val plotContainer = PlotContainer(svgRoot)
             val skiaWidget = androidSkiaWidget(plotContainer.svg)
             skiaWidget.setMouseEventListener { s, e -> plotContainer.mouseEventPeer.dispatch(s, e) }
-            return SkiaWidgetView(this, skiaWidget)
+            return SvgView(this, skiaWidget)
         }
     }
 

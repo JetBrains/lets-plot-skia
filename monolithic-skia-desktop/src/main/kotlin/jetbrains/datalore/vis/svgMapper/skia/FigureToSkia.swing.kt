@@ -38,7 +38,7 @@ class FigureToSkia(
                 plotContainer.mouseEventPeer.dispatch(s, e)
                 SwingUtilities.invokeLater { skiaWidget.nativeLayer.needRedraw() }
             }
-            return SkiaWidgetPanel(skiaWidget)
+            return SvgPanel(skiaWidget)
         }
     }
 

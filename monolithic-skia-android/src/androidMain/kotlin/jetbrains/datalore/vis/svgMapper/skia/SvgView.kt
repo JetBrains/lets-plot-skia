@@ -2,20 +2,21 @@ package jetbrains.datalore.vis.svgMapper.skia
 
 import android.content.Context
 import android.view.ViewGroup
+import jetbrains.datalore.vis.svgMapper.skia.mapper.SvgSkiaWidget
 
-internal class SkiaWidgetView(
+internal class SvgView(
     context: Context,
-    private val skiaWidget: SkiaWidget,
+    private val svgSkiaWidget: SvgSkiaWidget,
 ) : ViewGroup(context) {
     init {
-        skiaWidget.nativeLayer.attachTo(this)
-        post { skiaWidget.nativeLayer.needRedraw() }
+        svgSkiaWidget.nativeLayer.attachTo(this)
+        post { svgSkiaWidget.nativeLayer.needRedraw() }
     }
 
     override fun onMeasure(widthMeasureSpec: Int, heightMeasureSpec: Int) {
         val density = resources.displayMetrics.density
-        val width = (skiaWidget.width() * density).toInt()
-        val height = (skiaWidget.height() * density).toInt()
+        val width = (svgSkiaWidget.width() * density).toInt()
+        val height = (svgSkiaWidget.height() * density).toInt()
 
         measureChild(
             getChildAt(0),
