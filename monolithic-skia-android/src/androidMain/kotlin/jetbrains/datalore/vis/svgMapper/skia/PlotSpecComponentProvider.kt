@@ -74,11 +74,14 @@ internal class PlotSpecComponentProvider(
                         return containerSize
                     }
 
-                    val defaultSize = PlotSizeHelper.subPlotsSize(
+                    val config = PlotConfigClientSide.create(figureSpec) { /*ignore messages*/ }
+                    val defaultSize = PlotSizeHelper.singlePlotSize(
                         figureSpec,
                         plotSize = null,
                         plotMaxWidth = null,
                         plotPreferredWidth = null,
+                        config.facets,
+                        config.containsLiveMap
                     )
                     fitPlotInContainer(plotSize = defaultSize, containerSize)
                 }
