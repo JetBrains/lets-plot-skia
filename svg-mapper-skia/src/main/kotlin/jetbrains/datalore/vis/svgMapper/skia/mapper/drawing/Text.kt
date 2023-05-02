@@ -8,10 +8,6 @@ package jetbrains.datalore.vis.svgMapper.skia.mapper.drawing
 import org.jetbrains.skia.*
 
 internal class Text : Figure() {
-    init {
-        fill = Color4f(Color.BLACK)
-    }
-
     var textOrigin: VerticalAlignment? by visualProp(null)
     var textAlignment: HorizontalAlignment? by visualProp(null)
     var x: Float by visualProp(0.0f)
