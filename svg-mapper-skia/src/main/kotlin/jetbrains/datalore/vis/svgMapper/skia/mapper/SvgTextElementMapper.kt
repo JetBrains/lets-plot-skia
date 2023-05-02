@@ -26,19 +26,6 @@ internal class SvgTextElementMapper(
     private val myTextAttrSupport = TextAttributesSupport(target)
 
     override fun setTargetAttribute(name: String, value: Any?) {
-//        println("text -> $name = $value")
-//        println("text -> ${target.font}")
-//        val def = Font.getDefault()
-//        println("text -> ${def.family}")
-//        val font = Font.font(def.family, FontPosture.ITALIC, def.size)
-//        val font = Font.font("Times New Roman", FontPosture.ITALIC, def.size)
-//        target.font = font
-//        println("text -> ${target.font}")
-//        Font.getFamilies().forEach { println(it) }
-//        Font.getFontNames().forEach { println(it) }
-//        throw RuntimeException("The End")
-
-
         myTextAttrSupport.setAttribute(name, value)
     }
 
@@ -51,11 +38,6 @@ internal class SvgTextElementMapper(
 
         // Sync TextNodes, TextSpans
         val sourceTextProperty = sourceTextProperty(source.children())
-//        sourceTextProperty.addHandler(object : EventHandler<PropertyChangeEvent<out String>> {
-//            override fun onEvent(event: PropertyChangeEvent<out String>) {
-//                println("new text: ${event.newValue}")
-//            }
-//        })
         conf.add(
             Synchronizers.forPropsOneWay(
                 sourceTextProperty,
