@@ -36,7 +36,6 @@ internal class SvgSvgElementMapper(
         if (!source.isAttached()) {
             throw IllegalStateException("Element must be attached")
         }
-//        val peer = SvgAwtPeer()
         source.container().setPeer(peer)
     }
 
@@ -49,22 +48,7 @@ internal class SvgSvgElementMapper(
 
     companion object {
         private fun createTargetContainer(): Pane {
-            val pane = Pane()
-//            val pane = StackPane()
-//            pane.alignmentProperty().set(Pos.TOP_LEFT)
-                    
-            // this makes lines sharp
-            //group.scaleX = 1 / ScaleFactor.value
-            //group.scaleY = 1 / ScaleFactor.value
-
-            //group.centerShapeProperty().set(false)
-
-//            pane.style = "-fx-border-color: red; -fx-border-width: 0 5; -fx-background-color: #2f4f4f"
-//            pane.style = "-fx-border-width: 0"
-//            pane.snapToPixelProperty().set(true)
-//            pane.style = "-fx-padding: 0"
-
-            return pane
+            return Pane()
         }
     }
 }
