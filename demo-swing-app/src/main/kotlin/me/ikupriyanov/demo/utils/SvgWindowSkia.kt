@@ -18,7 +18,7 @@ class SvgWindowSkia(
         defaultCloseOperation = WindowConstants.EXIT_ON_CLOSE
 
         rootPanel = JPanel()
-        rootPanel.layout = GridLayout(0, min(maxCol, svgRoots.size), 5, 5)
+        rootPanel.layout = GridLayout(0, min(maxCol, svgRoots.size))
 //        rootPanel.background = Color.WHITE
         rootPanel.border = BorderFactory.createEmptyBorder(10, 10, 10, 10)
 
