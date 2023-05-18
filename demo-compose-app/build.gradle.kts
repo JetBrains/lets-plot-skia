@@ -28,7 +28,7 @@ dependencies {
 }
 
 compose.desktop.application {
-    mainClass = "me.ikupriyanov.demo.plot.AreaViewerSkiaKt"
+    //mainClass = "me.ikupriyanov.demo.plot.AreaViewerSkiaKt"
     //mainClass = "me.ikupriyanov.demo.svg.InteractiveSvgDemoKt"
 
     nativeDistributions {

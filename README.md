@@ -23,4 +23,12 @@ Select `demo-android-app` in `Run configurations` to run it.
 
 ### Compose demo
 
-To run compose demo use gradle task `demo-compose-app -> Tasks -> compose desktop -> run`. Running the `main` function with gutter button is not working. To run another demo change the `compose.desktop.application.mainClass` property in the `demo-compose-app/build.gradle.kts`.
+> OBSOLETE (?):
+> 
+> To run compose demo use gradle task `demo-compose-app -> Tasks -> compose desktop -> run`. 
+> 
+> Running the `main` function with gutter button is not working. To run another demo change the `compose.desktop.application.mainClass` property in the `demo-compose-app/build.gradle.kts`.
+
+UPD:
+Compose demos now seems to run just fine by clicking the gutter button or using context menu in the editor or the project tree.
+
