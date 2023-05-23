@@ -2,7 +2,7 @@ package jetbrains.datalore.vis.svgMapper.skia
 
 import android.content.Context
 import android.view.ViewGroup
-import jetbrains.datalore.vis.svgMapper.skia.mapper.SvgSkiaWidget
+import org.jetbrains.letsPlot.skiko.SvgSkiaWidget
 
 internal class SvgView(
     context: Context,

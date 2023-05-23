@@ -1,7 +1,7 @@
 package jetbrains.datalore.vis.svgMapper.skia
 
 import jetbrains.datalore.base.registration.Disposable
-import jetbrains.datalore.vis.svgMapper.skia.mapper.SvgSkiaWidget
+import org.jetbrains.letsPlot.skiko.SvgSkiaWidget
 import java.awt.Dimension
 import java.awt.GridLayout
 import javax.swing.JPanel

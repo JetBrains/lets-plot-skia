@@ -4,7 +4,7 @@ import android.content.Context
 import android.view.View
 import jetbrains.datalore.plot.MonolithicCommon
 import jetbrains.datalore.vis.svg.SvgSvgElement
-import jetbrains.datalore.vis.svgMapper.skia.mapper.SvgSkiaWidget
+import org.jetbrains.letsPlot.skiko.SvgSkiaWidget
 import org.jetbrains.skiko.SkiaLayer
 import org.jetbrains.skiko.SkikoGestureEventKind
 
