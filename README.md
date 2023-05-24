@@ -32,3 +32,6 @@ Select `demo-android-app` in `Run configurations` to run it.
 UPD:
 Compose demos now seems to run just fine by clicking the gutter button or using context menu in the editor or the project tree.
 
+### See also
+
+[Compose-multiplatform iOS/Android Template](https://github.com/JetBrains/compose-multiplatform-ios-android-template)
