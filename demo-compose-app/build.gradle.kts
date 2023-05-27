@@ -6,25 +6,25 @@ plugins {
     id("org.jetbrains.compose")
 }
 
-val lets_plot_version: String by extra
+val letsPlotVersion = extra["letsPlot.version"] as String
 
 dependencies {
     implementation(compose.desktop.currentOs)
     implementation(project(":svg-mapper-skia"))
     implementation(project(":monolithic-skia-desktop"))
 
-    implementation("org.jetbrains.lets-plot:base:$lets_plot_version") { isTransitive = false }
-    implementation("org.jetbrains.lets-plot:base-portable:$lets_plot_version") { isTransitive = false }
-    implementation("org.jetbrains.lets-plot:plot-config-portable:$lets_plot_version") { isTransitive = false }
-    implementation("org.jetbrains.lets-plot:plot-base-portable:$lets_plot_version") { isTransitive = false }
-    implementation("org.jetbrains.lets-plot:plot-builder-portable:$lets_plot_version") { isTransitive = false }
-    implementation("org.jetbrains.lets-plot:plot-builder:$lets_plot_version") { isTransitive = false }
-    implementation("org.jetbrains.lets-plot:plot-common-portable:$lets_plot_version") { isTransitive = false }
-    implementation("org.jetbrains.lets-plot:plot-config:$lets_plot_version") { isTransitive = false }
-    implementation("org.jetbrains.lets-plot:mapper-core:$lets_plot_version") { isTransitive = false }
-    implementation("org.jetbrains.lets-plot:vis-svg-mapper:$lets_plot_version") { isTransitive = false }
-    implementation("org.jetbrains.lets-plot:vis-svg-portable:$lets_plot_version") { isTransitive = false }
-    implementation("org.jetbrains.lets-plot:plot-demo-common:$lets_plot_version") { isTransitive = false }
+    implementation("org.jetbrains.lets-plot:base:$letsPlotVersion") { isTransitive = false }
+    implementation("org.jetbrains.lets-plot:base-portable:$letsPlotVersion") { isTransitive = false }
+    implementation("org.jetbrains.lets-plot:plot-config-portable:$letsPlotVersion") { isTransitive = false }
+    implementation("org.jetbrains.lets-plot:plot-base-portable:$letsPlotVersion") { isTransitive = false }
+    implementation("org.jetbrains.lets-plot:plot-builder-portable:$letsPlotVersion") { isTransitive = false }
+    implementation("org.jetbrains.lets-plot:plot-builder:$letsPlotVersion") { isTransitive = false }
+    implementation("org.jetbrains.lets-plot:plot-common-portable:$letsPlotVersion") { isTransitive = false }
+    implementation("org.jetbrains.lets-plot:plot-config:$letsPlotVersion") { isTransitive = false }
+    implementation("org.jetbrains.lets-plot:mapper-core:$letsPlotVersion") { isTransitive = false }
+    implementation("org.jetbrains.lets-plot:vis-svg-mapper:$letsPlotVersion") { isTransitive = false }
+    implementation("org.jetbrains.lets-plot:vis-svg-portable:$letsPlotVersion") { isTransitive = false }
+    implementation("org.jetbrains.lets-plot:plot-demo-common:$letsPlotVersion") { isTransitive = false }
 }
 
 compose.desktop.application {

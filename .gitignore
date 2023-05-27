@@ -1,6 +1,7 @@
 .idea/*
 
 *.iml
+*.so
 .gradle
 .DS_Store
 **/build

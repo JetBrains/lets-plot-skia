@@ -7,30 +7,31 @@ pluginManagement {
     }
 
     plugins {
-        val compose_version: String by extra
-        val kotlin_version: String by extra
-        val agp_version: String by extra
+        val composeVersion = extra["compose.version"] as String
+        val kotlinVersion = extra["kotlin.version"] as String
+        val agpVersion = extra["agp.version"] as String
 
-        kotlin("jvm").version(kotlin_version)
-        kotlin("android").version(kotlin_version).apply(false)
-        id("org.jetbrains.compose").version(compose_version).apply(false)
-        id("com.android.base").version(agp_version).apply(false)
-        id("com.android.application").version(agp_version).apply (false)
+        kotlin("jvm").version(kotlinVersion)
+        kotlin("android").version(kotlinVersion).apply(false)
+        id("org.jetbrains.compose").version(composeVersion).apply(false)
+        id("com.android.base").version(agpVersion).apply(false)
+        id("com.android.application").version(agpVersion).apply(false)
     }
 }
 
-include(":svg-mapper-skia")
-include(":demo-swing-app")
-include(":demo-android-app")
-include(":demo-compose-app")
-include(":monolithic-skia-desktop")
-include(":monolithic-skia-android")
+include("svg-mapper-skia")
+include("demo-swing-app")
+include("demo-android-app")
+include("demo-compose-app")
+include("monolithic-skia-desktop")
+include("monolithic-skia-android")
 
-project(":svg-mapper-skia").projectDir = File("./svg-mapper-skia")
-project(":demo-swing-app").projectDir = File("./demo-swing-app")
-project(":demo-android-app").projectDir = File("./demo-android-app")
-project(":demo-compose-app").projectDir = File("./demo-compose-app")
-project(":monolithic-skia-desktop").projectDir = File("./monolithic-skia-desktop")
-project(":monolithic-skia-android").projectDir = File("./monolithic-skia-android")
+include("demo-svg-mapping-shared")
+include("demo-svg-mapping-android")
+include("demo-svg-mapping-compose")
+include("demo-svg-mapping-swing")
 
-//include("vis-compose-skia")
+project(":demo-svg-mapping-shared").projectDir = File("./demo/svg-mapping/shared")
+project(":demo-svg-mapping-android").projectDir = File("./demo/svg-mapping/android")
+project(":demo-svg-mapping-compose").projectDir = File("./demo/svg-mapping/compose")
+project(":demo-svg-mapping-swing").projectDir = File("./demo/svg-mapping/swing")

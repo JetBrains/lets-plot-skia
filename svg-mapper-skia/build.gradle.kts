@@ -8,8 +8,8 @@ plugins {
     kotlin("jvm")
 }
 
-val lets_plot_version: String by extra
-val skiko_version: String by extra
+val skikoVersion = extra["skiko.version"] as String
+val letsPlotVersion = extra["letsPlot.version"] as String
 
 //kotlin {
 //    jvm {
@@ -54,13 +54,13 @@ val skiko_version: String by extra
 //}
 
 dependencies {
-    compileOnly("org.jetbrains.skiko:skiko:$skiko_version")
+    compileOnly("org.jetbrains.skiko:skiko:$skikoVersion")
 
-    compileOnly("org.jetbrains.lets-plot:base-portable:$lets_plot_version") { isTransitive = false }
-    compileOnly("org.jetbrains.lets-plot:base:$lets_plot_version") { isTransitive = false }
-    compileOnly("org.jetbrains.lets-plot:mapper-core:$lets_plot_version") { isTransitive = false }
-    compileOnly("org.jetbrains.lets-plot:vis-svg-portable:$lets_plot_version") { isTransitive = false }
-    compileOnly("org.jetbrains.lets-plot:vis-svg-mapper:$lets_plot_version") { isTransitive = false }
+    compileOnly("org.jetbrains.lets-plot:base-portable:$letsPlotVersion") { isTransitive = false }
+    compileOnly("org.jetbrains.lets-plot:base:$letsPlotVersion") { isTransitive = false }
+    compileOnly("org.jetbrains.lets-plot:mapper-core:$letsPlotVersion") { isTransitive = false }
+    compileOnly("org.jetbrains.lets-plot:vis-svg-portable:$letsPlotVersion") { isTransitive = false }
+    compileOnly("org.jetbrains.lets-plot:vis-svg-mapper:$letsPlotVersion") { isTransitive = false }
 
     testImplementation(kotlin("test"))
 }
