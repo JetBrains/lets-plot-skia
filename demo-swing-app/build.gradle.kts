@@ -1,5 +1,4 @@
 plugins {
-    application
     kotlin("jvm")
 }
 
@@ -21,7 +20,6 @@ var hostArch = when (val osArch = System.getProperty("os.arch")) {
 }
 
 val host = "${hostOs}-${hostArch}"
-
 
 dependencies {
     implementation("org.jetbrains.skiko:skiko:$skikoVersion")

@@ -19,8 +19,8 @@ repositories {
 }
 
 plugins {
-    id("com.android.application")
     kotlin("android")
+    id("com.android.application")
 }
 
 val skikoNativeX64 by configurations.creating

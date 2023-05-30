@@ -6,8 +6,8 @@
 import org.jetbrains.kotlin.gradle.tasks.KotlinJvmCompile
 
 plugins {
-    id("com.android.application")
     kotlin("android")
+    id("com.android.application")
 }
 
 //////////////////////////////////////////////////////////////////////////////////////////
