@@ -81,7 +81,7 @@ dependencies {
     skikoNativeArm64("org.jetbrains.skiko:skiko-android-runtime-arm64:$skikoVersion")
 
     implementation(project(":demo-svg-mapping-shared"))
-    implementation(project(":svg-mapper-skia")) { isTransitive = false }
+    implementation(project(":svg-mapper-skia")) // { isTransitive = false }
 
     // ToDo: only due to usage of "svgView", no need for "monolithic" here
     implementation(project(":monolithic-skia-android"))

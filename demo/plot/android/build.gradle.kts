@@ -81,10 +81,12 @@ dependencies {
     skikoNativeX64("org.jetbrains.skiko:skiko-android-runtime-x64:$skikoVersion")
     skikoNativeArm64("org.jetbrains.skiko:skiko-android-runtime-arm64:$skikoVersion")
 
-    implementation(project(":demo-plot-shared"))
+    implementation("org.jetbrains.lets-plot:lets-plot-kotlin-kernel:$letsPlotKotlinVersion") { isTransitive = false }
 
     implementation(project(":svg-mapper-skia")) //{ isTransitive = false }
     implementation(project(":monolithic-skia-android"))
+
+    implementation(project(":demo-plot-shared"))
 
     implementation("org.jetbrains.lets-plot:base-portable:$letsPlotVersion") { isTransitive = false }
 
@@ -100,7 +102,6 @@ dependencies {
     implementation("org.jetbrains.lets-plot:plot-config-portable:$letsPlotVersion") { isTransitive = false }
 
 
-    implementation("org.jetbrains.lets-plot:lets-plot-kotlin-kernel:$letsPlotKotlinVersion") { isTransitive = false }
 
 //    implementation("io.github.microutils:kotlin-logging-jvm:2.0.5") // TODO remove with other { isTransitive = false }
 }
