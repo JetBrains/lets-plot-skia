@@ -2,9 +2,6 @@ plugins {
     kotlin("jvm")
 }
 
-val skikoVersion = extra["skiko.version"] as String
-val letsPlotVersion = extra["letsPlot.version"] as String
-
 val osName = System.getProperty("os.name")!!
 val hostOs = when {
     osName == "Mac OS X" -> "macos"
@@ -21,6 +18,9 @@ var hostArch = when (val osArch = System.getProperty("os.arch")) {
 
 val host = "${hostOs}-${hostArch}"
 
+val skikoVersion = extra["skiko.version"] as String
+val letsPlotVersion = extra["letsPlot.version"] as String
+val letsPlotKotlinVersion = extra["letsPlotKotlin.version"] as String
 
 dependencies {
     implementation("org.jetbrains.skiko:skiko:$skikoVersion")
@@ -29,19 +29,19 @@ dependencies {
     implementation(project(":svg-mapper-skia"))
     implementation(project(":monolithic-skia-desktop"))
 
-    implementation(project(":demo-svg-mapping-shared"))
+    implementation("org.jetbrains.lets-plot:lets-plot-kotlin-kernel:$letsPlotKotlinVersion") { isTransitive = false }
+
+    implementation(project(":demo-plot-shared"))
 
     implementation("org.jetbrains.lets-plot:base:$letsPlotVersion") { isTransitive = false }
     implementation("org.jetbrains.lets-plot:base-portable:$letsPlotVersion") { isTransitive = false }
+    implementation("org.jetbrains.lets-plot:plot-base-portable:$letsPlotVersion") { isTransitive = false }
     implementation("org.jetbrains.lets-plot:vis-svg-portable:$letsPlotVersion") { isTransitive = false }
     implementation("org.jetbrains.lets-plot:vis-svg-mapper:$letsPlotVersion") { isTransitive = false }
-    implementation("org.jetbrains.lets-plot:mapper-core:$letsPlotVersion") { isTransitive = false }
-
-    // For components in demo: GroupComponent, Text, TextLabel
-    implementation("org.jetbrains.lets-plot:plot-base-portable:$letsPlotVersion") { isTransitive = false }
-    // plot.builder.presentation.Style
     implementation("org.jetbrains.lets-plot:plot-builder-portable:$letsPlotVersion") { isTransitive = false }
-
-    // plot.builder.tooltip.TooltipBox
     implementation("org.jetbrains.lets-plot:plot-builder:$letsPlotVersion") { isTransitive = false }
+    implementation("org.jetbrains.lets-plot:plot-config:$letsPlotVersion") { isTransitive = false }
+    implementation("org.jetbrains.lets-plot:plot-config-portable:$letsPlotVersion") { isTransitive = false }
+    implementation("org.jetbrains.lets-plot:plot-common-portable:$letsPlotVersion") { isTransitive = false }
+    implementation("org.jetbrains.lets-plot:mapper-core:$letsPlotVersion") { isTransitive = false }
 }

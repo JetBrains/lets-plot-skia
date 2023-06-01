@@ -7,11 +7,11 @@ import java.awt.GridLayout
 import javax.swing.*
 import kotlin.math.min
 
-class SvgWindowSkia(
+class DemoWindow(
     title: String,
     private val svgRoots: List<SvgSvgElement>,
     private val maxCol: Int = 2,
-) : JFrame("$title (Skia SWING)") {
+) : JFrame("$title (Skia Swing)") {
     private val rootPanel: JPanel
 
     init {

@@ -3,23 +3,23 @@
  * Use of this source code is governed by the MIT license that can be found in the LICENSE file.
  */
 
-package me.ikupriyanov.demo.component
+package demo.svgMapping
 
+import demo.svgMapping.utils.DemoBase
+import demo.svgMapping.utils.DemoWindow
 import jetbrains.datalore.base.geometry.DoubleVector
 import jetbrains.datalore.base.values.Color
 import jetbrains.datalore.plot.base.render.svg.GroupComponent
 import jetbrains.datalore.plot.builder.interact.TooltipSpec
 import jetbrains.datalore.plot.builder.presentation.Style
 import jetbrains.datalore.plot.builder.tooltip.TooltipBox
-import jetbrains.datalore.plotDemo.model.SimpleDemoBase
-import me.ikupriyanov.demo.utils.SvgWindowSkia
 import java.awt.EventQueue.invokeLater
 
 fun main() {
     val demo = TooltipBoxDemo()
     val models = demo.createModels()
     val svgRoots = demo.createSvgRoots(models.map { it.first })
-    SvgWindowSkia(
+    DemoWindow(
         "Tooltip box",
         svgRoots,
     ).open()
@@ -30,7 +30,7 @@ fun main() {
     }
 }
 
-private class TooltipBoxDemo : SimpleDemoBase(DEMO_BOX_SIZE) {
+private class TooltipBoxDemo : DemoBase(DEMO_BOX_SIZE) {
     override val cssStyle: String
         get() = """
            |.$TOOLTIP_TEXT_CLASS {

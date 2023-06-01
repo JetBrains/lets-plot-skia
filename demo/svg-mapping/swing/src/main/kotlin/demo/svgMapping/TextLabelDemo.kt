@@ -3,27 +3,27 @@
  * Use of this source code is governed by the MIT license that can be found in the LICENSE file.
  */
 
-package me.ikupriyanov.demo.component
+package demo.svgMapping
 
+import demo.svgMapping.utils.DemoBase
+import demo.svgMapping.utils.DemoWindow
 import jetbrains.datalore.base.geometry.DoubleVector
 import jetbrains.datalore.base.values.Color
 import jetbrains.datalore.plot.base.render.svg.GroupComponent
 import jetbrains.datalore.plot.base.render.svg.Text
 import jetbrains.datalore.plot.base.render.svg.TextLabel
-import jetbrains.datalore.plotDemo.model.SimpleDemoBase
 import jetbrains.datalore.vis.svg.*
-import me.ikupriyanov.demo.utils.SvgWindowSkia
 
 fun main() {
     with(TextLabelDemo()) {
-        SvgWindowSkia(
+        DemoWindow(
             "Text label",
             createSvgRoots(listOf(createModel())),
         ).open()
     }
 }
 
-private class TextLabelDemo : SimpleDemoBase(DEMO_BOX_SIZE) {
+private class TextLabelDemo : DemoBase(DEMO_BOX_SIZE) {
     override val cssStyle: String
         get() = ".$LABEL_CLASS_NAME { font-size: 18px; }"
 

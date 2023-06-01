@@ -9,6 +9,7 @@ import java.awt.Rectangle
 import javax.swing.JComponent
 import javax.swing.JPanel
 import javax.swing.JTextArea
+import kotlin.math.ceil
 
 internal object MonolithicSwing {
     fun buildPlotFromRawSpecs(
@@ -50,7 +51,7 @@ internal object MonolithicSwing {
 
         return if (success.buildInfos.size == 1) {
             val buildInfo = success.buildInfos.single()
-            FigureToSkia(buildInfo,).eval()
+            FigureToSkia(buildInfo).eval()
         } else {
             return buildGGBunchComponent(success)
         }
@@ -62,12 +63,16 @@ internal object MonolithicSwing {
             val plotComponent = FigureToSkia(plotBuildInfo).eval()
 
             val bounds = plotBuildInfo.bounds
-            plotComponent.bounds = Rectangle(
+            val boundsAwt = Rectangle(
                 bounds.origin.x.toInt(),
                 bounds.origin.y.toInt(),
-                bounds.dimension.x.toInt(),
-                bounds.dimension.y.toInt()
+                ceil(bounds.dimension.x).toInt(),
+                ceil(bounds.dimension.y).toInt()
             )
+
+            plotComponent.bounds = boundsAwt // If no layout in parent component
+            plotComponent.minimumSize = boundsAwt.size // .. if otherwise ...
+            plotComponent.preferredSize = boundsAwt.size
             container.add(plotComponent)
         }
 
