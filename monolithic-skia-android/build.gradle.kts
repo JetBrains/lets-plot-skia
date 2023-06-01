@@ -69,10 +69,12 @@ kotlin {
 }
 
 android {
-    compileSdk = 31
+    compileSdk = (findProperty("android.compileSdk") as String).toInt()
+
     sourceSets["main"].manifest.srcFile("src/androidMain/AndroidManifest.xml")
+
     defaultConfig {
-        minSdk = 21
-        targetSdk = 31
+        minSdk = (findProperty("android.minSdk") as String).toInt()
+        targetSdk = (findProperty("android.targetSdk") as String).toInt()
     }
 }
