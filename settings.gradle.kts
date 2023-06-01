@@ -23,18 +23,17 @@ pluginManagement {
     }
 }
 
-dependencyResolutionManagement {
-    repositories {
-        google()
-        mavenCentral()
-        maven("https://maven.pkg.jetbrains.space/public/p/compose/dev")
-    }
-}
+//dependencyResolutionManagement {
+//    repositories {
+//        google()
+//        mavenCentral()
+//        maven("https://maven.pkg.jetbrains.space/public/p/compose/dev")
+//    }
+//}
 
 
 include("svg-mapper-skia")
 include("demo-swing-app")
-include("demo-android-app")
 include("demo-compose-app")
 include("monolithic-skia-desktop")
 include("monolithic-skia-android")
@@ -44,7 +43,13 @@ include("demo-svg-mapping-android")
 include("demo-svg-mapping-compose")
 include("demo-svg-mapping-swing")
 
+include("demo-plot-shared")
+include("demo-plot-android")
+
 project(":demo-svg-mapping-shared").projectDir = File("./demo/svg-mapping/shared")
 project(":demo-svg-mapping-android").projectDir = File("./demo/svg-mapping/android")
 project(":demo-svg-mapping-compose").projectDir = File("./demo/svg-mapping/compose")
 project(":demo-svg-mapping-swing").projectDir = File("./demo/svg-mapping/swing")
+
+project(":demo-plot-shared").projectDir = File("./demo/plot/shared")
+project(":demo-plot-android").projectDir = File("./demo/plot/android")

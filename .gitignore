@@ -1,4 +1,6 @@
 .idea/*
+# share copyright profiles
+!.idea/copyright
 
 *.iml
 *.so

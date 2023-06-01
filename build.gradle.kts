@@ -19,34 +19,12 @@ plugins {
 val localProps = Properties()
 if (project.file("local.properties").exists()) {
     localProps.load(project.file("local.properties").inputStream())
-    project.extra["local"] = localProps
+//    project.extra["local"] = localProps
 }
 
 allprojects {
     group = "org.jetbrains"
     version = "1.0-SNAPSHOT"
-
-//    repositories {
-//        mavenCentral()
-//        mavenLocal()
-//
-//        localProps["maven.repo.local"]?.let {
-//            mavenLocal {
-//                url = uri(it)
-//            }
-//        }
-//    }
-
-//    tasks.withType<org.jetbrains.kotlin.gradle.tasks.KotlinCompile>().all {
-//        kotlinOptions {
-//            jvmTarget = "11"
-//        }
-//    }
-//
-//    tasks.withType<JavaCompile>().all {
-//        sourceCompatibility = "11"
-//        targetCompatibility = "11"
-//    }
 }
 
 subprojects {
