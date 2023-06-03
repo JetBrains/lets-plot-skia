@@ -8,10 +8,6 @@ import org.jetbrains.letsPlot.skiko.SvgSkiaWidget
 import org.jetbrains.skiko.SkiaLayer
 import org.jetbrains.skiko.SkikoGestureEventKind
 
-fun Context.svgView(svg: SvgSvgElement): View {
-    return SvgView(this, androidSkiaWidget(svg))
-}
-
 fun Context.plotView(
     rawPlotSpec: MutableMap<String, Any>,
     preserveAspectRatio: Boolean = true,
