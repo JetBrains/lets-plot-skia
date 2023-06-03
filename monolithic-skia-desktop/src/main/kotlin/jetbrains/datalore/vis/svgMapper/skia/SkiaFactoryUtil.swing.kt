@@ -7,10 +7,6 @@ import org.jetbrains.letsPlot.skiko.SvgSkiaWidget
 import org.jetbrains.skiko.SkiaLayer
 import javax.swing.JComponent
 
-fun svgComponent(svg: SvgSvgElement): JComponent {
-    return SvgPanel(swingSkiaWidget(svg))
-}
-
 fun plotComponent(
     plotSpec: MutableMap<String, Any>,
     plotSize: DoubleVector? = null,

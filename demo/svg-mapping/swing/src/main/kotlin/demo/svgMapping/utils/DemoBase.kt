@@ -9,7 +9,7 @@ import jetbrains.datalore.vis.svg.SvgCssResource
 import jetbrains.datalore.vis.svg.SvgRectElement
 import jetbrains.datalore.vis.svg.SvgSvgElement
 
-abstract class DemoBase(
+internal abstract class DemoBase(
     private val demoInnerSize: DoubleVector
 ) {
     protected open val cssStyle: String = Style.generateCSS(Style.default(), plotId = null, decorationLayerId = null)

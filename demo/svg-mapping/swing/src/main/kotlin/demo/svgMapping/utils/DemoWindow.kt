@@ -1,13 +1,13 @@
 package demo.svgMapping.utils
 
 import jetbrains.datalore.vis.svg.SvgSvgElement
-import jetbrains.datalore.vis.svgMapper.skia.svgComponent
+import org.jetbrains.letsPlot.skiko.desktop.SvgPanelDesktop
 import java.awt.Color
 import java.awt.GridLayout
 import javax.swing.*
 import kotlin.math.min
 
-class DemoWindow(
+internal class DemoWindow(
     title: String,
     private val svgRoots: List<SvgSvgElement>,
     private val maxCol: Int = 2,
@@ -45,12 +45,12 @@ class DemoWindow(
 
     private fun createWindowContent() {
         for (svgRoot in svgRoots) {
-            rootPanel.add(createPlotComponent(svgRoot))
+            rootPanel.add(createSvgPanel(svgRoot))
         }
     }
 
-    private fun createPlotComponent(svgRoot: SvgSvgElement): JComponent {
-        val component = svgComponent(svgRoot)
+    private fun createSvgPanel(svgRoot: SvgSvgElement): JComponent {
+        val component = SvgPanelDesktop(svgRoot)
         component.border = BorderFactory.createLineBorder(Color.ORANGE, 1)
         return component
     }
