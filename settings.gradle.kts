@@ -33,6 +33,7 @@ pluginManagement {
 
 
 include("svg-mapper-skia")
+include("plot-skiko-swing")
 include("demo-swing-app")
 include("monolithic-skia-desktop")
 include("monolithic-skia-android")

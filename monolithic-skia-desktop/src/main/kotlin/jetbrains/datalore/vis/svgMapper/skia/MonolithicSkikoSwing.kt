@@ -11,7 +11,7 @@ import javax.swing.JPanel
 import javax.swing.JTextArea
 import kotlin.math.ceil
 
-internal object MonolithicSwing {
+object MonolithicSkikoSwing {
     fun buildPlotFromRawSpecs(
         plotSpec: MutableMap<String, Any>,
         plotSize: DoubleVector?,
@@ -27,7 +27,7 @@ internal object MonolithicSwing {
         }
     }
 
-    private fun buildPlotFromProcessedSpecs(
+    fun buildPlotFromProcessedSpecs(
         plotSpec: MutableMap<String, Any>,
         plotSize: DoubleVector?,
         plotMaxWidth: Double?,
@@ -51,7 +51,7 @@ internal object MonolithicSwing {
 
         return if (success.buildInfos.size == 1) {
             val buildInfo = success.buildInfos.single()
-            FigureToSkia(buildInfo).eval()
+            FigureToSkikoSwing(buildInfo).eval()
         } else {
             return buildGGBunchComponent(success)
         }
@@ -60,7 +60,7 @@ internal object MonolithicSwing {
     private fun buildGGBunchComponent(success: MonolithicCommon.PlotsBuildResult.Success): JPanel {
         val container = JPanel(null)
         success.buildInfos.forEach { plotBuildInfo ->
-            val plotComponent = FigureToSkia(plotBuildInfo).eval()
+            val plotComponent = FigureToSkikoSwing(plotBuildInfo).eval()
 
             val bounds = plotBuildInfo.bounds
             val boundsAwt = Rectangle(

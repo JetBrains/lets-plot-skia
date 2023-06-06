@@ -9,11 +9,14 @@ import org.jetbrains.letsPlot.skia.mapper.SvgSvgElementMapper
 import org.jetbrains.skia.Canvas
 import org.jetbrains.skia.Drawable
 import org.jetbrains.skiko.SkiaLayer
+import org.jetbrains.skiko.SkikoGestureEvent
+import org.jetbrains.skiko.SkikoPointerEvent
 import org.jetbrains.skiko.SkikoView
 import kotlin.math.ceil
 
 abstract class SvgSkikoView constructor(
     svg: SvgSvgElement,
+    private val eventDispatcher: SkikoViewEventDispatcher? = null
 ) : SkikoView, Disposable {
 
     private val nodeContainer = SvgNodeContainer(svg)  // attach root
@@ -43,6 +46,30 @@ abstract class SvgSkikoView constructor(
         // ToDo: width, height ?
         canvas.scale(skiaLayer.contentScale, skiaLayer.contentScale)
         canvas.drawDrawable(drawable)
+    }
+
+    override fun onGestureEvent(event: SkikoGestureEvent) {
+        if (eventDispatcher != null && this::_nativeLayer.isInitialized) {
+            event.translate()?.let {
+                eventDispatcher.dispatchMouseEvent(
+                    kind = it.first,
+                    event = it.second
+                )
+                _nativeLayer.needRedraw()
+            }
+        }
+    }
+
+    override fun onPointerEvent(event: SkikoPointerEvent) {
+        if (eventDispatcher != null && this::_nativeLayer.isInitialized) {
+            event.translate()?.let {
+                eventDispatcher.dispatchMouseEvent(
+                    kind = it.first,
+                    event = it.second
+                )
+                _nativeLayer.needRedraw()
+            }
+        }
     }
 
     override fun dispose() {

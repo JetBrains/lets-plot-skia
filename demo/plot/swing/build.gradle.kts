@@ -33,6 +33,8 @@ dependencies {
 
     implementation(project(":demo-plot-shared"))
 
+    implementation(project(":plot-skiko-swing"))
+
     implementation("org.jetbrains.lets-plot:base:$letsPlotVersion") { isTransitive = false }
     implementation("org.jetbrains.lets-plot:base-portable:$letsPlotVersion") { isTransitive = false }
     implementation("org.jetbrains.lets-plot:plot-base-portable:$letsPlotVersion") { isTransitive = false }

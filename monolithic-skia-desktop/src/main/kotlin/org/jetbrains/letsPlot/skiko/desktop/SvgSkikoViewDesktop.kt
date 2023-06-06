@@ -1,14 +1,17 @@
 package org.jetbrains.letsPlot.skiko.desktop
 
 import jetbrains.datalore.vis.svg.SvgSvgElement
+import org.jetbrains.letsPlot.skiko.SkikoViewEventDispatcher
 import org.jetbrains.letsPlot.skiko.SvgSkikoView
 import org.jetbrains.skiko.SkiaLayer
 import java.awt.Dimension
 
 class SvgSkikoViewDesktop(
-    svg: SvgSvgElement
+    svg: SvgSvgElement,
+    eventDispatcher: SkikoViewEventDispatcher? = null
 ) : SvgSkikoView(
-    svg = svg
+    svg = svg,
+    eventDispatcher = eventDispatcher
 ) {
     override fun createSkiaLayer(view: SvgSkikoView): SkiaLayer {
         return SkiaLayer().also {

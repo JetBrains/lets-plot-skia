@@ -1,17 +1,21 @@
 package jetbrains.datalore.vis.svgMapper.skia
 
+import jetbrains.datalore.base.event.MouseEvent
+import jetbrains.datalore.base.event.MouseEventSpec
 import jetbrains.datalore.base.geometry.DoubleRectangle
 import jetbrains.datalore.base.geometry.DoubleVector
+import jetbrains.datalore.base.registration.DisposingHub
 import jetbrains.datalore.plot.builder.FigureBuildInfo
 import jetbrains.datalore.plot.builder.PlotContainer
 import jetbrains.datalore.plot.builder.PlotSvgRoot
 import jetbrains.datalore.plot.builder.subPlots.CompositeFigureSvgRoot
+import org.jetbrains.letsPlot.skiko.SkikoViewEventDispatcher
+import org.jetbrains.letsPlot.skiko.desktop.SvgPanelDesktop
 import java.awt.Rectangle
 import javax.swing.JComponent
 import javax.swing.JPanel
-import javax.swing.SwingUtilities
 
-class FigureToSkia(
+class FigureToSkikoSwing(
     private val buildInfo: FigureBuildInfo
 ) {
     fun eval(): JComponent {
@@ -28,20 +32,6 @@ class FigureToSkia(
             is CompositeFigureSvgRoot -> processCompositeFigure(svgRoot)
             is PlotSvgRoot -> processPlotFigure(svgRoot)
             else -> error("Unsupported figure: ${svgRoot::class.simpleName}")
-        }
-    }
-
-    private fun processPlotFigure(svgRoot: PlotSvgRoot): JComponent {
-        if (svgRoot.isLiveMap) {
-            error("LiveMap is not supported")
-        } else {
-            val plotContainer = PlotContainer(svgRoot)
-            val skiaWidget = swingSkiaWidget(svgRoot.svg)
-            skiaWidget.setMouseEventListener { s, e ->
-                plotContainer.mouseEventPeer.dispatch(s, e)
-                SwingUtilities.invokeLater { skiaWidget.nativeLayer.needRedraw() }
-            }
-            return SvgPanel(skiaWidget)
         }
     }
 
@@ -115,5 +105,34 @@ class FigureToSkia(
         }
 
         return rootJPanel
+    }
+
+
+    private fun processPlotFigure(svgRoot: PlotSvgRoot): JComponent {
+        if (svgRoot.isLiveMap) {
+            error("LiveMap is not supported")
+        }
+
+        val plotContainer = PlotContainer(svgRoot)
+        return buildSinglePlotComponent(plotContainer)
+    }
+
+
+    companion object {
+        private fun buildSinglePlotComponent(
+            plotContainer: PlotContainer,
+        ): JComponent {
+            val svg = plotContainer.svg
+
+            val eventDispatcher = object : SkikoViewEventDispatcher {
+                override fun dispatchMouseEvent(kind: MouseEventSpec, event: MouseEvent) {
+                    plotContainer.mouseEventPeer.dispatch(kind, event)
+                }
+            }
+
+            val plotComponent: JComponent = SvgPanelDesktop(svg, eventDispatcher)
+            (plotComponent as DisposingHub).registerDisposable(plotContainer)
+            return plotComponent
+        }
     }
 }
