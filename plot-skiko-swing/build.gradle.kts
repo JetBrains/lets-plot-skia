@@ -9,10 +9,17 @@ plugins {
 
 val skikoVersion = extra["skiko.version"] as String
 val letsPlotVersion = extra["letsPlot.version"] as String
+val letsPlotKotlinVersion = extra["letsPlotKotlin.version"] as String
 
 dependencies {
     compileOnly("org.jetbrains.skiko:skiko:$skikoVersion")
 //    compileOnly(project(":svg-mapper-skia"))
+
+    api("org.jetbrains.lets-plot:lets-plot-kotlin-kernel:$letsPlotKotlinVersion") { isTransitive = false }
+    implementation(project(":monolithic-skia-desktop"))
+    implementation(project(":svg-mapper-skia"))
+
+
 
     // PortableLogging
     compileOnly("org.jetbrains.lets-plot:base-portable:$letsPlotVersion") { isTransitive = false }
@@ -45,8 +52,6 @@ dependencies {
     api("org.jetbrains.lets-plot:vis-swing-common:$letsPlotVersion") { isTransitive = false }
 
 //    implementation("io.github.microutils:kotlin-logging-jvm:2.0.5") // TODO remove with other { isTransitive = false }
-
-    implementation(project(":monolithic-skia-desktop"))
 
     testImplementation(kotlin("test"))
 }

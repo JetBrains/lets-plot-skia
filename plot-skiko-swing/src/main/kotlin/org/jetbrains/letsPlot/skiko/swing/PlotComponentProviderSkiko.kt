@@ -17,7 +17,7 @@ import javax.swing.ScrollPaneConstants
 
 internal class PlotComponentProviderSkiko(
     private val processedSpec: MutableMap<String, Any>,
-    private val preserveAspectRatio: Boolean,
+    preserveAspectRatio: Boolean,
     private val computationMessagesHandler: (List<String>) -> Unit
 ) : PlotSpecComponentProvider(
     processedSpec = processedSpec,

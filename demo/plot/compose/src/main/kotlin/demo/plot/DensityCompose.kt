@@ -7,18 +7,20 @@ import androidx.compose.ui.awt.SwingPanel
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.Window
 import androidx.compose.ui.window.application
-import jetbrains.datalore.vis.svgMapper.skia.plotComponent
-import org.jetbrains.letsPlot.intern.toSpec
+import org.jetbrains.letsPlot.Figure
+import org.jetbrains.letsPlot.skiko.swing.createSkikoSwingComponent
 import plotSpec.DensitySpec
 
 fun main() = application {
     Window(onCloseRequest = ::exitApplication, title = "Density Plot (Compose Desktop)") {
-        val rawPlotSpec = DensitySpec().createFigure().toSpec()
+        val densityPlot: Figure = DensitySpec().createFigure()
         MaterialTheme {
             SwingPanel(
                 modifier = Modifier.size(600.dp, 400.dp),
                 factory = {
-                    plotComponent(rawPlotSpec)
+                    densityPlot.createSkikoSwingComponent { computationMessages ->
+                        computationMessages.forEach { println("[PLOT MESSAGE] $it") }
+                    }
                 }
             )
         }
