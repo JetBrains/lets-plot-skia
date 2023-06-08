@@ -23,9 +23,4 @@ open class PlotPanelSkiko(
     preferredSizeFromPlot = preferredSizeFromPlot,
     repaintDelay = repaintDelay,
     applicationContext = AWT_APP_CONTEXT
-) {
-
-    private companion object {
-
-    }
-}
+)

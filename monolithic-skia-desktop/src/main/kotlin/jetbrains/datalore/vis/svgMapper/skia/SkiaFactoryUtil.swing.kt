@@ -1,10 +1,7 @@
 package jetbrains.datalore.vis.svgMapper.skia
 
 import jetbrains.datalore.base.geometry.DoubleVector
-import jetbrains.datalore.vis.svg.SvgSvgElement
 import jetbrains.datalore.vis.svgMapper.skia.MonolithicSkikoSwing.buildPlotFromRawSpecs
-import org.jetbrains.letsPlot.skiko.SvgSkiaWidget
-import org.jetbrains.skiko.SkiaLayer
 import javax.swing.JComponent
 
 fun plotComponent(
@@ -14,12 +11,4 @@ fun plotComponent(
     computationMessagesHandler: (List<String>) -> Unit = {}
 ): JComponent {
     return buildPlotFromRawSpecs(plotSpec, plotSize, plotMaxWidth, computationMessagesHandler)
-}
-
-internal fun swingSkiaWidget(svg: SvgSvgElement): SvgSkiaWidget {
-    return SvgSkiaWidget(svg, SkiaLayer()) { skiaLayer, skikoView ->
-        // https://github.com/JetBrains/skiko/issues/614
-        //skiaLayer.skikoView = skikoView
-        skiaLayer.addView(skikoView)
-    }
 }

@@ -35,6 +35,8 @@ internal class PlotComponentProviderSkiko(
             DoubleVector(preferredSize.width.toDouble(), preferredSize.height.toDouble())
         }
 
+//        println("plotSize: $plotSize, containerSize: $containerSize (PlotComponentProviderSkiko)")
+
         return MonolithicSkikoSwing.buildPlotFromProcessedSpecs(
             plotSize = plotSize,
             plotSpec = processedSpec,

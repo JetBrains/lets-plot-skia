@@ -31,6 +31,8 @@ dependencies {
 
     // MonolithicCommon, PlotConfig, PlotsBuildResult
     compileOnly("org.jetbrains.lets-plot:plot-config-portable:$letsPlotVersion") { isTransitive = false }
+    // DisposableJPanel
+    compileOnly("org.jetbrains.lets-plot:plot-config:$letsPlotVersion") { isTransitive = false }
 
     // > Task :monolithic-skia:compileKotlinJs FAILED
     // java.lang.IllegalStateException: FATAL ERROR: Could not find "org.jetbrains.lets-plot:xxx" in [/Users/ikupriyanov/Library/Application Support/kotlin/daemon]
