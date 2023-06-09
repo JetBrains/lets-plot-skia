@@ -69,6 +69,8 @@ kotlin {
 }
 
 android {
+    namespace = "org.jetbrains.letsPlot.skiko.android"
+
     compileSdk = (findProperty("android.compileSdk") as String).toInt()
 
     sourceSets["main"].manifest.srcFile("src/androidMain/AndroidManifest.xml")

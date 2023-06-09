@@ -88,7 +88,7 @@ abstract class SvgSkikoView constructor(
         nodeContainer.root().set(SvgSvgElement())
 
         if (this::_nativeLayer.isInitialized) {
-            _nativeLayer.dispose()
+            _nativeLayer.detach()
         }
     }
 }
