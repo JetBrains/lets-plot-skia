@@ -15,13 +15,13 @@ import java.awt.Point
 import java.awt.Rectangle
 import javax.swing.JPanel
 
-class SvgPanelDesktop(
+class SvgPanelDesktop constructor(
     svg: SvgSvgElement,
     eventDispatcher: SkikoViewEventDispatcher? = null
 ) : JPanel(), Disposable, DisposingHub {
 
     private val skikoView = SvgSkikoViewDesktop(svg, eventDispatcher)
-    private var registrations = CompositeRegistration()
+    private val registrations = CompositeRegistration()
 
     val eventDispatcher: SkikoViewEventDispatcher
         get() {

@@ -3,16 +3,27 @@ package org.jetbrains.letsPlot.skiko.android
 import android.annotation.SuppressLint
 import android.content.Context
 import android.view.ViewGroup
+import jetbrains.datalore.base.registration.CompositeRegistration
+import jetbrains.datalore.base.registration.Disposable
+import jetbrains.datalore.base.registration.DisposableRegistration
+import jetbrains.datalore.base.registration.DisposingHub
 import jetbrains.datalore.vis.svg.SvgSvgElement
+import org.jetbrains.letsPlot.skiko.SkikoViewEventDispatcher
 
-// ToDoL dispose ?
 @SuppressLint("ViewConstructor")
-class SvgPanelAndroid(
+class SvgPanelAndroid constructor(
     context: Context,
-    svg: SvgSvgElement
-) : ViewGroup(context) {
+    svg: SvgSvgElement,
+    eventDispatcher: SkikoViewEventDispatcher? = null
+) : ViewGroup(context), Disposable, DisposingHub {
 
-    private val skikoView = SvgSkikoViewAndroid(svg)
+    private val skikoView = SvgSkikoViewAndroid(svg, eventDispatcher)
+    private val registrations = CompositeRegistration()
+
+    val eventDispatcher: SkikoViewEventDispatcher
+        get() {
+            return skikoView.eventDispatcher ?: throw IllegalStateException("No SkikoViewEventDispatcher.")
+        }
 
     init {
         skikoView.skiaLayer.attachTo(this)
@@ -40,5 +51,15 @@ class SvgPanelAndroid(
         getChildAt(0).apply {
             layout(0, 0, measuredWidth, measuredHeight)
         }
+    }
+
+    override fun registerDisposable(disposable: Disposable) {
+        registrations.add(DisposableRegistration(disposable))
+    }
+
+    override fun dispose() {
+        registrations.dispose()
+        skikoView.dispose()
+        removeAllViews()
     }
 }

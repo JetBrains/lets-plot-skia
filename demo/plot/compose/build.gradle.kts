@@ -28,5 +28,8 @@ dependencies {
     implementation("org.jetbrains.lets-plot:plot-common-portable:$letsPlotVersion") { isTransitive = false }
     implementation("org.jetbrains.lets-plot:plot-builder:$letsPlotVersion") { isTransitive = false }
     implementation("org.jetbrains.lets-plot:plot-builder-portable:$letsPlotVersion") { isTransitive = false }
+    // MonolithicCommon, PlotConfig, PlotsBuildResult
     implementation("org.jetbrains.lets-plot:plot-config-portable:$letsPlotVersion") { isTransitive = false }
+    // DisposableJPanel
+    implementation("org.jetbrains.lets-plot:plot-config:$letsPlotVersion") { isTransitive = false }
 }

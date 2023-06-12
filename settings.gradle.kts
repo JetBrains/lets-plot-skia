@@ -3,7 +3,7 @@ pluginManagement {
         gradlePluginPortal()
         maven("https://maven.pkg.jetbrains.space/public/p/compose/dev")
         google()
-//        mavenCentral()
+        mavenCentral()
     }
 
     plugins {
@@ -15,11 +15,10 @@ pluginManagement {
         kotlin("multiplatform").version(kotlinVersion)
         kotlin("android").version(kotlinVersion)
 
-//        id("com.android.base").version(agpVersion)
+        id("org.jetbrains.compose").version(composeVersion)
+
         id("com.android.application").version(agpVersion)
         id("com.android.library").version(agpVersion)
-
-        id("org.jetbrains.compose").version(composeVersion)
     }
 }
 
@@ -33,6 +32,7 @@ pluginManagement {
 
 
 include("svg-mapper-skia")
+include("skia-compose")
 include("plot-skiko-swing")
 include("monolithic-skia-desktop")
 include("monolithic-skia-android")

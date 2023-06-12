@@ -7,6 +7,7 @@ import android.widget.LinearLayout
 import jetbrains.datalore.vis.svgMapper.skia.plotView
 import org.jetbrains.letsPlot.intern.toSpec
 import plotSpec.DensitySpec
+import plotSpec.PlotGridSpec
 
 class MainActivity : Activity() {
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -18,7 +19,9 @@ class MainActivity : Activity() {
             LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT)
         setContentView(layout, layout.layoutParams)
 
-        val rawPlotSpec = DensitySpec().createFigure().toSpec()
-        layout.addView(plotView(rawPlotSpec = rawPlotSpec))
+        val rawDensitySpec = DensitySpec().createFigure().toSpec()
+        val rawPlotGridSpec = PlotGridSpec().createFigure().toSpec()
+        layout.addView(plotView(rawPlotSpec = rawDensitySpec))
+        layout.addView(plotView(rawPlotSpec = rawPlotGridSpec))
     }
 }

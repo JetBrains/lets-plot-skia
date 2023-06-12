@@ -18,7 +18,7 @@ import kotlin.math.ceil
 
 abstract class SvgSkikoView constructor(
     svg: SvgSvgElement,
-    eventDispatcher: SkikoViewEventDispatcher? = null
+    eventDispatcher: SkikoViewEventDispatcher?
 ) : SkikoView, Disposable {
 
     private val nodeContainer = SvgNodeContainer(svg)  // attach root

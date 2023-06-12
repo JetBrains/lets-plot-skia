@@ -6,9 +6,9 @@ import org.jetbrains.letsPlot.skiko.SvgSkikoView
 import org.jetbrains.skiko.SkiaLayer
 import java.awt.Dimension
 
-class SvgSkikoViewDesktop(
+class SvgSkikoViewDesktop constructor(
     svg: SvgSvgElement,
-    eventDispatcher: SkikoViewEventDispatcher? = null
+    eventDispatcher: SkikoViewEventDispatcher?
 ) : SvgSkikoView(
     svg = svg,
     eventDispatcher = eventDispatcher

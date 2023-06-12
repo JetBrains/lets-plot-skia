@@ -3,13 +3,19 @@ package jetbrains.datalore.vis.svgMapper.skia
 import android.content.Context
 import android.util.TypedValue
 import android.view.View
+import android.view.ViewGroup
 import android.widget.RelativeLayout
 import android.widget.RelativeLayout.LayoutParams
+import jetbrains.datalore.base.event.MouseEvent
+import jetbrains.datalore.base.event.MouseEventSpec
 import jetbrains.datalore.base.geometry.DoubleRectangle
+import jetbrains.datalore.base.registration.Disposable
 import jetbrains.datalore.plot.builder.FigureBuildInfo
 import jetbrains.datalore.plot.builder.PlotContainer
 import jetbrains.datalore.plot.builder.PlotSvgRoot
 import jetbrains.datalore.plot.builder.subPlots.CompositeFigureSvgRoot
+import org.jetbrains.letsPlot.skiko.SkikoViewEventDispatcher
+import org.jetbrains.letsPlot.skiko.android.SvgPanelAndroid
 
 internal class FigureToSkia(
     private val buildInfo: FigureBuildInfo,
@@ -37,9 +43,14 @@ internal class FigureToSkia(
             error("LiveMap is not supported")
         } else {
             val plotContainer = PlotContainer(svgRoot)
-            val skiaWidget = androidSkiaWidget(plotContainer.svg)
-            skiaWidget.setMouseEventListener { s, e -> plotContainer.mouseEventPeer.dispatch(s, e) }
-            return SvgView(this, skiaWidget)
+            return SvgPanelAndroid(
+                context = this,
+                svg = plotContainer.svg,
+                eventDispatcher = object : SkikoViewEventDispatcher {
+                    override fun dispatchMouseEvent(kind: MouseEventSpec, e: MouseEvent) {
+                        plotContainer.mouseEventPeer.dispatch(kind, e)
+                    }
+                })
         }
     }
 
@@ -48,7 +59,7 @@ internal class FigureToSkia(
     ): View {
         svgRoot.ensureContentBuilt()
 
-        val rootPanel = RelativeLayout(this)
+        val viewGroup: ViewGroup = RelativeLayout(this)
 
         fun toLayoutParams(from: DoubleRectangle): LayoutParams =
             LayoutParams(
@@ -59,37 +70,42 @@ internal class FigureToSkia(
                 topMargin = dp(from.origin.y.toInt())
             }
 
-        val skiaWidget = androidSkiaWidget(svgRoot.svg)
-        val rootComponent = SvgView(this, skiaWidget)
-        rootPanel.addView(rootComponent, toLayoutParams(svgRoot.bounds))
+        val rootView = SvgPanelAndroid(
+            context = this,
+            svg = svgRoot.svg,
+            eventDispatcher = null
+        )
+//            eventDispatcher = object : SkikoViewEventDispatcher {
+//                override fun dispatchMouseEvent(kind: MouseEventSpec, e: MouseEvent) {
+//                    plotContainer.mouseEventPeer.dispatch(kind, e)
+//                }
+//            })
+
+        rootView.registerDisposable(object : Disposable {
+            override fun dispose() {
+                svgRoot.clearContent()
+            }
+        })
+
+        viewGroup.addView(rootView, toLayoutParams(svgRoot.bounds))
 
 
         //
         // Sub-plots
         //
 
-        val elementJComponents = ArrayList<Pair<View, LayoutParams>>()
         for (element in svgRoot.elements) {
-            if (element is PlotSvgRoot) {
-                val comp = processPlotFigure(element)
-                elementJComponents.add(comp to toLayoutParams(element.bounds))
+            val elementView = if (element is PlotSvgRoot) {
+                processPlotFigure(element)
             } else {
-                val comp = processCompositeFigure(element as CompositeFigureSvgRoot)
-                elementJComponents.add(comp to toLayoutParams(element.bounds))
+                processCompositeFigure(element as CompositeFigureSvgRoot)
             }
-        }
 
-
-        elementJComponents.forEach { (comp, layoutParams) ->
             // FIXME: only one tooltip should be visible among all subplots. Try to follow this recommendation:
-//            rootJPanel.add(it)   // Do not!!!
-            // Do not add everything to root panel.
-            // Instead, build components tree: rootPanel -> rootComp -> [subComp->[subSubComp,...], ...].
-
-            rootPanel.addView(comp, layoutParams)
+            viewGroup.addView(elementView, toLayoutParams(element.bounds))
         }
 
-        return rootPanel
+        return viewGroup
     }
 }
 

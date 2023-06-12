@@ -1,14 +1,17 @@
 package org.jetbrains.letsPlot.skiko.android
 
 import jetbrains.datalore.vis.svg.SvgSvgElement
+import org.jetbrains.letsPlot.skiko.SkikoViewEventDispatcher
 import org.jetbrains.letsPlot.skiko.SvgSkikoView
 import org.jetbrains.skiko.SkiaLayer
 import org.jetbrains.skiko.SkikoGestureEventKind
 
-class SvgSkikoViewAndroid(
-    svg: SvgSvgElement
+class SvgSkikoViewAndroid constructor(
+    svg: SvgSvgElement,
+    eventDispatcher: SkikoViewEventDispatcher?
 ) : SvgSkikoView(
-    svg = svg
+    svg = svg,
+    eventDispatcher = eventDispatcher
 ) {
     override fun createSkiaLayer(view: SvgSkikoView): SkiaLayer {
         return SkiaLayer().also {
