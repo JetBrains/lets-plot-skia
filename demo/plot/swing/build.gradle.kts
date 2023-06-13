@@ -27,13 +27,13 @@ dependencies {
     implementation("org.jetbrains.skiko:skiko-awt-runtime-$hostOs-$hostArch:$skikoVersion")
 
     implementation(project(":svg-mapper-skia"))
-    implementation(project(":monolithic-skia-desktop"))
+    implementation(project(":skia-awt"))
 
     implementation("org.jetbrains.lets-plot:lets-plot-kotlin-kernel:$letsPlotKotlinVersion") { isTransitive = false }
 
     implementation(project(":demo-plot-shared"))
 
-    implementation(project(":plot-skiko-swing"))
+    implementation(project(":plot-swing"))
 
     implementation("org.jetbrains.lets-plot:base:$letsPlotVersion") { isTransitive = false }
     implementation("org.jetbrains.lets-plot:base-portable:$letsPlotVersion") { isTransitive = false }

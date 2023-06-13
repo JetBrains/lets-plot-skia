@@ -6,12 +6,12 @@
 package demo.plot.defaultViewer
 
 import org.jetbrains.letsPlot.intern.toSpec
-import org.jetbrains.letsPlot.skiko.swing.PlotViewerWindowSkiko
+import org.jetbrains.letsPlot.swing.skia.PlotViewerWindowSkia
 import plotSpec.DensitySpec
 
 fun main() {
     with(DensitySpec()) {
-        PlotViewerWindowSkiko(
+        PlotViewerWindowSkia(
             "Density plot",
             null,
             createFigure().toSpec(),

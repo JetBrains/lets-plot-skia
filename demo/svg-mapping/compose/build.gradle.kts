@@ -12,7 +12,7 @@ dependencies {
     implementation(compose.desktop.currentOs)
 
     implementation(project(":svg-mapper-skia")) // { isTransitive = false }
-    implementation(project(":monolithic-skia-desktop")) // { isTransitive = false }
+    implementation(project(":skia-awt")) // { isTransitive = false }
 
     implementation(project(":demo-svg-mapping-shared"))
 

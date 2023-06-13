@@ -27,7 +27,7 @@ dependencies {
     implementation("org.jetbrains.skiko:skiko-awt-runtime-$hostOs-$hostArch:$skikoVersion")
 
     implementation(project(":svg-mapper-skia"))
-    implementation(project(":monolithic-skia-desktop"))
+    implementation(project(":skia-awt"))
 
     implementation(project(":demo-svg-mapping-shared"))
 

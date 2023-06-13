@@ -14,7 +14,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.Window
 import androidx.compose.ui.window.application
 import jetbrains.datalore.vis.svg.SvgSvgElement
-import org.jetbrains.letsPlot.skiko.desktop.SvgPanelDesktop
+import org.jetbrains.letsPlot.skia.awt.ui.SvgPanel
 import svgModel.DemoModelA
 import svgModel.DemoModelB
 import svgModel.DemoModelC
@@ -61,7 +61,7 @@ private fun svg(
     SwingPanel(
         modifier = modifier,
         factory = {
-            SvgPanelDesktop(svg)
+            SvgPanel(svg)
         }
     )
 }

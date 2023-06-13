@@ -6,7 +6,7 @@
 package demo.util
 
 import jetbrains.datalore.plot.MonolithicCommon
-import org.jetbrains.letsPlot.skiko.swing.PlotPanelSkiko
+import org.jetbrains.letsPlot.swing.skia.PlotPanelSkia
 import java.awt.Color
 import java.awt.Component
 import java.awt.Dimension
@@ -29,7 +29,7 @@ class PlotSpecsDemoWindow(
     override fun createPlotComponent(rawSpec: MutableMap<String, Any>, plotSize: Dimension?): JComponent {
         // Pre-process figure specifications
         val processedSpec = MonolithicCommon.processRawSpecs(rawSpec, frontendOnly = false)
-        val plotPanel = PlotPanelSkiko(
+        val plotPanel = PlotPanelSkia(
             processedSpec = processedSpec,
             preferredSizeFromPlot = plotSize == null,
             repaintDelay = 300,

@@ -1,7 +1,7 @@
 package demo.svgMapping.utils
 
 import jetbrains.datalore.vis.svg.SvgSvgElement
-import org.jetbrains.letsPlot.skiko.desktop.SvgPanelDesktop
+import org.jetbrains.letsPlot.skia.awt.ui.SvgPanel
 import java.awt.Color
 import java.awt.GridLayout
 import javax.swing.*
@@ -50,7 +50,7 @@ internal class DemoWindow(
     }
 
     private fun createSvgPanel(svgRoot: SvgSvgElement): JComponent {
-        val component = SvgPanelDesktop(svgRoot)
+        val component = SvgPanel(svgRoot)
         component.border = BorderFactory.createLineBorder(Color.ORANGE, 1)
         return component
     }
