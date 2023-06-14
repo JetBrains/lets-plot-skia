@@ -1,44 +1,43 @@
-package jetbrains.datalore.vis.svgMapper.skia
+package org.jetbrains.letsPlot.skia.android
 
 import android.content.Context
 import android.view.View
 import android.widget.TextView
 import jetbrains.datalore.base.geometry.DoubleVector
 import jetbrains.datalore.plot.MonolithicCommon
-import jetbrains.datalore.plot.builder.FigureBuildInfo
 import jetbrains.datalore.plot.config.FailureHandler
 
-object MonolithicAndroid {
-    fun Context.buildPlotFromRawSpecs(
+object MonolithicSkiaAndroid {
+    fun buildPlotFromRawSpecs(
+        ctx: Context,
         plotSpec: MutableMap<String, Any>,
         plotSize: DoubleVector?,
-        plotMaxWidth: Double?,
         computationMessagesHandler: ((List<String>) -> Unit)
     ): View {
         return try {
             val processedPlotSpec = MonolithicCommon.processRawSpecs(plotSpec, frontendOnly = false)
-            return buildPlotFromProcessedSpecs(processedPlotSpec, plotSize, plotMaxWidth, computationMessagesHandler)
+            return buildPlotFromProcessedSpecs(ctx, processedPlotSpec, plotSize, computationMessagesHandler)
         } catch (e: RuntimeException) {
-            handleException(e)
+            ctx.handleException(e)
         }
     }
 
-    fun Context.buildPlotFromProcessedSpecs(
+    fun buildPlotFromProcessedSpecs(
+        ctx: Context,
         plotSpec: MutableMap<String, Any>,
         plotSize: DoubleVector?,
-        plotMaxWidth: Double?,
         computationMessagesHandler: ((List<String>) -> Unit)
     ): View {
         return try {
             val buildResult = MonolithicCommon.buildPlotsFromProcessedSpecs(
                 plotSpec,
                 plotSize,
-                plotMaxWidth,
+                plotMaxWidth = null,
                 plotPreferredWidth = null
             )
             if (buildResult.isError) {
                 val errorMessage = (buildResult as MonolithicCommon.PlotsBuildResult.Error).error
-                return createErrorLabel(errorMessage)
+                return ctx.createErrorLabel(errorMessage)
             }
 
             val success = buildResult as MonolithicCommon.PlotsBuildResult.Success
@@ -47,19 +46,15 @@ object MonolithicAndroid {
             return if (success.buildInfos.size == 1) {
                 // a single plot
                 val buildInfo = success.buildInfos[0]
-                FigureToSkia(buildInfo).eval(this)
+                FigureToAndroid(buildInfo).eval(ctx)
             } else {
                 // ggbunch
-                buildGGBunchComponent(success.buildInfos)
+                error("GGBunch is not supported.")
             }
 
         } catch (e: RuntimeException) {
-            handleException(e)
+            ctx.handleException(e)
         }
-    }
-
-    private fun Context.buildGGBunchComponent(plotInfos: List<FigureBuildInfo>): View {
-        error("Not implemented")
     }
 
     private fun Context.handleException(e: RuntimeException): View {

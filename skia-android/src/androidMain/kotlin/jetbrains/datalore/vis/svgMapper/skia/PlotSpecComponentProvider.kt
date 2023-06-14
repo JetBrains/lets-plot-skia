@@ -8,7 +8,7 @@ import jetbrains.datalore.plot.PlotSizeHelper
 import jetbrains.datalore.plot.config.FigKind
 import jetbrains.datalore.plot.config.PlotConfig
 import jetbrains.datalore.plot.config.PlotConfigClientSide
-import jetbrains.datalore.vis.svgMapper.skia.MonolithicAndroid.buildPlotFromProcessedSpecs
+import org.jetbrains.letsPlot.skia.android.MonolithicSkiaAndroid.buildPlotFromProcessedSpecs
 import kotlin.math.ceil
 import kotlin.math.floor
 
@@ -25,10 +25,10 @@ internal class PlotSpecComponentProvider(
     override fun createComponent(ctx: Context, containerSize: DoubleVector?): View {
         val plotSize = containerSize?.let(::getPreferredSize)
 
-        val plotComponent = ctx.buildPlotFromProcessedSpecs(
+        val plotComponent = buildPlotFromProcessedSpecs(
+            ctx,
             plotSize = plotSize,
             plotSpec = processedSpec,
-            plotMaxWidth = null,
             computationMessagesHandler = computationMessagesHandler
         )
 

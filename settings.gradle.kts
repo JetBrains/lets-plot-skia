@@ -35,7 +35,7 @@ include("svg-mapper-skia")
 include("plot-compose")
 include("plot-swing")
 include("skia-awt")
-include("monolithic-skia-android")
+include("skia-android")
 
 include("demo-svg-mapping-shared")
 include("demo-svg-mapping-android")

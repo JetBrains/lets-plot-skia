@@ -10,21 +10,36 @@ import jetbrains.datalore.vis.swing.ApplicationContext
 import jetbrains.datalore.vis.swing.DefaultPlotContentPane
 import jetbrains.datalore.vis.swing.PlotPanel
 import jetbrains.datalore.vis.swing.PlotViewerWindowBase
+import org.jetbrains.letsPlot.Figure
+import org.jetbrains.letsPlot.intern.toSpec
 import org.jetbrains.letsPlot.swing.skia.AwtAppEnv.AWT_APP_CONTEXT
 import java.awt.Dimension
 import javax.swing.JComponent
 
-class PlotViewerWindowSkia(
+class PlotViewerWindowSkia constructor(
     title: String,
-    windowSize: Dimension? = null,
     private val rawSpec: MutableMap<String, Any>,
+    windowSize: Dimension? = null,
     private val preserveAspectRatio: Boolean = false,
     private val repaintDelay: Int = 300,  // ms,
-    private val applicationContext: ApplicationContext = AWT_APP_CONTEXT  // Doesn't seem to be used // ToDo: fix in LP.
 ) : PlotViewerWindowBase(
     title,
     windowSize = windowSize,
 ) {
+
+    constructor(
+        title: String,
+        figure: Figure,
+        windowSize: Dimension? = null,
+        preserveAspectRatio: Boolean = false,
+        repaintDelay: Int = 300,  // ms,
+    ) : this(
+        title = title,
+        rawSpec = figure.toSpec(),
+        windowSize = windowSize,
+        preserveAspectRatio = preserveAspectRatio,
+        repaintDelay = repaintDelay
+    )
 
     override fun createWindowContent(preferredSizeFromPlot: Boolean): JComponent {
         val processedSpec = MonolithicCommon.processRawSpecs(rawSpec, frontendOnly = false)
@@ -32,7 +47,7 @@ class PlotViewerWindowSkia(
             processedSpec = processedSpec,
             preferredSizeFromPlot = preferredSizeFromPlot,
             repaintDelay = repaintDelay,
-            applicationContext = applicationContext
+            applicationContext = AWT_APP_CONTEXT   // Not really used, can be a dummy.
         ) {
             override fun createPlotPanel(
                 processedSpec: MutableMap<String, Any>,

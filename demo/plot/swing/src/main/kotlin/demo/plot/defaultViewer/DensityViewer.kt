@@ -5,7 +5,6 @@
 
 package demo.plot.defaultViewer
 
-import org.jetbrains.letsPlot.intern.toSpec
 import org.jetbrains.letsPlot.swing.skia.PlotViewerWindowSkia
 import plotSpec.DensitySpec
 
@@ -13,8 +12,8 @@ fun main() {
     with(DensitySpec()) {
         PlotViewerWindowSkia(
             "Density plot",
+            createFigure(),
             null,
-            createFigure().toSpec(),
             preserveAspectRatio = false
         ).open()
     }

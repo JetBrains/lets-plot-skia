@@ -1,4 +1,4 @@
-package org.jetbrains.letsPlot.skiko.android
+package org.jetbrains.letsPlot.skia.android.ui
 
 import android.annotation.SuppressLint
 import android.content.Context
@@ -11,7 +11,7 @@ import jetbrains.datalore.vis.svg.SvgSvgElement
 import org.jetbrains.letsPlot.skiko.SkikoViewEventDispatcher
 
 @SuppressLint("ViewConstructor")
-class SvgPanelAndroid constructor(
+class SvgPanel constructor(
     context: Context,
     svg: SvgSvgElement,
     eventDispatcher: SkikoViewEventDispatcher? = null

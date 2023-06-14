@@ -89,7 +89,7 @@ dependencies {
     implementation(project(":svg-mapper-skia")) // { isTransitive = false }
 
     // ToDo: only due to usage of "svgView", no need for "monolithic" here
-    implementation(project(":monolithic-skia-android"))
+    implementation(project(":skia-android"))
 
     implementation("org.jetbrains.lets-plot:base-portable:$letsPlotVersion") { isTransitive = false }
     implementation("org.jetbrains.lets-plot:base:$letsPlotVersion") { isTransitive = false }

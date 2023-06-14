@@ -1,11 +1,9 @@
-package jetbrains.datalore.vis.svgMapper.skia
+package org.jetbrains.letsPlot.skia.android
 
 import android.content.Context
-import android.util.TypedValue
 import android.view.View
 import android.view.ViewGroup
 import android.widget.RelativeLayout
-import android.widget.RelativeLayout.LayoutParams
 import jetbrains.datalore.base.event.MouseEvent
 import jetbrains.datalore.base.event.MouseEventSpec
 import jetbrains.datalore.base.geometry.DoubleRectangle
@@ -14,10 +12,11 @@ import jetbrains.datalore.plot.builder.FigureBuildInfo
 import jetbrains.datalore.plot.builder.PlotContainer
 import jetbrains.datalore.plot.builder.PlotSvgRoot
 import jetbrains.datalore.plot.builder.subPlots.CompositeFigureSvgRoot
+import org.jetbrains.letsPlot.skia.android.SizeConverter.boundsPxToDp
+import org.jetbrains.letsPlot.skia.android.ui.SvgPanel
 import org.jetbrains.letsPlot.skiko.SkikoViewEventDispatcher
-import org.jetbrains.letsPlot.skiko.android.SvgPanelAndroid
 
-internal class FigureToSkia(
+internal class FigureToAndroid(
     private val buildInfo: FigureBuildInfo,
 ) {
     fun eval(ctx: Context): View {
@@ -32,19 +31,19 @@ internal class FigureToSkia(
 
 
         return when (val svgRoot = buildInfo.createSvgRoot()) {
-            is CompositeFigureSvgRoot -> ctx.processCompositeFigure(svgRoot)
-            is PlotSvgRoot -> ctx.processPlotFigure(svgRoot)
+            is CompositeFigureSvgRoot -> processCompositeFigure(svgRoot, ctx)
+            is PlotSvgRoot -> processPlotFigure(svgRoot, ctx)
             else -> error("Unsupported figure: ${svgRoot::class.simpleName}")
         }
     }
 
-    private fun Context.processPlotFigure(svgRoot: PlotSvgRoot): View {
+    private fun processPlotFigure(svgRoot: PlotSvgRoot, ctx: Context): View {
         if (svgRoot.isLiveMap) {
             error("LiveMap is not supported")
         } else {
             val plotContainer = PlotContainer(svgRoot)
-            return SvgPanelAndroid(
-                context = this,
+            return SvgPanel(
+                context = ctx,
                 svg = plotContainer.svg,
                 eventDispatcher = object : SkikoViewEventDispatcher {
                     override fun dispatchMouseEvent(kind: MouseEventSpec, e: MouseEvent) {
@@ -54,24 +53,27 @@ internal class FigureToSkia(
         }
     }
 
-    private fun Context.processCompositeFigure(
+    private fun processCompositeFigure(
         svgRoot: CompositeFigureSvgRoot,
+        ctx: Context
     ): View {
         svgRoot.ensureContentBuilt()
 
-        val viewGroup: ViewGroup = RelativeLayout(this)
+        val viewGroup: ViewGroup = RelativeLayout(ctx)
 
-        fun toLayoutParams(from: DoubleRectangle): LayoutParams =
-            LayoutParams(
-                dp(from.dimension.x.toInt()),
-                dp(from.dimension.y.toInt())
+        fun toLayoutParams(bounds: DoubleRectangle): RelativeLayout.LayoutParams {
+            val boundsDp = boundsPxToDp(bounds, ctx)
+            return RelativeLayout.LayoutParams(
+                boundsDp.dimension.x,
+                boundsDp.dimension.y
             ).apply {
-                leftMargin = dp(from.origin.x.toInt())
-                topMargin = dp(from.origin.y.toInt())
+                leftMargin = boundsDp.origin.x
+                topMargin = boundsDp.origin.y
             }
+        }
 
-        val rootView = SvgPanelAndroid(
-            context = this,
+        val rootView = SvgPanel(
+            context = ctx,
             svg = svgRoot.svg,
             eventDispatcher = null
         )
@@ -96,9 +98,9 @@ internal class FigureToSkia(
 
         for (element in svgRoot.elements) {
             val elementView = if (element is PlotSvgRoot) {
-                processPlotFigure(element)
+                processPlotFigure(element, ctx)
             } else {
-                processCompositeFigure(element as CompositeFigureSvgRoot)
+                processCompositeFigure(element as CompositeFigureSvgRoot, ctx)
             }
 
             // FIXME: only one tooltip should be visible among all subplots. Try to follow this recommendation:
@@ -108,6 +110,3 @@ internal class FigureToSkia(
         return viewGroup
     }
 }
-
-private fun Context.dp(v: Number) =
-    TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, v.toFloat(), resources.displayMetrics).toInt()

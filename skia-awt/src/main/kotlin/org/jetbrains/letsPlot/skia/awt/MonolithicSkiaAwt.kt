@@ -15,13 +15,12 @@ object MonolithicSkiaAwt {
     fun buildPlotFromRawSpecs(
         plotSpec: MutableMap<String, Any>,
         plotSize: DoubleVector?,
-        plotMaxWidth: Double?,
         computationMessagesHandler: ((List<String>) -> Unit)
     ): JComponent {
         return try {
             @Suppress("NAME_SHADOWING")
             val plotSpec = MonolithicCommon.processRawSpecs(plotSpec, frontendOnly = false)
-            buildPlotFromProcessedSpecs(plotSpec, plotSize, plotMaxWidth, computationMessagesHandler)
+            buildPlotFromProcessedSpecs(plotSpec, plotSize, computationMessagesHandler)
         } catch (e: RuntimeException) {
             handleException(e)
         }
@@ -30,13 +29,12 @@ object MonolithicSkiaAwt {
     fun buildPlotFromProcessedSpecs(
         plotSpec: MutableMap<String, Any>,
         plotSize: DoubleVector?,
-        plotMaxWidth: Double?,
         computationMessagesHandler: (List<String>) -> Unit
     ): JComponent {
         val buildResult = MonolithicCommon.buildPlotsFromProcessedSpecs(
             plotSpec,
             plotSize,
-            plotMaxWidth,
+            plotMaxWidth = null,
             plotPreferredWidth = null
         )
 

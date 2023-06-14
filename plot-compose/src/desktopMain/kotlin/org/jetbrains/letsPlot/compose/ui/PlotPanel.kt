@@ -10,6 +10,7 @@ import org.jetbrains.letsPlot.intern.toSpec
 import org.jetbrains.letsPlot.skia.awt.MonolithicSkiaAwt
 import java.awt.Component
 
+@Suppress("FunctionName")
 @Composable
 actual fun PlotPanel(
     figure: Figure,
@@ -21,7 +22,6 @@ actual fun PlotPanel(
         MonolithicSkiaAwt.buildPlotFromRawSpecs(
             rawPlotSpec,
             plotSize = null,
-            plotMaxWidth = null,
             computationMessagesHandler = computationMessagesHandler
         )
     }

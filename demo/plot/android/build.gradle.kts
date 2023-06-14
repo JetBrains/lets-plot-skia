@@ -7,6 +7,7 @@ import org.jetbrains.kotlin.gradle.tasks.KotlinJvmCompile
 
 plugins {
     kotlin("android")
+    id("org.jetbrains.compose")
     id("com.android.application")
 }
 
@@ -77,19 +78,28 @@ android {
     }
 }
 
+val composeVersion = extra["compose.version"] as String
 val skikoVersion = extra["skiko.version"] as String
 val letsPlotVersion = extra["letsPlot.version"] as String
 val letsPlotKotlinVersion = extra["letsPlotKotlin.version"] as String
 
 dependencies {
+    implementation(compose.runtime)
+    implementation(compose.foundation)
+    implementation(compose.material)
+    implementation(compose.ui)
+
+    implementation("androidx.activity:activity-compose:$composeVersion")
+
     implementation("org.jetbrains.skiko:skiko-android:$skikoVersion")
     skikoNativeX64("org.jetbrains.skiko:skiko-android-runtime-x64:$skikoVersion")
     skikoNativeArm64("org.jetbrains.skiko:skiko-android-runtime-arm64:$skikoVersion")
 
-    implementation("org.jetbrains.lets-plot:lets-plot-kotlin-kernel:$letsPlotKotlinVersion") { isTransitive = false }
+//    implementation("org.jetbrains.lets-plot:lets-plot-kotlin-kernel:$letsPlotKotlinVersion") { isTransitive = false }
 
     implementation(project(":svg-mapper-skia")) //{ isTransitive = false }
-    implementation(project(":monolithic-skia-android"))
+    implementation(project(":plot-compose")) // { isTransitive = false }
+//    implementation(project(":skia-android"))
 
     implementation(project(":demo-plot-shared"))
 
@@ -105,7 +115,6 @@ dependencies {
     implementation("org.jetbrains.lets-plot:plot-builder:$letsPlotVersion") { isTransitive = false }
     implementation("org.jetbrains.lets-plot:plot-builder-portable:$letsPlotVersion") { isTransitive = false }
     implementation("org.jetbrains.lets-plot:plot-config-portable:$letsPlotVersion") { isTransitive = false }
-
 
 
 //    implementation("io.github.microutils:kotlin-logging-jvm:2.0.5") // TODO remove with other { isTransitive = false }

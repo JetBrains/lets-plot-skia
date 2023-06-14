@@ -17,7 +17,8 @@ fun main() = application {
         MaterialTheme {
             PlotPanel(
                 figure = densityPlot,
-                modifier = Modifier.size(600.dp, 400.dp),
+//                modifier = Modifier.size(600.dp, 400.dp),
+                modifier = Modifier.size(200.dp, 400.dp),
             ) { computationMessages ->
                 computationMessages.forEach { println("[PLOT MESSAGE] $it") }
             }

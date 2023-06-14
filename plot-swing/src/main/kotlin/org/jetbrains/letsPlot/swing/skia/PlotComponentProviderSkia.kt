@@ -8,68 +8,63 @@ package org.jetbrains.letsPlot.swing.skia
 import jetbrains.datalore.base.geometry.DoubleVector
 import jetbrains.datalore.base.unsupported.UNSUPPORTED
 import jetbrains.datalore.vis.svg.SvgSvgElement
-import org.jetbrains.letsPlot.skia.awt.MonolithicSkiaAwt
+import jetbrains.datalore.vis.swing.PlotComponentProvider
 import jetbrains.datalore.vis.swing.PlotSpecComponentProvider
+import org.jetbrains.letsPlot.skia.awt.MonolithicSkiaAwt
 import java.awt.Dimension
 import javax.swing.JComponent
 import javax.swing.JScrollPane
-import javax.swing.ScrollPaneConstants
 
 internal class PlotComponentProviderSkia(
     private val processedSpec: MutableMap<String, Any>,
-    preserveAspectRatio: Boolean,
+    private val preserveAspectRatio: Boolean,
     private val computationMessagesHandler: (List<String>) -> Unit
-) : PlotSpecComponentProvider(
-    processedSpec = processedSpec,
-    preserveAspectRatio = preserveAspectRatio,
-    svgComponentFactory = DUMMY_SVG_COMPONENT_FACTORY,
-    executor = DUMMY_EXECUTOR,
-    computationMessagesHandler = computationMessagesHandler
-) {
+) : PlotComponentProvider {
 
-    // ToDo: include the "monolithic" staff in "svgComponentFactory"
-    // So that we don't need to override the entire 'createComponent' here.
+    override fun getPreferredSize(containerSize: Dimension): Dimension {
+        return getPreferredSize(processedSpec, preserveAspectRatio, containerSize)
+    }
+
     override fun createComponent(containerSize: Dimension?): JComponent {
         val plotSize = containerSize?.let {
             val preferredSize = getPreferredSize(containerSize)
             DoubleVector(preferredSize.width.toDouble(), preferredSize.height.toDouble())
         }
 
-//        println("plotSize: $plotSize, containerSize: $containerSize (PlotComponentProviderSkiko)")
-
         return MonolithicSkiaAwt.buildPlotFromProcessedSpecs(
             plotSize = plotSize,
             plotSpec = processedSpec,
-            plotMaxWidth = null,
             computationMessagesHandler = computationMessagesHandler
         )
     }
 
-    /**
-     * Override when used in IDEA plugin.
-     * Use: JBScrollPane
-     */
-    override fun createScrollPane(plotComponent: JComponent): JScrollPane {
-        return JScrollPane(
-            plotComponent,
-            ScrollPaneConstants.VERTICAL_SCROLLBAR_AS_NEEDED,
-            ScrollPaneConstants.HORIZONTAL_SCROLLBAR_AS_NEEDED
-        ).apply {
-            border = null
-        }
-    }
-
     companion object {
-//        private val LOG = PortableLogging.logger(DefaultPlotComponentProvider::class)
-
-        //        private val SVG_COMPONENT_FACTORY_SKIA_SWING = { svg: SvgSvgElement ->
-//            SvgPanelDesktop(svg)
-//        }
         private val DUMMY_SVG_COMPONENT_FACTORY = { svg: SvgSvgElement ->
             UNSUPPORTED("This component factory should not be invoked.")
         }
         private val DUMMY_EXECUTOR: (() -> Unit) -> Unit = {
             UNSUPPORTED("This 'executor' should not be invoked.")
+        }
+
+        private fun getPreferredSize(
+            processedSpec: MutableMap<String, Any>,
+            preserveAspectRatio: Boolean,
+            containerSize: Dimension,
+        ): Dimension {
+            // ToDo: this isn't looking nice.
+            val sizeEstimator = object : PlotSpecComponentProvider(
+                processedSpec = processedSpec,
+                preserveAspectRatio = preserveAspectRatio,
+                svgComponentFactory = DUMMY_SVG_COMPONENT_FACTORY,
+                executor = DUMMY_EXECUTOR,
+                computationMessagesHandler = { /*no messages when measuring plot size*/ }
+            ) {
+                override fun createScrollPane(plotComponent: JComponent): JScrollPane {
+                    UNSUPPORTED("'createScrollPane()' should not be invoked.")
+                }
+            }
+
+            return sizeEstimator.getPreferredSize(containerSize)
         }
     }
 }

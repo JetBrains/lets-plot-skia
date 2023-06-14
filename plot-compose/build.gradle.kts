@@ -26,22 +26,31 @@ kotlin {
     sourceSets {
         named("commonMain") {
             dependencies {
-                implementation(compose.desktop.currentOs)
+//                implementation(compose.desktop.currentOs)
+                api(compose.runtime)
+                api(compose.foundation)
+                api(compose.material)
+                api(compose.ui)
+
 
                 compileOnly("org.jetbrains.skiko:skiko:$skikoVersion")
 
-                api("org.jetbrains.lets-plot:lets-plot-kotlin:$letsPlotKotlinVersion") //{ isTransitive = false }
+                api("org.jetbrains.lets-plot:lets-plot-kotlin-kernel:$letsPlotKotlinVersion") //{ isTransitive = false }
 
                 compileOnly("org.jetbrains.lets-plot:base-portable:$letsPlotVersion") { isTransitive = false }
-                compileOnly("org.jetbrains.lets-plot:base:$letsPlotVersion") { isTransitive = false }
-                compileOnly("org.jetbrains.lets-plot:mapper-core:$letsPlotVersion") { isTransitive = false }
-                compileOnly("org.jetbrains.lets-plot:vis-svg-portable:$letsPlotVersion") { isTransitive = false }
-                compileOnly("org.jetbrains.lets-plot:vis-svg-mapper:$letsPlotVersion") { isTransitive = false }
+//                compileOnly("org.jetbrains.lets-plot:base:$letsPlotVersion") { isTransitive = false }
+//                compileOnly("org.jetbrains.lets-plot:mapper-core:$letsPlotVersion") { isTransitive = false }
+//                compileOnly("org.jetbrains.lets-plot:vis-svg-portable:$letsPlotVersion") { isTransitive = false }
+//                compileOnly("org.jetbrains.lets-plot:vis-svg-mapper:$letsPlotVersion") { isTransitive = false }
+
+//                implementation("io.github.microutils:kotlin-logging-jvm:2.0.5") // TODO remove with other { isTransitive = false }
+                implementation("io.github.microutils:kotlin-logging:2.0.5") // TODO remove with other { isTransitive = false }
             }
         }
 
         named("desktopMain") {
             dependencies {
+                implementation(compose.desktop.currentOs)
 //                compileOnly("org.jetbrains.skiko:skiko-awt:$skikoVersion")
                 api(project(":skia-awt"))
 
@@ -54,6 +63,7 @@ kotlin {
                 compileOnly("org.jetbrains.skiko:skiko-android:$skikoVersion") {
 //                    exclude("org.jetbrains.skiko", "skiko-awt")
                 }
+                api(project(":skia-android"))
             }
         }
     }

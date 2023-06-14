@@ -9,7 +9,7 @@ import svgModel.DemoModelA
 import svgModel.DemoModelB
 import svgModel.DemoModelC
 
-class MainActivity : Activity() {
+class MainActivity_saved : Activity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 

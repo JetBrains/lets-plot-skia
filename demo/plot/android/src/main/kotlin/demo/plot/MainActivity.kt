@@ -1,27 +1,32 @@
 package demo.plot
 
-import android.app.Activity
 import android.os.Bundle
-import android.view.ViewGroup
-import android.widget.LinearLayout
-import jetbrains.datalore.vis.svgMapper.skia.plotView
-import org.jetbrains.letsPlot.intern.toSpec
+import androidx.activity.ComponentActivity
+import androidx.activity.compose.setContent
+import androidx.compose.foundation.layout.size
+import androidx.compose.material.MaterialTheme
+import androidx.compose.ui.Modifier
+import androidx.compose.ui.unit.dp
+import org.jetbrains.letsPlot.compose.ui.PlotPanel
 import plotSpec.DensitySpec
 import plotSpec.PlotGridSpec
 
-class MainActivity : Activity() {
+class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
-        val layout = LinearLayout(this)
-        layout.orientation = LinearLayout.VERTICAL
-        layout.layoutParams =
-            LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT)
-        setContentView(layout, layout.layoutParams)
+        setContent {
+            val densityPlot = DensitySpec().createFigure()
+            val plotGrid = PlotGridSpec().createFigure()
 
-        val rawDensitySpec = DensitySpec().createFigure().toSpec()
-        val rawPlotGridSpec = PlotGridSpec().createFigure().toSpec()
-        layout.addView(plotView(rawPlotSpec = rawDensitySpec))
-        layout.addView(plotView(rawPlotSpec = rawPlotGridSpec))
+            MaterialTheme {
+                PlotPanel(
+                    figure = densityPlot,
+                    modifier = Modifier.size(600.dp, 400.dp),
+                ) { computationMessages ->
+                    computationMessages.forEach { println("[PLOT MESSAGE] $it") }
+                }
+            }
+        }
     }
 }

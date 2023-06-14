@@ -1,4 +1,4 @@
-package org.jetbrains.letsPlot.skiko.android
+package org.jetbrains.letsPlot.skia.android.ui
 
 import jetbrains.datalore.vis.svg.SvgSvgElement
 import org.jetbrains.letsPlot.skiko.SkikoViewEventDispatcher

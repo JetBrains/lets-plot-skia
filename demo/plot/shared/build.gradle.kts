@@ -17,6 +17,7 @@ dependencies {
     // SvgSvgElement, SvgNodeContainer, SvgGElement, SvgTextElement, etc
     compileOnly("org.jetbrains.lets-plot:vis-svg-portable:$letsPlotVersion") { isTransitive = false }
 
+//    compileOnly("org.jetbrains.lets-plot:lets-plot-kotlin-kernel:$letsPlotKotlinVersion") { isTransitive = false }
     compileOnly("org.jetbrains.lets-plot:lets-plot-kotlin-kernel:$letsPlotKotlinVersion") { isTransitive = false }
 
     testImplementation(kotlin("test"))
