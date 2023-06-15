@@ -1,4 +1,4 @@
-package org.jetbrains.letsPlot.compose.ui
+package org.jetbrains.letsPlot.skia.compose
 
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier

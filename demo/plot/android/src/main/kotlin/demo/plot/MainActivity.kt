@@ -7,7 +7,7 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.material.MaterialTheme
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
-import org.jetbrains.letsPlot.compose.ui.PlotPanel
+import org.jetbrains.letsPlot.skia.compose.PlotPanel
 import plotSpec.DensitySpec
 import plotSpec.PlotGridSpec
 

@@ -1,4 +1,4 @@
-package org.jetbrains.letsPlot.compose.util
+package org.jetbrains.letsPlot.skia.compose.util
 
 import jetbrains.datalore.base.geometry.DoubleVector
 import jetbrains.datalore.plot.PlotSizeHelper

@@ -1,4 +1,4 @@
-package org.jetbrains.letsPlot.compose.ui
+package org.jetbrains.letsPlot.skia.compose
 
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.DisposableEffect
@@ -9,7 +9,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.onGloballyPositioned
 import androidx.compose.ui.platform.LocalDensity
 import org.jetbrains.letsPlot.Figure
-import org.jetbrains.letsPlot.compose.desktop.PlotComponentProvider
+import org.jetbrains.letsPlot.skia.compose.desktop.PlotComponentProvider
 
 @Suppress("FunctionName")
 @Composable

@@ -1,4 +1,4 @@
-package org.jetbrains.letsPlot.compose.ui
+package org.jetbrains.letsPlot.skia.compose
 
 import android.content.Context
 import android.view.View

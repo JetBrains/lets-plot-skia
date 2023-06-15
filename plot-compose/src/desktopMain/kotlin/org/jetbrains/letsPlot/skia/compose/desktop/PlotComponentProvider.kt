@@ -1,10 +1,10 @@
-package org.jetbrains.letsPlot.compose.desktop
+package org.jetbrains.letsPlot.skia.compose.desktop
 
 import jetbrains.datalore.base.geometry.DoubleVector
 import jetbrains.datalore.base.registration.Disposable
 import jetbrains.datalore.plot.MonolithicCommon
 import org.jetbrains.letsPlot.Figure
-import org.jetbrains.letsPlot.compose.util.PlotSizeUtil
+import org.jetbrains.letsPlot.skia.compose.util.PlotSizeUtil
 import org.jetbrains.letsPlot.intern.toSpec
 import org.jetbrains.letsPlot.skia.awt.MonolithicSkiaAwt
 import java.awt.Component
