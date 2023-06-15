@@ -1,4 +1,4 @@
-package org.jetbrains.letsPlot.swing.skia
+package org.jetbrains.letsPlot.skia.swing
 
 import jetbrains.datalore.vis.swing.ApplicationContext
 import javax.swing.SwingUtilities

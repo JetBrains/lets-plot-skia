@@ -5,7 +5,7 @@
 
 package demo.plot.defaultViewer
 
-import org.jetbrains.letsPlot.swing.skia.PlotViewerWindowSkia
+import org.jetbrains.letsPlot.skia.swing.PlotViewerWindowSkia
 import plotSpec.DensitySpec
 
 fun main() {

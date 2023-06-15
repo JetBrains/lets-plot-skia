@@ -8,7 +8,7 @@ import jetbrains.datalore.vis.svg.SvgConstants
 import jetbrains.datalore.vis.svg.SvgElementListener
 import jetbrains.datalore.vis.svg.SvgSvgElement
 import jetbrains.datalore.vis.svg.event.SvgAttributeEvent
-import org.jetbrains.letsPlot.skiko.SkikoViewEventDispatcher
+import org.jetbrains.letsPlot.skia.skiko.SkikoViewEventDispatcher
 import java.awt.Dimension
 import java.awt.Graphics
 import java.awt.Point

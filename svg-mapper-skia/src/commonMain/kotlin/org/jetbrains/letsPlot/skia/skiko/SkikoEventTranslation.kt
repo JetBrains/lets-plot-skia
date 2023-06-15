@@ -1,4 +1,4 @@
-package org.jetbrains.letsPlot.skiko
+package org.jetbrains.letsPlot.skia.skiko
 
 import jetbrains.datalore.base.event.Button
 import jetbrains.datalore.base.event.KeyModifiers

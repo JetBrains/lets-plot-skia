@@ -3,7 +3,7 @@
  * Use of this source code is governed by the MIT license that can be found in the LICENSE file.
  */
 
-package org.jetbrains.letsPlot.swing.skia
+package org.jetbrains.letsPlot.skia.swing
 
 import jetbrains.datalore.plot.MonolithicCommon
 import jetbrains.datalore.vis.swing.ApplicationContext
@@ -12,7 +12,7 @@ import jetbrains.datalore.vis.swing.PlotPanel
 import jetbrains.datalore.vis.swing.PlotViewerWindowBase
 import org.jetbrains.letsPlot.Figure
 import org.jetbrains.letsPlot.intern.toSpec
-import org.jetbrains.letsPlot.swing.skia.AwtAppEnv.AWT_APP_CONTEXT
+import org.jetbrains.letsPlot.skia.swing.AwtAppEnv.AWT_APP_CONTEXT
 import java.awt.Dimension
 import javax.swing.JComponent
 

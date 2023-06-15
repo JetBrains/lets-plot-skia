@@ -6,7 +6,7 @@
 package demo.util
 
 import org.jetbrains.letsPlot.Figure
-import org.jetbrains.letsPlot.swing.skia.createComponent
+import org.jetbrains.letsPlot.skia.swing.createComponent
 import java.awt.Color
 import java.awt.Dimension
 import java.awt.GridLayout

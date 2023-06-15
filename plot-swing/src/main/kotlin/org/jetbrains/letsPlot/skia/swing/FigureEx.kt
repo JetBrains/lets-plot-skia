@@ -1,4 +1,4 @@
-package org.jetbrains.letsPlot.swing.skia
+package org.jetbrains.letsPlot.skia.swing
 
 import jetbrains.datalore.plot.MonolithicCommon
 import org.jetbrains.letsPlot.Figure

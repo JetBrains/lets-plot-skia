@@ -3,7 +3,7 @@
  * Use of this source code is governed by the MIT license that can be found in the LICENSE file.
  */
 
-package org.jetbrains.letsPlot.swing.skia
+package org.jetbrains.letsPlot.skia.swing
 
 import jetbrains.datalore.base.geometry.DoubleVector
 import jetbrains.datalore.base.unsupported.UNSUPPORTED
@@ -39,7 +39,7 @@ internal class PlotComponentProviderSkiaSwing(
     }
 
     companion object {
-        private val DUMMY_SVG_COMPONENT_FACTORY = { svg: SvgSvgElement ->
+        private val DUMMY_SVG_COMPONENT_FACTORY = { _: SvgSvgElement ->
             UNSUPPORTED("This component factory should not be invoked.")
         }
         private val DUMMY_EXECUTOR: (() -> Unit) -> Unit = {

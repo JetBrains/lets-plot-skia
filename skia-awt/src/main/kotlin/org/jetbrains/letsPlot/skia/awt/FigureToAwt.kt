@@ -12,7 +12,7 @@ import jetbrains.datalore.plot.builder.FigureBuildInfo
 import jetbrains.datalore.plot.builder.PlotContainer
 import jetbrains.datalore.plot.builder.PlotSvgRoot
 import jetbrains.datalore.plot.builder.subPlots.CompositeFigureSvgRoot
-import org.jetbrains.letsPlot.skiko.SkikoViewEventDispatcher
+import org.jetbrains.letsPlot.skia.skiko.SkikoViewEventDispatcher
 import org.jetbrains.letsPlot.skia.awt.ui.SvgPanel
 import java.awt.Point
 import java.awt.Rectangle
