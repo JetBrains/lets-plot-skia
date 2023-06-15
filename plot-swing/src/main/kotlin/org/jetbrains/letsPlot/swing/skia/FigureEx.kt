@@ -14,7 +14,7 @@ fun Figure.createComponent(
     val rawSpec = this.toSpec()
     val processedSpec = MonolithicCommon.processRawSpecs(rawSpec, frontendOnly = false)
 
-    return PlotPanelSkia(
+    return PlotPanelSkiaSwing(
         processedSpec = processedSpec,
         preserveAspectRatio = preserveAspectRatio,
         preferredSizeFromPlot = preferredSizeFromPlot,

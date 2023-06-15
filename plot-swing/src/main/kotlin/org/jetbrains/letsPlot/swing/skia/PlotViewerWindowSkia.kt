@@ -56,7 +56,7 @@ class PlotViewerWindowSkia constructor(
                 applicationContext: ApplicationContext,
                 computationMessagesHandler: (List<String>) -> Unit
             ): PlotPanel {
-                return PlotPanelSkia(
+                return PlotPanelSkiaSwing(
                     processedSpec = processedSpec,
                     preserveAspectRatio = preserveAspectRatio,
                     preferredSizeFromPlot = preferredSizeFromPlot,

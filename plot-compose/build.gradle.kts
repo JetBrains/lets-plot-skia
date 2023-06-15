@@ -26,12 +26,10 @@ kotlin {
     sourceSets {
         named("commonMain") {
             dependencies {
-//                implementation(compose.desktop.currentOs)
                 api(compose.runtime)
                 api(compose.foundation)
                 api(compose.material)
                 api(compose.ui)
-
 
                 compileOnly("org.jetbrains.skiko:skiko:$skikoVersion")
 
@@ -43,7 +41,9 @@ kotlin {
 //                compileOnly("org.jetbrains.lets-plot:vis-svg-portable:$letsPlotVersion") { isTransitive = false }
 //                compileOnly("org.jetbrains.lets-plot:vis-svg-mapper:$letsPlotVersion") { isTransitive = false }
 
-//                implementation("io.github.microutils:kotlin-logging-jvm:2.0.5") // TODO remove with other { isTransitive = false }
+                implementation("org.jetbrains.lets-plot:plot-builder-portable:$letsPlotVersion") { isTransitive = false }
+                implementation("org.jetbrains.lets-plot:plot-config-portable:$letsPlotVersion") { isTransitive = false }
+
                 implementation("io.github.microutils:kotlin-logging:2.0.5") // TODO remove with other { isTransitive = false }
             }
         }

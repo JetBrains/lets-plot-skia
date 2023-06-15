@@ -8,14 +8,14 @@ package org.jetbrains.letsPlot.swing.skia
 import jetbrains.datalore.vis.swing.PlotPanel
 import org.jetbrains.letsPlot.swing.skia.AwtAppEnv.AWT_APP_CONTEXT
 
-open class PlotPanelSkia(
+open class PlotPanelSkiaSwing(
     processedSpec: MutableMap<String, Any>,
     preserveAspectRatio: Boolean,
     preferredSizeFromPlot: Boolean,
     repaintDelay: Int,  // ms,
     computationMessagesHandler: (List<String>) -> Unit
 ) : PlotPanel(
-    plotComponentProvider = PlotComponentProviderSkia(
+    plotComponentProvider = PlotComponentProviderSkiaSwing(
         processedSpec = processedSpec,
         preserveAspectRatio = preserveAspectRatio,
         computationMessagesHandler = computationMessagesHandler

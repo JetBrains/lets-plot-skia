@@ -15,7 +15,7 @@ import java.awt.Dimension
 import javax.swing.JComponent
 import javax.swing.JScrollPane
 
-internal class PlotComponentProviderSkia(
+internal class PlotComponentProviderSkiaSwing(
     private val processedSpec: MutableMap<String, Any>,
     private val preserveAspectRatio: Boolean,
     private val computationMessagesHandler: (List<String>) -> Unit
