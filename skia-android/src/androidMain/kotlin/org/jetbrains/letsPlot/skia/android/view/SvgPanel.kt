@@ -1,4 +1,4 @@
-package org.jetbrains.letsPlot.skia.android.ui
+package org.jetbrains.letsPlot.skia.android.view
 
 import android.annotation.SuppressLint
 import android.content.Context

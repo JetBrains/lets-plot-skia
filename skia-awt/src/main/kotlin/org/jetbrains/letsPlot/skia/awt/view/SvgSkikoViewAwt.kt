@@ -1,4 +1,4 @@
-package org.jetbrains.letsPlot.skia.awt.ui
+package org.jetbrains.letsPlot.skia.awt.view
 
 import jetbrains.datalore.vis.svg.SvgSvgElement
 import org.jetbrains.letsPlot.skia.skiko.SkikoViewEventDispatcher

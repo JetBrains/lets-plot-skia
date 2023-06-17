@@ -1,7 +1,7 @@
 package demo.svgMapping.utils
 
 import jetbrains.datalore.vis.svg.SvgSvgElement
-import org.jetbrains.letsPlot.skia.awt.ui.SvgPanel
+import org.jetbrains.letsPlot.skia.awt.view.SvgPanel
 import java.awt.Color
 import java.awt.GridLayout
 import javax.swing.*

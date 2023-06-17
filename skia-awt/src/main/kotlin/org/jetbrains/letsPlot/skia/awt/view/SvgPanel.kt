@@ -1,4 +1,4 @@
-package org.jetbrains.letsPlot.skia.awt.ui
+package org.jetbrains.letsPlot.skia.awt.view
 
 import jetbrains.datalore.base.registration.CompositeRegistration
 import jetbrains.datalore.base.registration.Disposable

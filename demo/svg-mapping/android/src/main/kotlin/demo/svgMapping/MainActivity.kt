@@ -4,7 +4,7 @@ import android.app.Activity
 import android.os.Bundle
 import android.view.ViewGroup
 import android.widget.LinearLayout
-import org.jetbrains.letsPlot.skia.android.ui.SvgPanel
+import org.jetbrains.letsPlot.skia.android.view.SvgPanel
 import svgModel.DemoModelA
 import svgModel.DemoModelB
 import svgModel.DemoModelC

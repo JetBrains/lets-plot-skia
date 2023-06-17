@@ -13,7 +13,7 @@ import jetbrains.datalore.plot.builder.PlotContainer
 import jetbrains.datalore.plot.builder.PlotSvgRoot
 import jetbrains.datalore.plot.builder.subPlots.CompositeFigureSvgRoot
 import org.jetbrains.letsPlot.skia.skiko.SkikoViewEventDispatcher
-import org.jetbrains.letsPlot.skia.awt.ui.SvgPanel
+import org.jetbrains.letsPlot.skia.awt.view.SvgPanel
 import java.awt.Point
 import java.awt.Rectangle
 import javax.swing.JComponent
