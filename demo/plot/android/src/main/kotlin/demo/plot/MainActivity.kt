@@ -3,7 +3,9 @@ package demo.plot
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
-import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.padding
 import androidx.compose.material.MaterialTheme
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
@@ -20,11 +22,21 @@ class MainActivity : ComponentActivity() {
             val plotGrid = PlotGridSpec().createFigure()
 
             MaterialTheme {
-                PlotPanel(
-                    figure = densityPlot,
-                    modifier = Modifier.size(600.dp, 400.dp),
-                ) { computationMessages ->
-                    computationMessages.forEach { println("[PLOT MESSAGE] $it") }
+                Column(
+                    modifier = Modifier.fillMaxSize().padding(start = 10.dp, top = 10.dp, end = 10.dp, bottom = 10.dp),
+                ) {
+
+                    PlotPanel(
+                        figure = plotGrid,
+                        modifier = Modifier.fillMaxSize()
+                    ) { computationMessages ->
+                        computationMessages.forEach { println("[DEMO APP MESSAGE] $it") }
+                    }
+
+//                    SandboxPanel(
+//                        color = Color.Red,
+//                        modifier = Modifier.fillMaxSize()
+//                    )
                 }
             }
         }

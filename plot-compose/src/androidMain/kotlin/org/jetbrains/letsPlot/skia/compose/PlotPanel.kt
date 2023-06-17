@@ -1,14 +1,12 @@
 package org.jetbrains.letsPlot.skia.compose
 
-import android.content.Context
-import android.view.View
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.DisposableEffect
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.viewinterop.AndroidView
 import androidx.compose.ui.viewinterop.NoOpUpdate
 import org.jetbrains.letsPlot.Figure
-import org.jetbrains.letsPlot.intern.toSpec
-import org.jetbrains.letsPlot.skia.android.MonolithicSkiaAndroid.buildPlotFromRawSpecs
+import org.jetbrains.letsPlot.skia.compose.android.PlotComponentProvider
 
 
 @Suppress("FunctionName")
@@ -18,18 +16,20 @@ actual fun PlotPanel(
     modifier: Modifier,
     computationMessagesHandler: ((List<String>) -> Unit)
 ) {
-    val rawPlotSpec = figure.toSpec()
-    val factory: (Context) -> View = { ctx ->
-        buildPlotFromRawSpecs(
-            ctx,
-            rawPlotSpec,
-            plotSize = null,
-            computationMessagesHandler = computationMessagesHandler
-        )
+    val provider = PlotComponentProvider(
+        figure = figure,
+        preserveAspectRatio = false,
+        computationMessagesHandler
+    )
+
+    DisposableEffect(provider) {
+        onDispose {
+            provider.onDispose()
+        }
     }
 
     AndroidView(
-        factory = factory,
+        factory = provider.factory,
         modifier = modifier,
         update = NoOpUpdate
     )
