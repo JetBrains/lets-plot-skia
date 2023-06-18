@@ -91,7 +91,10 @@ dependencies {
 
     implementation("androidx.activity:activity-compose:$composeVersion")
 
-    implementation("org.jetbrains.skiko:skiko-android:$skikoVersion")
+    implementation("org.jetbrains.skiko:skiko-android:$skikoVersion")  {
+        exclude("org.jetbrains.skiko", "skiko-awt")
+    }
+
     skikoNativeX64("org.jetbrains.skiko:skiko-android-runtime-x64:$skikoVersion")
     skikoNativeArm64("org.jetbrains.skiko:skiko-android-runtime-arm64:$skikoVersion")
 

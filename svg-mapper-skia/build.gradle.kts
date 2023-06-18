@@ -26,11 +26,11 @@ kotlin {
             dependencies {
                 compileOnly("org.jetbrains.skiko:skiko:$skikoVersion")
 
-                compileOnly("org.jetbrains.lets-plot:base-portable:$letsPlotVersion") { isTransitive = false }
-                compileOnly("org.jetbrains.lets-plot:base:$letsPlotVersion") { isTransitive = false }
-                compileOnly("org.jetbrains.lets-plot:mapper-core:$letsPlotVersion") { isTransitive = false }
-                compileOnly("org.jetbrains.lets-plot:vis-svg-portable:$letsPlotVersion") { isTransitive = false }
-                compileOnly("org.jetbrains.lets-plot:vis-svg-mapper:$letsPlotVersion") { isTransitive = false }
+                implementation("org.jetbrains.lets-plot:base:$letsPlotVersion") { isTransitive = false }
+                implementation("org.jetbrains.lets-plot:base-portable:$letsPlotVersion") { isTransitive = false }
+                implementation("org.jetbrains.lets-plot:mapper-core:$letsPlotVersion") { isTransitive = false }
+                implementation("org.jetbrains.lets-plot:vis-svg-portable:$letsPlotVersion") { isTransitive = false }
+                implementation("org.jetbrains.lets-plot:vis-svg-mapper:$letsPlotVersion") { isTransitive = false }
             }
         }
 
@@ -45,7 +45,7 @@ kotlin {
         val androidMain by getting {
             dependencies {
                 compileOnly("org.jetbrains.skiko:skiko-android:$skikoVersion") {
-//                    exclude("org.jetbrains.skiko", "skiko-awt")
+                    exclude("org.jetbrains.skiko", "skiko-awt")
                 }
             }
         }

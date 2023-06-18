@@ -33,7 +33,9 @@ kotlin {
 
         val androidMain by getting {
             dependencies {
-                implementation("org.jetbrains.skiko:skiko-android:$skikoVersion")
+                implementation("org.jetbrains.skiko:skiko-android:$skikoVersion") {
+                    exclude("org.jetbrains.skiko", "skiko-awt")
+                }
 
                 compileOnly(project(":svg-mapper-skia"))
 

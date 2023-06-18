@@ -81,7 +81,10 @@ val skikoVersion = extra["skiko.version"] as String
 val letsPlotVersion = extra["letsPlot.version"] as String
 
 dependencies {
-    implementation("org.jetbrains.skiko:skiko-android:$skikoVersion")
+    implementation("org.jetbrains.skiko:skiko-android:$skikoVersion") {
+        exclude("org.jetbrains.skiko", "skiko-awt")
+    }
+
     skikoNativeX64("org.jetbrains.skiko:skiko-android-runtime-x64:$skikoVersion")
     skikoNativeArm64("org.jetbrains.skiko:skiko-android-runtime-arm64:$skikoVersion")
 

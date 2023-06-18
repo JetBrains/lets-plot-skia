@@ -26,24 +26,20 @@ dependencies {
     implementation("org.jetbrains.skiko:skiko:$skikoVersion")
     implementation("org.jetbrains.skiko:skiko-awt-runtime-$hostOs-$hostArch:$skikoVersion")
 
-    implementation(project(":svg-mapper-skia"))
-    implementation(project(":skia-awt"))
-
     implementation("org.jetbrains.lets-plot:lets-plot-kotlin-kernel:$letsPlotKotlinVersion") { isTransitive = false }
 
-    implementation(project(":demo-plot-shared"))
-
+    implementation(project(":svg-mapper-skia"))
+    implementation(project(":skia-awt"))
     implementation(project(":plot-swing"))
+
+    implementation(project(":demo-plot-shared"))
 
     implementation("org.jetbrains.lets-plot:base:$letsPlotVersion") { isTransitive = false }
     implementation("org.jetbrains.lets-plot:base-portable:$letsPlotVersion") { isTransitive = false }
     implementation("org.jetbrains.lets-plot:plot-base-portable:$letsPlotVersion") { isTransitive = false }
-    implementation("org.jetbrains.lets-plot:vis-svg-portable:$letsPlotVersion") { isTransitive = false }
-    implementation("org.jetbrains.lets-plot:vis-svg-mapper:$letsPlotVersion") { isTransitive = false }
     implementation("org.jetbrains.lets-plot:plot-builder-portable:$letsPlotVersion") { isTransitive = false }
     implementation("org.jetbrains.lets-plot:plot-builder:$letsPlotVersion") { isTransitive = false }
     implementation("org.jetbrains.lets-plot:plot-config:$letsPlotVersion") { isTransitive = false }
     implementation("org.jetbrains.lets-plot:plot-config-portable:$letsPlotVersion") { isTransitive = false }
     implementation("org.jetbrains.lets-plot:plot-common-portable:$letsPlotVersion") { isTransitive = false }
-    implementation("org.jetbrains.lets-plot:mapper-core:$letsPlotVersion") { isTransitive = false }
 }

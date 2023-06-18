@@ -12,34 +12,36 @@ val letsPlotVersion = extra["letsPlot.version"] as String
 
 dependencies {
     compileOnly("org.jetbrains.skiko:skiko:$skikoVersion")
-    compileOnly(project(":svg-mapper-skia"))
+
+    implementation(project(":svg-mapper-skia"))
 
     // Property, SimpleComposite
-    compileOnly("org.jetbrains.lets-plot:base-portable:$letsPlotVersion") { isTransitive = false }
+    implementation("org.jetbrains.lets-plot:base-portable:$letsPlotVersion") { isTransitive = false }
 
     // Mapper, MappingContext
-    compileOnly("org.jetbrains.lets-plot:mapper-core:$letsPlotVersion") { isTransitive = false }
+//    compileOnly("org.jetbrains.lets-plot:mapper-core:$letsPlotVersion") { isTransitive = false }
 
     // SvgSvgElement, SvgNodeContainer, SvgGElement, SvgTextElement, etc
-    compileOnly("org.jetbrains.lets-plot:vis-svg-portable:$letsPlotVersion") { isTransitive = false }
+    implementation("org.jetbrains.lets-plot:vis-svg-portable:$letsPlotVersion") { isTransitive = false }
 
     // FigureBuildInfo, CompositeFigureSvgRoot, PlotSvgRoot, PlotAssembler, PlotSvgComponent, PlotContainerPortable, MouseEventPeer
-    compileOnly("org.jetbrains.lets-plot:plot-builder-portable:$letsPlotVersion") { isTransitive = false }
+    implementation("org.jetbrains.lets-plot:plot-builder-portable:$letsPlotVersion") { isTransitive = false }
 
     // PlotContainer
-    compileOnly("org.jetbrains.lets-plot:plot-builder:$letsPlotVersion") { isTransitive = false }
+    implementation("org.jetbrains.lets-plot:plot-builder:$letsPlotVersion") { isTransitive = false }
 
     // MonolithicCommon, PlotConfig, PlotsBuildResult
-    compileOnly("org.jetbrains.lets-plot:plot-config-portable:$letsPlotVersion") { isTransitive = false }
+    implementation("org.jetbrains.lets-plot:plot-config-portable:$letsPlotVersion") { isTransitive = false }
     // DisposableJPanel
-    compileOnly("org.jetbrains.lets-plot:plot-config:$letsPlotVersion") { isTransitive = false }
+    implementation("org.jetbrains.lets-plot:plot-config:$letsPlotVersion") { isTransitive = false }
 
     // > Task :monolithic-skia:compileKotlinJs FAILED
     // java.lang.IllegalStateException: FATAL ERROR: Could not find "org.jetbrains.lets-plot:xxx" in [/Users/ikupriyanov/Library/Application Support/kotlin/daemon]
     //        at org.jetbrains.kotlin.ir.backend.js.KlibKt$toResolverLogger$1.fatal(klib.kt:110)
-    compileOnly("org.jetbrains.lets-plot:base:$letsPlotVersion") { isTransitive = false }
-    compileOnly("org.jetbrains.lets-plot:vis-svg-mapper:$letsPlotVersion") { isTransitive = false }
-    compileOnly("org.jetbrains.lets-plot:plot-base-portable:$letsPlotVersion") { isTransitive = false }
+//    compileOnly("org.jetbrains.lets-plot:base:$letsPlotVersion") { isTransitive = false }
+//    compileOnly("org.jetbrains.lets-plot:vis-svg-mapper:$letsPlotVersion") { isTransitive = false }
+//    compileOnly("org.jetbrains.lets-plot:plot-base-portable:$letsPlotVersion") { isTransitive = false }
+
     compileOnly("org.jetbrains.lets-plot:plot-common-portable:$letsPlotVersion") { isTransitive = false }
     compileOnly("org.jetbrains.lets-plot:vis-canvas:$letsPlotVersion") { isTransitive = false }
 

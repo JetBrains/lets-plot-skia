@@ -61,7 +61,7 @@ kotlin {
         named("androidMain") {
             dependencies {
                 compileOnly("org.jetbrains.skiko:skiko-android:$skikoVersion") {
-//                    exclude("org.jetbrains.skiko", "skiko-awt")
+                    exclude("org.jetbrains.skiko", "skiko-awt")
                 }
                 api(project(":skia-android"))
             }
