@@ -8,7 +8,7 @@ import jetbrains.datalore.base.registration.Disposable
 import jetbrains.datalore.base.registration.DisposableRegistration
 import jetbrains.datalore.base.registration.DisposingHub
 import jetbrains.datalore.vis.svg.SvgSvgElement
-import org.jetbrains.letsPlot.skia.skiko.SkikoViewEventDispatcher
+import org.jetbrains.letsPlot.skia.svg.view.SkikoViewEventDispatcher
 
 @SuppressLint("ViewConstructor")
 class SvgPanel constructor(

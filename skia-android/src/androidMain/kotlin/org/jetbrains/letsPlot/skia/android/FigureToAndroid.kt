@@ -14,7 +14,7 @@ import jetbrains.datalore.plot.builder.PlotSvgRoot
 import jetbrains.datalore.plot.builder.subPlots.CompositeFigureSvgRoot
 import org.jetbrains.letsPlot.skia.android.SizeConverter.boundsPxToDp
 import org.jetbrains.letsPlot.skia.android.view.SvgPanel
-import org.jetbrains.letsPlot.skia.skiko.SkikoViewEventDispatcher
+import org.jetbrains.letsPlot.skia.svg.view.SkikoViewEventDispatcher
 
 internal class FigureToAndroid(
     private val buildInfo: FigureBuildInfo,
