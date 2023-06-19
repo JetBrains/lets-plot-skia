@@ -32,15 +32,9 @@ kotlin {
                 api(compose.ui)
 
                 compileOnly("org.jetbrains.skiko:skiko:$skikoVersion")
+                compileOnly("org.jetbrains.lets-plot:lets-plot-kotlin-kernel:$letsPlotKotlinVersion")
 
-                api("org.jetbrains.lets-plot:lets-plot-kotlin-kernel:$letsPlotKotlinVersion") //{ isTransitive = false }
-
-                compileOnly("org.jetbrains.lets-plot:base-portable:$letsPlotVersion") { isTransitive = false }
-//                compileOnly("org.jetbrains.lets-plot:base:$letsPlotVersion") { isTransitive = false }
-//                compileOnly("org.jetbrains.lets-plot:mapper-core:$letsPlotVersion") { isTransitive = false }
-//                compileOnly("org.jetbrains.lets-plot:vis-svg-portable:$letsPlotVersion") { isTransitive = false }
-//                compileOnly("org.jetbrains.lets-plot:vis-svg-mapper:$letsPlotVersion") { isTransitive = false }
-
+                implementation("org.jetbrains.lets-plot:base-portable:$letsPlotVersion") { isTransitive = false }
                 implementation("org.jetbrains.lets-plot:plot-builder-portable:$letsPlotVersion") { isTransitive = false }
                 implementation("org.jetbrains.lets-plot:plot-config-portable:$letsPlotVersion") { isTransitive = false }
 
@@ -60,9 +54,7 @@ kotlin {
 
         named("androidMain") {
             dependencies {
-                compileOnly("org.jetbrains.skiko:skiko-android:$skikoVersion") {
-                    exclude("org.jetbrains.skiko", "skiko-awt")
-                }
+                compileOnly("org.jetbrains.skiko:skiko-android:$skikoVersion")
                 api(project(":skia-android"))
             }
         }

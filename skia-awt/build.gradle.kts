@@ -13,7 +13,7 @@ val letsPlotVersion = extra["letsPlot.version"] as String
 dependencies {
     compileOnly("org.jetbrains.skiko:skiko:$skikoVersion")
 
-    implementation(project(":svg-mapper-skia"))
+    implementation(project(":skia-svg-mapper"))
 
     // Property, SimpleComposite
     implementation("org.jetbrains.lets-plot:base-portable:$letsPlotVersion") { isTransitive = false }

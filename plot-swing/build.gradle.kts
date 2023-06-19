@@ -14,9 +14,9 @@ val letsPlotKotlinVersion = extra["letsPlotKotlin.version"] as String
 dependencies {
     compileOnly("org.jetbrains.skiko:skiko:$skikoVersion")
 
-    api("org.jetbrains.lets-plot:lets-plot-kotlin-kernel:$letsPlotKotlinVersion") { isTransitive = false }
+    compileOnly("org.jetbrains.lets-plot:lets-plot-kotlin-kernel:$letsPlotKotlinVersion")
 
-    implementation(project(":svg-mapper-skia"))
+    implementation(project(":skia-svg-mapper"))
     implementation(project(":skia-awt"))
 
     // PortableLogging

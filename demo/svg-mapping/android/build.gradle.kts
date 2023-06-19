@@ -81,18 +81,15 @@ val skikoVersion = extra["skiko.version"] as String
 val letsPlotVersion = extra["letsPlot.version"] as String
 
 dependencies {
-    implementation("org.jetbrains.skiko:skiko-android:$skikoVersion") {
-        exclude("org.jetbrains.skiko", "skiko-awt")
-    }
+    implementation("org.jetbrains.skiko:skiko-android:$skikoVersion")
 
     skikoNativeX64("org.jetbrains.skiko:skiko-android-runtime-x64:$skikoVersion")
     skikoNativeArm64("org.jetbrains.skiko:skiko-android-runtime-arm64:$skikoVersion")
 
-    implementation(project(":demo-svg-mapping-shared"))
-    implementation(project(":svg-mapper-skia")) // { isTransitive = false }
-
-    // ToDo: only due to usage of "svgView", no need for "monolithic" here
+    implementation(project(":skia-svg-mapper"))
     implementation(project(":skia-android"))
+
+    implementation(project(":demo-svg-mapping-shared"))
 
     implementation("org.jetbrains.lets-plot:base-portable:$letsPlotVersion") { isTransitive = false }
     implementation("org.jetbrains.lets-plot:base:$letsPlotVersion") { isTransitive = false }

@@ -26,9 +26,9 @@ dependencies {
     implementation("org.jetbrains.skiko:skiko:$skikoVersion")
     implementation("org.jetbrains.skiko:skiko-awt-runtime-$hostOs-$hostArch:$skikoVersion")
 
-    implementation("org.jetbrains.lets-plot:lets-plot-kotlin-kernel:$letsPlotKotlinVersion") { isTransitive = false }
+    implementation("org.jetbrains.lets-plot:lets-plot-kotlin-kernel:$letsPlotKotlinVersion")
 
-    implementation(project(":svg-mapper-skia"))
+    implementation(project(":skia-svg-mapper"))
     implementation(project(":skia-awt"))
     implementation(project(":plot-swing"))
 

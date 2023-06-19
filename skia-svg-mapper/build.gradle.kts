@@ -44,9 +44,7 @@ kotlin {
 
         val androidMain by getting {
             dependencies {
-                compileOnly("org.jetbrains.skiko:skiko-android:$skikoVersion") {
-                    exclude("org.jetbrains.skiko", "skiko-awt")
-                }
+                compileOnly("org.jetbrains.skiko:skiko-android:$skikoVersion")
             }
         }
     }

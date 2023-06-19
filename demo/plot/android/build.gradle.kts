@@ -88,26 +88,20 @@ dependencies {
     implementation(compose.foundation)
     implementation(compose.material)
     implementation(compose.ui)
-
     implementation("androidx.activity:activity-compose:$composeVersion")
 
-    implementation("org.jetbrains.skiko:skiko-android:$skikoVersion")  {
-        exclude("org.jetbrains.skiko", "skiko-awt")
-    }
+    implementation("org.jetbrains.skiko:skiko-android:$skikoVersion")
 
     skikoNativeX64("org.jetbrains.skiko:skiko-android-runtime-x64:$skikoVersion")
     skikoNativeArm64("org.jetbrains.skiko:skiko-android-runtime-arm64:$skikoVersion")
 
-//    implementation("org.jetbrains.lets-plot:lets-plot-kotlin-kernel:$letsPlotKotlinVersion") { isTransitive = false }
+    implementation("org.jetbrains.lets-plot:lets-plot-kotlin-kernel:$letsPlotKotlinVersion")
 
-    implementation(project(":svg-mapper-skia")) //{ isTransitive = false }
-    implementation(project(":plot-compose")) // { isTransitive = false }
-//    implementation(project(":skia-android"))
-
+    implementation(project(":skia-svg-mapper"))
+    implementation(project(":plot-compose"))
     implementation(project(":demo-plot-shared"))
 
     implementation("org.jetbrains.lets-plot:base-portable:$letsPlotVersion") { isTransitive = false }
-
     implementation("org.jetbrains.lets-plot:base:$letsPlotVersion") { isTransitive = false }
     implementation("org.jetbrains.lets-plot:mapper-core:$letsPlotVersion") { isTransitive = false }
     implementation("org.jetbrains.lets-plot:vis-svg-portable:$letsPlotVersion") { isTransitive = false }

@@ -5,11 +5,15 @@ plugins {
 }
 
 val letsPlotVersion = extra["letsPlot.version"] as String
+val letsPlotKotlinVersion = extra["letsPlotKotlin.version"] as String
 
 dependencies {
     implementation(compose.desktop.currentOs)
-    implementation(project(":svg-mapper-skia")) // { isTransitive = false }
-    implementation(project(":plot-compose")) // { isTransitive = false }
+
+    implementation("org.jetbrains.lets-plot:lets-plot-kotlin-kernel:$letsPlotKotlinVersion")
+
+    implementation(project(":skia-svg-mapper"))
+    implementation(project(":plot-compose"))
 
     implementation(project(":demo-plot-shared"))
 
