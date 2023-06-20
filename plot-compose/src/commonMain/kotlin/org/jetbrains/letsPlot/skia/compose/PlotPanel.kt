@@ -9,6 +9,7 @@ import org.jetbrains.letsPlot.Figure
 @Composable
 expect fun PlotPanel(
     figure: Figure,
+    preserveAspectRatio: Boolean = false,
     modifier: Modifier,
-    computationMessagesHandler: ((List<String>) -> Unit)
+    computationMessagesHandler: (List<String>) -> Unit
 )

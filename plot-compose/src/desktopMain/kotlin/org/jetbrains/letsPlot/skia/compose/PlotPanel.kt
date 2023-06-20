@@ -15,13 +15,14 @@ import org.jetbrains.letsPlot.skia.compose.desktop.PlotComponentProvider
 @Composable
 actual fun PlotPanel(
     figure: Figure,
+    preserveAspectRatio: Boolean,
     modifier: Modifier,
-    computationMessagesHandler: ((List<String>) -> Unit)
+    computationMessagesHandler: (List<String>) -> Unit
 ) {
 
     val provider = PlotComponentProvider(
         figure = figure,
-        preserveAspectRatio = false,
+        preserveAspectRatio = preserveAspectRatio,
         repaintDelay = 300,
         computationMessagesHandler
     )

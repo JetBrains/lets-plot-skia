@@ -43,8 +43,9 @@ include("demo-svg-mapping-compose")
 include("demo-svg-mapping-swing")
 
 include("demo-plot-shared")
-include("demo-plot-android")
-include("demo-plot-compose")
+include("demo-plot-compose-android-min")
+include("demo-plot-compose-android-median")
+include("demo-plot-compose-desktop")
 include("demo-plot-swing")
 
 project(":demo-svg-mapping-shared").projectDir = File("./demo/svg-mapping/shared")
@@ -53,6 +54,7 @@ project(":demo-svg-mapping-compose").projectDir = File("./demo/svg-mapping/compo
 project(":demo-svg-mapping-swing").projectDir = File("./demo/svg-mapping/swing")
 
 project(":demo-plot-shared").projectDir = File("./demo/plot/shared")
-project(":demo-plot-android").projectDir = File("./demo/plot/android")
-project(":demo-plot-compose").projectDir = File("./demo/plot/compose")
+project(":demo-plot-compose-android-min").projectDir = File("./demo/plot/compose-android-min")
+project(":demo-plot-compose-android-median").projectDir = File("./demo/plot/compose-android-median")
+project(":demo-plot-compose-desktop").projectDir = File("./demo/plot/compose-desktop")
 project(":demo-plot-swing").projectDir = File("./demo/plot/swing")
