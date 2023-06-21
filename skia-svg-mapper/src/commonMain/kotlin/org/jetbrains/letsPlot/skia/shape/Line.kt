@@ -23,6 +23,10 @@ internal class Line : Figure() {
         get() {
             // TODO: pref. Cache.
             val path = Path().moveTo(x0, y0).lineTo(x1, y1)
-            return (strokePaint?.getFillPath(path) ?: path).bounds
+            // `paint.getFillPath()` is not available in skiko v. 0.7.63
+//            return (strokePaint?.getFillPath(path) ?: path).bounds
+            return strokePaint?.let {
+                path.bounds.inflate(it.strokeWidth / 2)
+            } ?: path.bounds
         }
 }

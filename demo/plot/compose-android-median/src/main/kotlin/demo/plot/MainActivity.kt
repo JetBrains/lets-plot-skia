@@ -3,9 +3,7 @@ package demo.plot
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
-import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.*
 import androidx.compose.material.MaterialTheme
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -20,20 +18,36 @@ class MainActivity : ComponentActivity() {
         super.onCreate(savedInstanceState)
 
         setContent {
-            val densityPlot = DensitySpec().createFigure()
-            val plotGrid = PlotGridSpec().createFigure()
+
+            val figures = listOf(
+                "Density" to DensitySpec().createFigure(),
+                "gggrid" to PlotGridSpec().createFigure()
+            )
 
             // ToDo: save/restore state
-            val preserveAspectRatio = remember { mutableStateOf(true) }
+            val preserveAspectRatio = remember { mutableStateOf(false) }
+            val figureIndex = remember { mutableStateOf(0) }
 
             MaterialTheme {
                 Column(
                     modifier = Modifier.fillMaxSize().padding(start = 10.dp, top = 10.dp, end = 10.dp, bottom = 10.dp),
                 ) {
-                    AspectRatioRadioGroup(preserveAspectRatio)
+                    @OptIn(ExperimentalLayoutApi::class)
+                    FlowRow(
+                        modifier = Modifier.padding(8.dp),
+                        horizontalArrangement = Arrangement.Center
+                    ) {
+                        DemoRadioGroup(
+                            preserveAspectRatio,
+                        )
+                        DemoDropdownMenu(
+                            options = figures.unzip().first,
+                            selectedIndex = figureIndex
+                        )
+                    }
 
                     PlotPanel(
-                        figure = plotGrid,
+                        figure = figures[figureIndex.value].second,
                         preserveAspectRatio = preserveAspectRatio.value,
                         modifier = Modifier.fillMaxSize()
                     ) { computationMessages ->

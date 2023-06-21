@@ -29,9 +29,14 @@ allprojects {
 
 subprojects {
     repositories {
-        google()
+//        google()
+//        mavenCentral()
+//        maven("https://maven.pkg.jetbrains.space/public/p/compose/dev")
+
         mavenCentral()
         maven("https://maven.pkg.jetbrains.space/public/p/compose/dev")
+        google()
+
 
 //        mavenLocal()
         localProps["maven.repo.local"]?.let {

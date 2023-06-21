@@ -12,6 +12,7 @@ import androidx.compose.ui.unit.dp
 import org.jetbrains.letsPlot.skia.compose.PlotPanel
 import plotSpec.DensitySpec
 import plotSpec.PlotGridSpec
+import androidx.compose.foundation.layout.fillMaxSize
 
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {

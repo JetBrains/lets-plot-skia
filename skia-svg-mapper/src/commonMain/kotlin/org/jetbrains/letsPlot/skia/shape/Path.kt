@@ -24,6 +24,10 @@ internal class Path : Figure() {
     override val localBounds: Rect
         get() {
             val path = skiaPath ?: return Rect.Companion.makeWH(0.0f, 0.0f)
-            return (strokePaint?.getFillPath(path) ?: path).bounds
+            // `paint.getFillPath()` is not available in skiko v. 0.7.63
+//            return (strokePaint?.getFillPath(path) ?: path).bounds
+            return strokePaint?.let {
+                path.bounds.inflate(it.strokeWidth / 2)
+            } ?: path.bounds
         }
 }
