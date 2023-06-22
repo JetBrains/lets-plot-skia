@@ -1,4 +1,4 @@
-package demo.plot
+package demo.plot.minimal
 
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize

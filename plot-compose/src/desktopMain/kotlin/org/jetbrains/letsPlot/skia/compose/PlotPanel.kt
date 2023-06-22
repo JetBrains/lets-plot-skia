@@ -11,6 +11,8 @@ import androidx.compose.ui.platform.LocalDensity
 import org.jetbrains.letsPlot.Figure
 import org.jetbrains.letsPlot.skia.compose.desktop.PlotComponentProvider
 
+private const val PLOT_PANEL_DISPOSABLE_EFFECT_KEY = "Dispose only when leaves the composition."
+
 @Suppress("FunctionName")
 @Composable
 actual fun PlotPanel(
@@ -27,7 +29,8 @@ actual fun PlotPanel(
         computationMessagesHandler
     )
 
-    DisposableEffect(provider) {
+//    DisposableEffect(provider) {
+    DisposableEffect(PLOT_PANEL_DISPOSABLE_EFFECT_KEY) {
         onDispose {
             provider.onDispose()
         }
@@ -47,6 +50,6 @@ actual fun PlotPanel(
         background = Color.White,
         factory = provider.factory,
         modifier = modifier,
-        update = NoOpUpdate
+        update = NoOpUpdate  // ToDo: Update when recomposed? See Android actual.
     )
 }
