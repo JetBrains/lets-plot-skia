@@ -1,26 +1,22 @@
 package org.jetbrains.letsPlot.skia.awt
 
-import jetbrains.datalore.base.geometry.DoubleRectangle
 import jetbrains.datalore.base.geometry.DoubleVector
 import jetbrains.datalore.plot.MonolithicCommon
 import jetbrains.datalore.plot.config.FailureHandler
-import java.awt.Dimension
-import java.awt.Rectangle
 import javax.swing.JComponent
-import javax.swing.JPanel
 import javax.swing.JTextArea
-import kotlin.math.ceil
 
 object MonolithicSkiaAwt {
     fun buildPlotFromRawSpecs(
         plotSpec: MutableMap<String, Any>,
         plotSize: DoubleVector?,
+        isComposeDesktop: Boolean,
         computationMessagesHandler: ((List<String>) -> Unit)
     ): JComponent {
         return try {
             @Suppress("NAME_SHADOWING")
             val plotSpec = MonolithicCommon.processRawSpecs(plotSpec, frontendOnly = false)
-            buildPlotFromProcessedSpecs(plotSpec, plotSize, computationMessagesHandler)
+            buildPlotFromProcessedSpecs(plotSpec, plotSize, isComposeDesktop, computationMessagesHandler)
         } catch (e: RuntimeException) {
             handleException(e)
         }
@@ -29,6 +25,7 @@ object MonolithicSkiaAwt {
     fun buildPlotFromProcessedSpecs(
         plotSpec: MutableMap<String, Any>,
         plotSize: DoubleVector?,
+        isComposeDesktop: Boolean,
         computationMessagesHandler: (List<String>) -> Unit
     ): JComponent {
         val buildResult = MonolithicCommon.buildPlotsFromProcessedSpecs(
@@ -49,45 +46,10 @@ object MonolithicSkiaAwt {
 
         return if (success.buildInfos.size == 1) {
             val buildInfo = success.buildInfos.single()
-            FigureToAwt(buildInfo).eval()
+            FigureToAwt(buildInfo, isComposeDesktop).eval()
         } else {
-            return buildGGBunchComponent(success)
+            throw IllegalArgumentException("GGBunch is not supported.")
         }
-    }
-
-    private fun buildGGBunchComponent(success: MonolithicCommon.PlotsBuildResult.Success): JPanel {
-        val container = JPanel(null)
-        success.buildInfos.forEach { plotBuildInfo ->
-            val plotComponent = FigureToAwt(plotBuildInfo).eval()
-
-            val bounds = plotBuildInfo.bounds
-            val boundsAwt = Rectangle(
-                bounds.origin.x.toInt(),
-                bounds.origin.y.toInt(),
-                ceil(bounds.dimension.x).toInt(),
-                ceil(bounds.dimension.y).toInt()
-            )
-
-            plotComponent.bounds = boundsAwt // If no layout in parent component
-            plotComponent.minimumSize = boundsAwt.size // .. if otherwise ...
-            plotComponent.preferredSize = boundsAwt.size
-            container.add(plotComponent)
-        }
-
-        val bunchBounds = success.buildInfos.map { it.bounds }
-            .fold(DoubleRectangle(DoubleVector.ZERO, DoubleVector.ZERO)) { acc, bounds ->
-                acc.union(bounds)
-            }
-
-        val bunchDimensions = Dimension(
-            bunchBounds.width.toInt(),
-            bunchBounds.height.toInt()
-        )
-
-        container.preferredSize = bunchDimensions
-        container.minimumSize = bunchDimensions
-        container.maximumSize = bunchDimensions
-        return container
     }
 
     private fun handleException(e: RuntimeException): JComponent {
@@ -97,7 +59,6 @@ object MonolithicSkiaAwt {
         }
         return createErrorLabel(failureInfo.message)
     }
-
 
     private fun createErrorLabel(s: String): JComponent {
         return JTextArea(s)

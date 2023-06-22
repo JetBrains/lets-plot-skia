@@ -11,11 +11,11 @@ class SvgSkikoViewAndroid constructor(
     eventDispatcher: SkikoViewEventDispatcher?
 ) : SvgSkikoView(
     svg = svg,
+    handleSkikoEvents = true,    // On Android, SkikoView receives SkikoGestureEvent etc.
     eventDispatcher = eventDispatcher
 ) {
     override fun createSkiaLayer(view: SvgSkikoView): SkiaLayer {
         return SkiaLayer().also {
-//            it.preferredSize = Dimension(view.width, view.height)
             it.gesturesToListen = arrayOf(
                 SkikoGestureEventKind.PAN,
                 SkikoGestureEventKind.DOUBLETAP,

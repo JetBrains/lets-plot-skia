@@ -34,6 +34,7 @@ internal class PlotComponentProviderSkiaSwing(
         return MonolithicSkiaAwt.buildPlotFromProcessedSpecs(
             plotSize = plotSize,
             plotSpec = processedSpec,
+            isComposeDesktop = false,
             computationMessagesHandler = computationMessagesHandler
         )
     }

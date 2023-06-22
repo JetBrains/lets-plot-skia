@@ -4,9 +4,9 @@ import jetbrains.datalore.base.geometry.DoubleVector
 import jetbrains.datalore.base.registration.Disposable
 import jetbrains.datalore.plot.MonolithicCommon
 import org.jetbrains.letsPlot.Figure
-import org.jetbrains.letsPlot.skia.compose.util.PlotSizeUtil
 import org.jetbrains.letsPlot.intern.toSpec
 import org.jetbrains.letsPlot.skia.awt.MonolithicSkiaAwt
+import org.jetbrains.letsPlot.skia.compose.util.PlotSizeUtil
 import java.awt.Component
 import java.awt.Cursor
 import java.awt.Rectangle
@@ -74,6 +74,7 @@ internal class PlotComponentProvider(
         val plotComponent = MonolithicSkiaAwt.buildPlotFromProcessedSpecs(
             plotSize = plotSize,
             plotSpec = processedSpec as MutableMap<String, Any>,
+            isComposeDesktop = true
         ) { messages ->
             if (dispatchComputationMessages) {
                 // do once

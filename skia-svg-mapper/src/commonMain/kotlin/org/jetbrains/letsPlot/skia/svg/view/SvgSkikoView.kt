@@ -16,8 +16,9 @@ import org.jetbrains.skiko.SkikoPointerEvent
 import org.jetbrains.skiko.SkikoView
 import kotlin.math.ceil
 
-abstract class SvgSkikoView constructor(
+abstract class SvgSkikoView(
     svg: SvgSvgElement,
+    private val handleSkikoEvents: Boolean,
     eventDispatcher: SkikoViewEventDispatcher?
 ) : SkikoView, Disposable {
 
@@ -66,17 +67,21 @@ abstract class SvgSkikoView constructor(
     }
 
     override fun onGestureEvent(event: SkikoGestureEvent) {
-        eventDispatcher?.let { dispatcher ->
-            event.translate()?.let {
-                dispatcher.dispatchMouseEvent(kind = it.first, e = it.second)
+        if (handleSkikoEvents) {
+            eventDispatcher?.let { dispatcher ->
+                event.translate()?.let {
+                    dispatcher.dispatchMouseEvent(kind = it.first, e = it.second)
+                }
             }
         }
     }
 
     override fun onPointerEvent(event: SkikoPointerEvent) {
-        eventDispatcher?.let { dispatcher ->
-            event.translate()?.let {
-                dispatcher.dispatchMouseEvent(kind = it.first, e = it.second)
+        if (handleSkikoEvents) {
+            eventDispatcher?.let { dispatcher ->
+                event.translate()?.let {
+                    dispatcher.dispatchMouseEvent(kind = it.first, e = it.second)
+                }
             }
         }
     }

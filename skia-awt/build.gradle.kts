@@ -17,6 +17,8 @@ dependencies {
 
     // Property, SimpleComposite
     implementation("org.jetbrains.lets-plot:base-portable:$letsPlotVersion") { isTransitive = false }
+    // AwtEventUtil
+    implementation("org.jetbrains.lets-plot:base:$letsPlotVersion") { isTransitive = false }
 
     // Mapper, MappingContext
 //    compileOnly("org.jetbrains.lets-plot:mapper-core:$letsPlotVersion") { isTransitive = false }

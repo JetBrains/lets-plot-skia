@@ -11,8 +11,6 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import org.jetbrains.letsPlot.skia.compose.PlotPanel
 import plotSpec.DensitySpec
-import plotSpec.PlotGridSpec
-import androidx.compose.foundation.layout.fillMaxSize
 
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -20,7 +18,6 @@ class MainActivity : ComponentActivity() {
 
         setContent {
             val densityPlot = DensitySpec().createFigure()
-            val plotGrid = PlotGridSpec().createFigure()
 
             MaterialTheme {
                 Column(
@@ -28,7 +25,7 @@ class MainActivity : ComponentActivity() {
                 ) {
 
                     PlotPanel(
-                        figure = plotGrid,
+                        figure = densityPlot,
                         modifier = Modifier.fillMaxSize()
                     ) { computationMessages ->
                         computationMessages.forEach { println("[DEMO APP MESSAGE] $it") }

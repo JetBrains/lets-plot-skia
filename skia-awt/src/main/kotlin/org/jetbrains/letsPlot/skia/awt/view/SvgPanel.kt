@@ -17,10 +17,42 @@ import javax.swing.JPanel
 
 class SvgPanel constructor(
     svg: SvgSvgElement,
+    isComposeDesktop: Boolean,
     eventDispatcher: SkikoViewEventDispatcher? = null
 ) : JPanel(), Disposable, DisposingHub {
 
-    private val skikoView = SvgSkikoViewAwt(svg, eventDispatcher)
+    // ========================================================
+    // Note about `handleSkikoEvents = false`:
+    //
+    // In Compose-desktop env. SkikoView DOESN'T receive SkikoGestureEvent etc.
+    // So we have to receive events in parent component and dispatch them to SkikoVew.
+    //
+    // In Compose-android there is no such issue: SkikoView DOES receive SkikoGestureEvent etc.
+    //
+    // In Swing env. SkikoView DOES receive SkikoGestureEvent etc. AND
+    // the parent component DOESN'T receive mouse events.
+    //
+    // So in Swing we must rely on `SkikoView.onGestureEvent()` etc.
+    //
+    // June 22 '23, Skiko v.0.7.63
+    // ========================================================
+
+    /**
+     *  Use to create a simple SVG view without event handling.
+     */
+    constructor(
+        svg: SvgSvgElement
+    ) : this(
+        svg = svg,
+        isComposeDesktop = false, // Doesn't matter without 'eventDispatcher'
+        eventDispatcher = null
+    )
+
+    private val skikoView = SvgSkikoViewAwt(
+        svg = svg,
+        handleSkikoEvents = !isComposeDesktop,
+        eventDispatcher
+    )
     private val registrations = CompositeRegistration()
 
     val eventDispatcher: SkikoViewEventDispatcher
@@ -51,12 +83,12 @@ class SvgPanel constructor(
         return skikoView.skiaLayer.preferredSize
     }
 
-    override fun paint(g: Graphics?) {
+    override fun paintComponent(g: Graphics?) {
         // Layout in the parent component (namely GridBagLayout in PlotPanel)
         // sets child size to 1 x 1 px during window re-sizing.
         // Ignore "paint" while thw window is being re-sized.
         if (width > 1 && height > 1) {
-            super.paint(g)
+            super.paintComponent(g)
         }
     }
 
