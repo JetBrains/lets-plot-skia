@@ -22,16 +22,16 @@ kotlin {
     android()
 
     sourceSets {
-        val commonMain by getting {
+        named("commonMain") {
         }
 
-        val commonTest by getting {
+        named("commonTest") {
             dependencies {
                 implementation(kotlin("test"))
             }
         }
 
-        val androidMain by getting {
+        named("androidMain") {
             dependencies {
                 compileOnly("org.jetbrains.skiko:skiko-android:$skikoVersion")
 
@@ -47,7 +47,9 @@ kotlin {
                 implementation("org.jetbrains.lets-plot:vis-svg-portable:$letsPlotVersion") { isTransitive = false }
 
                 // FigureBuildInfo, CompositeFigureSvgRoot, PlotSvgRoot, PlotAssembler, PlotSvgComponent, PlotContainerPortable, MouseEventPeer
-                implementation("org.jetbrains.lets-plot:plot-builder-portable:$letsPlotVersion") { isTransitive = false }
+                implementation("org.jetbrains.lets-plot:plot-builder-portable:$letsPlotVersion") {
+                    isTransitive = false
+                }
 
                 // PlotContainer
                 implementation("org.jetbrains.lets-plot:plot-builder:$letsPlotVersion") { isTransitive = false }

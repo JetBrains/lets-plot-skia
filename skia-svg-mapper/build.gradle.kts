@@ -22,7 +22,7 @@ kotlin {
 
 
     sourceSets {
-        val commonMain by getting {
+        named("commonMain") {
             dependencies {
                 compileOnly("org.jetbrains.skiko:skiko:$skikoVersion")
 
@@ -34,7 +34,7 @@ kotlin {
             }
         }
 
-        val jvmMain by getting {
+        named("jvmMain") {
             dependencies {
 //                compileOnly("org.jetbrains.skiko:skiko-awt:$skikoVersion")
 
@@ -42,7 +42,7 @@ kotlin {
             }
         }
 
-        val androidMain by getting {
+        named("androidMain") {
             dependencies {
                 compileOnly("org.jetbrains.skiko:skiko-android:$skikoVersion")
             }
