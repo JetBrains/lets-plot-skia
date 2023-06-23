@@ -21,11 +21,7 @@ internal class PlotComponentProvider(
         }
     }
 
-    init {
-        LOG.print("New PlotComponentProvider")
-    }
-
-    fun onDispose() {
+    fun dispose() {
         LOG.print("dispose PlotComponentProvider preserveAspectRatio: ${plotViewContainer?.preserveAspectRatio}")
         plotViewContainer?.disposePlotView()
         plotViewContainer = null

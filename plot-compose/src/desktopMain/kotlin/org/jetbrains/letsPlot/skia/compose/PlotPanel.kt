@@ -3,15 +3,16 @@ package org.jetbrains.letsPlot.skia.compose
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.DisposableEffect
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.awt.NoOpUpdate
 import androidx.compose.ui.awt.SwingPanel
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.onGloballyPositioned
 import androidx.compose.ui.platform.LocalDensity
 import org.jetbrains.letsPlot.Figure
 import org.jetbrains.letsPlot.skia.compose.desktop.PlotComponentProvider
+import org.jetbrains.letsPlot.skia.compose.desktop.PlotViewContainer
+import org.jetbrains.letsPlot.skia.compose.util.NaiveLogger
 
-private const val PLOT_PANEL_DISPOSABLE_EFFECT_KEY = "Dispose only when leaves the composition."
+private val LOG = NaiveLogger("PlotPanel")
 
 @Suppress("FunctionName")
 @Composable
@@ -21,18 +22,17 @@ actual fun PlotPanel(
     modifier: Modifier,
     computationMessagesHandler: (List<String>) -> Unit
 ) {
+    LOG.print("Recompose PlotPanel() preserveAspectRatio: $preserveAspectRatio ")
 
     val provider = PlotComponentProvider(
-        figure = figure,
-        preserveAspectRatio = preserveAspectRatio,
         repaintDelay = 300,
         computationMessagesHandler
     )
 
-//    DisposableEffect(provider) {
-    DisposableEffect(PLOT_PANEL_DISPOSABLE_EFFECT_KEY) {
+    DisposableEffect(provider) {
         onDispose {
-            provider.onDispose()
+            LOG.print("DisposableEffect preserveAspectRatio: ${provider.plotViewContainer?.preserveAspectRatio} ")
+            provider.dispose()
         }
     }
 
@@ -40,6 +40,7 @@ actual fun PlotPanel(
 
     @Suppress("NAME_SHADOWING")
     val modifier = modifier.onGloballyPositioned { coordinates ->
+        LOG.print("onGloballyPositioned")
         val size = coordinates.size
         val width = size.width / density
         val height = size.height / density
@@ -50,6 +51,20 @@ actual fun PlotPanel(
         background = Color.White,
         factory = provider.factory,
         modifier = modifier,
-        update = NoOpUpdate  // ToDo: Update when recomposed? See Android actual.
+        update = { plotViewContainer ->
+            // Using the "update" block in Compose-Desktop makes actually no big sense
+            // because when any "mutable state" is changed, the entire composable is rebuilt.
+            // This is in contrast with Compose-Android where only the "update" block is evaluated and
+            // nothing else is re-built/disposed.
+
+            plotViewContainer as PlotViewContainer
+            LOG.print("UPDATE PlotViewContainer preserveAspectRatio ${plotViewContainer.preserveAspectRatio} ->  $preserveAspectRatio")
+
+            plotViewContainer.invalidatePlotView()
+            plotViewContainer.figure = figure
+            plotViewContainer.preserveAspectRatio = preserveAspectRatio
+
+            // Leave it here and wait for 'onGloballyPositioned' event to actually revalidate the plot view.
+        }
     )
 }

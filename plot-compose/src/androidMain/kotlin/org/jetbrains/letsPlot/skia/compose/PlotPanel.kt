@@ -29,7 +29,7 @@ actual fun PlotPanel(
     DisposableEffect(PLOT_PANEL_DISPOSABLE_EFFECT_KEY) {
         onDispose {
             LOG.print("DisposableEffect preserveAspectRatio: ${provider.plotViewContainer?.preserveAspectRatio} ")
-            provider.onDispose()
+            provider.dispose()
         }
     }
 

@@ -42,7 +42,6 @@ internal class PlotViewContainer(
 //            background = ColorRect(if (v) Color.BLUE else Color.RED)
         }
 
-
     init {
         LOG.print("New PlotViewContainer preserveAspectRatio: $preserveAspectRatio")
     }
