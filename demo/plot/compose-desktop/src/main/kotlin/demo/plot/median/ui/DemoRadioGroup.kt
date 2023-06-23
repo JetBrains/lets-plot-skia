@@ -1,4 +1,4 @@
-package demo.plot
+package demo.plot.median.ui
 
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.selection.selectable

@@ -8,6 +8,8 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.Window
 import androidx.compose.ui.window.application
+import demo.plot.median.ui.DemoDropdownMenu
+import demo.plot.median.ui.DemoRadioGroup
 import org.jetbrains.letsPlot.skia.compose.PlotPanel
 import plotSpec.DensitySpec
 import plotSpec.PlotGridSpec
