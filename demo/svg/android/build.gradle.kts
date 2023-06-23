@@ -89,7 +89,7 @@ dependencies {
     implementation(project(":skia-svg-mapper"))
     implementation(project(":skia-android"))
 
-    implementation(project(":demo-svg-mapping-shared"))
+    implementation(project(":demo-svg-shared"))
 
     implementation("org.jetbrains.lets-plot:base-portable:$letsPlotVersion") { isTransitive = false }
     implementation("org.jetbrains.lets-plot:base:$letsPlotVersion") { isTransitive = false }
