@@ -3,6 +3,7 @@
  * Use of this source code is governed by the MIT license that can be found in the LICENSE file.
  */
 
+import com.android.build.gradle.tasks.MergeSourceSetFolders
 import org.jetbrains.kotlin.gradle.tasks.KotlinJvmCompile
 
 plugins {
@@ -35,6 +36,11 @@ val unzipTaskArm64 = tasks.register("unzipNativeArm64", Copy::class) {
         include("*.so")
     }
     includeEmptyDirs = false
+}
+
+tasks.withType<MergeSourceSetFolders>().configureEach {
+    dependsOn(unzipTaskX64)
+    dependsOn(unzipTaskArm64)
 }
 
 tasks.withType<KotlinJvmCompile>().configureEach {
