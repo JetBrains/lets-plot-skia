@@ -3,6 +3,7 @@
  * Use of this source code is governed by the MIT license that can be found in the LICENSE file.
  */
 
+import com.android.build.gradle.tasks.MergeSourceSetFolders
 import org.jetbrains.kotlin.gradle.tasks.KotlinJvmCompile
 
 plugins {
@@ -36,6 +37,11 @@ val unzipTaskArm64 = tasks.register("unzipNativeArm64", Copy::class) {
         include("*.so")
     }
     includeEmptyDirs = false
+}
+
+tasks.withType<MergeSourceSetFolders>().configureEach {
+    dependsOn(unzipTaskX64)
+    dependsOn(unzipTaskArm64)
 }
 
 tasks.withType<KotlinJvmCompile>().configureEach {
@@ -79,6 +85,7 @@ android {
 }
 
 val composeVersion = extra["compose.version"] as String
+val androidxActivityCompose = extra["androidx.activity.compose"] as String
 val skikoVersion = extra["skiko.version"] as String
 val letsPlotVersion = extra["letsPlot.version"] as String
 val letsPlotKotlinVersion = extra["letsPlotKotlin.version"] as String
@@ -88,7 +95,7 @@ dependencies {
     implementation(compose.foundation)
     implementation(compose.material)
     implementation(compose.ui)
-    implementation("androidx.activity:activity-compose:$composeVersion")
+    implementation("androidx.activity:activity-compose:$androidxActivityCompose")
 
     implementation("org.jetbrains.skiko:skiko-android:$skikoVersion")
 
