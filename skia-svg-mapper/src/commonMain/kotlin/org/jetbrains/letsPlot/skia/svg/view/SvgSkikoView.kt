@@ -67,7 +67,8 @@ abstract class SvgSkikoView(
     }
 
     override fun onGestureEvent(event: SkikoGestureEvent) {
-        if (handleSkikoEvents) {
+        //if (handleSkikoEvents) {
+        if (true) {
             eventDispatcher?.let { dispatcher ->
                 event.translate()?.let {
                     dispatcher.dispatchMouseEvent(kind = it.first, e = it.second)
@@ -77,7 +78,8 @@ abstract class SvgSkikoView(
     }
 
     override fun onPointerEvent(event: SkikoPointerEvent) {
-        if (handleSkikoEvents) {
+        //if (handleSkikoEvents) {
+        if (true) {
             eventDispatcher?.let { dispatcher ->
                 event.translate()?.let {
                     dispatcher.dispatchMouseEvent(kind = it.first, e = it.second)

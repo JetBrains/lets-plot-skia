@@ -1,8 +1,8 @@
 package org.jetbrains.letsPlot.skia.compose.desktop
 
 import jetbrains.datalore.base.geometry.DoubleVector
+import org.jetbrains.letsPlot.skia.compose.desktop.DebouncedRunner.Companion.debounce
 import java.awt.Component
-import javax.swing.Timer
 
 internal class PlotComponentProvider(
     repaintDelay: Int, // ms
@@ -12,11 +12,11 @@ internal class PlotComponentProvider(
     var plotViewContainer: PlotViewContainer? = null
     private var containerSize: DoubleVector? = null
 
-    private val refreshTimer: Timer = Timer(repaintDelay) {
+    private val debouncedRefresh: DebouncedRunner = debounce(repaintDelay) {
         if (containerSize != null && plotViewContainer != null) {
             plotViewContainer!!.revalidatePlotView(containerSize!!)
         }
-    }.apply { isRepeats = false }
+    }
 
     val factory: () -> Component = {
         check(plotViewContainer == null) { "An attempt to reuse a single-use view factory." }
@@ -31,18 +31,12 @@ internal class PlotComponentProvider(
         plotViewContainer?.invalidatePlotView()
 
         containerSize = DoubleVector(w.toDouble(), h.toDouble())
-        if (refreshTimer.isRunning) {
-            refreshTimer.restart()
-        } else {
-            refreshTimer.start()
-        }
+        debouncedRefresh.run()
     }
 
     fun dispose() {
         containerSize = null
-        if (refreshTimer.isRunning) {
-            refreshTimer.stop()
-        }
+        debouncedRefresh.cancel()
         plotViewContainer?.disposePlotView()
     }
 }

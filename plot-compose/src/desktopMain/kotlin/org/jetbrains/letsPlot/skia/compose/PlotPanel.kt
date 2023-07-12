@@ -25,7 +25,7 @@ actual fun PlotPanel(
     LOG.print("Recompose PlotPanel() preserveAspectRatio: $preserveAspectRatio ")
 
     val provider = PlotComponentProvider(
-        repaintDelay = 300,
+        repaintDelay = 0, // Should be zero to work in Compose 1.4.1
         computationMessagesHandler
     )
 
