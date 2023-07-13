@@ -3,6 +3,8 @@
 Rendering lets-plot with Skia. This project is a WIP.
 
 ![img.png](img.png)
+
+
 ### Local configuration for Lets-Plot project.
 Skia mapper requires additional modules that have to be published. Checkout the `for-skiko-mapper` branch in `lets-plot` project directory and run the following command:
 > ./gradlew publishAllPublicationsToMavenLocalRepository
@@ -20,6 +22,8 @@ With `Device Manager` from "Tools -> Android -> Device Manager" setup virtual de
 Nexus 5 with Android 12 works well.
 
 Select `demo-android-app` in `Run configurations` to run it.
+
+![](android_demo.gif)
 
 ### Compose demo
 

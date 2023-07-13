@@ -38,7 +38,7 @@ subprojects {
         google()
 
 
-//        mavenLocal()
+        mavenLocal()
         localProps["maven.repo.local"]?.let {
             mavenLocal {
                 url = uri(it)
