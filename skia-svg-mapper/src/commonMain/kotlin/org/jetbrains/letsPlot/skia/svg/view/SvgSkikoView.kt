@@ -18,7 +18,6 @@ import kotlin.math.ceil
 
 abstract class SvgSkikoView(
     svg: SvgSvgElement,
-    private val handleSkikoEvents: Boolean,
     eventDispatcher: SkikoViewEventDispatcher?
 ) : SkikoView, Disposable {
 
@@ -67,23 +66,17 @@ abstract class SvgSkikoView(
     }
 
     override fun onGestureEvent(event: SkikoGestureEvent) {
-        //if (handleSkikoEvents) {
-        if (true) {
-            eventDispatcher?.let { dispatcher ->
-                event.translate()?.let {
-                    dispatcher.dispatchMouseEvent(kind = it.first, e = it.second)
-                }
+        eventDispatcher?.let { dispatcher ->
+            event.translate()?.let {
+                dispatcher.dispatchMouseEvent(kind = it.first, e = it.second)
             }
         }
     }
 
     override fun onPointerEvent(event: SkikoPointerEvent) {
-        //if (handleSkikoEvents) {
-        if (true) {
-            eventDispatcher?.let { dispatcher ->
-                event.translate()?.let {
-                    dispatcher.dispatchMouseEvent(kind = it.first, e = it.second)
-                }
+        eventDispatcher?.let { dispatcher ->
+            event.translate()?.let {
+                dispatcher.dispatchMouseEvent(kind = it.first, e = it.second)
             }
         }
     }

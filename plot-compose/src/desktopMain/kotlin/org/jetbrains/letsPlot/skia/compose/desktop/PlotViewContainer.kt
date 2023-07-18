@@ -67,7 +67,6 @@ class PlotViewContainer(
         val plotComponent = MonolithicSkiaAwt.buildPlotFromProcessedSpecs(
             plotSize = plotSize,
             plotSpec = processedSpec as MutableMap<String, Any>,
-            isComposeDesktop = true
         ) { messages ->
             if (dispatchComputationMessages) {
                 // do once

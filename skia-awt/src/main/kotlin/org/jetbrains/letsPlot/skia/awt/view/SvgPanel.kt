@@ -15,27 +15,10 @@ import java.awt.Point
 import java.awt.Rectangle
 import javax.swing.JPanel
 
-class SvgPanel constructor(
+class SvgPanel(
     svg: SvgSvgElement,
-    isComposeDesktop: Boolean,
     eventDispatcher: SkikoViewEventDispatcher? = null
 ) : JPanel(), Disposable, DisposingHub {
-
-    // ========================================================
-    // Note about `handleSkikoEvents = false`:
-    //
-    // In Compose-desktop env. SkikoView DOESN'T receive SkikoGestureEvent etc.
-    // So we have to receive events in parent component and dispatch them to SkikoVew.
-    //
-    // In Compose-android there is no such issue: SkikoView DOES receive SkikoGestureEvent etc.
-    //
-    // In Swing env. SkikoView DOES receive SkikoGestureEvent etc. AND
-    // the parent component DOESN'T receive mouse events.
-    //
-    // So in Swing we must rely on `SkikoView.onGestureEvent()` etc.
-    //
-    // June 22 '23, Skiko v.0.7.63
-    // ========================================================
 
     /**
      *  Use to create a simple SVG view without event handling.
@@ -44,15 +27,10 @@ class SvgPanel constructor(
         svg: SvgSvgElement
     ) : this(
         svg = svg,
-        isComposeDesktop = false, // Doesn't matter without 'eventDispatcher'
         eventDispatcher = null
     )
 
-    private val skikoView = SvgSkikoViewAwt(
-        svg = svg,
-        handleSkikoEvents = !isComposeDesktop,
-        eventDispatcher
-    )
+    private val skikoView = SvgSkikoViewAwt(svg, eventDispatcher)
     private val registrations = CompositeRegistration()
 
     val eventDispatcher: SkikoViewEventDispatcher

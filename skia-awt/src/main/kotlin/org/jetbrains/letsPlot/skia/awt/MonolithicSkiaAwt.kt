@@ -10,13 +10,12 @@ object MonolithicSkiaAwt {
     fun buildPlotFromRawSpecs(
         plotSpec: MutableMap<String, Any>,
         plotSize: DoubleVector?,
-        isComposeDesktop: Boolean,
         computationMessagesHandler: ((List<String>) -> Unit)
     ): JComponent {
         return try {
             @Suppress("NAME_SHADOWING")
             val plotSpec = MonolithicCommon.processRawSpecs(plotSpec, frontendOnly = false)
-            buildPlotFromProcessedSpecs(plotSpec, plotSize, isComposeDesktop, computationMessagesHandler)
+            buildPlotFromProcessedSpecs(plotSpec, plotSize, computationMessagesHandler)
         } catch (e: RuntimeException) {
             handleException(e)
         }
@@ -25,7 +24,6 @@ object MonolithicSkiaAwt {
     fun buildPlotFromProcessedSpecs(
         plotSpec: MutableMap<String, Any>,
         plotSize: DoubleVector?,
-        isComposeDesktop: Boolean,
         computationMessagesHandler: (List<String>) -> Unit
     ): JComponent {
         val buildResult = MonolithicCommon.buildPlotsFromProcessedSpecs(
@@ -46,7 +44,7 @@ object MonolithicSkiaAwt {
 
         return if (success.buildInfos.size == 1) {
             val buildInfo = success.buildInfos.single()
-            FigureToAwt(buildInfo, isComposeDesktop).eval()
+            FigureToAwt(buildInfo).eval()
         } else {
             throw IllegalArgumentException("GGBunch is not supported.")
         }

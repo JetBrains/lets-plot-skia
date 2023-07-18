@@ -11,7 +11,6 @@ class SvgSkikoViewAndroid constructor(
     eventDispatcher: SkikoViewEventDispatcher?
 ) : SvgSkikoView(
     svg = svg,
-    handleSkikoEvents = true,    // On Android, SkikoView receives SkikoGestureEvent etc.
     eventDispatcher = eventDispatcher
 ) {
     override fun createSkiaLayer(view: SvgSkikoView): SkiaLayer {
