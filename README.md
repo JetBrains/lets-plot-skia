@@ -5,23 +5,34 @@ Rendering lets-plot with Skia. This project is a WIP.
 ![img.png](img.png)
 
 
-### Local configuration for Lets-Plot project.
-Skia mapper requires additional modules that have to be published. Checkout the `for-skiko-mapper` branch in `lets-plot` project directory and run the following command:
-> ./gradlew publishAllPublicationsToMavenLocalRepository
+### Android demo configuration
 
-### Local configuration for Skia mapper project.
-Add the following property `maven.repo.local=<LETS-PLOT-PROJECT-ROOT>/.maven-publish-dev-repo` to the `local.properties` file.
+- #### With `SDK Manager` 
 
+From menu `Tools -> Android -> SDK Manager` setup an Android SDK.
 
-### Android demo configuration.
+The `local.properties` file will be automatically generated. 
+In case the `local.properties` file didn't appear in the project root:
+ - create it manually
+ - add property `sdk.dir` pointing to the location of the Android SDK on your system. 
 
-With `SDK Manager` from menu "Tools -> Android -> SDK Manager" setup Android SDK. `local.properties` file should be automatically generated. Otherwise add it manually with proper path (like `sdk.dir=/Users/john/Library/Android/sdk`).  
+For example:
+```
+sdk.dir=/Users/john/Library/Android/sdk
+```
 
-With `Device Manager` from "Tools -> Android -> Device Manager" setup virtual device.   
+- #### With `Device Manager`   
+                          
+From menu `Tools -> Android -> Device Manager` setup Android device.
 
-Nexus 10 with Android 12 works well.
+For example, Nexus 10 with Android 12 works well.
 
-Select `demo-android-app` in `Run configurations` to run it.
+### Running Android demos
+
+In `Run configurations`
+- Select `demo-plot-compose-android-min` or `demo-plot-compose-android-median` application
+- Select the `Android` device
+- Click `Run`
 
 ![](android_demo.gif)
 
@@ -44,5 +55,6 @@ https://github.com/JetBrains/skiko/issues/761
 Can't be updated to version `8.0.0` because IDEA doesn't support it:  
 https://youtrack.jetbrains.com/issue/IDEA-317997
 
-#### Compose Multiplatform:
-Since version `1.4.1`, there is a problem when using `repaintDelay` with a value other than 0. For some reason, the plot does not display.
+#### Compose Desktop:
+Since version `1.4.1`, `PlotComponentProvider` do not show plot if the `repaintDelay` value is grater than 0. 
+The reason is yet unknown.
