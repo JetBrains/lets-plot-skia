@@ -1,13 +1,13 @@
 package org.jetbrains.letsPlot.skia.awt.view
 
-import jetbrains.datalore.base.registration.CompositeRegistration
-import jetbrains.datalore.base.registration.Disposable
-import jetbrains.datalore.base.registration.DisposableRegistration
-import jetbrains.datalore.base.registration.DisposingHub
-import jetbrains.datalore.vis.svg.SvgConstants
-import jetbrains.datalore.vis.svg.SvgElementListener
-import jetbrains.datalore.vis.svg.SvgSvgElement
-import jetbrains.datalore.vis.svg.event.SvgAttributeEvent
+import org.jetbrains.letsPlot.commons.registration.CompositeRegistration
+import org.jetbrains.letsPlot.commons.registration.Disposable
+import org.jetbrains.letsPlot.commons.registration.DisposableRegistration
+import org.jetbrains.letsPlot.commons.registration.DisposingHub
+import org.jetbrains.letsPlot.datamodel.svg.dom.SvgConstants
+import org.jetbrains.letsPlot.datamodel.svg.dom.SvgElementListener
+import org.jetbrains.letsPlot.datamodel.svg.dom.SvgSvgElement
+import org.jetbrains.letsPlot.datamodel.svg.event.SvgAttributeEvent
 import org.jetbrains.letsPlot.skia.svg.view.SkikoViewEventDispatcher
 import java.awt.Dimension
 import java.awt.Graphics

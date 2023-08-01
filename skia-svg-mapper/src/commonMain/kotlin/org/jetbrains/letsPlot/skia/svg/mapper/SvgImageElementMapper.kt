@@ -5,9 +5,9 @@
 
 package org.jetbrains.letsPlot.skia.svg.mapper
 
-import jetbrains.datalore.vis.svg.SvgImageElement
-import org.jetbrains.letsPlot.skia.svg.mapper.attr.SvgImageAttrMapping
+import org.jetbrains.letsPlot.datamodel.svg.dom.SvgImageElement
 import org.jetbrains.letsPlot.skia.shape.Image
+import org.jetbrains.letsPlot.skia.svg.mapper.attr.SvgImageAttrMapping
 
 internal class SvgImageElementMapper(
     source: SvgImageElement,

@@ -5,7 +5,7 @@
 
 package org.jetbrains.letsPlot.skia.swing
 
-import jetbrains.datalore.vis.swing.PlotPanel
+import org.jetbrains.letsPlot.awt.plot.component.PlotPanel
 import org.jetbrains.letsPlot.skia.swing.AwtAppEnv.AWT_APP_CONTEXT
 
 open class PlotPanelSkiaSwing(

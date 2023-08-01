@@ -1,6 +1,6 @@
 package org.jetbrains.letsPlot.skia.compose.desktop
 
-import jetbrains.datalore.base.geometry.DoubleVector
+import org.jetbrains.letsPlot.commons.geometry.DoubleVector
 import org.jetbrains.letsPlot.skia.compose.desktop.DebouncedRunner.Companion.debounce
 import java.awt.Component
 

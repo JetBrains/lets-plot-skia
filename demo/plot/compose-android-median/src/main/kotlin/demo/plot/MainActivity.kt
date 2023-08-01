@@ -12,9 +12,7 @@ import androidx.compose.ui.unit.dp
 import demo.plot.ui.DemoDropdownMenu
 import demo.plot.ui.DemoRadioGroup
 import org.jetbrains.letsPlot.skia.compose.PlotPanel
-import plotSpec.DensitySpec
-import plotSpec.PlotGridSpec
-import plotSpec.RasterSpec
+import plotSpec.*
 
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -26,16 +24,8 @@ class MainActivity : ComponentActivity() {
                 "Density" to DensitySpec().createFigure(),
                 "gggrid" to PlotGridSpec().createFigure(),
                 "Raster" to RasterSpec().createFigure(),
-
-// ToDo: In Lets-Plot check that AWT is present in JVN.
-
-// Bar and Violin specs fail on Android:
-//      java.lang.NoClassDefFoundError: Failed resolution of: Ljava/awt/Color;
-//            at org.jetbrains.letsPlot.intern.standardizing.JvmStandardizing.isJvm(JvmStandardizing.kt:30)
-//            at org.jetbrains.letsPlot.intern.standardizing.Standardizing.standardizeValue(Standardizing.kt:22)
-
-//                "Bar" to BarPlotSpec().createFigure(),
-//                "Violin" to ViolinSpec().createFigure(),
+                "Bar" to BarPlotSpec().createFigure(),
+                "Violin" to ViolinSpec().createFigure(),
             )
 
             // ToDo: save/restore state

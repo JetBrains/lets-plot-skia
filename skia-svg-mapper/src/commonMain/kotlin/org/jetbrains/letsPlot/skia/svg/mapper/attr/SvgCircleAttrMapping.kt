@@ -5,7 +5,7 @@
 
 package org.jetbrains.letsPlot.skia.svg.mapper.attr
 
-import jetbrains.datalore.vis.svg.SvgCircleElement
+import org.jetbrains.letsPlot.datamodel.svg.dom.SvgCircleElement
 import org.jetbrains.letsPlot.skia.shape.Circle
 
 internal object SvgCircleAttrMapping : SvgShapeMapping<Circle>() {

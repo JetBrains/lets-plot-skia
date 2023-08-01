@@ -7,12 +7,12 @@ package demo.svgMapping
 
 import demo.svgMapping.utils.DemoBase
 import demo.svgMapping.utils.DemoWindow
-import jetbrains.datalore.base.geometry.DoubleVector
-import jetbrains.datalore.base.values.Color
-import jetbrains.datalore.plot.base.render.svg.GroupComponent
-import jetbrains.datalore.plot.base.render.svg.Text
-import jetbrains.datalore.plot.base.render.svg.TextLabel
-import jetbrains.datalore.vis.svg.*
+import org.jetbrains.letsPlot.commons.geometry.DoubleVector
+import org.jetbrains.letsPlot.commons.values.Color
+import org.jetbrains.letsPlot.core.plot.base.render.svg.GroupComponent
+import org.jetbrains.letsPlot.core.plot.base.render.svg.Text
+import org.jetbrains.letsPlot.core.plot.base.render.svg.TextLabel
+import org.jetbrains.letsPlot.datamodel.svg.dom.*
 
 fun main() {
     with(TextLabelDemo()) {
@@ -117,7 +117,11 @@ private class TextLabelDemo : DemoBase(DEMO_BOX_SIZE) {
             return g
         }
 
-        private fun createTextLabel(hAnchor: Text.HorizontalAnchor, vAnchor: Text.VerticalAnchor, angle: Double): TextLabel {
+        private fun createTextLabel(
+            hAnchor: Text.HorizontalAnchor,
+            vAnchor: Text.VerticalAnchor,
+            angle: Double
+        ): TextLabel {
             val text = "Anchor: " + hAnchor.name + "-" + vAnchor.name + " angle: " + angle + "°"
             val label = TextLabel(text)
             label.addClassName(LABEL_CLASS_NAME)

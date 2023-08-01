@@ -5,10 +5,10 @@
 
 package org.jetbrains.letsPlot.skia.svg.mapper.attr
 
-import jetbrains.datalore.base.values.Color
-import jetbrains.datalore.vis.svg.SvgColors
-import jetbrains.datalore.vis.svg.SvgConstants
-import jetbrains.datalore.vis.svg.SvgShape
+import org.jetbrains.letsPlot.commons.values.Color
+import org.jetbrains.letsPlot.datamodel.svg.dom.SvgColors
+import org.jetbrains.letsPlot.datamodel.svg.dom.SvgConstants
+import org.jetbrains.letsPlot.datamodel.svg.dom.SvgShape
 import org.jetbrains.letsPlot.skia.shape.Figure
 import org.jetbrains.letsPlot.skia.shape.asSkiaColor
 import org.jetbrains.letsPlot.skia.shape.namedColors

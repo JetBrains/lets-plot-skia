@@ -5,22 +5,20 @@
 
 package org.jetbrains.letsPlot.skia.svg.mapper
 
-import jetbrains.datalore.base.encoding.Base64
-import jetbrains.datalore.mapper.core.Mapper
-import jetbrains.datalore.mapper.core.MapperFactory
-import jetbrains.datalore.vis.svg.*
+import org.jetbrains.letsPlot.commons.encoding.Base64
+import org.jetbrains.letsPlot.commons.encoding.RGBEncoder
+import org.jetbrains.letsPlot.commons.logging.PortableLogging
+import org.jetbrains.letsPlot.datamodel.mapping.framework.Mapper
+import org.jetbrains.letsPlot.datamodel.mapping.framework.MapperFactory
+import org.jetbrains.letsPlot.datamodel.svg.dom.*
 import org.jetbrains.letsPlot.skia.shape.*
-import org.jetbrains.letsPlot.skia.shape.Element
-import org.jetbrains.letsPlot.skia.shape.Group
-import org.jetbrains.letsPlot.skia.shape.Image
-import org.jetbrains.letsPlot.skia.shape.Text
 import org.jetbrains.skia.ColorAlphaType
 import org.jetbrains.skia.EncodedImageFormat
 import org.jetbrains.skia.ImageInfo
 
 internal class SvgNodeMapperFactory(private val peer: SvgSkiaPeer) : MapperFactory<SvgNode, Element> {
     companion object {
-        private val LOG = jetbrains.datalore.base.logging.PortableLogging.logger(SvgNodeMapperFactory::class)
+        private val LOG = PortableLogging.logger(SvgNodeMapperFactory::class)
     }
 
     override fun createMapper(source: SvgNode): Mapper<out SvgNode, out Element> {
@@ -37,6 +35,7 @@ internal class SvgNodeMapperFactory(private val peer: SvgSkiaPeer) : MapperFacto
                 target as Group,
                 peer
             )
+
             is SvgGElement -> SvgGElementMapper(src, target as Group, peer)
             is SvgSvgElement -> SvgSvgElementMapper(src, peer)
             is SvgTextElement -> SvgTextElementMapper(src, target as Text, peer)
@@ -46,12 +45,13 @@ internal class SvgNodeMapperFactory(private val peer: SvgSkiaPeer) : MapperFacto
                 target as Image,
                 peer
             )
+
             is SvgElement -> SvgElementMapper(src, target, peer)
             else -> throw IllegalArgumentException("Unsupported SvgElement: " + src::class.simpleName)
         }
     }
 
-    object SkiaRGBEncoder : SvgImageElementEx.RGBEncoder {
+    object SkiaRGBEncoder : RGBEncoder {
         override fun toDataUrl(width: Int, height: Int, argbValues: IntArray): String {
             val bytes = argbValues.flatMap {
                 listOf(

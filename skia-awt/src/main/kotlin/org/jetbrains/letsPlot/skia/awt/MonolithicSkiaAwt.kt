@@ -1,8 +1,8 @@
 package org.jetbrains.letsPlot.skia.awt
 
-import jetbrains.datalore.base.geometry.DoubleVector
-import jetbrains.datalore.plot.MonolithicCommon
-import jetbrains.datalore.plot.config.FailureHandler
+import org.jetbrains.letsPlot.commons.geometry.DoubleVector
+import org.jetbrains.letsPlot.core.spec.FailureHandler
+import org.jetbrains.letsPlot.core.util.MonolithicCommon
 import javax.swing.JComponent
 import javax.swing.JTextArea
 
@@ -34,7 +34,8 @@ object MonolithicSkiaAwt {
         )
 
         if (buildResult.isError) {
-            val errorMessage = (buildResult as MonolithicCommon.PlotsBuildResult.Error).error
+            val errorMessage =
+                (buildResult as MonolithicCommon.PlotsBuildResult.Error).error
             return createErrorLabel(errorMessage)
         }
 

@@ -3,9 +3,9 @@ package org.jetbrains.letsPlot.skia.android
 import android.content.Context
 import android.view.View
 import android.widget.TextView
-import jetbrains.datalore.base.geometry.DoubleVector
-import jetbrains.datalore.plot.MonolithicCommon
-import jetbrains.datalore.plot.config.FailureHandler
+import org.jetbrains.letsPlot.commons.geometry.DoubleVector
+import org.jetbrains.letsPlot.core.spec.FailureHandler
+import org.jetbrains.letsPlot.core.util.MonolithicCommon
 
 object MonolithicSkiaAndroid {
     fun buildPlotFromRawSpecs(

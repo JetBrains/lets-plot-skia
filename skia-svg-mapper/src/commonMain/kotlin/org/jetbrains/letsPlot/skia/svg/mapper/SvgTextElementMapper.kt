@@ -5,16 +5,16 @@
 
 package org.jetbrains.letsPlot.skia.svg.mapper
 
-import jetbrains.datalore.base.observable.collections.ObservableCollection
-import jetbrains.datalore.base.observable.property.ReadableProperty
-import jetbrains.datalore.base.observable.property.SimpleCollectionProperty
-import jetbrains.datalore.base.observable.property.WritableProperty
-import jetbrains.datalore.mapper.core.Synchronizers
-import jetbrains.datalore.vis.StyleSheet
-import jetbrains.datalore.vis.svg.*
-import org.jetbrains.letsPlot.skia.svg.mapper.attr.SvgTextElementAttrMapping
+import org.jetbrains.letsPlot.commons.intern.observable.collections.ObservableCollection
+import org.jetbrains.letsPlot.commons.intern.observable.property.ReadableProperty
+import org.jetbrains.letsPlot.commons.intern.observable.property.SimpleCollectionProperty
+import org.jetbrains.letsPlot.commons.intern.observable.property.WritableProperty
+import org.jetbrains.letsPlot.datamodel.mapping.framework.Synchronizers
+import org.jetbrains.letsPlot.datamodel.svg.dom.*
+import org.jetbrains.letsPlot.datamodel.svg.style.StyleSheet
 import org.jetbrains.letsPlot.skia.shape.Text
 import org.jetbrains.letsPlot.skia.shape.asSkiaColor
+import org.jetbrains.letsPlot.skia.svg.mapper.attr.SvgTextElementAttrMapping
 import org.jetbrains.skia.FontStyle
 
 internal class SvgTextElementMapper(

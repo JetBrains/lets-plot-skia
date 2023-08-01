@@ -1,7 +1,7 @@
 package svgModel
 
-import jetbrains.datalore.base.values.Color
-import jetbrains.datalore.vis.svg.*
+import org.jetbrains.letsPlot.commons.values.Color
+import org.jetbrains.letsPlot.datamodel.svg.dom.*
 
 object DemoModelB {
     fun createModel(): SvgSvgElement {

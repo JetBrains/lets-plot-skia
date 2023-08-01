@@ -1,6 +1,6 @@
 package org.jetbrains.letsPlot.skia.shape
 
-import jetbrains.datalore.base.values.Color
+import org.jetbrains.letsPlot.commons.values.Color
 import org.jetbrains.skia.Color4f
 
 

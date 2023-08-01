@@ -5,9 +5,9 @@
 
 package org.jetbrains.letsPlot.skia.svg.mapper
 
-import jetbrains.datalore.mapper.core.Synchronizers
-import jetbrains.datalore.vis.svg.SvgGElement
-import jetbrains.datalore.vis.svgMapper.SvgNodeSubtreeGeneratingSynchronizer
+import org.jetbrains.letsPlot.datamodel.mapping.framework.Synchronizers
+import org.jetbrains.letsPlot.datamodel.mapping.svg.shared.SvgNodeSubtreeGeneratingSynchronizer
+import org.jetbrains.letsPlot.datamodel.svg.dom.SvgGElement
 import org.jetbrains.letsPlot.skia.shape.Group
 
 internal class SvgGElementMapper(

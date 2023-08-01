@@ -5,16 +5,16 @@
 
 package org.jetbrains.letsPlot.skia.svg.mapper
 
-import jetbrains.datalore.base.registration.Registration
-import jetbrains.datalore.vis.svg.SvgElement
-import jetbrains.datalore.vis.svg.SvgTextNode
-import jetbrains.datalore.vis.svg.event.SvgEventSpec
-import jetbrains.datalore.vis.svg.slim.SvgSlimElements
-import jetbrains.datalore.vis.svg.slim.SvgSlimNode
-import jetbrains.datalore.vis.svgMapper.TargetPeer
+import org.jetbrains.letsPlot.commons.registration.Registration
+import org.jetbrains.letsPlot.datamodel.mapping.svg.shared.TargetPeer
+import org.jetbrains.letsPlot.datamodel.svg.dom.SvgElement
+import org.jetbrains.letsPlot.datamodel.svg.dom.SvgTextNode
+import org.jetbrains.letsPlot.datamodel.svg.dom.slim.SvgSlimElements
+import org.jetbrains.letsPlot.datamodel.svg.dom.slim.SvgSlimNode
+import org.jetbrains.letsPlot.datamodel.svg.event.SvgEventSpec
+import org.jetbrains.letsPlot.skia.shape.*
 import org.jetbrains.letsPlot.skia.svg.mapper.SvgUtils.getChildren
 import org.jetbrains.letsPlot.skia.svg.mapper.SvgUtils.newElement
-import org.jetbrains.letsPlot.skia.shape.*
 
 internal class SkiaTargetPeer : TargetPeer<Element> {
     override fun appendChild(target: Element, child: Element) {

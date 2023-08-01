@@ -3,11 +3,11 @@ package org.jetbrains.letsPlot.skia.android.view
 import android.annotation.SuppressLint
 import android.content.Context
 import android.view.ViewGroup
-import jetbrains.datalore.base.registration.CompositeRegistration
-import jetbrains.datalore.base.registration.Disposable
-import jetbrains.datalore.base.registration.DisposableRegistration
-import jetbrains.datalore.base.registration.DisposingHub
-import jetbrains.datalore.vis.svg.SvgSvgElement
+import org.jetbrains.letsPlot.commons.registration.CompositeRegistration
+import org.jetbrains.letsPlot.commons.registration.Disposable
+import org.jetbrains.letsPlot.commons.registration.DisposableRegistration
+import org.jetbrains.letsPlot.commons.registration.DisposingHub
+import org.jetbrains.letsPlot.datamodel.svg.dom.SvgSvgElement
 import org.jetbrains.letsPlot.skia.svg.view.SkikoViewEventDispatcher
 
 @SuppressLint("ViewConstructor")

@@ -1,6 +1,6 @@
 package org.jetbrains.letsPlot.skia.swing
 
-import jetbrains.datalore.vis.swing.ApplicationContext
+import org.jetbrains.letsPlot.awt.plot.component.ApplicationContext
 import javax.swing.SwingUtilities
 
 internal object AwtAppEnv {

@@ -19,28 +19,8 @@ dependencies {
     implementation(project(":skia-svg-mapper"))
     implementation(project(":skia-awt"))
 
-    // PortableLogging
-    implementation("org.jetbrains.lets-plot:base-portable:$letsPlotVersion") { isTransitive = false }
-
-    // SvgSvgElement, SvgNodeContainer, SvgGElement, SvgTextElement, etc
-    implementation("org.jetbrains.lets-plot:vis-svg-portable:$letsPlotVersion") { isTransitive = false }
-
-    // MonolithicCommon, PlotConfig, PlotsBuildResult
-    implementation("org.jetbrains.lets-plot:plot-config-portable:$letsPlotVersion") { isTransitive = false }
-
-    // jetbrains.datalore.vis.swing.PlotSpecComponentProvider (For Skia in Swing app), PlotPanel
-    api("org.jetbrains.lets-plot:vis-swing-common:$letsPlotVersion") { isTransitive = false }
-
-//    implementation("io.github.microutils:kotlin-logging-jvm:2.0.5") // TODO remove with other { isTransitive = false }
+    compileOnly("org.jetbrains.lets-plot:lets-plot-common:$letsPlotVersion")
+    compileOnly("org.jetbrains.lets-plot:platf-awt:$letsPlotVersion")
 
     testImplementation(kotlin("test"))
 }
-
-//android {
-//    compileSdk = 31
-//    sourceSets["main"].manifest.srcFile("src/androidMain/AndroidManifest.xml")
-//    defaultConfig {
-//        minSdk = 21
-//        targetSdk = 31
-//    }
-//}

@@ -5,8 +5,8 @@
 
 package org.jetbrains.letsPlot.skia.svg.mapper.attr
 
-import jetbrains.datalore.vis.svg.SvgPathData
-import jetbrains.datalore.vis.svg.SvgPathElement
+import org.jetbrains.letsPlot.datamodel.svg.dom.SvgPathData
+import org.jetbrains.letsPlot.datamodel.svg.dom.SvgPathElement
 import org.jetbrains.letsPlot.skia.shape.Path
 import org.jetbrains.skia.Path.Companion.makeFromSVGString
 

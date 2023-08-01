@@ -5,7 +5,7 @@
 
 package org.jetbrains.letsPlot.skia.svg.mapper.attr
 
-import jetbrains.datalore.vis.svg.SvgSvgElement
+import org.jetbrains.letsPlot.datamodel.svg.dom.SvgSvgElement
 import org.jetbrains.letsPlot.skia.shape.Pane
 
 internal object SvgSvgAttrMapping : SvgAttrMapping<Pane>() {

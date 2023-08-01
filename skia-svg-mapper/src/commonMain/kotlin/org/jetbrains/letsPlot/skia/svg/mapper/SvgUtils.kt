@@ -6,7 +6,7 @@
 package org.jetbrains.letsPlot.skia.svg.mapper
 
 
-import jetbrains.datalore.vis.svg.*
+import org.jetbrains.letsPlot.datamodel.svg.dom.*
 import org.jetbrains.letsPlot.skia.shape.*
 import org.jetbrains.letsPlot.skia.svg.mapper.attr.*
 import kotlin.reflect.KClass

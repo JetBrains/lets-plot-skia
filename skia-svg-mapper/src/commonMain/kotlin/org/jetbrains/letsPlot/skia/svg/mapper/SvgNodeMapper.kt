@@ -6,9 +6,9 @@
 package org.jetbrains.letsPlot.skia.svg.mapper
 
 
-import jetbrains.datalore.mapper.core.Mapper
-import jetbrains.datalore.mapper.core.MappingContext
-import jetbrains.datalore.vis.svg.SvgNode
+import org.jetbrains.letsPlot.datamodel.mapping.framework.Mapper
+import org.jetbrains.letsPlot.datamodel.mapping.framework.MappingContext
+import org.jetbrains.letsPlot.datamodel.svg.dom.SvgNode
 import org.jetbrains.letsPlot.skia.shape.Element
 
 internal open class SvgNodeMapper<SourceT : SvgNode, TargetT : Element>(

@@ -2,8 +2,8 @@ package org.jetbrains.letsPlot.skia.android
 
 import android.content.Context
 import android.util.TypedValue
-import jetbrains.datalore.base.geometry.DoubleRectangle
-import jetbrains.datalore.base.geometry.Rectangle
+import org.jetbrains.letsPlot.commons.geometry.DoubleRectangle
+import org.jetbrains.letsPlot.commons.geometry.Rectangle
 
 object SizeConverter {
 

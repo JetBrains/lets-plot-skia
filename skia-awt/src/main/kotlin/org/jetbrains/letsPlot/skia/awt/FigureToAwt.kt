@@ -1,17 +1,17 @@
 package org.jetbrains.letsPlot.skia.awt
 
-import jetbrains.datalore.base.event.MouseEvent
-import jetbrains.datalore.base.event.MouseEventSpec
-import jetbrains.datalore.base.geometry.DoubleRectangle
-import jetbrains.datalore.base.geometry.DoubleVector
-import jetbrains.datalore.base.geometry.Vector
-import jetbrains.datalore.base.registration.Disposable
-import jetbrains.datalore.base.registration.DisposingHub
-import jetbrains.datalore.plot.DisposableJPanel
-import jetbrains.datalore.plot.builder.FigureBuildInfo
-import jetbrains.datalore.plot.builder.PlotContainer
-import jetbrains.datalore.plot.builder.PlotSvgRoot
-import jetbrains.datalore.plot.builder.subPlots.CompositeFigureSvgRoot
+import org.jetbrains.letsPlot.awt.plot.DisposableJPanel
+import org.jetbrains.letsPlot.commons.event.MouseEvent
+import org.jetbrains.letsPlot.commons.event.MouseEventSpec
+import org.jetbrains.letsPlot.commons.geometry.DoubleRectangle
+import org.jetbrains.letsPlot.commons.geometry.DoubleVector
+import org.jetbrains.letsPlot.commons.geometry.Vector
+import org.jetbrains.letsPlot.commons.registration.Disposable
+import org.jetbrains.letsPlot.commons.registration.DisposingHub
+import org.jetbrains.letsPlot.core.plot.builder.FigureBuildInfo
+import org.jetbrains.letsPlot.core.plot.builder.PlotContainer
+import org.jetbrains.letsPlot.core.plot.builder.PlotSvgRoot
+import org.jetbrains.letsPlot.core.plot.builder.subPlots.CompositeFigureSvgRoot
 import org.jetbrains.letsPlot.skia.awt.view.SvgPanel
 import org.jetbrains.letsPlot.skia.svg.view.SkikoViewEventDispatcher
 import java.awt.Point
@@ -146,7 +146,7 @@ internal class FigureToAwt(
                     kind,
                     MouseEvent(
                         v = Vector(loc.x - target.x, loc.y - target.y),
-                        button = e.button!!,
+                        button = e.button,
                         modifiers = e.modifiers
                     )
                 )

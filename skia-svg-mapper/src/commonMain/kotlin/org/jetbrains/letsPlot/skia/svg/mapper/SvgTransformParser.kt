@@ -5,8 +5,8 @@
 
 package org.jetbrains.letsPlot.skia.svg.mapper
 
-import jetbrains.datalore.vis.svg.SvgPathData.Action
-import jetbrains.datalore.vis.svg.SvgTransform
+import org.jetbrains.letsPlot.datamodel.svg.dom.SvgPathData
+import org.jetbrains.letsPlot.datamodel.svg.dom.SvgTransform
 import org.jetbrains.skia.Matrix33
 import org.jetbrains.skia.Point
 import kotlin.math.PI
@@ -91,7 +91,7 @@ internal object SvgTransformParser {
     )
         .append(")\\( ?(-?\\d+\\.?\\d*),? ?").pluralAppend(OPTIONAL_PARAM, 5).append("\\)").toString()
 
-    private val PATH = MyPatternBuilder("(").charset(Action.values()).append(") ?")
+    private val PATH = MyPatternBuilder("(").charset(SvgPathData.Action.values()).append(") ?")
         .pluralAppend(OPTIONAL_PARAM, 7).toString()
 
     private val TRANSFORM_EXP = Regex(TRANSFORM) //RegExp.compile(TRANSFORM, "g")
@@ -174,7 +174,7 @@ internal object SvgTransformParser {
             return this
         }
 
-        internal fun charset(actions: Array<Action>): MyPatternBuilder {
+        internal fun charset(actions: Array<SvgPathData.Action>): MyPatternBuilder {
             sb.append('[')
             for (v in actions) {
                 sb.append(v.absoluteCmd())

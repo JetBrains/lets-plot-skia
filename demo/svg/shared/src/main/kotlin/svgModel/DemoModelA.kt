@@ -1,13 +1,13 @@
 package svgModel
 
-import jetbrains.datalore.base.geometry.DoubleVector
-import jetbrains.datalore.base.values.Color
-import jetbrains.datalore.base.values.FontFace
-import jetbrains.datalore.base.values.FontFamily
-import jetbrains.datalore.vis.StyleSheet
-import jetbrains.datalore.vis.TextStyle
-import jetbrains.datalore.vis.svg.*
-import jetbrains.datalore.vis.svg.slim.SvgSlimElements
+import org.jetbrains.letsPlot.commons.geometry.DoubleVector
+import org.jetbrains.letsPlot.commons.values.Color
+import org.jetbrains.letsPlot.commons.values.FontFace
+import org.jetbrains.letsPlot.commons.values.FontFamily
+import org.jetbrains.letsPlot.datamodel.svg.dom.*
+import org.jetbrains.letsPlot.datamodel.svg.dom.slim.SvgSlimElements
+import org.jetbrains.letsPlot.datamodel.svg.style.StyleSheet
+import org.jetbrains.letsPlot.datamodel.svg.style.TextStyle
 
 object DemoModelA {
     fun createModel(): SvgSvgElement {

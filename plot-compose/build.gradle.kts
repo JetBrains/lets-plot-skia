@@ -13,6 +13,7 @@ val skikoVersion = extra["skiko.version"] as String
 val composeVersion = extra["compose.version"] as String
 val letsPlotVersion = extra["letsPlot.version"] as String
 val letsPlotKotlinVersion = extra["letsPlotKotlin.version"] as String
+val kotlinLoggingVersion = extra["kotlinLogging.version"] as String
 
 kotlin {
     jvm("desktop") {
@@ -33,13 +34,13 @@ kotlin {
                 compileOnly("org.jetbrains.skiko:skiko:$skikoVersion")
                 compileOnly("org.jetbrains.lets-plot:lets-plot-kotlin-kernel:$letsPlotKotlinVersion")
 
-                implementation("org.jetbrains.lets-plot:base-portable:$letsPlotVersion") { isTransitive = false }
-                implementation("org.jetbrains.lets-plot:plot-builder-portable:$letsPlotVersion") {
-                    isTransitive = false
-                }
-                implementation("org.jetbrains.lets-plot:plot-config-portable:$letsPlotVersion") { isTransitive = false }
+                compileOnly("org.jetbrains.lets-plot:commons:$letsPlotVersion")
+                compileOnly("org.jetbrains.lets-plot:datamodel:$letsPlotVersion")
+                compileOnly("org.jetbrains.lets-plot:plot-base:$letsPlotVersion")
+                compileOnly("org.jetbrains.lets-plot:plot-builder:$letsPlotVersion")
+                compileOnly("org.jetbrains.lets-plot:plot-stem:$letsPlotVersion")
 
-                implementation("io.github.microutils:kotlin-logging:2.0.5") // TODO remove with other { isTransitive = false }
+                compileOnly("org.jetbrains.lets-plot:deprecated-in-v4:$letsPlotVersion")
             }
         }
 
@@ -49,13 +50,14 @@ kotlin {
 //                compileOnly("org.jetbrains.skiko:skiko-awt:$skikoVersion")
                 api(project(":skia-awt"))
 
-                implementation("io.github.microutils:kotlin-logging-jvm:2.0.5") // TODO remove with other { isTransitive = false }
+                compileOnly("io.github.microutils:kotlin-logging-jvm:$kotlinLoggingVersion")
             }
         }
 
         named("androidMain") {
             dependencies {
                 compileOnly("org.jetbrains.skiko:skiko-android:$skikoVersion")
+
                 api(project(":skia-android"))
             }
         }

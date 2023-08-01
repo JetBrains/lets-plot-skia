@@ -5,8 +5,8 @@
 
 package org.jetbrains.letsPlot.skia.svg.mapper
 
-import jetbrains.datalore.vis.StyleSheet
-import jetbrains.datalore.vis.svg.SvgStyleElement
+import org.jetbrains.letsPlot.datamodel.svg.dom.SvgStyleElement
+import org.jetbrains.letsPlot.datamodel.svg.style.StyleSheet
 import org.jetbrains.letsPlot.skia.shape.Group
 
 internal class SvgStyleElementMapper(

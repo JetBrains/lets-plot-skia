@@ -5,12 +5,12 @@
 
 package org.jetbrains.letsPlot.skia.swing
 
-import jetbrains.datalore.plot.MonolithicCommon
-import jetbrains.datalore.vis.swing.ApplicationContext
-import jetbrains.datalore.vis.swing.DefaultPlotContentPane
-import jetbrains.datalore.vis.swing.PlotPanel
-import jetbrains.datalore.vis.swing.PlotViewerWindowBase
 import org.jetbrains.letsPlot.Figure
+import org.jetbrains.letsPlot.awt.plot.component.ApplicationContext
+import org.jetbrains.letsPlot.awt.plot.component.DefaultPlotContentPane
+import org.jetbrains.letsPlot.awt.plot.component.PlotPanel
+import org.jetbrains.letsPlot.awt.plot.component.PlotViewerWindowBase
+import org.jetbrains.letsPlot.core.util.MonolithicCommon
 import org.jetbrains.letsPlot.intern.toSpec
 import org.jetbrains.letsPlot.skia.swing.AwtAppEnv.AWT_APP_CONTEXT
 import java.awt.Dimension

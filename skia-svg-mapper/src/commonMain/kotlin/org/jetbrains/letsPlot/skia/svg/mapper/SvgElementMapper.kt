@@ -5,13 +5,14 @@
 
 package org.jetbrains.letsPlot.skia.svg.mapper
 
-import jetbrains.datalore.base.registration.Registration
-import jetbrains.datalore.mapper.core.Synchronizer
-import jetbrains.datalore.mapper.core.SynchronizerContext
-import jetbrains.datalore.vis.svg.SvgElement
-import jetbrains.datalore.vis.svg.SvgElementListener
-import jetbrains.datalore.vis.svg.event.SvgAttributeEvent
-import jetbrains.datalore.vis.svg.event.SvgEventSpec
+import org.jetbrains.letsPlot.commons.registration.Registration
+import org.jetbrains.letsPlot.datamodel.mapping.framework.Mapper
+import org.jetbrains.letsPlot.datamodel.mapping.framework.Synchronizer
+import org.jetbrains.letsPlot.datamodel.mapping.framework.SynchronizerContext
+import org.jetbrains.letsPlot.datamodel.svg.dom.SvgElement
+import org.jetbrains.letsPlot.datamodel.svg.dom.SvgElementListener
+import org.jetbrains.letsPlot.datamodel.svg.event.SvgAttributeEvent
+import org.jetbrains.letsPlot.datamodel.svg.event.SvgEventSpec
 import org.jetbrains.letsPlot.skia.shape.Element
 
 internal open class SvgElementMapper<SourceT : SvgElement, TargetT : Element>(
@@ -28,7 +29,7 @@ internal open class SvgElementMapper<SourceT : SvgElement, TargetT : Element>(
 
     open fun applyStyle() {}
 
-    override fun registerSynchronizers(conf: SynchronizersConfiguration) {
+    override fun registerSynchronizers(conf: Mapper.SynchronizersConfiguration) {
         super.registerSynchronizers(conf)
 
         conf.add(object : Synchronizer {

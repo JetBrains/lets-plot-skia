@@ -7,12 +7,12 @@ package demo.svgMapping
 
 import demo.svgMapping.utils.DemoBase
 import demo.svgMapping.utils.DemoWindow
-import jetbrains.datalore.base.geometry.DoubleVector
-import jetbrains.datalore.base.values.Color
-import jetbrains.datalore.plot.base.render.svg.GroupComponent
-import jetbrains.datalore.plot.builder.interact.TooltipSpec
-import jetbrains.datalore.plot.builder.presentation.Style
-import jetbrains.datalore.plot.builder.tooltip.TooltipBox
+import org.jetbrains.letsPlot.commons.geometry.DoubleVector
+import org.jetbrains.letsPlot.commons.values.Color
+import org.jetbrains.letsPlot.core.plot.base.render.svg.GroupComponent
+import org.jetbrains.letsPlot.core.plot.builder.presentation.Style
+import org.jetbrains.letsPlot.core.plot.builder.tooltip.component.TooltipBox
+import org.jetbrains.letsPlot.core.plot.builder.tooltip.spec.TooltipSpec
 import java.awt.EventQueue.invokeLater
 
 fun main() {

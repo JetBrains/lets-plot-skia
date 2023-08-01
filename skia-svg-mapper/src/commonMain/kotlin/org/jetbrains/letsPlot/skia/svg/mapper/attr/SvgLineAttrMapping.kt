@@ -5,7 +5,7 @@
 
 package org.jetbrains.letsPlot.skia.svg.mapper.attr
 
-import jetbrains.datalore.vis.svg.SvgLineElement
+import org.jetbrains.letsPlot.datamodel.svg.dom.SvgLineElement
 import org.jetbrains.letsPlot.skia.shape.Line
 
 internal object SvgLineAttrMapping : SvgShapeMapping<Line>() {

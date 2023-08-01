@@ -4,16 +4,16 @@ import android.annotation.SuppressLint
 import android.content.Context
 import android.view.View
 import android.widget.RelativeLayout
-import jetbrains.datalore.base.geometry.DoubleRectangle
-import jetbrains.datalore.base.geometry.DoubleVector
-import jetbrains.datalore.base.geometry.Vector
-import jetbrains.datalore.base.registration.Disposable
-import jetbrains.datalore.plot.MonolithicCommon
 import org.jetbrains.letsPlot.Figure
+import org.jetbrains.letsPlot.commons.geometry.DoubleRectangle
+import org.jetbrains.letsPlot.commons.geometry.DoubleVector
+import org.jetbrains.letsPlot.commons.geometry.Vector
+import org.jetbrains.letsPlot.commons.registration.Disposable
+import org.jetbrains.letsPlot.core.util.MonolithicCommon
+import org.jetbrains.letsPlot.core.util.PlotSizeUtil
 import org.jetbrains.letsPlot.intern.toSpec
 import org.jetbrains.letsPlot.skia.android.MonolithicSkiaAndroid
 import org.jetbrains.letsPlot.skia.compose.util.NaiveLogger
-import org.jetbrains.letsPlot.skia.compose.util.PlotSizeUtil
 
 private val LOG = NaiveLogger("PlotViewContainer")
 

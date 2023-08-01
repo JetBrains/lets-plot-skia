@@ -1,7 +1,7 @@
 package svgModel
 
-import jetbrains.datalore.base.geometry.DoubleRectangle
-import jetbrains.datalore.vis.svg.*
+import org.jetbrains.letsPlot.commons.geometry.DoubleRectangle
+import org.jetbrains.letsPlot.datamodel.svg.dom.*
 
 object DemoModelC {
     fun createModel(): SvgSvgElement {

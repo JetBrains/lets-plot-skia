@@ -1,7 +1,7 @@
 package org.jetbrains.letsPlot.skia.swing
 
-import jetbrains.datalore.plot.MonolithicCommon
 import org.jetbrains.letsPlot.Figure
+import org.jetbrains.letsPlot.core.util.MonolithicCommon
 import org.jetbrains.letsPlot.intern.toSpec
 import javax.swing.JComponent
 

@@ -5,7 +5,7 @@
 
 package org.jetbrains.letsPlot.skia.svg.mapper.attr
 
-import jetbrains.datalore.vis.svg.SvgEllipseElement
+import org.jetbrains.letsPlot.datamodel.svg.dom.SvgEllipseElement
 import org.jetbrains.letsPlot.skia.shape.Ellipse
 
 internal object SvgEllipseAttrMapping : SvgShapeMapping<Ellipse>() {

@@ -5,8 +5,8 @@
 
 package org.jetbrains.letsPlot.skia.svg.mapper.attr
 
-import jetbrains.datalore.base.encoding.Base64
-import jetbrains.datalore.vis.svg.SvgImageElement
+import org.jetbrains.letsPlot.commons.encoding.Base64
+import org.jetbrains.letsPlot.datamodel.svg.dom.SvgImageElement
 import org.jetbrains.letsPlot.skia.shape.Image
 
 internal object SvgImageAttrMapping : SvgAttrMapping<Image>() {

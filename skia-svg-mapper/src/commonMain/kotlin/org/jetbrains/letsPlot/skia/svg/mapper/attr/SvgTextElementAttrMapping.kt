@@ -5,11 +5,11 @@
 
 package org.jetbrains.letsPlot.skia.svg.mapper.attr
 
-import jetbrains.datalore.vis.svg.SvgConstants
-import jetbrains.datalore.vis.svg.SvgConstants.SVG_TEXT_DY_CENTER
-import jetbrains.datalore.vis.svg.SvgConstants.SVG_TEXT_DY_TOP
-import jetbrains.datalore.vis.svg.SvgTextContent
-import jetbrains.datalore.vis.svg.SvgTextElement
+import org.jetbrains.letsPlot.datamodel.svg.dom.SvgConstants
+import org.jetbrains.letsPlot.datamodel.svg.dom.SvgConstants.SVG_TEXT_DY_CENTER
+import org.jetbrains.letsPlot.datamodel.svg.dom.SvgConstants.SVG_TEXT_DY_TOP
+import org.jetbrains.letsPlot.datamodel.svg.dom.SvgTextContent
+import org.jetbrains.letsPlot.datamodel.svg.dom.SvgTextElement
 import org.jetbrains.letsPlot.skia.shape.Text
 
 internal object SvgTextElementAttrMapping : SvgShapeMapping<Text>() {

@@ -108,18 +108,5 @@ dependencies {
     implementation(project(":plot-compose"))
     implementation(project(":demo-plot-shared"))
 
-    implementation("org.jetbrains.lets-plot:base-portable:$letsPlotVersion") { isTransitive = false }
-    implementation("org.jetbrains.lets-plot:base:$letsPlotVersion") { isTransitive = false }
-    implementation("org.jetbrains.lets-plot:mapper-core:$letsPlotVersion") { isTransitive = false }
-    implementation("org.jetbrains.lets-plot:vis-svg-portable:$letsPlotVersion") { isTransitive = false }
-    implementation("org.jetbrains.lets-plot:vis-svg-mapper:$letsPlotVersion") { isTransitive = false }
-
-    implementation("org.jetbrains.lets-plot:plot-base-portable:$letsPlotVersion") { isTransitive = false }
-    implementation("org.jetbrains.lets-plot:plot-common-portable:$letsPlotVersion") { isTransitive = false }
-    implementation("org.jetbrains.lets-plot:plot-builder:$letsPlotVersion") { isTransitive = false }
-    implementation("org.jetbrains.lets-plot:plot-builder-portable:$letsPlotVersion") { isTransitive = false }
-    implementation("org.jetbrains.lets-plot:plot-config-portable:$letsPlotVersion") { isTransitive = false }
-
-
-//    implementation("io.github.microutils:kotlin-logging-jvm:2.0.5") // TODO remove with other { isTransitive = false }
+    implementation("org.jetbrains.lets-plot:lets-plot-common:$letsPlotVersion")
 }

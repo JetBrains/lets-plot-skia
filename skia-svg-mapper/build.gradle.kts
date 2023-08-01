@@ -10,6 +10,7 @@ plugins {
 
 val skikoVersion = extra["skiko.version"] as String
 val letsPlotVersion = extra["letsPlot.version"] as String
+val kotlinLoggingVersion = extra["kotlinLogging.version"] as String
 
 kotlin {
     jvm {
@@ -22,15 +23,14 @@ kotlin {
 
 
     sourceSets {
-        named("commonMain") {
+        commonMain {
             dependencies {
                 compileOnly("org.jetbrains.skiko:skiko:$skikoVersion")
 
-                implementation("org.jetbrains.lets-plot:base:$letsPlotVersion") { isTransitive = false }
-                implementation("org.jetbrains.lets-plot:base-portable:$letsPlotVersion") { isTransitive = false }
-                implementation("org.jetbrains.lets-plot:mapper-core:$letsPlotVersion") { isTransitive = false }
-                implementation("org.jetbrains.lets-plot:vis-svg-portable:$letsPlotVersion") { isTransitive = false }
-                implementation("org.jetbrains.lets-plot:vis-svg-mapper:$letsPlotVersion") { isTransitive = false }
+                compileOnly("org.jetbrains.lets-plot:commons:$letsPlotVersion")
+                compileOnly("org.jetbrains.lets-plot:datamodel:$letsPlotVersion")
+
+                compileOnly("org.jetbrains.lets-plot:deprecated-in-v4:$letsPlotVersion")
             }
         }
 
@@ -38,7 +38,7 @@ kotlin {
             dependencies {
 //                compileOnly("org.jetbrains.skiko:skiko-awt:$skikoVersion")
 
-                implementation("io.github.microutils:kotlin-logging-jvm:2.0.5") // TODO remove with other { isTransitive = false }
+                compileOnly("io.github.microutils:kotlin-logging-jvm:$kotlinLoggingVersion")
             }
         }
 

@@ -40,8 +40,10 @@ subprojects {
 
         mavenLocal()
         localProps["maven.repo.local"]?.let {
-            mavenLocal {
-                url = uri(it)
+            (it as String).split(",").forEach { repo ->
+                mavenLocal {
+                    url = uri(repo)
+                }
             }
         }
     }

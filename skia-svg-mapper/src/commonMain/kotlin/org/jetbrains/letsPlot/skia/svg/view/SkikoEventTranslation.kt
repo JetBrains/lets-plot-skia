@@ -1,9 +1,9 @@
 package org.jetbrains.letsPlot.skia.svg.view
 
-import jetbrains.datalore.base.event.Button
-import jetbrains.datalore.base.event.KeyModifiers
-import jetbrains.datalore.base.event.MouseEvent
-import jetbrains.datalore.base.event.MouseEventSpec
+import org.jetbrains.letsPlot.commons.event.Button
+import org.jetbrains.letsPlot.commons.event.KeyModifiers
+import org.jetbrains.letsPlot.commons.event.MouseEvent
+import org.jetbrains.letsPlot.commons.event.MouseEventSpec
 import org.jetbrains.skiko.*
 
 internal fun SkikoGestureEvent.translate(): Pair<MouseEventSpec, MouseEvent>? {

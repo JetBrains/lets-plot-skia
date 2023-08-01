@@ -1,7 +1,7 @@
 package org.jetbrains.letsPlot.skia.svg.view
 
-import jetbrains.datalore.base.event.MouseEvent
-import jetbrains.datalore.base.event.MouseEventSpec
+import org.jetbrains.letsPlot.commons.event.MouseEvent
+import org.jetbrains.letsPlot.commons.event.MouseEventSpec
 
 interface SkikoViewEventDispatcher {
     fun dispatchMouseEvent(kind: MouseEventSpec, e: MouseEvent)

@@ -5,10 +5,10 @@
 
 package org.jetbrains.letsPlot.skia.shape
 
-import jetbrains.datalore.base.observable.collections.CollectionItemEvent
-import jetbrains.datalore.base.observable.collections.list.ObservableArrayList
-import jetbrains.datalore.base.observable.collections.list.ObservableList
-import jetbrains.datalore.base.observable.event.EventHandler
+import org.jetbrains.letsPlot.commons.intern.observable.collections.CollectionItemEvent
+import org.jetbrains.letsPlot.commons.intern.observable.collections.list.ObservableArrayList
+import org.jetbrains.letsPlot.commons.intern.observable.collections.list.ObservableList
+import org.jetbrains.letsPlot.commons.intern.observable.event.EventHandler
 import org.jetbrains.skia.Canvas
 
 internal abstract class Parent : Element() {

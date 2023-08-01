@@ -1,11 +1,11 @@
 package org.jetbrains.letsPlot.skia.svg.view
 
-import jetbrains.datalore.base.event.MouseEvent
-import jetbrains.datalore.base.event.MouseEventSpec
-import jetbrains.datalore.base.registration.Disposable
-import jetbrains.datalore.mapper.core.MappingContext
-import jetbrains.datalore.vis.svg.SvgNodeContainer
-import jetbrains.datalore.vis.svg.SvgSvgElement
+import org.jetbrains.letsPlot.commons.event.MouseEvent
+import org.jetbrains.letsPlot.commons.event.MouseEventSpec
+import org.jetbrains.letsPlot.commons.registration.Disposable
+import org.jetbrains.letsPlot.datamodel.mapping.framework.MappingContext
+import org.jetbrains.letsPlot.datamodel.svg.dom.SvgNodeContainer
+import org.jetbrains.letsPlot.datamodel.svg.dom.SvgSvgElement
 import org.jetbrains.letsPlot.skia.svg.mapper.SvgSkiaPeer
 import org.jetbrains.letsPlot.skia.svg.mapper.SvgSvgElementMapper
 import org.jetbrains.skia.Canvas

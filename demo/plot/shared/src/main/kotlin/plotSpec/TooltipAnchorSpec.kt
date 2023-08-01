@@ -1,9 +1,9 @@
 package plotSpec
 
 import demoData.Iris
-import jetbrains.datalore.base.random.RandomGaussian
 import org.jetbrains.letsPlot.Figure
 import org.jetbrains.letsPlot.Stat
+import org.jetbrains.letsPlot.commons.intern.random.RandomGaussian
 import org.jetbrains.letsPlot.geom.geomArea
 import org.jetbrains.letsPlot.geom.geomBoxplot
 import org.jetbrains.letsPlot.label.ggtitle

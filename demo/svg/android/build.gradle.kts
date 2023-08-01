@@ -97,9 +97,5 @@ dependencies {
 
     implementation(project(":demo-svg-shared"))
 
-    implementation("org.jetbrains.lets-plot:base-portable:$letsPlotVersion") { isTransitive = false }
-    implementation("org.jetbrains.lets-plot:base:$letsPlotVersion") { isTransitive = false }
-    implementation("org.jetbrains.lets-plot:mapper-core:$letsPlotVersion") { isTransitive = false }
-    implementation("org.jetbrains.lets-plot:vis-svg-portable:$letsPlotVersion") { isTransitive = false }
-    implementation("org.jetbrains.lets-plot:vis-svg-mapper:$letsPlotVersion") { isTransitive = false }
+    implementation("org.jetbrains.lets-plot:lets-plot-common:$letsPlotVersion")
 }
