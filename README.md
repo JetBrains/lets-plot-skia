@@ -43,17 +43,10 @@ In `Run configurations`
 [Compose-multiplatform Versioning](https://github.com/JetBrains/compose-multiplatform/blob/master/VERSIONING.md)
 
 ### Problems with updating tools and dependencies:  
-#### Gradle:
-Can't be updated to version `8.1.1` because of error:  
-https://youtrack.jetbrains.com/issue/IDEA-319618/Unable-to-find-Gradle-tasks-to-build-xxx-Build-mode-COMPILEJAVA-when-running-a-Kotlin-file-in-a-project-using-android
 
 #### Skiko:
 Can't be updated to version `0.7.67+` because it crashes on Android:  
 https://github.com/JetBrains/skiko/issues/761
-
-#### AGP:  
-Can't be updated to version `8.0.0` because IDEA doesn't support it:  
-https://youtrack.jetbrains.com/issue/IDEA-317997
 
 #### Compose Desktop:
 Since version `1.4.1`, `PlotComponentProvider` do not show plot if the `repaintDelay` value is grater than 0. 
