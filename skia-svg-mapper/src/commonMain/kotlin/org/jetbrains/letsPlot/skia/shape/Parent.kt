@@ -17,8 +17,16 @@ internal abstract class Parent : Element() {
     init {
         children.addHandler(object : EventHandler<CollectionItemEvent<out Element>> {
             override fun onEvent(event: CollectionItemEvent<out Element>) {
-                event.newItem?.parent = this@Parent
-                repaint()
+                when (event.type) {
+                    CollectionItemEvent.EventType.ADD -> event.newItem?.parent = this@Parent
+                    CollectionItemEvent.EventType.REMOVE -> event.oldItem?.parent = null
+                    CollectionItemEvent.EventType.SET -> {
+                        event.oldItem?.parent = null
+                        event.newItem?.parent = this@Parent
+                    }
+                }
+
+                needRedraw()
             }
         })
     }

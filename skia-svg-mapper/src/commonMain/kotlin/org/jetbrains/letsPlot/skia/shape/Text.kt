@@ -35,15 +35,15 @@ internal class Text : Figure() {
         }
     }
 
-    private val typeface by dependencyProp(Text::fontFamily, Text::fontStyle) {
+    private val typeface by dependencyProp(Text::fontFamily, Text::fontStyle, managed = true) {
         FontMgr.default.matchFamiliesStyle(fontFamily.toTypedArray(), fontStyle) ?: Typeface.makeDefault()
     }
 
-    private val font by dependencyProp(Text::typeface, Text::fontSize) {
+    private val font by dependencyProp(Text::typeface, Text::fontSize, managed = true) {
         Font(typeface, fontSize)
     }
 
-    private val textLine by dependencyProp(Text::text, Text::font) {
+    private val textLine by dependencyProp(Text::text, Text::font, managed = true) {
         TextLine.make(text, font)
     }
 

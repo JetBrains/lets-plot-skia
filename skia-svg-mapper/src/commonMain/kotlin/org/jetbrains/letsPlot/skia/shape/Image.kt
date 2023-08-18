@@ -16,7 +16,7 @@ internal class Image : Element() {
     var y: Float by visualProp(0.0f)
     var width: Float by visualProp(0.0f)
     var height: Float by visualProp(0.0f)
-    var img: SkImage? by visualProp(null)
+    var img: SkImage? by visualProp(null, managed = true)
 
     override fun doDraw(canvas: Canvas) {
         img?.let {

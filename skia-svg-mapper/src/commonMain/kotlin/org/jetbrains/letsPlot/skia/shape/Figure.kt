@@ -19,7 +19,7 @@ internal abstract class Figure : Element() {
     var fill: Color4f? by visualProp(Color4f(Color.BLACK))
     var fillOpacity: Float by visualProp(1f)
 
-    val fillPaint: Paint? by dependencyProp(Figure::fill, Figure::fillOpacity) {
+    val fillPaint: Paint? by dependencyProp(Figure::fill, Figure::fillOpacity, managed = true) {
         val fill = fill ?: return@dependencyProp null
 
         return@dependencyProp Paint().also { paint ->
@@ -27,7 +27,7 @@ internal abstract class Figure : Element() {
         }
     }
 
-    val strokePaint: Paint? by dependencyProp(Figure::stroke, Figure::strokeWidth, Figure::strokeDashArray) {
+    val strokePaint: Paint? by dependencyProp(Figure::stroke, Figure::strokeWidth, Figure::strokeDashArray, managed = true) {
         val stroke = stroke ?: return@dependencyProp null
 
         if (strokeOpacity == 0f) return@dependencyProp null

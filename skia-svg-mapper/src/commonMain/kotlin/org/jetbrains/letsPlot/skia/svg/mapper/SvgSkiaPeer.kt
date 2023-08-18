@@ -65,7 +65,7 @@ internal class SvgSkiaPeer : SvgPlatformPeer {
     }
 
     fun unregisterMapper(source: SvgNode) {
-        myMappingMap.remove(source)
+        myMappingMap.remove(source)?.target?.release()
     }
 
     override fun getComputedTextLength(node: SvgTextContent): Double {

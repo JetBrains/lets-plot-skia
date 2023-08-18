@@ -5,15 +5,15 @@
 
 package org.jetbrains.letsPlot.skia.shape
 
-import org.jetbrains.skia.*
-import kotlin.properties.Delegates.observable
-import kotlin.properties.ReadWriteProperty
-import kotlin.reflect.KProperty
+import org.jetbrains.skia.Canvas
+import org.jetbrains.skia.Drawable
+import org.jetbrains.skia.Matrix33
+import org.jetbrains.skia.Rect
 
 internal typealias SkPath = org.jetbrains.skia.Path
 
-internal abstract class Element {
-    val drawable: Drawable = object : Drawable() {
+internal abstract class Element : Node() {
+    private val _drawable = object : Drawable() {
         override fun onDraw(canvas: Canvas?) {
             if (canvas == null) return
             if (!isVisible) return
@@ -29,11 +29,25 @@ internal abstract class Element {
         override fun onGetBounds(): Rect = screenBounds
     }
 
-    var parent: Parent? by visualProp(null)
     var styleClass: List<String>? by visualProp(null)
     var transform: Matrix33? by visualProp(null)
-    var clipPath: SkPath? by visualProp(null)
+    var clipPath: SkPath? by visualProp(null, managed = true)
     var isVisible: Boolean by visualProp(true)
+    val drawable: Drawable by visualProp(_drawable, managed = true)
+
+    var parent: Parent? by visualProp(null)
+
+    // TODO: perf. Update only on a tree change
+    private val parents: List<Parent>
+        get() {
+            var p = parent
+            val parents = mutableListOf<Parent>()
+            while (p != null) {
+                parents.add(0, p)
+                p = p.parent
+            }
+            return parents
+        }
 
     // TODO: perf. Update only if changed
     open val localBounds: Rect = Rect.Companion.makeWH(0f, 0f)
@@ -50,42 +64,11 @@ internal abstract class Element {
                 .fold(Matrix33.IDENTITY, Matrix33::makeConcat)
                 .makeConcat(transform ?: Matrix33.IDENTITY)
 
-    private val propertyDeps = mutableMapOf<KProperty<*>, MutableList<DependencyProperty<*>>>()
-
-    protected open fun doDraw(canvas: Canvas) {}
-
-    // TODO: perf. Update only on a tree change
-    private val parents: List<Parent>
-        get() {
-            var p = parent
-            val parents = mutableListOf<Parent>()
-            while (p != null) {
-                parents.add(0, p)
-                p = p.parent
-            }
-            return parents
-        }
-
-    protected fun repaint() {
+    override fun doNeedRedraw() {
         drawable.notifyDrawingChanged()
     }
 
-    protected fun <T> visualProp(initialValue: T): ReadWriteProperty<Any?, T> =
-        observable(initialValue) { property, oldValue, newValue ->
-            if (oldValue != newValue) {
-                this.propertyDeps.getOrElse(property, ::emptyList).forEach(DependencyProperty<*>::invalidate)
-                this.repaint()
-            }
-        }
-
-    protected fun <T> dependencyProp(vararg deps: KProperty<*>, delegate: () -> T): DependencyProperty<T> =
-        DependencyProperty(delegate).also { prop ->
-            deps.forEach {
-                propertyDeps.getOrPut(it, ::mutableListOf).add(prop)
-            }
-        }
-
-    protected open fun repr(): String? = null
+    protected open fun doDraw(canvas: Canvas) {}
 
     override fun toString(): String {
         val repr = repr()?.let { ", $it" }
