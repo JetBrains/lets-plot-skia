@@ -42,3 +42,6 @@ internal fun Matrix33.apply(r: Rect): Rect {
 
     return Rect.makeLTRB(xs.min(), ys.min(), xs.max(), ys.max())
 }
+
+internal val Matrix33.translateX get() = mat[transX]
+internal val Matrix33.translateY get() = mat[transY]

@@ -5,6 +5,7 @@
 
 package org.jetbrains.letsPlot.skia.shape
 
+import org.jetbrains.letsPlot.skia.svg.mapper.DebugOptions.USE_SCREEN_TRANSFORM
 import org.jetbrains.skia.Canvas
 import org.jetbrains.skia.Drawable
 import org.jetbrains.skia.Matrix33
@@ -19,8 +20,12 @@ internal abstract class Element : Node() {
             if (!isVisible) return
 
             canvas.save()
-            // TODO: use screenTransform?
-            transform?.let(canvas::concat)
+            if (USE_SCREEN_TRANSFORM) {
+                canvas.setMatrix(ctm)
+            } else {
+                localTransform.let(canvas::concat)
+            }
+
             clipPath?.let(canvas::clipPath)
             doDraw(canvas)
             canvas.restore()
@@ -52,34 +57,41 @@ internal abstract class Element : Node() {
     // TODO: perf. Update only if changed
     open val localBounds: Rect = Rect.Companion.makeWH(0f, 0f)
 
+    // TODO: perf.
+    // Mostly just an SVG transform.
+    // Single exception is the SvgSvgElement/Pane. It doesn't support transform, yet uses x, y for implicit translate
+    open val localTransform: Matrix33
+        get() = transform ?: Matrix33.IDENTITY
+
     // TODO: perf. Update only if changed
     open val screenBounds: Rect
-        get() = screenTransform.apply(localBounds)
+        get() = ctm.apply(localBounds)
 
     // TODO: perf. Cache. Update only on a transform change in a tree.
-    val screenTransform: Matrix33
+    // current transformation matrix
+    val ctm: Matrix33
         get() =
             parents
-                .mapNotNull(Parent::transform)
+                .mapNotNull(Parent::localTransform)
                 .fold(Matrix33.IDENTITY, Matrix33::makeConcat)
-                .makeConcat(transform ?: Matrix33.IDENTITY)
+                .makeConcat(localTransform)
 
     override fun doNeedRedraw() {
         drawable.notifyDrawingChanged()
     }
 
-    protected open fun doDraw(canvas: Canvas) {}
+    open fun doDraw(canvas: Canvas) {}
 
     override fun toString(): String {
         val repr = repr()?.let { ", $it" }
         return "class: ${this::class.simpleName}${repr ?: ""}${
-            transform?.mat?.let {
+            localTransform.mat.let {
                 ", transform: ${
                     it.joinToString(
                         transform = Float::toString
                     )
                 }"
-            } ?: ""
+            }
         }"
     }
 }

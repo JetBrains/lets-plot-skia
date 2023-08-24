@@ -5,8 +5,7 @@
 
 package org.jetbrains.letsPlot.skia.shape
 
-import org.jetbrains.skia.Canvas
-import org.jetbrains.skia.Rect
+import org.jetbrains.skia.Matrix33
 
 
 internal class Pane : Parent() {
@@ -15,13 +14,10 @@ internal class Pane : Parent() {
     var width: Float by visualProp(0.0f)
     var height: Float by visualProp(0.0f)
 
-    override fun doDraw(canvas: Canvas) {
-        canvas.save()
-        canvas.translate(x, y)
-        super.doDraw(canvas)
-        canvas.restore()
+    private val localTranslate: Matrix33 by dependencyProp(Pane::x, Pane::y) {
+        Matrix33.makeTranslate(x, y)
     }
 
-    override val localBounds: Rect
-        get() = Rect.makeXYWH(x, y, width, height)
+    override val localTransform: Matrix33
+        get() = (transform ?: Matrix33.IDENTITY).makeConcat(localTranslate)
 }

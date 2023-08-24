@@ -10,6 +10,9 @@ import org.jetbrains.letsPlot.commons.intern.observable.collections.list.Observa
 import org.jetbrains.letsPlot.commons.intern.observable.collections.list.ObservableList
 import org.jetbrains.letsPlot.commons.intern.observable.event.EventHandler
 import org.jetbrains.skia.Canvas
+import org.jetbrains.skia.Rect
+import kotlin.math.max
+import kotlin.math.min
 
 internal abstract class Parent : Element() {
     val children: ObservableList<Element> = ObservableArrayList()
@@ -39,4 +42,42 @@ internal abstract class Parent : Element() {
             it.drawable.onDraw(canvas)
         }
     }
+
+    override val localBounds: Rect
+        get() = children
+            .filterNot { it is Parent && it.children.isEmpty() }
+            .fold<Element, Rect?>(null) { acc, element ->
+                if (acc != null) {
+                    Rect.makeLTRB(
+                        min(acc.left, element.localBounds.left),
+                        min(acc.top, element.localBounds.top),
+                        max(acc.right, element.localBounds.right),
+                        max(acc.bottom, element.localBounds.bottom)
+                    )
+                } else {
+                    element.localBounds
+                }
+            } ?: Rect.makeWH(0.0f, 0.0f)
+
+    override val screenBounds: Rect
+        get() {
+            return children
+                .filterNot { it is Parent && it.children.isEmpty() }
+                .fold<Element, Rect?>(null) { acc, element ->
+                    if (acc != null) {
+                        element.screenBounds.let {
+                            Rect.makeLTRB(
+                                min(acc.left, it.left),
+                                min(acc.top, it.top),
+                                max(acc.right, it.right),
+                                max(acc.bottom, it.bottom)
+                            )
+                        }
+                    } else {
+                        element.screenBounds
+                    }
+                } ?: Rect.makeXYWH(ctm.translateX, ctm.translateY, 0.0f, 0.0f)
+        }
+
+
 }
