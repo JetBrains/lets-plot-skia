@@ -8,6 +8,8 @@ package org.jetbrains.letsPlot.skia.shape
 import org.jetbrains.skia.Matrix33
 import org.jetbrains.skia.Point
 import org.jetbrains.skia.Rect
+import kotlin.math.max
+import kotlin.math.min
 
 internal fun sdot(a: Float, b: Float, c: Float, d: Float): Float {
     return a * b + c * d
@@ -45,3 +47,24 @@ internal fun Matrix33.apply(r: Rect): Rect {
 
 internal val Matrix33.translateX get() = mat[transX]
 internal val Matrix33.translateY get() = mat[transY]
+
+internal fun union(rects: List<Rect>): Rect? =
+    rects.fold<Rect, Rect?>(null) { acc, rect ->
+        if (acc != null) {
+            Rect.makeLTRB(
+                min(rect.left, acc.left),
+                min(rect.top, acc.top),
+                max(rect.right, acc.right),
+                max(rect.bottom, acc.bottom)
+            )
+        } else {
+            rect
+        }
+    }
+
+internal fun flattenChildren(element: Element): Sequence<Element> {
+    return when (element) {
+        is Parent -> element.children.asSequence() + element.children.flatMap(::flattenChildren)
+        else -> emptySequence()
+    }
+}

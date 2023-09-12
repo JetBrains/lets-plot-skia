@@ -31,9 +31,9 @@ internal abstract class SvgAttrMapping<in TargetT : Element> {
 
             SvgGraphicsElement.CLIP_PATH.name -> Unit // Not supported.
             SvgConstants.SVG_STYLE_ATTRIBUTE -> setStyle(value as? String ?: "", target)
-            SvgStylableElement.CLASS.name -> setStyleClass(value as String?, target)
+            SvgStylableElement.CLASS.name -> target.styleClass = (value as String?)?.split(" ")
             SvgTransformable.TRANSFORM.name -> setTransform((value as SvgTransform).toString(), target)
-            SvgElement.ID.name -> Unit // ignore it?
+            SvgElement.ID.name -> target.id = value as String?
 
             else -> println("Unsupported attribute `$name` in ${target::class.simpleName}")
         }
@@ -58,10 +58,6 @@ internal abstract class SvgAttrMapping<in TargetT : Element> {
 
     companion object {
 
-        private fun setStyleClass(value: String?, target: Element) {
-            target.styleClass = value?.split(" ")
-        }
-
         private fun setTransform(value: String, target: Element) {
             target.transform = parseSvgTransform(value).fold(Matrix33.IDENTITY, Matrix33::makeConcat)
         }
@@ -73,7 +69,7 @@ internal abstract class SvgAttrMapping<in TargetT : Element> {
                 else -> error("Unsupported float value: $this")
             }
 
-        fun asBoolean(value: Any?): Boolean {
+        internal fun asBoolean(value: Any?): Boolean {
             return (value as? String)?.toBoolean() ?: false
         }
     }

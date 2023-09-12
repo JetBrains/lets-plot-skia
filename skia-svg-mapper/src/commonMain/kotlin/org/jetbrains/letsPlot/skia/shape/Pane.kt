@@ -6,6 +6,7 @@
 package org.jetbrains.letsPlot.skia.shape
 
 import org.jetbrains.skia.Matrix33
+import kotlin.reflect.KProperty
 
 
 internal class Pane : Parent() {
@@ -14,10 +15,10 @@ internal class Pane : Parent() {
     var width: Float by visualProp(0.0f)
     var height: Float by visualProp(0.0f)
 
-    private val localTranslate: Matrix33 by dependencyProp(Pane::x, Pane::y) {
-        Matrix33.makeTranslate(x, y)
+    // implicitly converts x and y to translate transform. User should not change transform explicitly.
+    override fun onPropertyChanged(prop: KProperty<*>) {
+        when (prop) {
+            Pane::x, Pane::y -> transform = Matrix33.makeTranslate(x, y)
+        }
     }
-
-    override val localTransform: Matrix33
-        get() = (transform ?: Matrix33.IDENTITY).makeConcat(localTranslate)
 }

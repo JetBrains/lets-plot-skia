@@ -13,9 +13,24 @@ import kotlin.properties.ReadWriteProperty
 import kotlin.reflect.KProperty
 
 internal abstract class Node {
+    var id: String? = null
+    var isVisible: Boolean by visualProp(true)
+
     private var released: Boolean = false
     private val resourcesDisposer = mutableListOf<() -> Unit>()
-    private val computedPropsUpdater = mutableMapOf<KProperty<*>, MutableList<() -> Unit>>()
+    // visual prop -> list of dependent dependency properties updaters
+    private val dependenciesUpdater = mutableMapOf<KProperty<*>, MutableList<() -> Unit>>()
+    private val computedPropertiesUpdater = mutableMapOf<KProperty<*>, () -> Unit>()
+
+    internal fun invalidateDependencyProp(prop: KProperty<*>) {
+        require(prop in computedPropertiesUpdater) {
+            "Class `${this::class.simpleName}` doesn't have dependencyProperty `${prop.name}`"
+        }
+
+        computedPropertiesUpdater[prop]!!.invoke()
+    }
+
+    protected open fun onPropertyChanged(prop: KProperty<*>) {}
 
     inline fun <reified T> visualProp(initialValue: T, managed: Boolean = false): PropertyDelegateProvider<Node, ReadWriteProperty<Node, T>> {
         return PropertyDelegateProvider<Node, ReadWriteProperty<Node, T>> { thisRef, property ->
@@ -35,7 +50,8 @@ internal abstract class Node {
                             oldValue.close()
                         }
 
-                        thisRef.computedPropsUpdater.getOrElse(property, ::emptyList).forEach { it() }
+                        onPropertyChanged(property)
+                        thisRef.dependenciesUpdater.getOrElse(property, ::emptyList).forEach { it() }
                         thisRef.needRedraw()
                     }
                 }
@@ -77,6 +93,7 @@ internal abstract class Node {
                             if (oldValue is Managed) {
                                 oldValue.close()
                             }
+                            onPropertyChanged(property)
                         }
                     }
                     return value
@@ -87,7 +104,8 @@ internal abstract class Node {
                 thisRef.resourcesDisposer.add { computedProperty.getValue(thisRef, property) as? Managed }
             }
 
-            deps.forEach { computedPropsUpdater.getOrPut(it, ::mutableListOf).add(computedProperty::invalidate) }
+            deps.forEach { dependenciesUpdater.getOrPut(it, ::mutableListOf).add(computedProperty::invalidate) }
+            computedPropertiesUpdater[property] = computedProperty::invalidate
             computedProperty
         }
     }
@@ -98,6 +116,8 @@ internal abstract class Node {
     }
 
     fun needRedraw() {
+        if (!isVisible) return
+
         if (!released) {
             doNeedRedraw()
         }
@@ -105,4 +125,9 @@ internal abstract class Node {
 
     protected open fun doNeedRedraw() {}
     protected open fun repr(): String? = null
+
+    override fun toString(): String {
+        val idStr = id?.let { "id: '$it' " } ?: ""
+        return "class: ${this::class.simpleName}$idStr${repr()}"
+    }
 }
