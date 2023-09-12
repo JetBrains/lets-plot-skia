@@ -96,9 +96,9 @@ private class SandboxView(
             removeAllViews() // ToDo: dispose
 
             val childView = object : View(context) {
-                override fun onDraw(canvas: Canvas?) {
+                override fun onDraw(canvas: Canvas) {
                     super.onDraw(canvas)
-                    canvas?.let { c ->
+                    canvas.let { c ->
                         val r = c.clipBounds
                         c.drawRect(r, Paint().also { it.color = Color.Yellow.toArgb() })
                     }
