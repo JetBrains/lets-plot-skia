@@ -14,7 +14,7 @@ internal class Ellipse : Figure() {
     var radiusX: Float by visualProp(0.0f)
     var radiusY: Float by visualProp(0.0f)
 
-    private val rect: Rect by dependencyProp(Ellipse::centerX, Ellipse::centerY, Ellipse::radiusX, Ellipse::radiusY) {
+    private val rect: Rect by computedProp(Ellipse::centerX, Ellipse::centerY, Ellipse::radiusX, Ellipse::radiusY) {
         Rect(
             left = centerX - radiusX,
             top = centerY - radiusY,

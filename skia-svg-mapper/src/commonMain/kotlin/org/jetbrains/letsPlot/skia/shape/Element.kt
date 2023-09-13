@@ -17,12 +17,12 @@ internal abstract class Element() : Node() {
     var clipPath: SkPath? by visualProp(null, managed = true)
     var parent: Parent? by visualProp(null)
 
-    val parents: List<Parent> by dependencyProp(Element::parent) {
+    val parents: List<Parent> by computedProp(Element::parent) {
         val parents = parent?.parents ?: emptyList()
         parents + listOfNotNull(parent)
     }
 
-    val ctm: Matrix33 by dependencyProp(Element::parent, Element::transform) {
+    val ctm: Matrix33 by computedProp(Element::parent, Element::transform) {
         val parentCtm = parent?.ctm ?: Matrix33.IDENTITY
         parentCtm.makeConcat(transform)
     }

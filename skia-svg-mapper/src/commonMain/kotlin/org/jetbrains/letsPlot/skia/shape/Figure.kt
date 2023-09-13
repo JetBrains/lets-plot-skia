@@ -19,26 +19,26 @@ internal abstract class Figure : Element() {
     var fill: Color4f? by visualProp(Color4f(Color.BLACK))
     var fillOpacity: Float by visualProp(1f)
 
-    val fillPaint: Paint? by dependencyProp(Figure::fill, Figure::fillOpacity, managed = true) {
-        val fill = fill ?: return@dependencyProp null
+    val fillPaint: Paint? by computedProp(Figure::fill, Figure::fillOpacity, managed = true) {
+        val fill = fill ?: return@computedProp null
 
-        return@dependencyProp Paint().also { paint ->
+        return@computedProp Paint().also { paint ->
             paint.color4f = fill.withA(fillOpacity)
         }
     }
 
-    val strokePaint: Paint? by dependencyProp(Figure::stroke, Figure::strokeWidth, Figure::strokeDashArray, managed = true) {
-        val stroke = stroke ?: return@dependencyProp null
+    val strokePaint: Paint? by computedProp(Figure::stroke, Figure::strokeWidth, Figure::strokeDashArray, managed = true) {
+        val stroke = stroke ?: return@computedProp null
 
-        if (strokeOpacity == 0f) return@dependencyProp null
+        if (strokeOpacity == 0f) return@computedProp null
 
         if (strokeWidth == 0f) {
             // Handle zero width manually, because Skia threatens 0 as "hairline" width, i.e. 1 pixel.
             // Source: https://api.skia.org/classSkPaint.html#af08c5bc138e981a4e39ad1f9b165c32c
-            return@dependencyProp null
+            return@computedProp null
         }
 
-        return@dependencyProp Paint().also { paint ->
+        return@computedProp Paint().also { paint ->
             paint.setStroke(true)
             paint.color4f = stroke.withA(strokeOpacity)
             paint.strokeWidth = strokeWidth

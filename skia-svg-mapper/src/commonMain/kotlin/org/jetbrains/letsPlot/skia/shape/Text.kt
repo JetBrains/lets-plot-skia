@@ -17,7 +17,7 @@ internal class Text : Figure() {
     var fontStyle: FontStyle by visualProp(FontStyle.NORMAL)
     var fontSize by visualProp(16.0f)
 
-    private val cx by dependencyProp(Text::textLine, Text::textAlignment) {
+    private val cx by computedProp(Text::textLine, Text::textAlignment) {
         when (textAlignment) {
             HorizontalAlignment.LEFT -> 0.0f
             HorizontalAlignment.CENTER -> -textLine.width / 2.0f
@@ -26,7 +26,7 @@ internal class Text : Figure() {
         }
     }
 
-    private val cy by dependencyProp(Text::textLine, Text::textOrigin) {
+    private val cy by computedProp(Text::textLine, Text::textOrigin) {
         when (textOrigin) {
             VerticalAlignment.TOP -> textLine.xHeight
             VerticalAlignment.CENTER -> textLine.xHeight / 2.0f
@@ -35,19 +35,20 @@ internal class Text : Figure() {
         }
     }
 
-    private val typeface by dependencyProp(Text::fontFamily, Text::fontStyle, managed = true) {
+    private val typeface by computedProp(Text::fontFamily, Text::fontStyle, managed = true) {
         FontMgr.default.matchFamiliesStyle(fontFamily.toTypedArray(), fontStyle) ?: Typeface.makeDefault()
     }
 
-    private val font by dependencyProp(Text::typeface, Text::fontSize, managed = true) {
+    private val font by computedProp(Text::typeface, Text::fontSize, managed = true) {
         Font(typeface, fontSize)
     }
 
-    private val textLine by dependencyProp(Text::text, Text::font, managed = true) {
+    private val textLine by computedProp(Text::text, Text::font, managed = true) {
         TextLine.make(text, font)
     }
 
     override fun onRender(canvas: Canvas) {
+        //textLine
         fillPaint?.let { canvas.drawTextLine(textLine, x + cx, y + cy, it) }
         strokePaint?.let { canvas.drawTextLine(textLine, x + cx, y + cy, it) }
     }

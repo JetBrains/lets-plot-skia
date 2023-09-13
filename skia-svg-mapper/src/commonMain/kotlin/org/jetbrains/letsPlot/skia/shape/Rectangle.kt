@@ -13,7 +13,7 @@ internal class Rectangle : Figure() {
     var y: Float by visualProp(0.0f)
     var width: Float by visualProp(0.0f)
     var height: Float by visualProp(0.0f)
-    private val rect: Rect by dependencyProp(Rectangle::x, Rectangle::y, Rectangle::width, Rectangle::height) {
+    private val rect: Rect by computedProp(Rectangle::x, Rectangle::y, Rectangle::width, Rectangle::height) {
         Rect.makeXYWH(x, y, width, height)
     }
 
