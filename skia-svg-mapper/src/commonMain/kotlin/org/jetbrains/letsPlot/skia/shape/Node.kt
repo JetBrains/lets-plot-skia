@@ -52,7 +52,6 @@ internal abstract class Node {
 
                         onPropertyChanged(property)
                         thisRef.dependenciesUpdater.getOrElse(property, ::emptyList).forEach { it() }
-                        thisRef.needRedraw()
                     }
                 }
             }
@@ -115,15 +114,6 @@ internal abstract class Node {
         released = true
     }
 
-    fun needRedraw() {
-        if (!isVisible) return
-
-        if (!released) {
-            doNeedRedraw()
-        }
-    }
-
-    protected open fun doNeedRedraw() {}
     protected open fun repr(): String? = null
 
     override fun toString(): String {

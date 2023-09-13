@@ -12,7 +12,7 @@ import org.jetbrains.skia.Rect
 internal class Path : Figure() {
     var skiaPath: Path? by visualProp(null, managed = true)
 
-    override fun doDraw(canvas: Canvas) {
+    override fun onRender(canvas: Canvas) {
         if (skiaPath == null) {
             return
         }

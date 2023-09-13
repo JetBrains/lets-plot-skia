@@ -12,11 +12,13 @@ import org.jetbrains.letsPlot.datamodel.mapping.framework.MappingContext
 import org.jetbrains.letsPlot.datamodel.svg.dom.SvgNodeContainer
 import org.jetbrains.letsPlot.datamodel.svg.dom.SvgSvgElement
 import org.jetbrains.letsPlot.skia.shape.Pane
+import org.jetbrains.letsPlot.skia.shape.flattenChildren
 import org.jetbrains.letsPlot.skia.svg.mapper.DebugOptions
 import org.jetbrains.letsPlot.skia.svg.mapper.DebugOptions.drawBoundingBoxes
 import org.jetbrains.letsPlot.skia.svg.mapper.SvgSkiaPeer
 import org.jetbrains.letsPlot.skia.svg.mapper.SvgSvgElementMapper
 import org.jetbrains.skia.Canvas
+import org.jetbrains.skia.Matrix33
 import org.jetbrains.skiko.SkiaLayer
 import org.jetbrains.skiko.SkikoGestureEvent
 import org.jetbrains.skiko.SkikoPointerEvent
@@ -30,6 +32,7 @@ abstract class SvgSkikoView(
 
     private val nodeContainer = SvgNodeContainer(svg)  // attach root
     private val rootElement: Pane
+    private var skiaScale: Float = 1f
     private lateinit var _nativeLayer: SkiaLayer
 
     private var disposed = false
@@ -68,8 +71,12 @@ abstract class SvgSkikoView(
     protected abstract fun createSkiaLayer(view: SvgSkikoView): SkiaLayer
 
     override fun onRender(canvas: Canvas, width: Int, height: Int, nanoTime: Long) {
-        canvas.scale(skiaLayer.contentScale, skiaLayer.contentScale)
-        canvas.drawDrawable(rootElement.drawable)
+        if (skiaScale != skiaLayer.contentScale) {
+            skiaScale = skiaLayer.contentScale
+            rootElement.transform = Matrix33.makeScale(skiaScale)
+        }
+
+        flattenChildren(rootElement).forEach { it.render(canvas) }
 
         if (DebugOptions.DEBUG_DRAWING_ENABLED) {
             drawBoundingBoxes(canvas, rootElement)

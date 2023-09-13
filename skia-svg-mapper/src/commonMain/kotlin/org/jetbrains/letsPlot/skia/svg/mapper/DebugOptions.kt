@@ -14,7 +14,6 @@ import org.jetbrains.skia.Paint
 internal object DebugOptions {
     const val DEBUG_DRAWING_ENABLED: Boolean = false
     const val VALIDATE_MANAGED_PROPERTIES = false
-    const val USE_EXPLICIT_CTM_INSTEAD_OF_CANVAS_CONCAT = true
 
     fun drawBoundingBoxes(canvas: Canvas, rootElement: Pane) {
         fun traverse(element: Element): Sequence<Element> {

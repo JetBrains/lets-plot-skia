@@ -47,7 +47,7 @@ internal class Text : Figure() {
         TextLine.make(text, font)
     }
 
-    override fun doDraw(canvas: Canvas) {
+    override fun onRender(canvas: Canvas) {
         fillPaint?.let { canvas.drawTextLine(textLine, x + cx, y + cy, it) }
         strokePaint?.let { canvas.drawTextLine(textLine, x + cx, y + cy, it) }
     }

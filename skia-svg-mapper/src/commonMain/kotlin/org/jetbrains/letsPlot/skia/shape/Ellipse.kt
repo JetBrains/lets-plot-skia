@@ -23,7 +23,7 @@ internal class Ellipse : Figure() {
         )
     }
 
-    override fun doDraw(canvas: Canvas) {
+    override fun onRender(canvas: Canvas) {
         fillPaint?.let { canvas.drawOval(rect, it) }
         strokePaint?.let { canvas.drawOval(rect, it) }
     }

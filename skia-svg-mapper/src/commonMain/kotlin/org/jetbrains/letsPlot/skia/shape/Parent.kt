@@ -9,7 +9,6 @@ import org.jetbrains.letsPlot.commons.intern.observable.collections.CollectionIt
 import org.jetbrains.letsPlot.commons.intern.observable.collections.list.ObservableArrayList
 import org.jetbrains.letsPlot.commons.intern.observable.collections.list.ObservableList
 import org.jetbrains.letsPlot.commons.intern.observable.event.EventHandler
-import org.jetbrains.skia.Canvas
 import org.jetbrains.skia.Rect
 import kotlin.reflect.KProperty
 
@@ -45,8 +44,6 @@ internal abstract class Parent : Element() {
                         }
                     }
                 }
-
-                needRedraw()
             }
         })
     }
@@ -58,15 +55,6 @@ internal abstract class Parent : Element() {
 
         if (prop == Element::ctm) {
             flattenChildren(this).forEach { it.invalidateDependencyProp(Element::ctm) }
-        }
-    }
-
-    // TODO: split visual tree and logical tree.
-    // Logical parent should not affect dirty regions
-    // Only visible children should report dirty regions
-    override fun doDraw(canvas: Canvas) {
-        children.forEach {
-            it.drawable.onDraw(canvas)
         }
     }
 
