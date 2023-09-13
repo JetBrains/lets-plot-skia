@@ -44,9 +44,6 @@ In `Run configurations`
 
 ### Problems with updating tools and dependencies:  
 
-#### Skiko:
-Can't be updated to version `0.7.67+` because it crashes on Android:  
-https://github.com/JetBrains/skiko/issues/761
 
 #### Compose Desktop:
 Since version `1.4.1`, `PlotComponentProvider` do not show plot if the `repaintDelay` value is grater than 0. 
