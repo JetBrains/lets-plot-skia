@@ -15,9 +15,9 @@ internal abstract class Element() : Node() {
     var transform: Matrix33 by visualProp(Matrix33.IDENTITY)
     var styleClass: List<String>? by visualProp(null)
     var clipPath: SkPath? by visualProp(null, managed = true)
-    var parent: Parent? by visualProp(null)
+    var parent: Container? by visualProp(null)
 
-    val parents: List<Parent> by computedProp(Element::parent) {
+    val parents: List<Container> by computedProp(Element::parent) {
         val parents = parent?.parents ?: emptyList()
         parents + listOfNotNull(parent)
     }
@@ -41,7 +41,7 @@ internal abstract class Element() : Node() {
         canvas.restore()
     }
 
-    open fun onRender(canvas: Canvas) {}
+    protected open fun onRender(canvas: Canvas) {}
 
     override fun repr(): String? {
         return transform.mat.let {", transform: ${ it.joinToString(transform = Float::toString) }" }

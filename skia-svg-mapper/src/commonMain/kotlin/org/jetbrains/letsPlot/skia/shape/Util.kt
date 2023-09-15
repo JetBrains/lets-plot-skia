@@ -62,9 +62,21 @@ internal fun union(rects: List<Rect>): Rect? =
         }
     }
 
-internal fun flattenChildren(element: Element): Sequence<Element> {
+internal fun childrenDeepTraversal(element: Element): Sequence<Element> {
     return when (element) {
-        is Parent -> element.children.asSequence() + element.children.flatMap(::flattenChildren)
+        is Container -> element.children.asSequence() + element.children.flatMap(::childrenDeepTraversal)
         else -> emptySequence()
+    }
+}
+
+internal fun depthFirstTraversal(elements: List<Element>, visit: (Element) -> Unit) {
+    elements.forEach {
+        when (it) {
+            is Container -> {
+                visit(it)
+                depthFirstTraversal(it.children, visit)
+            }
+            else -> visit(it)
+        }
     }
 }

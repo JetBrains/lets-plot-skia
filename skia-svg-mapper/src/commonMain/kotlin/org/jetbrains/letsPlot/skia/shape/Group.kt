@@ -5,4 +5,4 @@
 
 package org.jetbrains.letsPlot.skia.shape
 
-internal class Group : Parent()
+internal class Group : Container()

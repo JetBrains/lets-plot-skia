@@ -18,7 +18,7 @@ internal object DebugOptions {
     fun drawBoundingBoxes(canvas: Canvas, rootElement: Pane) {
         fun traverse(element: Element): Sequence<Element> {
             return when (element) {
-                is Parent -> element.children.asSequence() + element.children.asSequence().flatMap(::traverse)
+                is Container -> element.children.asSequence() + element.children.asSequence().flatMap(::traverse)
                 else -> sequenceOf(element)
             }
         }

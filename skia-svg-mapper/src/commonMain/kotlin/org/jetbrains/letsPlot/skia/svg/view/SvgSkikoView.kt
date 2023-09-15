@@ -12,7 +12,7 @@ import org.jetbrains.letsPlot.datamodel.mapping.framework.MappingContext
 import org.jetbrains.letsPlot.datamodel.svg.dom.SvgNodeContainer
 import org.jetbrains.letsPlot.datamodel.svg.dom.SvgSvgElement
 import org.jetbrains.letsPlot.skia.shape.Pane
-import org.jetbrains.letsPlot.skia.shape.flattenChildren
+import org.jetbrains.letsPlot.skia.shape.depthFirstTraversal
 import org.jetbrains.letsPlot.skia.svg.mapper.DebugOptions
 import org.jetbrains.letsPlot.skia.svg.mapper.DebugOptions.drawBoundingBoxes
 import org.jetbrains.letsPlot.skia.svg.mapper.SvgSkiaPeer
@@ -76,7 +76,7 @@ abstract class SvgSkikoView(
             rootElement.transform = Matrix33.makeScale(skiaScale)
         }
 
-        flattenChildren(rootElement).forEach { it.render(canvas) }
+        depthFirstTraversal(listOf(rootElement)) { it.render(canvas)}
 
         if (DebugOptions.DEBUG_DRAWING_ENABLED) {
             drawBoundingBoxes(canvas, rootElement)

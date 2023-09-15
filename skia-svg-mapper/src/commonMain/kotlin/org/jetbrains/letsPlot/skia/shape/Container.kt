@@ -12,7 +12,7 @@ import org.jetbrains.letsPlot.commons.intern.observable.event.EventHandler
 import org.jetbrains.skia.Rect
 import kotlin.reflect.KProperty
 
-internal abstract class Parent : Element() {
+internal abstract class Container : Element() {
     val children: ObservableList<Element> = ObservableArrayList()
 
     init {
@@ -21,7 +21,7 @@ internal abstract class Parent : Element() {
                 when (event.type) {
                     CollectionItemEvent.EventType.ADD -> {
                         event.newItem?.let {
-                            it.parent = this@Parent
+                            it.parent = this@Container
                             invalidateHierarchy(it)
                         }
                     }
@@ -39,7 +39,7 @@ internal abstract class Parent : Element() {
                             invalidateHierarchy(it)
                         }
                         event.newItem?.let {
-                            it.parent = this@Parent
+                            it.parent = this@Container
                             invalidateHierarchy(it)
                         }
                     }
@@ -50,17 +50,17 @@ internal abstract class Parent : Element() {
 
     override fun onPropertyChanged(prop: KProperty<*>) {
         if (prop == Element::transform) {
-            flattenChildren(this).forEach { it.invalidateDependencyProp(Element::ctm) }
+            childrenDeepTraversal(this).forEach { it.invalidateDependencyProp(Element::ctm) }
         }
 
         if (prop == Element::ctm) {
-            flattenChildren(this).forEach { it.invalidateDependencyProp(Element::ctm) }
+            childrenDeepTraversal(this).forEach { it.invalidateDependencyProp(Element::ctm) }
         }
     }
 
     override val localBounds: Rect
         get() = children
-            .filterNot { it is Parent && it.children.isEmpty() }
+            .filterNot { it is Container && it.children.isEmpty() }
             .map(Element::localBounds)
             .let(::union)
             ?: Rect.makeWH(0.0f, 0.0f)
@@ -68,7 +68,7 @@ internal abstract class Parent : Element() {
     override val screenBounds: Rect
         get() {
             return children
-                .filterNot { it is Parent && it.children.isEmpty() }
+                .filterNot { it is Container && it.children.isEmpty() }
                 .map(Element::screenBounds)
                 .let(::union)
                 ?: Rect.makeXYWH(ctm.translateX, ctm.translateY, 0.0f, 0.0f)
@@ -78,7 +78,7 @@ internal abstract class Parent : Element() {
     private fun invalidateHierarchy(e: Element) {
         e.invalidateDependencyProp(Element::parents)
         e.invalidateDependencyProp(Element::ctm)
-        flattenChildren(e).forEach {
+        childrenDeepTraversal(e).forEach {
             it.invalidateDependencyProp(Element::parents)
             it.invalidateDependencyProp(Element::ctm)
         }

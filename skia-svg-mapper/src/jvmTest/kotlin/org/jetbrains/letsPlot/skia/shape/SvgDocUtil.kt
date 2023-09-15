@@ -140,10 +140,10 @@ internal fun translate(x: Number, y: Number): SvgTransform {
     return SvgTransformBuilder().translate(x.toDouble(), y.toDouble()).build()
 }
 
-internal inline fun <reified T> Parent.element(id: String): T {
+internal inline fun <reified T> Container.element(id: String): T {
     return element(id) as T
 }
 
-internal fun Parent.element(id: String): Element {
-    return flattenChildren(this).first { it.id == id }
+internal fun Container.element(id: String): Element {
+    return childrenDeepTraversal(this).first { it.id == id }
 }

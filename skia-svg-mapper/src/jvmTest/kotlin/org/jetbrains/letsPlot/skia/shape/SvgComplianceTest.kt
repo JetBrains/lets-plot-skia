@@ -161,4 +161,32 @@ class SvgComplianceTest {
             assertThat(it.ctm.mat).containsExactly(*Matrix33.makeTranslate(23f, 37f).mat)
         }
     }
+
+    @Test
+    fun `depth first traversal`() {
+        val doc = mapSvg {
+            svgDocument(width = 400, height = 300) {
+                g(id = "0") {
+                    g(id = "1") {
+                        rect(id="2")
+                        rect(id="3")
+                        rect(id="4")
+                    }
+                    g(id = "5") {
+                        g(id = "6") {
+                            rect(id = "7")
+                            rect(id = "8")
+                        }
+                    }
+                }
+                rect(id = "9")
+            }
+        }
+
+        val elements = mutableListOf<Element>()
+        depthFirstTraversal(listOf(doc), elements::add)
+
+        assertThat(elements.map(Element::id)).isEqualTo(listOf(null, "0", "1", "2", "3", "4", "5", "6", "7", "8", "9"))
+    }
+
 }

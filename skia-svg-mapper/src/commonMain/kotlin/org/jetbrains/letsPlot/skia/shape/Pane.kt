@@ -9,7 +9,7 @@ import org.jetbrains.skia.Matrix33
 import kotlin.reflect.KProperty
 
 
-internal class Pane : Parent() {
+internal class Pane : Container() {
     var x: Float by visualProp(0.0f)
     var y: Float by visualProp(0.0f)
     var width: Float by visualProp(0.0f)

@@ -11,9 +11,9 @@ import org.jetbrains.skia.Matrix33
 import org.jetbrains.skia.Rect.Companion.makeLTRB
 import org.junit.Test
 
-class HierarchyUpdateTest {
+class HierarchyTest {
     @Test
-    fun simple() {
+    fun treeChangesShouldUpdateScreenBounds() {
         val doc = mapSvg {
             svgDocument(width = 400, height = 300) {
                 g(id = "root_g") {
