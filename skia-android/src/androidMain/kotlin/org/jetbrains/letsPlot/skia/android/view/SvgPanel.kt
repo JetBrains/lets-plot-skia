@@ -13,7 +13,7 @@ import org.jetbrains.letsPlot.commons.registration.Disposable
 import org.jetbrains.letsPlot.commons.registration.DisposableRegistration
 import org.jetbrains.letsPlot.commons.registration.DisposingHub
 import org.jetbrains.letsPlot.datamodel.svg.dom.SvgSvgElement
-import org.jetbrains.letsPlot.skia.svg.view.SkikoViewEventDispatcher
+import org.jetbrains.letsPlot.skia.view.SkikoViewEventDispatcher
 
 @SuppressLint("ViewConstructor")
 class SvgPanel constructor(

@@ -35,7 +35,7 @@ kotlin {
             dependencies {
                 compileOnly("org.jetbrains.skiko:skiko-android:$skikoVersion")
 
-                implementation(project(":skia-svg-mapper"))
+                implementation(project(":platf-skia"))
 
                 compileOnly("org.jetbrains.lets-plot:commons:$letsPlotVersion")
                 compileOnly("org.jetbrains.lets-plot:datamodel:$letsPlotVersion")

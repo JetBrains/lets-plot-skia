@@ -16,7 +16,7 @@ dependencies {
 
     compileOnly("org.jetbrains.lets-plot:lets-plot-kotlin-kernel:$letsPlotKotlinVersion")
 
-    implementation(project(":skia-svg-mapper"))
+    implementation(project(":platf-skia"))
     implementation(project(":skia-awt"))
 
     compileOnly("org.jetbrains.lets-plot:lets-plot-common:$letsPlotVersion")

@@ -13,7 +13,7 @@ import org.jetbrains.letsPlot.datamodel.svg.dom.SvgConstants
 import org.jetbrains.letsPlot.datamodel.svg.dom.SvgElementListener
 import org.jetbrains.letsPlot.datamodel.svg.dom.SvgSvgElement
 import org.jetbrains.letsPlot.datamodel.svg.event.SvgAttributeEvent
-import org.jetbrains.letsPlot.skia.svg.view.SkikoViewEventDispatcher
+import org.jetbrains.letsPlot.skia.view.SkikoViewEventDispatcher
 import java.awt.Dimension
 import java.awt.Graphics
 import java.awt.Point

@@ -18,7 +18,7 @@ import org.jetbrains.letsPlot.core.plot.builder.PlotContainer
 import org.jetbrains.letsPlot.core.plot.builder.PlotSvgRoot
 import org.jetbrains.letsPlot.core.plot.builder.subPlots.CompositeFigureSvgRoot
 import org.jetbrains.letsPlot.skia.awt.view.SvgPanel
-import org.jetbrains.letsPlot.skia.svg.view.SkikoViewEventDispatcher
+import org.jetbrains.letsPlot.skia.view.SkikoViewEventDispatcher
 import java.awt.Point
 import java.awt.Rectangle
 import javax.swing.JComponent

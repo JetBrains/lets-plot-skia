@@ -11,7 +11,7 @@ val letsPlotVersion = extra["letsPlot.version"] as String
 dependencies {
     implementation(compose.desktop.currentOs)
 
-    implementation(project(":skia-svg-mapper"))
+    implementation(project(":platf-skia"))
     implementation(project(":skia-awt"))
 
     implementation(project(":demo-svg-shared"))

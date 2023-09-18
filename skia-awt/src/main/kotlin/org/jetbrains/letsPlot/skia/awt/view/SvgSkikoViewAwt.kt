@@ -6,8 +6,8 @@
 package org.jetbrains.letsPlot.skia.awt.view
 
 import org.jetbrains.letsPlot.datamodel.svg.dom.SvgSvgElement
-import org.jetbrains.letsPlot.skia.svg.view.SkikoViewEventDispatcher
-import org.jetbrains.letsPlot.skia.svg.view.SvgSkikoView
+import org.jetbrains.letsPlot.skia.view.SkikoViewEventDispatcher
+import org.jetbrains.letsPlot.skia.view.SvgSkikoView
 import org.jetbrains.skiko.SkiaLayer
 import java.awt.Dimension
 

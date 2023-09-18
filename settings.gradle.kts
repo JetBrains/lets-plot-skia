@@ -31,7 +31,7 @@ pluginManagement {
 //}
 
 
-include("skia-svg-mapper")
+include("platf-skia")
 include("plot-compose")
 include("plot-swing")
 include("skia-awt")

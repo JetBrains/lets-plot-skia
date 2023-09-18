@@ -12,7 +12,7 @@ dependencies {
 
     implementation("org.jetbrains.lets-plot:lets-plot-kotlin-kernel:$letsPlotKotlinVersion")
 
-    implementation(project(":skia-svg-mapper"))
+    implementation(project(":platf-skia"))
     implementation(project(":plot-compose"))
 
     implementation(project(":demo-plot-shared"))
