@@ -21,9 +21,9 @@ internal abstract class Node {
     private val computedProperties = mutableMapOf<KProperty<*>, ComputedProperty<*>>()
     private val managedProperties = mutableMapOf<KProperty<*>, () -> Managed?>()
 
-    internal fun invalidateDependencyProp(prop: KProperty<*>) {
+    internal fun invalidateComputedProp(prop: KProperty<*>) {
         computedProperties[prop]?.invalidate()
-            ?: error { "Class `${this::class.simpleName}` doesn't have dependencyProperty `${prop.name}`" }
+            ?: error { "Class `${this::class.simpleName}` doesn't have computedProperty `${prop.name}`" }
     }
 
     private fun handlePropertyChange(property: KProperty<*>, oldValue: Any?, newValue: Any?) {

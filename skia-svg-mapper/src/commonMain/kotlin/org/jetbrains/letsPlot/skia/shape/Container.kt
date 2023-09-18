@@ -19,29 +19,11 @@ internal abstract class Container : Element() {
         children.addHandler(object : EventHandler<CollectionItemEvent<out Element>> {
             override fun onEvent(event: CollectionItemEvent<out Element>) {
                 when (event.type) {
-                    CollectionItemEvent.EventType.ADD -> {
-                        event.newItem?.let {
-                            it.parent = this@Container
-                            invalidateHierarchy(it)
-                        }
-                    }
-
-                    CollectionItemEvent.EventType.REMOVE -> {
-                        event.oldItem?.let {
-                            it.parent = null
-                            invalidateHierarchy(it)
-                        }
-                    }
-
+                    CollectionItemEvent.EventType.ADD -> event.newItem?.let { it.parent = this@Container }
+                    CollectionItemEvent.EventType.REMOVE -> event.oldItem?.let { it.parent = null }
                     CollectionItemEvent.EventType.SET -> {
-                        event.oldItem?.let {
-                            it.parent = null
-                            invalidateHierarchy(it)
-                        }
-                        event.newItem?.let {
-                            it.parent = this@Container
-                            invalidateHierarchy(it)
-                        }
+                        event.oldItem?.let { it.parent = null }
+                        event.newItem?.let { it.parent = this@Container }
                     }
                 }
             }
@@ -50,11 +32,15 @@ internal abstract class Container : Element() {
 
     override fun onPropertyChanged(prop: KProperty<*>) {
         if (prop == Element::transform) {
-            childrenDeepTraversal(this).forEach { it.invalidateDependencyProp(Element::ctm) }
+            childrenDeepTraversal(this).forEach { it.invalidateComputedProp(Element::ctm) }
         }
 
         if (prop == Element::ctm) {
-            childrenDeepTraversal(this).forEach { it.invalidateDependencyProp(Element::ctm) }
+            childrenDeepTraversal(this).forEach { it.invalidateComputedProp(Element::ctm) }
+        }
+
+        if (prop == Element::parent) {
+            invalidateHierarchy(this)
         }
     }
 
@@ -76,11 +62,11 @@ internal abstract class Container : Element() {
 
 
     private fun invalidateHierarchy(e: Element) {
-        e.invalidateDependencyProp(Element::parents)
-        e.invalidateDependencyProp(Element::ctm)
+        e.invalidateComputedProp(Element::parents)
+        e.invalidateComputedProp(Element::ctm)
         childrenDeepTraversal(e).forEach {
-            it.invalidateDependencyProp(Element::parents)
-            it.invalidateDependencyProp(Element::ctm)
+            it.invalidateComputedProp(Element::parents)
+            it.invalidateComputedProp(Element::ctm)
         }
     }
 }

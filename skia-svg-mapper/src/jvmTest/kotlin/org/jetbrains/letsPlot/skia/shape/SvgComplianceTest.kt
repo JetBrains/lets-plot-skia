@@ -16,7 +16,7 @@ class SvgComplianceTest {
     fun `nested g - empty`() {
         val doc = mapSvg {
             svgDocument(width = 400, height = 300) {
-                g(translate(x = 10, y = 20), id="g")
+                g(translate(x = 10, y = 20), id = "g")
             }
         }
 
@@ -33,8 +33,8 @@ class SvgComplianceTest {
     fun `nested g - simple`() {
         val doc = mapSvg {
             svgDocument(width = 400, height = 300) {
-                g(translate(x = 10, y = 20), id="g") {
-                    rect(5, 16, 40, 15, fill=SvgColors.RED, id="rect")
+                g(translate(x = 10, y = 20), id = "g") {
+                    rect(5, 16, 40, 15, fill = SvgColors.RED, id = "rect")
                 }
             }
         }
@@ -72,7 +72,7 @@ class SvgComplianceTest {
         val doc = mapSvg {
             svgDocument(width = 400, height = 300) {
                 svg(x = 10, y = 20, width = 400, height = 300, id = "svg") {
-                    rect(5, 16, 40, 15, fill=SvgColors.RED, id = "rect")
+                    rect(5, 16, 40, 15, fill = SvgColors.RED, id = "rect")
                 }
             }
         }
@@ -120,7 +120,7 @@ class SvgComplianceTest {
             svgDocument(width = 400.0, height = 300.0) {
                 g(translate(10.0, 20.0)) {
                     g(translate(30.0, 50.0)) {
-                        rect(x=3f, y=5f, width = 10f, height = 10f, id = "rect")
+                        rect(x = 3f, y = 5f, width = 10f, height = 10f, id = "rect")
                     }
                 }
             }
@@ -168,9 +168,9 @@ class SvgComplianceTest {
             svgDocument(width = 400, height = 300) {
                 g(id = "0") {
                     g(id = "1") {
-                        rect(id="2")
-                        rect(id="3")
-                        rect(id="4")
+                        rect(id = "2")
+                        rect(id = "3")
+                        rect(id = "4")
                     }
                     g(id = "5") {
                         g(id = "6") {

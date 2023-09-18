@@ -22,12 +22,17 @@ internal abstract class Element() : Node() {
         parents + listOfNotNull(parent)
     }
 
+    // Not affected by org.jetbrains.skiko.SkiaLayer.getContentScale
+    // (see org.jetbrains.letsPlot.skia.svg.view.SvgSkikoView.onRender)
     val ctm: Matrix33 by computedProp(Element::parent, Element::transform) {
         val parentCtm = parent?.ctm ?: Matrix33.IDENTITY
         parentCtm.makeConcat(transform)
     }
 
     open val localBounds: Rect = Rect.Companion.makeWH(0f, 0f)
+
+    // Not affected by org.jetbrains.skiko.SkiaLayer.getContentScale
+    // (see org.jetbrains.letsPlot.skia.svg.view.SvgSkikoView.onRender)
     open val screenBounds: Rect
         get() = ctm.apply(localBounds)
 
@@ -35,7 +40,7 @@ internal abstract class Element() : Node() {
         if (!isVisible) return
 
         canvas.save()
-        canvas.setMatrix(ctm)
+        canvas.concat(ctm) // Apply global transform (like scaling if run on HiDPI monitors)
         clipPath?.let(canvas::clipPath)
         onRender(canvas)
         canvas.restore()
@@ -44,6 +49,6 @@ internal abstract class Element() : Node() {
     protected open fun onRender(canvas: Canvas) {}
 
     override fun repr(): String? {
-        return transform.mat.let {", transform: ${ it.joinToString(transform = Float::toString) }" }
+        return ctm.mat.let {", ctm: ${ it.joinToString(transform = Float::toString) }" } + ", $screenBounds"
     }
 }

@@ -16,22 +16,14 @@ internal object DebugOptions {
     const val VALIDATE_MANAGED_PROPERTIES = false
 
     fun drawBoundingBoxes(canvas: Canvas, rootElement: Pane) {
-        fun traverse(element: Element): Sequence<Element> {
-            return when (element) {
-                is Container -> element.children.asSequence() + element.children.asSequence().flatMap(::traverse)
-                else -> sequenceOf(element)
-            }
-        }
-
         val strokePaint = Paint().setStroke(true)
         val fillPaint = Paint().setStroke(false)
 
-        traverse(rootElement)
-            .forEach {
+        depthFirstTraversal(rootElement) {
                 val bounds = it.screenBounds
 
                 val color = when (it) {
-                    is Pane -> Color.YELLOW
+                    is Pane -> Color.CYAN
                     is Group -> Color.YELLOW
                     is Text -> Color.GREEN
                     is Rectangle -> Color.BLUE
