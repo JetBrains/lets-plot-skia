@@ -8,11 +8,6 @@ package org.jetbrains.letsPlot.skia.mapping.svg
 
 import org.jetbrains.letsPlot.datamodel.svg.dom.*
 import org.jetbrains.letsPlot.skia.mapping.svg.attr.*
-import org.jetbrains.letsPlot.skia.mapping.svg.attr.SvgCircleAttrMapping
-import org.jetbrains.letsPlot.skia.mapping.svg.attr.SvgGAttrMapping
-import org.jetbrains.letsPlot.skia.mapping.svg.attr.SvgImageAttrMapping
-import org.jetbrains.letsPlot.skia.mapping.svg.attr.SvgPathAttrMapping
-import org.jetbrains.letsPlot.skia.mapping.svg.attr.SvgRectAttrMapping
 import org.jetbrains.letsPlot.skia.shape.*
 import kotlin.reflect.KClass
 

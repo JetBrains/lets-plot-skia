@@ -11,12 +11,12 @@ import org.jetbrains.letsPlot.commons.registration.Disposable
 import org.jetbrains.letsPlot.datamodel.mapping.framework.MappingContext
 import org.jetbrains.letsPlot.datamodel.svg.dom.SvgNodeContainer
 import org.jetbrains.letsPlot.datamodel.svg.dom.SvgSvgElement
-import org.jetbrains.letsPlot.skia.shape.Pane
-import org.jetbrains.letsPlot.skia.shape.depthFirstTraversal
 import org.jetbrains.letsPlot.skia.mapping.svg.DebugOptions
 import org.jetbrains.letsPlot.skia.mapping.svg.DebugOptions.drawBoundingBoxes
 import org.jetbrains.letsPlot.skia.mapping.svg.SvgSkiaPeer
 import org.jetbrains.letsPlot.skia.mapping.svg.SvgSvgElementMapper
+import org.jetbrains.letsPlot.skia.shape.Pane
+import org.jetbrains.letsPlot.skia.shape.depthFirstTraversal
 import org.jetbrains.skia.Canvas
 import org.jetbrains.skiko.SkiaLayer
 import org.jetbrains.skiko.SkikoGestureEvent

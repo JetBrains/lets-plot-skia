@@ -20,30 +20,30 @@ internal object DebugOptions {
         val fillPaint = Paint().setStroke(false)
 
         depthFirstTraversal(rootElement) {
-                val bounds = it.screenBounds
+            val bounds = it.screenBounds
 
-                val color = when (it) {
-                    is Pane -> Color.CYAN
-                    is Group -> Color.YELLOW
-                    is Text -> Color.GREEN
-                    is Rectangle -> Color.BLUE
-                    is Circle -> Color.RED
-                    is Line -> Color.RED
-                    else -> Color.MAGENTA
-                }.let(::Color4f)
+            val color = when (it) {
+                is Pane -> Color.CYAN
+                is Group -> Color.YELLOW
+                is Text -> Color.GREEN
+                is Rectangle -> Color.BLUE
+                is Circle -> Color.RED
+                is Line -> Color.RED
+                else -> Color.MAGENTA
+            }.let(::Color4f)
 
-                val strokeWidth = when (it) {
-                    is Pane, is Group -> 3f
-                    else -> 1f
-                }
-
-                fillPaint.color = color.withA(0.1f).toColor()
-                strokePaint.color = color.toColor()
-                strokePaint.strokeWidth = strokeWidth
-                canvas.drawRect(bounds, fillPaint)
-                canvas.drawRect(bounds, strokePaint)
-
+            val strokeWidth = when (it) {
+                is Pane, is Group -> 3f
+                else -> 1f
             }
+
+            fillPaint.color = color.withA(0.1f).toColor()
+            strokePaint.color = color.toColor()
+            strokePaint.strokeWidth = strokeWidth
+            canvas.drawRect(bounds, fillPaint)
+            canvas.drawRect(bounds, strokePaint)
+
+        }
         strokePaint.close()
         fillPaint.close()
     }

@@ -7,9 +7,9 @@ package org.jetbrains.letsPlot.skia.mapping.svg.attr
 
 import org.jetbrains.letsPlot.commons.geometry.DoubleRectangle
 import org.jetbrains.letsPlot.datamodel.svg.dom.*
+import org.jetbrains.letsPlot.skia.mapping.svg.SvgTransformParser.parseSvgTransform
 import org.jetbrains.letsPlot.skia.shape.Element
 import org.jetbrains.letsPlot.skia.shape.SkPath
-import org.jetbrains.letsPlot.skia.mapping.svg.SvgTransformParser.parseSvgTransform
 import org.jetbrains.skia.Matrix33
 import org.jetbrains.skia.Rect
 

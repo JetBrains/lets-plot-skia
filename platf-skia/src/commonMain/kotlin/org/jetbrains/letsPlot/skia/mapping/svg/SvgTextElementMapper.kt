@@ -12,9 +12,9 @@ import org.jetbrains.letsPlot.commons.intern.observable.property.WritablePropert
 import org.jetbrains.letsPlot.datamodel.mapping.framework.Synchronizers
 import org.jetbrains.letsPlot.datamodel.svg.dom.*
 import org.jetbrains.letsPlot.datamodel.svg.style.StyleSheet
+import org.jetbrains.letsPlot.skia.mapping.svg.attr.SvgTextElementAttrMapping
 import org.jetbrains.letsPlot.skia.shape.Text
 import org.jetbrains.letsPlot.skia.shape.asSkiaColor
-import org.jetbrains.letsPlot.skia.mapping.svg.attr.SvgTextElementAttrMapping
 import org.jetbrains.skia.FontStyle
 
 internal class SvgTextElementMapper(

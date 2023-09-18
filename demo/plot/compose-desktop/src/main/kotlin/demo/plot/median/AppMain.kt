@@ -62,7 +62,8 @@ fun main() = application {
                     modifier = Modifier.fillMaxSize().padding(start = 10.dp, top = 10.dp, end = 10.dp, bottom = 10.dp),
                 ) {
                     Column(
-                        modifier = Modifier.fillMaxSize().padding(start = 10.dp, top = 10.dp, end = 10.dp, bottom = 10.dp),
+                        modifier = Modifier.fillMaxSize()
+                            .padding(start = 10.dp, top = 10.dp, end = 10.dp, bottom = 10.dp),
                     ) {
                         PlotPanel(
                             figure = figures[figureIndex.value].second,

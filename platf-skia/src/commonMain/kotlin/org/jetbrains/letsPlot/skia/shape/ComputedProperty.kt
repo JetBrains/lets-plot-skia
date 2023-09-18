@@ -11,7 +11,7 @@ import kotlin.reflect.KProperty
 internal class ComputedProperty<T>(
     private val valueProvider: () -> T,
     private val onPropertyChanged: (KProperty<*>, T, T) -> Unit
-): ReadOnlyProperty<Any, T> {
+) : ReadOnlyProperty<Any, T> {
     private var isDirty: Boolean = false
     private var value: T = valueProvider()
     private var computing = false

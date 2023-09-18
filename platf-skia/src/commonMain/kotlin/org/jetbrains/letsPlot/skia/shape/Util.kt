@@ -87,6 +87,7 @@ internal fun depthFirstTraversal(elements: List<Element>, visit: (Element) -> Un
                 visit(it)
                 depthFirstTraversal(it.children, visit)
             }
+
             else -> visit(it)
         }
     }

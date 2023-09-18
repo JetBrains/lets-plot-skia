@@ -27,7 +27,12 @@ internal abstract class Figure : Element() {
         }
     }
 
-    val strokePaint: Paint? by computedProp(Figure::stroke, Figure::strokeWidth, Figure::strokeDashArray, managed = true) {
+    val strokePaint: Paint? by computedProp(
+        Figure::stroke,
+        Figure::strokeWidth,
+        Figure::strokeDashArray,
+        managed = true
+    ) {
         val stroke = stroke ?: return@computedProp null
 
         if (strokeOpacity == 0f) return@computedProp null

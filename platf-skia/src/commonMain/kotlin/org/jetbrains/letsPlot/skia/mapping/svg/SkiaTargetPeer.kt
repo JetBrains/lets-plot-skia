@@ -12,9 +12,9 @@ import org.jetbrains.letsPlot.datamodel.svg.dom.SvgTextNode
 import org.jetbrains.letsPlot.datamodel.svg.dom.slim.SvgSlimElements
 import org.jetbrains.letsPlot.datamodel.svg.dom.slim.SvgSlimNode
 import org.jetbrains.letsPlot.datamodel.svg.event.SvgEventSpec
-import org.jetbrains.letsPlot.skia.shape.*
 import org.jetbrains.letsPlot.skia.mapping.svg.SvgUtils.getChildren
 import org.jetbrains.letsPlot.skia.mapping.svg.SvgUtils.newElement
+import org.jetbrains.letsPlot.skia.shape.*
 
 internal class SkiaTargetPeer : TargetPeer<Element> {
     override fun appendChild(target: Element, child: Element) {
