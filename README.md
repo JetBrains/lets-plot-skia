@@ -44,7 +44,12 @@ In `Run configurations`
 
 ### Problems with updating tools and dependencies:  
 
+#### Android:     
+Can't upgrade Skiko version 0.7.80 --> 0.7.81 : 
+> java.lang.UnsatisfiedLinkError: dlopen failed: cannot locate symbol "_ZN4sksg4NodeD2Ev"
+                                                                                         
+> org.jetbrains.skia.Paint.<clinit>(Paint.kt:10)
 
 #### Compose Desktop:
-Since version `1.4.1`, `PlotComponentProvider` do not show plot if the `repaintDelay` value is grater than 0. 
+Since JetBrains compose version `1.4.1`, `PlotComponentProvider` do not show plot if the `repaintDelay` value is grater than 0. 
 The reason is yet unknown.
