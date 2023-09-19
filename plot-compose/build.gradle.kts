@@ -47,8 +47,7 @@ kotlin {
         named("desktopMain") {
             dependencies {
                 implementation(compose.desktop.currentOs)
-//                compileOnly("org.jetbrains.skiko:skiko-awt:$skikoVersion")
-                api(project(":skia-awt"))
+                api(project(":platf-skia-awt"))
 
                 compileOnly("io.github.microutils:kotlin-logging-jvm:$kotlinLoggingVersion")
             }
@@ -58,7 +57,7 @@ kotlin {
             dependencies {
                 compileOnly("org.jetbrains.skiko:skiko-android:$skikoVersion")
 
-                api(project(":skia-android"))
+                api(project(":platf-skia-android"))
             }
         }
     }

@@ -29,7 +29,7 @@ dependencies {
     implementation("org.jetbrains.lets-plot:lets-plot-kotlin-kernel:$letsPlotKotlinVersion")
 
     implementation(project(":platf-skia"))
-    implementation(project(":skia-awt"))
+    implementation(project(":platf-skia-awt"))
     implementation(project(":plot-swing"))
 
     implementation(project(":demo-plot-shared"))

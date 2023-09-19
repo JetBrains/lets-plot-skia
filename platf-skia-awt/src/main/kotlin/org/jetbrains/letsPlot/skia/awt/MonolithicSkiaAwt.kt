@@ -50,7 +50,7 @@ object MonolithicSkiaAwt {
 
         return if (success.buildInfos.size == 1) {
             val buildInfo = success.buildInfos.single()
-            FigureToAwt(buildInfo).eval()
+            FigureToSkiaAwt(buildInfo).eval()
         } else {
             throw IllegalArgumentException("GGBunch is not supported.")
         }

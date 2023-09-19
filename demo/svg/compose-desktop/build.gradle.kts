@@ -12,7 +12,7 @@ dependencies {
     implementation(compose.desktop.currentOs)
 
     implementation(project(":platf-skia"))
-    implementation(project(":skia-awt"))
+    implementation(project(":platf-skia-awt"))
 
     implementation(project(":demo-svg-shared"))
 

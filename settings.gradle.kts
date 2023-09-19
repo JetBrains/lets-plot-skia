@@ -32,10 +32,10 @@ pluginManagement {
 
 
 include("platf-skia")
+include("platf-skia-awt")
+include("platf-skia-android")
 include("plot-compose")
 include("plot-swing")
-include("skia-awt")
-include("skia-android")
 
 include("demo-svg-shared")
 include("demo-svg-android")

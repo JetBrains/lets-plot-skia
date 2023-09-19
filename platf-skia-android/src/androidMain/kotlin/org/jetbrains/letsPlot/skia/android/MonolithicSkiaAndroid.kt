@@ -51,7 +51,7 @@ object MonolithicSkiaAndroid {
             return if (success.buildInfos.size == 1) {
                 // a single plot
                 val buildInfo = success.buildInfos[0]
-                FigureToAndroid(buildInfo).eval(ctx)
+                FigureToSkiaAndroid(buildInfo).eval(ctx)
             } else {
                 // ggbunch
                 error("GGBunch is not supported.")

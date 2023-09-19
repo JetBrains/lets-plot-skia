@@ -93,7 +93,7 @@ dependencies {
     skikoNativeArm64("org.jetbrains.skiko:skiko-android-runtime-arm64:$skikoVersion")
 
     implementation(project(":platf-skia"))
-    implementation(project(":skia-android"))
+    implementation(project(":platf-skia-android"))
 
     implementation(project(":demo-svg-shared"))
 

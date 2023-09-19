@@ -23,7 +23,7 @@ import java.awt.Point
 import java.awt.Rectangle
 import javax.swing.JComponent
 
-internal class FigureToAwt(
+internal class FigureToSkiaAwt(
     private val buildInfo: FigureBuildInfo,
 ) {
     fun eval(): JComponent {

@@ -21,7 +21,7 @@ import org.jetbrains.letsPlot.skia.android.SizeConverter.boundsPxToDp
 import org.jetbrains.letsPlot.skia.android.view.SvgPanel
 import org.jetbrains.letsPlot.skia.view.SkikoViewEventDispatcher
 
-internal class FigureToAndroid(
+internal class FigureToSkiaAndroid(
     private val buildInfo: FigureBuildInfo,
 ) {
     fun eval(ctx: Context): View {
