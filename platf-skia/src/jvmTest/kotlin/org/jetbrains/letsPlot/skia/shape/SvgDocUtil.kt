@@ -13,7 +13,10 @@ import org.jetbrains.letsPlot.skia.mapping.svg.SvgSvgElementMapper
 
 internal fun mapSvg(builder: () -> SvgSvgElement): Pane {
     val svgDocument = builder()
-    val node = SvgNodeContainer(svgDocument)
+
+    // attach root
+    SvgNodeContainer(svgDocument)
+
     val rootMapper = SvgSvgElementMapper(svgDocument, SvgSkiaPeer())
     rootMapper.attachRoot(MappingContext())
     return rootMapper.target

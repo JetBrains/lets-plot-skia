@@ -19,7 +19,7 @@ val skikoVersion = extra["skiko.version"] as String
 val letsPlotVersion = extra["letsPlot.version"] as String
 
 kotlin {
-    android()
+    androidTarget()
 
     sourceSets {
         named("commonMain") {
