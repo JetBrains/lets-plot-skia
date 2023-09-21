@@ -40,7 +40,7 @@ kotlin {
 
         named("desktopMain") {
             dependencies {
-                implementation(compose.desktop.currentOs)
+                compileOnly(compose.desktop.currentOs)
 
                 api(project(":platf-skia"))
                 api(project(":platf-skia-awt"))
