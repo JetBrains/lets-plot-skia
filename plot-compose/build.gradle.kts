@@ -34,19 +34,15 @@ kotlin {
                 compileOnly("org.jetbrains.skiko:skiko:$skikoVersion")
                 compileOnly("org.jetbrains.lets-plot:lets-plot-kotlin-kernel:$letsPlotKotlinVersion")
 
-                compileOnly("org.jetbrains.lets-plot:commons:$letsPlotVersion")
-                compileOnly("org.jetbrains.lets-plot:datamodel:$letsPlotVersion")
-                compileOnly("org.jetbrains.lets-plot:plot-base:$letsPlotVersion")
-                compileOnly("org.jetbrains.lets-plot:plot-builder:$letsPlotVersion")
-                compileOnly("org.jetbrains.lets-plot:plot-stem:$letsPlotVersion")
-
-                compileOnly("org.jetbrains.lets-plot:deprecated-in-v4:$letsPlotVersion")
+                compileOnly("org.jetbrains.lets-plot:lets-plot-common:$letsPlotVersion")
             }
         }
 
         named("desktopMain") {
             dependencies {
                 implementation(compose.desktop.currentOs)
+
+                api(project(":platf-skia"))
                 api(project(":platf-skia-awt"))
 
                 compileOnly("io.github.microutils:kotlin-logging-jvm:$kotlinLoggingVersion")
@@ -57,6 +53,7 @@ kotlin {
             dependencies {
                 compileOnly("org.jetbrains.skiko:skiko-android:$skikoVersion")
 
+                api(project(":platf-skia"))
                 api(project(":platf-skia-android"))
             }
         }

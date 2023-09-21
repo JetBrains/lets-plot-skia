@@ -103,10 +103,11 @@ dependencies {
     skikoNativeArm64("org.jetbrains.skiko:skiko-android-runtime-arm64:$skikoVersion")
 
     implementation("org.jetbrains.lets-plot:lets-plot-kotlin-kernel:$letsPlotKotlinVersion")
+    implementation("org.jetbrains.lets-plot:lets-plot-common:$letsPlotVersion")
 
-    implementation(project(":platf-skia"))
     implementation(project(":plot-compose"))
     implementation(project(":demo-plot-shared"))
 
-    implementation("org.jetbrains.lets-plot:lets-plot-common:$letsPlotVersion")
+    implementation("org.slf4j:slf4j-api:2.0.9")
+    implementation("com.github.tony19:logback-android:3.0.0")
 }

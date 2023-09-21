@@ -27,13 +27,11 @@ dependencies {
     implementation("org.jetbrains.skiko:skiko-awt-runtime-$hostOs-$hostArch:$skikoVersion")
 
     implementation("org.jetbrains.lets-plot:lets-plot-kotlin-kernel:$letsPlotKotlinVersion")
-
-    implementation(project(":platf-skia"))
-    implementation(project(":platf-skia-awt"))
-    implementation(project(":plot-swing"))
-
-    implementation(project(":demo-plot-shared"))
-
     implementation("org.jetbrains.lets-plot:lets-plot-common:$letsPlotVersion")
     implementation("org.jetbrains.lets-plot:platf-awt:$letsPlotVersion")
+
+    implementation(project(":plot-swing"))
+    implementation(project(":demo-plot-shared"))
+
+    implementation("org.slf4j:slf4j-simple:2.0.9")  // Enable logging to console
 }

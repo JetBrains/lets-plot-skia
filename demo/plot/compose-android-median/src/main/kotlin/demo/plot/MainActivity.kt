@@ -14,6 +14,7 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
+import ch.qos.logback.classic.android.BasicLogcatConfigurator
 import demo.plot.ui.DemoDropdownMenu
 import demo.plot.ui.DemoRadioGroup
 import org.jetbrains.letsPlot.skia.compose.PlotPanel
@@ -64,6 +65,12 @@ class MainActivity : ComponentActivity() {
                     }
                 }
             }
+        }
+    }
+
+    private companion object {
+        init {
+            BasicLogcatConfigurator.configureDefaultContext()
         }
     }
 }

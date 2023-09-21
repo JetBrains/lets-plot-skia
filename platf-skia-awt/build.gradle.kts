@@ -13,7 +13,7 @@ val letsPlotVersion = extra["letsPlot.version"] as String
 dependencies {
     compileOnly("org.jetbrains.skiko:skiko:$skikoVersion")
 
-    implementation(project(":platf-skia"))
+    compileOnly(project(":platf-skia"))
 
     compileOnly("org.jetbrains.lets-plot:lets-plot-common:$letsPlotVersion")
     compileOnly("org.jetbrains.lets-plot:platf-awt:$letsPlotVersion")

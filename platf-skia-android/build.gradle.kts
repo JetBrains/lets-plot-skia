@@ -35,15 +35,13 @@ kotlin {
             dependencies {
                 compileOnly("org.jetbrains.skiko:skiko-android:$skikoVersion")
 
-                implementation(project(":platf-skia"))
+                compileOnly(project(":platf-skia"))
 
                 compileOnly("org.jetbrains.lets-plot:commons:$letsPlotVersion")
                 compileOnly("org.jetbrains.lets-plot:datamodel:$letsPlotVersion")
                 compileOnly("org.jetbrains.lets-plot:plot-base:$letsPlotVersion")
                 compileOnly("org.jetbrains.lets-plot:plot-builder:$letsPlotVersion")
                 compileOnly("org.jetbrains.lets-plot:plot-stem:$letsPlotVersion")
-
-                compileOnly("org.jetbrains.lets-plot:deprecated-in-v4:$letsPlotVersion")
             }
         }
     }

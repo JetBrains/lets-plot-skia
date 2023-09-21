@@ -15,12 +15,11 @@ dependencies {
     compileOnly("org.jetbrains.skiko:skiko:$skikoVersion")
 
     compileOnly("org.jetbrains.lets-plot:lets-plot-kotlin-kernel:$letsPlotKotlinVersion")
-
-    implementation(project(":platf-skia"))
-    implementation(project(":platf-skia-awt"))
-
     compileOnly("org.jetbrains.lets-plot:lets-plot-common:$letsPlotVersion")
     compileOnly("org.jetbrains.lets-plot:platf-awt:$letsPlotVersion")
+
+    api(project(":platf-skia"))
+    api(project(":platf-skia-awt"))
 
     testImplementation(kotlin("test"))
 }

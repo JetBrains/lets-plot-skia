@@ -14,6 +14,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.material.MaterialTheme
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
+import ch.qos.logback.classic.android.BasicLogcatConfigurator
 import org.jetbrains.letsPlot.skia.compose.PlotPanel
 import plotSpec.DensitySpec
 
@@ -42,6 +43,12 @@ class MainActivity : ComponentActivity() {
 //                    )
                 }
             }
+        }
+    }
+
+    private companion object {
+        init {
+            BasicLogcatConfigurator.configureDefaultContext()
         }
     }
 }
