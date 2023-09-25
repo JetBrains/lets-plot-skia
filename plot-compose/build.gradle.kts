@@ -61,7 +61,7 @@ kotlin {
 }
 
 android {
-    namespace = "org.jetbrains.letsPlot.skia.compose"
+    namespace = "org.jetbrains.letsPlot.composeMultiplatform"
 
     compileSdk = (findProperty("android.compileSdk") as String).toInt()
 

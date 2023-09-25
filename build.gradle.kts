@@ -28,13 +28,6 @@ if (project.file("local.properties").exists()) {
 allprojects {
     group = "org.jetbrains.lets-plot"
     version = "1.0.0-SNAPSHOT"
-
-//    val version = version as String
-
-//     Maven publication settings
-//    val sonatypeSnapshotUrl = "https://oss.sonatype.org/content/repositories/snapshots/"
-//    val sonatypeReleaseUrl = "https://oss.sonatype.org/service/local/staging/deploy/maven2/"
-//    project.extra["sonatypeUrl"] = if (version.contains("SNAPSHOT")) sonatypeSnapshotUrl else sonatypeReleaseUrl
 }
 
 subprojects {

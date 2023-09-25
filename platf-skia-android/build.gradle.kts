@@ -48,7 +48,7 @@ kotlin {
 }
 
 android {
-    namespace = "org.jetbrains.letsPlot.skiko.android"
+    namespace = "org.jetbrains.letsPlot.platfSkiaAndroid"
 
     compileSdk = (findProperty("android.compileSdk") as String).toInt()
 

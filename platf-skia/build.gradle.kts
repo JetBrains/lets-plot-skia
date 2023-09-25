@@ -77,7 +77,7 @@ kotlin {
 }
 
 android {
-    namespace = "org.jetbrains.letsPlot.skia.mapper"
+    namespace = "org.jetbrains.letsPlot.platfSkia"
 
     compileSdk = (findProperty("android.compileSdk") as String).toInt()
 
