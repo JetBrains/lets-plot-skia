@@ -10,6 +10,8 @@ pluginManagement {
         val kotlinVersion = extra["kotlin.version"] as String
         val composeVersion = extra["compose.version"] as String
         val agpVersion = extra["agp.version"] as String
+        val nexusStagingVersion = extra["nexusStaging.version"] as String
+        val nexusPublishVersion = extra["nexusPublish.version"] as String
 
         kotlin("jvm").version(kotlinVersion)
         kotlin("multiplatform").version(kotlinVersion)
@@ -19,6 +21,9 @@ pluginManagement {
 
         id("com.android.application").version(agpVersion)
         id("com.android.library").version(agpVersion)
+
+        id("io.codearte.nexus-staging") version nexusStagingVersion
+        id("io.github.gradle-nexus.publish-plugin") version nexusPublishVersion
     }
 }
 
@@ -27,6 +32,11 @@ dependencyResolutionManagement {
         mavenCentral()
         google()
         maven("https://maven.pkg.jetbrains.space/public/p/compose/dev")
+
+        // SNAPSHOTS
+        maven(url = "https://oss.sonatype.org/content/repositories/snapshots")
+
+        mavenLocal()
     }
 }
 

@@ -5,6 +5,8 @@
 
 plugins {
     kotlin("jvm")
+//    `java-library`
+    `maven-publish`
 }
 
 val skikoVersion = extra["skiko.version"] as String
@@ -19,4 +21,17 @@ dependencies {
     compileOnly("org.jetbrains.lets-plot:platf-awt:$letsPlotVersion")
 
     testImplementation(kotlin("test"))
+}
+
+// Create publication
+java {
+    withSourcesJar()
+}
+
+publishing {
+    publications {
+        create<MavenPublication>("mavenJava") {
+            from(components["java"])
+        }
+    }
 }

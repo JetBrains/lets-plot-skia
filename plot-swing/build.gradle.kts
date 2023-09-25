@@ -5,6 +5,7 @@
 
 plugins {
     kotlin("jvm")
+    `maven-publish`
 }
 
 val skikoVersion = extra["skiko.version"] as String
@@ -22,4 +23,17 @@ dependencies {
     api(project(":platf-skia-awt"))
 
     testImplementation(kotlin("test"))
+}
+
+// Create publication
+java {
+    withSourcesJar()
+}
+
+publishing {
+    publications {
+        create<MavenPublication>("mavenJava") {
+            from(components["java"])
+        }
+    }
 }
