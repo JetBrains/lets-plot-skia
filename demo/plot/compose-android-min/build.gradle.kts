@@ -105,7 +105,7 @@ dependencies {
     implementation("org.jetbrains.lets-plot:lets-plot-kotlin-kernel:$letsPlotKotlinVersion")
     implementation("org.jetbrains.lets-plot:lets-plot-common:$letsPlotVersion")
 
-    implementation(project(":plot-compose"))
+    implementation(project(":lets-plot-compose"))
     implementation(project(":demo-plot-shared"))
 
     implementation("org.slf4j:slf4j-api:2.0.9")

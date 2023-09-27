@@ -30,7 +30,7 @@ dependencies {
     implementation("org.jetbrains.lets-plot:lets-plot-common:$letsPlotVersion")
     implementation("org.jetbrains.lets-plot:platf-awt:$letsPlotVersion")
 
-    implementation(project(":plot-swing"))
+    implementation(project(":lets-plot-swing-skia"))
     implementation(project(":demo-plot-shared"))
 
     implementation("org.slf4j:slf4j-simple:2.0.9")  // Enable logging to console

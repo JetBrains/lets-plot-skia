@@ -42,9 +42,8 @@ dependencyResolutionManagement {
 
 include("platf-skia")
 include("platf-skia-awt")
-include("platf-skia-android")
-include("plot-compose")
-include("plot-swing")
+include("lets-plot-compose")
+include("lets-plot-swing-skia")
 
 include("demo-svg-shared")
 include("demo-svg-android")

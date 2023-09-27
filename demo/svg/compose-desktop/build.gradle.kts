@@ -18,14 +18,3 @@ dependencies {
 
     implementation("org.jetbrains.lets-plot:lets-plot-common:$letsPlotVersion")
 }
-
-//compose.desktop.application {
-//    //mainClass = "me.ikupriyanov.demo.plot.AreaViewerSkiaKt"
-//    //mainClass = "me.ikupriyanov.demo.svg.InteractiveSvgDemoKt"
-//
-//    nativeDistributions {
-//        targetFormats(TargetFormat.Dmg, TargetFormat.Msi, TargetFormat.Deb)
-//        packageName = "lets-plot-compose-demo-app"
-//        packageVersion = "1.0.0"
-//    }
-//}

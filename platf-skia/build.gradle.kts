@@ -6,6 +6,7 @@
 plugins {
     kotlin("multiplatform")
     id("com.android.library")
+    `maven-publish`
 }
 
 val skikoVersion = extra["skiko.version"] as String
@@ -27,7 +28,7 @@ var hostArch = when (val osArch = System.getProperty("os.arch")) {
     else -> error("Unsupported arch: $osArch")
 }
 
-val host = "${hostOs}-${hostArch}"
+//val host = "${hostOs}-${hostArch}"
 
 kotlin {
     jvm {
@@ -36,7 +37,9 @@ kotlin {
         }
     }
 
-    androidTarget()
+    androidTarget {
+        publishLibraryVariants("release", "debug")
+    }
 
     sourceSets {
         commonMain {
@@ -71,13 +74,19 @@ kotlin {
         named("androidMain") {
             dependencies {
                 compileOnly("org.jetbrains.skiko:skiko-android:$skikoVersion")
+
+                compileOnly("org.jetbrains.lets-plot:commons:$letsPlotVersion")
+                compileOnly("org.jetbrains.lets-plot:datamodel:$letsPlotVersion")
+                compileOnly("org.jetbrains.lets-plot:plot-base:$letsPlotVersion")
+                compileOnly("org.jetbrains.lets-plot:plot-builder:$letsPlotVersion")
+                compileOnly("org.jetbrains.lets-plot:plot-stem:$letsPlotVersion")
             }
         }
     }
 }
 
 android {
-    namespace = "org.jetbrains.letsPlot.platfSkia"
+    namespace = "org.jetbrains.letsPlot.skia.android"
 
     compileSdk = (findProperty("android.compileSdk") as String).toInt()
 
@@ -85,7 +94,17 @@ android {
 
     defaultConfig {
         minSdk = (findProperty("android.minSdk") as String).toInt()
-        targetSdk = (findProperty("android.targetSdk") as String).toInt()
+    }
+
+    buildTypes {
+        getByName("release") {
+            isMinifyEnabled = false // true - error: when compiling demo cant resolve classes
+//            proguardFiles(getDefaultProguardFile("proguard-android.txt"), "proguard-rules.pro")
+        }
+
+        getByName("debug") {
+            isMinifyEnabled = false
+        }
     }
 
     compileOptions {

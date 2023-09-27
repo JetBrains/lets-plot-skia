@@ -85,30 +85,24 @@ subprojects {
         if (name in listOf(
                 "platf-skia",
                 "platf-skia-awt",
-                "platf-skia-android",
-                "plot-compose",
-                "plot-swing",
+                "lets-plot-compose",
+                "lets-plot-swing-skia",
             )
         ) {
             apply(plugin = "maven-publish")
             apply(plugin = "signing")
 
-            val artifactBaseName = when (project.name) {
-                "plot-compose" -> "lets-plot-compose"
-                "plot-swing" -> "lets-plot-skia-swing"
-                else -> project.name
-            }
             val artifactGroupId = project.group as String
             val artifactVersion = project.version as String
 
             val artifactPOMName = when (project.name) {
-                "plot-compose" -> "Lets-Plot for Compose Multiplatform"
-                "plot-swing" -> "Lets-Plot for Swing/Skia"
+                "lets-plot-compose" -> "Lets-Plot for Compose Multiplatform"
+                "lets-plot-swing-skia" -> "Lets-Plot for Swing/Skia"
                 else -> "Part of Lets-Plot/Skia"
             }
             val artifactPOMDescr = when (project.name) {
-                "plot-compose" -> "Lets-Plot for Compose Multiplatform"
-                "plot-swing" -> "Lets-Plot JVM package with Swing/Skia rendering"
+                "lets-plot-compose" -> "Lets-Plot for Compose Multiplatform"
+                "lets-plot-swing-skia" -> "Lets-Plot JVM package with Swing/Skia rendering"
                 else -> "Part of Lets-Plot with Skia rendering package"
             }
 
@@ -116,20 +110,6 @@ subprojects {
                 publications.forEach { pub ->
                     with(pub as MavenPublication) {
                         groupId = artifactGroupId
-                        artifactId = if (artifactId.startsWith("plot-compose")) {
-                            artifactId.replace(
-                                "plot-compose",
-                                "lets-plot-compose"
-                            )
-                        } else if (artifactId.startsWith("plot-swing")) {
-                            artifactId.replace(
-                                "plot-swing",
-                                "lets-plot-swing"
-                            )
-                        } else {
-                            artifactId
-                        }
-
                         version = artifactVersion
 
                         // Add "javadocs" to each publication or Maven won't publish it.

@@ -7,6 +7,7 @@ plugins {
     kotlin("multiplatform")
     id("com.android.library")
     id("org.jetbrains.compose")
+    `maven-publish`
 }
 
 val skikoVersion = extra["skiko.version"] as String
@@ -22,8 +23,9 @@ kotlin {
         }
     }
 
-    androidTarget()
-
+    androidTarget {
+        publishLibraryVariants("release", "debug")
+    }
 
     sourceSets {
         named("commonMain") {
@@ -54,14 +56,13 @@ kotlin {
                 compileOnly("org.jetbrains.skiko:skiko-android:$skikoVersion")
 
                 api(project(":platf-skia"))
-                api(project(":platf-skia-android"))
             }
         }
     }
 }
 
 android {
-    namespace = "org.jetbrains.letsPlot.composeMultiplatform"
+    namespace = "org.jetbrains.letsPlot.skia.compose"
 
     compileSdk = (findProperty("android.compileSdk") as String).toInt()
 
@@ -69,7 +70,17 @@ android {
 
     defaultConfig {
         minSdk = (findProperty("android.minSdk") as String).toInt()
-        targetSdk = (findProperty("android.targetSdk") as String).toInt()
+    }
+
+    buildTypes {
+        getByName("release") {
+            isMinifyEnabled = false // true - error: when compiling demo cant resolve classes
+//            proguardFiles(getDefaultProguardFile("proguard-android.txt"), "proguard-rules.pro")
+        }
+
+        getByName("debug") {
+            isMinifyEnabled = false
+        }
     }
 
     compileOptions {
