@@ -1,4 +1,4 @@
-### Configuring Intellij IDEA for Android development
+### Configuring IntelliJ IDEA for Android development
 
 - #### Android SDK
 
