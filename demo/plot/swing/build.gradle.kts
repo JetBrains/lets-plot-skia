@@ -16,8 +16,6 @@ var hostArch = when (val osArch = System.getProperty("os.arch")) {
     else -> error("Unsupported arch: $osArch")
 }
 
-val host = "${hostOs}-${hostArch}"
-
 val skikoVersion = extra["skiko.version"] as String
 val letsPlotVersion = extra["letsPlot.version"] as String
 val letsPlotKotlinVersion = extra["letsPlotKotlin.version"] as String

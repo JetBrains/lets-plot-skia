@@ -1,55 +1,107 @@
-# lets-plot-skia-mapper
-
-Rendering lets-plot with Skia. This project is a WIP.
-
-![img.png](img.png)
+[![Experimental](https://kotl.in/badges/experimental.svg)](https://kotlinlang.org/docs/components-stability.html)
+[![JetBrains incubator project](https://jb.gg/badges/incubator.svg)](https://confluence.jetbrains.com/display/ALL/JetBrains+on+GitHub)
+[![License MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://raw.githubusercontent.com/JetBrains/lets-plot-skia/master/LICENSE)
 
 
-### Android demo configuration
+# Lets-Plot Skia Frontend
 
-- #### With `SDK Manager` 
+**Lets-Plot Skia Frontend** is a Kotlin Multiplatform library which enables [Lets-Plot]() charts\
+in [Compose Multiplatform](https://github.com/JetBrains/compose-multiplatform) and Java Swing applications.
 
-From menu `Tools -> Android -> SDK Manager` setup an Android SDK.
+### Supported Targets
+- Compose Desktop (macOS, Windows, Linux)\
+  For more information see [Compose multiplatform compatibility and versioning overview](https://github.com/JetBrains/compose-multiplatform/blob/master/VERSIONING.md). 
+- Android
+- Java Swing
 
-The `local.properties` file will be automatically generated. 
-In case the `local.properties` file didn't appear in the project root:
- - create it manually
- - add property `sdk.dir` pointing to the location of the Android SDK on your system. 
+![Splash](img-2.png)
 
-For example:
+## Dependencies
+
+- [Compose Multiplatform](https://github.com/JetBrains/compose-multiplatform)
+  Compatible versions: 1.5.1
+- [Skiko](https://github.com/JetBrains/skiko)
+  Compatible versions: 0.7.80
+
+
+## Using as Dependency
+
+### Compose Desktop
+
+```kotlin
+dependencies {
+    ...
+
+    // Lets-Plot Kotlin API 
+    implementation("org.jetbrains.lets-plot:lets-plot-kotlin-kernel:4.4.3")
+
+    // Lets-Plot Backend 
+    implementation("org.jetbrains.lets-plot:lets-plot-common:4.0.1")
+    implementation("org.jetbrains.lets-plot:platf-awt:4.0.1")
+
+    // Lets-Plot Skia Frontend
+    implementation("org.jetbrains.lets-plot:lets-plot-compose:1.0.0")
+}
 ```
-sdk.dir=/Users/john/Library/Android/sdk
+
+### Android
+
+```kotlin
+dependencies {
+    ...
+
+    implementation("org.jetbrains.skiko:skiko-android:0.7.80")
+
+    // Lets-Plot Kotlin API 
+    implementation("org.jetbrains.lets-plot:lets-plot-kotlin-kernel:4.4.3")
+
+    // Lets-Plot Backend 
+    implementation("org.jetbrains.lets-plot:lets-plot-common:4.0.1")
+
+    // Lets-Plot Skia Frontend
+    implementation("org.jetbrains.lets-plot:lets-plot-compose:1.0.0")
+}
 ```
 
-- #### With `Device Manager`   
-                          
-From menu `Tools -> Android -> Device Manager` setup Android device.
+### Java Swing
 
-For example, Nexus 10 with Android 12 works well.
+```kotlin
+dependencies {
+    ...
 
-### Running Android demos
+    implementation("org.jetbrains.skiko:skiko:0.7.80")
+    // The host OS and architecture should be specified explicitly.
+    implementation("org.jetbrains.skiko:skiko-awt-runtime-macos-x64:0.7.80")
 
-In `Run configurations`
-- Select `demo-plot-compose-android-min` or `demo-plot-compose-android-median` application
-- Select the `Android` device
-- Click `Run`
+    // Lets-Plot Kotlin API 
+    implementation("org.jetbrains.lets-plot:lets-plot-kotlin-kernel:4.4.3")
 
-![](android_demo.gif)
+    // Lets-Plot Backend 
+    implementation("org.jetbrains.lets-plot:lets-plot-common:4.0.1")
+    implementation("org.jetbrains.lets-plot:platf-awt:$letsPlotVersion")
 
+    // Lets-Plot Skia Frontend
+    implementation(project(":lets-plot-swing-skia"))
+}
+```
 
-### See also
+## Examples
 
-[Compose-multiplatform iOS/Android Template](https://github.com/JetBrains/compose-multiplatform-ios-android-template)  
-[Compose-multiplatform Versioning](https://github.com/JetBrains/compose-multiplatform/blob/master/VERSIONING.md)
+You will find complete examples of using **Lets-Plot Kotlin API** with **Lets-Plot Skia Frontend** in the following\
+GitHub repository: [JetBrains/lets-plot-compose-demos](https://github.com/JetBrains/lets-plot-compose-demos).
 
-### Problems with updating tools and dependencies:  
+## Change Log
 
-#### Android:     
-Can't upgrade Skiko version 0.7.80 --> 0.7.81 : 
-> java.lang.UnsatisfiedLinkError: dlopen failed: cannot locate symbol "_ZN4sksg4NodeD2Ev"
-                                                                                         
-> org.jetbrains.skia.Paint.<clinit>(Paint.kt:10)
+See [CHANGELOG.md](https://github.com/JetBrains/lets-plot-skia/blob/master/CHANGELOG.md).
 
-#### Compose Desktop:
-Since JetBrains compose version `1.4.1`, `PlotComponentProvider` do not show plot if the `repaintDelay` value is grater than 0. 
-The reason is yet unknown.
+## Code of Conduct
+
+This project and the corresponding community are governed by the
+[JetBrains Open Source and Community Code of Conduct](https://confluence.jetbrains.com/display/ALL/JetBrains+Open+Source+and+Community+Code+of+Conduct).
+Please make sure you read it.
+
+## License
+
+Code and documentation released under
+the [MIT license](https://github.com/JetBrains/lets-plot-skia/blob/master/LICENSE).
+Copyright © 2019-2023, JetBrains s.r.o.
