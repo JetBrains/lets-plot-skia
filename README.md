@@ -9,10 +9,10 @@
 in [Compose Multiplatform](https://github.com/JetBrains/compose-multiplatform) and Java Swing applications.
 
 ### Supported Targets
-- Compose Desktop (macOS, Windows, Linux)\
+- **Compose Desktop** (macOS, Windows, Linux)\
   For more information see [Compose multiplatform compatibility and versioning overview](https://github.com/JetBrains/compose-multiplatform/blob/master/VERSIONING.md). 
-- Android
-- Java Swing
+- **Android**
+- **Java Swing**
 
 ![Splash](img-2.png)
 
