@@ -14,11 +14,13 @@ internal object SvgPathAttrMapping : SvgShapeMapping<Path>() {
     override fun setAttribute(target: Path, name: String, value: Any?) {
         when (name) {
             SvgPathElement.FILL_RULE.name -> {
-                val fillRule = when (value as SvgPathElement.FillRule) {
+                val fillRule = when (value) {
                     SvgPathElement.FillRule.NON_ZERO -> org.jetbrains.skia.PathFillMode.WINDING
                     SvgPathElement.FillRule.EVEN_ODD -> org.jetbrains.skia.PathFillMode.EVEN_ODD
+                    null -> null
                     else -> throw IllegalArgumentException("Unknown fill-rule: $value")
                 }
+
                 target.fillRule = fillRule
             }
             SvgPathElement.D.name -> {
