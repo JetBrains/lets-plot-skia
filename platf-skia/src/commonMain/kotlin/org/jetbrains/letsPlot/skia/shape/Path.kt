@@ -6,28 +6,37 @@
 package org.jetbrains.letsPlot.skia.shape
 
 import org.jetbrains.skia.Canvas
-import org.jetbrains.skia.Path
+import org.jetbrains.skia.PathFillMode
 import org.jetbrains.skia.Rect
 
 internal class Path : Figure() {
-    var skiaPath: Path? by visualProp(null, managed = true)
+    var fillRule: PathFillMode? by visualProp(null)
+    var skiaPath: SkPath? by visualProp(null, managed = true)
+
+    private val path: SkPath? by computedProp(Path::fillRule, Path::skiaPath, managed = true) {
+        val skiaPath = skiaPath ?: return@computedProp null
+
+        SkPath().apply {
+            fillRule?.let { fillMode = it }
+            addPath(skiaPath)
+        }
+    }
 
     override fun onRender(canvas: Canvas) {
-        if (skiaPath == null) {
-            return
-        }
+        val path = path ?: return
 
-        fillPaint?.let { canvas.drawPath(skiaPath!!, it) }
-        strokePaint?.let { canvas.drawPath(skiaPath!!, it) }
+        fillPaint?.let { canvas.drawPath(path, it) }
+        strokePaint?.let { canvas.drawPath(path, it) }
     }
 
     override val localBounds: Rect
         get() {
-            val path = skiaPath ?: return Rect.Companion.makeWH(0.0f, 0.0f)
             // `paint.getFillPath()` is not available in skiko v. 0.7.63
 //            return (strokePaint?.getFillPath(path) ?: path).bounds
-            return strokePaint?.let {
-                path.bounds.inflate(it.strokeWidth / 2)
-            } ?: path.bounds
+
+            val path = path ?: return Rect.Companion.makeWH(0.0f, 0.0f)
+            val strokeWidth = strokePaint?.strokeWidth ?: return path.bounds
+
+            return path.bounds.inflate(strokeWidth / 2f)
         }
 }
