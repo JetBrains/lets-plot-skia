@@ -5,8 +5,8 @@
 
 # Lets-Plot Skia Frontend
 
-**Lets-Plot Skia Frontend** is a Kotlin Multiplatform library which enables [Lets-Plot]() charts\
-in [Compose Multiplatform](https://github.com/JetBrains/compose-multiplatform) and Java Swing applications.
+**Lets-Plot Skia Frontend** is a Kotlin Multiplatform library that allows you to embed \
+[Lets-Plot](https://github.com/JetBrains/lets-plot) charts in a [Compose Multiplatform](https://github.com/JetBrains/compose-multiplatform) or Java Swing application.
 
 ### Supported Targets
 - **Compose Desktop** (macOS, Windows, Linux)\
@@ -18,7 +18,7 @@ in [Compose Multiplatform](https://github.com/JetBrains/compose-multiplatform) a
 
 ## Dependencies
 
-- [Compose Multiplatform](https://github.com/JetBrains/compose-multiplatform) (v. 1.5.1, 1.5.2)
+- [Compose Multiplatform](https://github.com/JetBrains/compose-multiplatform) (v. 1.5.1 and later)
 - [Skiko](https://github.com/JetBrains/skiko) (v. 0.7.80)
 - [Lets-Plot Kotlin API](https://github.com/JetBrains/lets-plot-kotlin) (v. 4.4.3+)
 - [Lets-Plot Multiplatform](https://github.com/JetBrains/lets-plot) (v. 4.0.1+)

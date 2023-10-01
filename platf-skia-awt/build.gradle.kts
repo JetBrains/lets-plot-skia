@@ -6,6 +6,7 @@
 plugins {
     kotlin("jvm")
     `maven-publish`
+    signing
 }
 
 val skikoVersion = extra["skiko.version"] as String
@@ -33,4 +34,8 @@ publishing {
             from(components["java"])
         }
     }
+}
+
+signing {
+    sign(publishing.publications)
 }

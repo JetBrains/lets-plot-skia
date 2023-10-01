@@ -32,7 +32,7 @@ Specify "x.y.z-SNAPSHOT" version in `build.gradle.kts` file.
 
 #### Release version
 
-  a) Specify RELEASE or PRE-RELEASE version in `build.gradle.kts` file.
+  a) Specify RELEASE or PRE-RELEASE (i.e. "x.y.z-alpha1", "x.y.z-rc1" etc.) version in `build.gradle.kts` file.
 
   b) Upload to the Nexus staging repository:
 

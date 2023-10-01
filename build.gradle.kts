@@ -27,7 +27,7 @@ if (project.file("local.properties").exists()) {
 
 allprojects {
     group = "org.jetbrains.lets-plot"
-    version = "1.0.0-SNAPSHOT"
+    version = "1.0.0-alpha5"
 }
 
 subprojects {
@@ -83,42 +83,20 @@ subprojects {
 
         // Configure publications
         if (name in listOf(
-                "platf-skia",
                 "platf-skia-awt",
-                "lets-plot-compose",
                 "lets-plot-swing-skia",
             )
         ) {
             apply(plugin = "maven-publish")
-            apply(plugin = "signing")
-
-            val artifactGroupId = project.group as String
-            val artifactVersion = project.version as String
-
-            val artifactPOMName = when (project.name) {
-                "lets-plot-compose" -> "Lets-Plot for Compose Multiplatform"
-                "lets-plot-swing-skia" -> "Lets-Plot for Swing/Skia"
-                else -> "Part of Lets-Plot/Skia"
-            }
-            val artifactPOMDescr = when (project.name) {
-                "lets-plot-compose" -> "Lets-Plot for Compose Multiplatform"
-                "lets-plot-swing-skia" -> "Lets-Plot JVM package with Swing/Skia rendering"
-                else -> "Part of Lets-Plot with Skia rendering package"
-            }
 
             configure<PublishingExtension> {
                 publications.forEach { pub ->
                     with(pub as MavenPublication) {
-                        groupId = artifactGroupId
-                        version = artifactVersion
-
-                        // Add "javadocs" to each publication or Maven won't publish it.
                         artifact(jarJavaDocs)
 
                         pom {
-                            name.set(artifactPOMName)
-                            description.set(artifactPOMDescr)
-
+                            name.set("Lets-Plot Skia Frontend")
+                            description.set("Skia frontend for Lets-Plot multiplatform plotting library.")
                             url.set("https://github.com/JetBrains/lets-plot-skia")
                             licenses {
                                 license {
@@ -137,12 +115,6 @@ subprojects {
                                 url.set("https://github.com/JetBrains/lets-plot-skia")
                             }
                         }
-
-                        // Sign all publications.
-                        // signing.sign(it)
-                        configure<SigningExtension> {
-                            sign(pub)
-                        }
                     }
                 }
 
@@ -155,7 +127,6 @@ subprojects {
         }
     }
 }
-
 
 // Nexus publish plugin settings:
 val sonatypeUsername = localProps["sonatype.username"] as String?

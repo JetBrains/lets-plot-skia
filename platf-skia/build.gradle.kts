@@ -7,6 +7,7 @@ plugins {
     kotlin("multiplatform")
     id("com.android.library")
     `maven-publish`
+    signing
 }
 
 val skikoVersion = extra["skiko.version"] as String
@@ -28,8 +29,6 @@ var hostArch = when (val osArch = System.getProperty("os.arch")) {
     else -> error("Unsupported arch: $osArch")
 }
 
-//val host = "${hostOs}-${hostArch}"
-
 kotlin {
     jvm {
         compilations.all {
@@ -38,7 +37,7 @@ kotlin {
     }
 
     androidTarget {
-        publishLibraryVariants("release", "debug")
+        publishLibraryVariants("release")
     }
 
     sourceSets {
@@ -54,7 +53,6 @@ kotlin {
         named("jvmMain") {
             dependencies {
 //                compileOnly("org.jetbrains.skiko:skiko-awt:$skikoVersion")
-
                 compileOnly("io.github.microutils:kotlin-logging-jvm:$kotlinLoggingVersion")
             }
         }
@@ -101,10 +99,6 @@ android {
             isMinifyEnabled = false // true - error: when compiling demo cant resolve classes
 //            proguardFiles(getDefaultProguardFile("proguard-android.txt"), "proguard-rules.pro")
         }
-
-        getByName("debug") {
-            isMinifyEnabled = false
-        }
     }
 
     compileOptions {
@@ -115,4 +109,51 @@ android {
     kotlin {
         jvmToolchain(11)
     }
+}
+
+
+///////////////////////////////////////////////
+//  Publishing
+///////////////////////////////////////////////
+
+afterEvaluate {
+    publishing {
+        publications.forEach { pub ->
+            with(pub as MavenPublication) {
+                artifact(tasks.jarJavaDocs)
+
+                pom {
+                    name.set("Lets-Plot Skia Frontend")
+                    description.set("Skia frontend for Lets-Plot multiplatform plotting library.")
+                    url.set("https://github.com/JetBrains/lets-plot-skia")
+                    licenses {
+                        license {
+                            name.set("MIT")
+                            url.set("https://raw.githubusercontent.com/JetBrains/lets-plot-skia/master/LICENSE")
+                        }
+                    }
+                    developers {
+                        developer {
+                            id.set("jetbrains")
+                            name.set("JetBrains")
+                            email.set("lets-plot@jetbrains.com")
+                        }
+                    }
+                    scm {
+                        url.set("https://github.com/JetBrains/lets-plot-skia")
+                    }
+                }
+            }
+        }
+
+        repositories {
+            mavenLocal {
+                url = uri("$rootDir/.maven-publish-dev-repo")
+            }
+        }
+    }
+}
+
+signing {
+    sign(publishing.publications)
 }
