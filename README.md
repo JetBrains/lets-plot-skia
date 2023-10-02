@@ -34,7 +34,7 @@ dependencies {
     // Lets-Plot Kotlin API 
     implementation("org.jetbrains.lets-plot:lets-plot-kotlin-kernel:4.4.3")
 
-    // Lets-Plot Backend 
+    // Lets-Plot Multiplatform 
     implementation("org.jetbrains.lets-plot:lets-plot-common:4.0.1")
     implementation("org.jetbrains.lets-plot:platf-awt:4.0.1")
 
@@ -80,7 +80,7 @@ dependencies {
     implementation("org.jetbrains.lets-plot:platf-awt:4.0.1")
 
     // Lets-Plot Skia Frontend
-    implementation("org.jetbrains.lets-plot:lets-plot-swing-skia::1.0.0")
+    implementation("org.jetbrains.lets-plot:lets-plot-swing-skia:1.0.0")
 }
 ```
 
