@@ -18,7 +18,7 @@ internal class Image : Element() {
     var height: Float by visualProp(0.0f)
     var img: SkImage? by visualProp(null, managed = true)
 
-    override fun onRender(canvas: Canvas) {
+    override fun render(canvas: Canvas) {
         img?.let {
             if (preserveRatio) {
                 canvas.drawImage(it, x, y)

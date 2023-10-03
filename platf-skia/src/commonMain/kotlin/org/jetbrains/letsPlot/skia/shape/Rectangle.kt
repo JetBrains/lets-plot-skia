@@ -17,7 +17,7 @@ internal class Rectangle : Figure() {
         Rect.makeXYWH(x, y, width, height)
     }
 
-    override fun onRender(canvas: Canvas) {
+    override fun render(canvas: Canvas) {
         fillPaint?.let { canvas.drawRect(rect, it) }
         strokePaint?.let { canvas.drawRect(rect, it) }
     }

@@ -6,19 +6,18 @@
 package org.jetbrains.letsPlot.skia.mapping.svg
 
 import org.jetbrains.letsPlot.skia.shape.*
-import org.jetbrains.skia.Canvas
-import org.jetbrains.skia.Color
-import org.jetbrains.skia.Color4f
-import org.jetbrains.skia.Paint
+import org.jetbrains.skia.*
 
 internal object DebugOptions {
     const val DEBUG_DRAWING_ENABLED: Boolean = false
     const val VALIDATE_MANAGED_PROPERTIES = false
 
-    fun drawBoundingBoxes(canvas: Canvas, rootElement: Pane) {
+    fun drawBoundingBoxes(rootElement: Pane, canvas: Canvas, scaleMatrix: Matrix33) {
         val strokePaint = Paint().setStroke(true)
         val fillPaint = Paint().setStroke(false)
 
+        canvas.save()
+        canvas.setMatrix(scaleMatrix)
         depthFirstTraversal(rootElement) {
             val bounds = it.screenBounds
 
@@ -44,6 +43,8 @@ internal object DebugOptions {
             canvas.drawRect(bounds, strokePaint)
 
         }
+        canvas.restore()
+
         strokePaint.close()
         fillPaint.close()
     }

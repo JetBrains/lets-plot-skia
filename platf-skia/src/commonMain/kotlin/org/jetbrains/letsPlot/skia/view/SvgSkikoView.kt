@@ -15,9 +15,13 @@ import org.jetbrains.letsPlot.skia.mapping.svg.DebugOptions
 import org.jetbrains.letsPlot.skia.mapping.svg.DebugOptions.drawBoundingBoxes
 import org.jetbrains.letsPlot.skia.mapping.svg.SvgSkiaPeer
 import org.jetbrains.letsPlot.skia.mapping.svg.SvgSvgElementMapper
+import org.jetbrains.letsPlot.skia.shape.Container
+import org.jetbrains.letsPlot.skia.shape.Element
 import org.jetbrains.letsPlot.skia.shape.Pane
-import org.jetbrains.letsPlot.skia.shape.depthFirstTraversal
 import org.jetbrains.skia.Canvas
+import org.jetbrains.skia.Matrix33
+import org.jetbrains.skia.Matrix33.Companion.IDENTITY
+import org.jetbrains.skia.Matrix33.Companion.makeScale
 import org.jetbrains.skiko.SkiaLayer
 import org.jetbrains.skiko.SkikoGestureEvent
 import org.jetbrains.skiko.SkikoPointerEvent
@@ -69,12 +73,12 @@ abstract class SvgSkikoView(
     protected abstract fun createSkiaLayer(view: SvgSkikoView): SkiaLayer
 
     override fun onRender(canvas: Canvas, width: Int, height: Int, nanoTime: Long) {
-        canvas.scale(skiaLayer.contentScale, skiaLayer.contentScale)
+        val scaleMatrix = IDENTITY.takeIf { skiaLayer.contentScale == 1f } ?: makeScale(skiaLayer.contentScale)
 
-        depthFirstTraversal(rootElement) { it.render(canvas) }
+        render(rootElement, canvas, scaleMatrix)
 
         if (DebugOptions.DEBUG_DRAWING_ENABLED) {
-            drawBoundingBoxes(canvas, rootElement)
+            drawBoundingBoxes(rootElement, canvas, scaleMatrix)
         }
     }
 
@@ -102,6 +106,27 @@ abstract class SvgSkikoView(
 
         if (this::_nativeLayer.isInitialized) {
             _nativeLayer.detach()
+        }
+    }
+
+    companion object {
+        private fun render(elements: List<Element>, canvas: Canvas, scaleMatrix: Matrix33) {
+            elements.forEach { element ->
+                render(element, canvas, scaleMatrix)
+            }
+        }
+
+        private fun render(element: Element, canvas: Canvas, scaleMatrix: Matrix33) {
+            canvas.save()
+            canvas.setMatrix(scaleMatrix.makeConcat(element.ctm))
+            element.clipPath?.let(canvas::clipPath)
+
+            if (element is Container) {
+                render(element.children, canvas, scaleMatrix)
+            }
+            element.render(canvas)
+
+            canvas.restore()
         }
     }
 }

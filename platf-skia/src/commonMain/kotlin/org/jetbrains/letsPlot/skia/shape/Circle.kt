@@ -13,7 +13,7 @@ internal class Circle : Figure() {
     var centerY: Float by visualProp(0.0f)
     var radius: Float by visualProp(0.0f)
 
-    override fun onRender(canvas: Canvas) {
+    override fun render(canvas: Canvas) {
         fillPaint?.let {
             canvas.drawCircle(centerX, centerY, radius, it)
         }

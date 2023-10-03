@@ -36,17 +36,7 @@ internal abstract class Element() : Node() {
     open val screenBounds: Rect
         get() = ctm.apply(localBounds)
 
-    fun render(canvas: Canvas) {
-        if (!isVisible) return
-
-        canvas.save()
-        canvas.concat(ctm) // Apply global transform (like scaling if run on HiDPI monitors)
-        clipPath?.let(canvas::clipPath)
-        onRender(canvas)
-        canvas.restore()
-    }
-
-    protected open fun onRender(canvas: Canvas) {}
+    open fun render(canvas: Canvas) {}
 
     override fun repr(): String? {
         return ctm.mat.let { ", ctm: ${it.joinToString(transform = Float::toString)}" } + ", $screenBounds"

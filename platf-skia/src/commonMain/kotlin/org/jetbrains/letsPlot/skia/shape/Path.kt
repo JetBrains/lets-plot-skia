@@ -22,7 +22,7 @@ internal class Path : Figure() {
         }
     }
 
-    override fun onRender(canvas: Canvas) {
+    override fun render(canvas: Canvas) {
         val path = path ?: return
 
         fillPaint?.let { canvas.drawPath(path, it) }

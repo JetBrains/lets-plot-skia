@@ -15,7 +15,7 @@ internal class Line : Figure() {
     var x1: Float by visualProp(0.0f)
     var y1: Float by visualProp(0.0f)
 
-    override fun onRender(canvas: Canvas) {
+    override fun render(canvas: Canvas) {
         strokePaint?.let { canvas.drawLine(x0, y0, x1, y1, it) }
     }
 
