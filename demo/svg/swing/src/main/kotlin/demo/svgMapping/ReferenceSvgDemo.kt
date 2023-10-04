@@ -6,8 +6,8 @@
 package demo.svgMapping
 
 import demo.svgMapping.utils.DemoWindow
-import svgModel.DemoModelB
+import demo.svgModel.ReferenceSvgModel
 
 fun main() {
-    DemoWindow("SwingSkia DemoB", listOf(DemoModelB.createModel())).open()
+    DemoWindow("Reference SVG", listOf(ReferenceSvgModel.createModel())).open()
 }

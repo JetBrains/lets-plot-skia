@@ -6,8 +6,8 @@
 package demo.svgMapping
 
 import demo.svgMapping.utils.DemoWindow
-import svgModel.DemoModelC
+import demo.svgModel.ClipPathSvgModel
 
 fun main() {
-    DemoWindow("SwingSkia DemoC", listOf(DemoModelC.createModel())).open()
+    DemoWindow("SVG with clip-path", listOf(ClipPathSvgModel.createModel())).open()
 }

@@ -18,17 +18,17 @@ import androidx.compose.ui.awt.SwingPanel
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.Window
 import androidx.compose.ui.window.application
+import demo.svgModel.ClipPathSvgModel
+import demo.svgModel.ReferenceSvgModel
+import demo.svgModel.SvgImageElementModel
 import org.jetbrains.letsPlot.datamodel.svg.dom.SvgSvgElement
 import org.jetbrains.letsPlot.skia.awt.view.SvgPanel
-import svgModel.DemoModelA
-import svgModel.DemoModelB
-import svgModel.DemoModelC
 
 fun main() = application {
     val items = listOf(
-        "SVG model A" to DemoModelA::createModel,
-        "SVG model B" to DemoModelB::createModel,
-        "SVG model C" to DemoModelC::createModel
+        "Reference SVG" to ReferenceSvgModel::createModel,
+        "SvgImageElement" to SvgImageElementModel::createModel,
+        "clip-path" to ClipPathSvgModel::createModel
     )
 
     val selectedIndex = remember { mutableStateOf(0) }

@@ -6,8 +6,8 @@
 package demo.svgMapping
 
 import demo.svgMapping.utils.DemoWindow
-import svgModel.DemoModelA
+import demo.svgModel.SvgImageElementModel
 
 fun main() {
-    DemoWindow("SwingSkia DemoA", listOf(DemoModelA.createModel())).open()
+    DemoWindow("SvgImage demo", listOf(SvgImageElementModel.createModel())).open()
 }

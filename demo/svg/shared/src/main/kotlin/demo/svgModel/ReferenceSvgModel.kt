@@ -3,7 +3,7 @@
  * Use of this source code is governed by the MIT license that can be found in the LICENSE file.
  */
 
-package svgModel
+package demo.svgModel
 
 import org.jetbrains.letsPlot.commons.geometry.DoubleVector
 import org.jetbrains.letsPlot.commons.values.Color
@@ -14,7 +14,7 @@ import org.jetbrains.letsPlot.datamodel.svg.dom.slim.SvgSlimElements
 import org.jetbrains.letsPlot.datamodel.svg.style.StyleSheet
 import org.jetbrains.letsPlot.datamodel.svg.style.TextStyle
 
-object DemoModelA {
+object ReferenceSvgModel {
     fun createModel(): SvgSvgElement {
         val svgRoot = SvgGElement()
 
