@@ -27,19 +27,6 @@ pluginManagement {
     }
 }
 
-dependencyResolutionManagement {
-    repositories {
-        mavenCentral()
-        google()
-        maven("https://maven.pkg.jetbrains.space/public/p/compose/dev")
-
-        // SNAPSHOTS
-        maven(url = "https://oss.sonatype.org/content/repositories/snapshots")
-
-        mavenLocal()
-    }
-}
-
 include("platf-skia")
 include("platf-skia-awt")
 include("lets-plot-compose")

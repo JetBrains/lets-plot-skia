@@ -23,24 +23,14 @@ plugins {
 val localProps = Properties()
 if (project.file("local.properties").exists()) {
     localProps.load(project.file("local.properties").inputStream())
+} else {
+    error("Couldn't read local.properties")
 }
 
 allprojects {
     group = "org.jetbrains.lets-plot"
-    version = "1.0.0-alpha5"
-}
-
-subprojects {
-    repositories {
-        // Register "local repositories" to create dependencies on dev lets-plot, lets-plot-kotlin
-        localProps["maven.repo.local"]?.let {
-            (it as String).split(",").forEach { repo ->
-                mavenLocal {
-                    url = uri(repo)
-                }
-            }
-        }
-    }
+    version = "1.0.0-SNAPSHOT" // alpha5
+//    version = "0.0.0-SNAPSHOT" // for local publishing only
 
     tasks.withType<org.jetbrains.kotlin.gradle.tasks.KotlinCompile>().all {
         kotlinOptions {
@@ -51,6 +41,28 @@ subprojects {
     tasks.withType<JavaCompile>().all {
         sourceCompatibility = "11"
         targetCompatibility = "11"
+    }
+}
+
+subprojects {
+    repositories {
+        mavenCentral()
+        google()
+        maven("https://maven.pkg.jetbrains.space/public/p/compose/dev")
+
+        // Repositories where other projects publish their artifacts locally to.
+        localProps["maven.repo.local"]?.let {
+            (it as String).split(",").forEach { repo ->
+                mavenLocal {
+                    url = uri(repo)
+                }
+            }
+        }
+
+        // SNAPSHOTS
+        maven(url = "https://oss.sonatype.org/content/repositories/snapshots")
+
+        mavenLocal()
     }
 
     val jarJavaDocs by tasks.creating(Jar::class) {
