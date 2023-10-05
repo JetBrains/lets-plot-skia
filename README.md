@@ -18,10 +18,10 @@
 
 ## Dependencies
 
-- [Compose Multiplatform](https://github.com/JetBrains/compose-multiplatform) (v. 1.5.1 and later)
-- [Skiko](https://github.com/JetBrains/skiko) (v. 0.7.80)
-- [Lets-Plot Kotlin API](https://github.com/JetBrains/lets-plot-kotlin) (v. 4.4.3+)
-- [Lets-Plot Multiplatform](https://github.com/JetBrains/lets-plot) (v. 4.0.1+)
+- [Compose Multiplatform](https://github.com/JetBrains/compose-multiplatform) (v.1.5.1 and later)
+- [Skiko](https://github.com/JetBrains/skiko) (v.0.7.80)
+- [Lets-Plot Kotlin API](https://github.com/JetBrains/lets-plot-kotlin) (v.4.4.3)
+- [Lets-Plot Multiplatform](https://github.com/JetBrains/lets-plot) (v.4.0.1)
 
 ## Using as Dependency
 
