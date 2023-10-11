@@ -1,11 +1,13 @@
-### Publishing to local Maven repository
+### Publishing to local Maven Repository
 
-> **Note**: Our custom local Maven repository is located at `<project root>/.maven-publish-dev-repo`.
+> **Note**: our custom local Maven repository is located at `<project root>/.maven-publish-dev-repo`.
+
+> **Note**: set **version** to "0.0.0-SNAPSHOT".
 
 `./gradlew publishAllPublicationsToMavenLocalRepository`
 
 
-### Publishing to Sonatype Maven repository
+### Publishing to Sonatype Maven Repository
 
 > **Note**: When publishing to Sonatype, PGP signature is required.
 >
@@ -30,7 +32,7 @@ Specify "x.y.z-SNAPSHOT" version in `build.gradle.kts` file.
 > In the "Browse Storage" tab enter ‘Path lookup’: org/jetbrains/lets-plot
 
 
-#### Release version
+#### "Release" version
 
   a) Specify RELEASE or PRE-RELEASE (i.e. "x.y.z-alpha1", "x.y.z-rc1" etc.) version in `build.gradle.kts` file.
 
@@ -38,8 +40,6 @@ Specify "x.y.z-SNAPSHOT" version in `build.gradle.kts` file.
 
 `./gradlew publishAllPublicationsToSonatypeRepository`
 
-> **Note**: Publish tasks should be invoked with a single command to avoid splitting the staging repository.
->
 > Check artifacts are uploaded to staging repository:
 >
 > https://oss.sonatype.org/index.html#stagingRepositories

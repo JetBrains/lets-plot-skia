@@ -1,6 +1,6 @@
-## Releasing the project
+## Releasing the Project
 
-### Make version
+### Make Version
 
 ##### 1. Update CHANGELOG.md file
 
@@ -19,16 +19,12 @@
 
 ##### 4. Prepare to the next dev cycle
 
-- increment the version and add _"-SNAPSHOT"_ qualifier (the 'version' property in the root 'build.gradle.kts')
-- push the new dev version to GitHub.
+- Increment the version and add _"-SNAPSHOT"_ qualifier (the 'version' property in the root 'build.gradle.kts')
+- Push all to git and add the version git tag:
+    - `git add --all && git commit -m "Release vX.X.X" && git push`
+    - `git tag vX.X.X && git push --tags`
 
-##### 5. Push all to git and add the version git tag
-
-- `git add --all && git commit -m "Release vX.X.X" && git push`
-- `git tag vX.X.X && git push --tags`
-                                    
-
-### Add the GitHub release:
+### Add the GitHub Release:
  
  * Open the link: https://github.com/JetBrains/lets-plot-skia/releases/new
  * Fill `Tag version` and `Release title` with the released version: "vX.X.X"
