@@ -1,6 +1,7 @@
 [![Experimental](https://kotl.in/badges/experimental.svg)](https://kotlinlang.org/docs/components-stability.html)
 [![JetBrains incubator project](https://jb.gg/badges/incubator.svg)](https://confluence.jetbrains.com/display/ALL/JetBrains+on+GitHub)
 [![License MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://raw.githubusercontent.com/JetBrains/lets-plot-skia/master/LICENSE)
+[![Latest Release](https://img.shields.io/github/v/release/JetBrains/lets-plot-skia)](https://github.com/JetBrains/lets-plot-skia/releases/latest)
 
 
 # Lets-Plot Skia Frontend
