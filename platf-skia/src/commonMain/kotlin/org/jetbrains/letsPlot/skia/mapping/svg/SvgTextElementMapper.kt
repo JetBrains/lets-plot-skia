@@ -37,11 +37,12 @@ internal class SvgTextElementMapper(
         super.registerSynchronizers(conf)
 
         // Sync TextNodes, TextSpans
-        val sourceTextProperty = sourceTextProperty(source.children())
+        val sourceTextRunProperty = sourceTextRunProperty(source.children())
+        val targetTextRunProperty = targetTextRunProperty(target)
         conf.add(
             Synchronizers.forPropsOneWay(
-                sourceTextProperty,
-                targetTextProperty(target)
+                sourceTextRunProperty,
+                targetTextRunProperty
             )
         )
     }
@@ -61,7 +62,7 @@ internal class SvgTextElementMapper(
                 style.face.bold && style.face.italic -> FontStyle.BOLD_ITALIC
                 !style.face.bold && style.face.italic -> FontStyle.ITALIC
                 !style.face.bold && !style.face.italic -> FontStyle.NORMAL
-                else -> error("Unknown fontStyle: `${style.face.toString()}`")
+                else -> error("Unknown fontStyle: `${style.face}`")
             }
 
             myTextAttrSupport.setAttribute(SvgConstants.SVG_STYLE_ATTRIBUTE, "fill:${style.color.toHexColor()};")
@@ -69,36 +70,65 @@ internal class SvgTextElementMapper(
     }
 
     companion object {
-        private fun sourceTextProperty(nodes: ObservableCollection<SvgNode>): ReadableProperty<String> {
-            return object : SimpleCollectionProperty<SvgNode, String>(nodes, joinToString(nodes)) {
-                override val propExpr = "joinToString($collection)"
-                override fun doGet() = joinToString(collection)
+        private fun sourceTextRunProperty(nodes: ObservableCollection<SvgNode>): ReadableProperty<List<Text.TextRun>> {
+            fun textRuns(nodes: ObservableCollection<SvgNode>): List<Text.TextRun> {
+                return nodes.flatMap { node ->
+                    val nodeTextRuns = when (node) {
+                        is SvgTextNode -> listOf(Text.TextRun(node.textContent().get()))
+                        is SvgTSpanElement -> node.children().map { child ->
+                            require(child is SvgTextNode)
+                            val fontScale = node.getAttribute(SvgTSpanElement.FONT_SIZE).get()?.let {
+                                if ("%" in it) {
+                                    it.removeSuffix("%").toFloat() / 100.0f
+                                } else {
+                                    null
+                                }
+                            }
+                            val baselineShift = node.getAttribute(SvgTSpanElement.BASELINE_SHIFT).get()?.let {
+                                when (it) {
+                                    BaselineShift.SUB.value -> Text.BaselineShift.SUB
+                                    BaselineShift.SUPER.value -> Text.BaselineShift.SUPER
+                                    else -> error("Unexpected baseline-shift value: $it")
+                                }
+                            }
+
+                            Text.TextRun(
+                                text = child.textContent().get(),
+                                baselineShift = baselineShift,
+                                fontScale = fontScale
+                            )
+                        }
+
+                        else -> error("Unexpected node type: ${node::class.simpleName}")
+                    }
+
+                    nodeTextRuns
+                }
+            }
+
+            return object : SimpleCollectionProperty<SvgNode, List<Text.TextRun>>(nodes, textRuns(nodes)) {
+                override val propExpr = "textRuns($collection)"
+                override fun doGet() = textRuns(collection)
             }
         }
 
-        private fun joinToString(nodes: ObservableCollection<SvgNode>): String {
-            return nodes.asSequence()
-                .flatMap { ((it as? SvgTSpanElement)?.children() ?: listOf(it as SvgTextNode)).asSequence() }
-                .joinToString("\n") { (it as SvgTextNode).textContent().get() }
-        }
-
-        private fun targetTextProperty(target: Text): WritableProperty<String?> {
-            return object : WritableProperty<String?> {
-                override fun set(value: String?) {
-                    target.text = value ?: "n/a"
+        private fun targetTextRunProperty(target: Text): WritableProperty<List<Text.TextRun>?> {
+            return object : WritableProperty<List<Text.TextRun>?> {
+                override fun set(value: List<Text.TextRun>?) {
+                    target.content = value ?: emptyList()
                 }
             }
         }
-    }
 
-    private class TextAttributesSupport(val target: Text) {
-        private var mySvgTextAnchor: String? = null
+        private class TextAttributesSupport(val target: Text) {
+            private var mySvgTextAnchor: String? = null
 
-        fun setAttribute(name: String, value: Any?) {
-            if (name == SvgTextContent.TEXT_ANCHOR.name) {
-                mySvgTextAnchor = value as String?
+            fun setAttribute(name: String, value: Any?) {
+                if (name == SvgTextContent.TEXT_ANCHOR.name) {
+                    mySvgTextAnchor = value as String?
+                }
+                SvgTextElementAttrMapping.setAttribute(target, name, value)
             }
-            SvgTextElementAttrMapping.setAttribute(target, name, value)
         }
     }
 }

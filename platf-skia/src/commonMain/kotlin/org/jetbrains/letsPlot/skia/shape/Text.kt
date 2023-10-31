@@ -6,34 +6,19 @@
 package org.jetbrains.letsPlot.skia.shape
 
 import org.jetbrains.skia.*
+import kotlin.math.ceil
 
+
+// Single line text
 internal class Text : Figure() {
     var textOrigin: VerticalAlignment? by visualProp(null)
     var textAlignment: HorizontalAlignment? by visualProp(null)
     var x: Float by visualProp(0.0f)
     var y: Float by visualProp(0.0f)
-    var text: String by visualProp("")
+    var content: List<TextRun> by visualProp(emptyList())
     var fontFamily: List<String> by visualProp(emptyList())
     var fontStyle: FontStyle by visualProp(FontStyle.NORMAL)
     var fontSize by visualProp(16.0f)
-
-    private val cx by computedProp(Text::textLine, Text::textAlignment) {
-        when (textAlignment) {
-            HorizontalAlignment.LEFT -> 0.0f
-            HorizontalAlignment.CENTER -> -textLine.width / 2.0f
-            HorizontalAlignment.RIGHT -> -textLine.width
-            null -> 0.0f
-        }
-    }
-
-    private val cy by computedProp(Text::textLine, Text::textOrigin) {
-        when (textOrigin) {
-            VerticalAlignment.TOP -> textLine.xHeight
-            VerticalAlignment.CENTER -> textLine.xHeight / 2.0f
-            VerticalAlignment.BOTTOM -> -textLine.xHeight
-            null -> 0.0f
-        }
-    }
 
     private val typeface by computedProp(Text::fontFamily, Text::fontStyle, managed = true) {
         FontMgr.default.matchFamiliesStyle(fontFamily.toTypedArray(), fontStyle) ?: Typeface.makeDefault()
@@ -43,32 +28,108 @@ internal class Text : Figure() {
         Font(typeface, fontSize)
     }
 
-    private val textLine by computedProp(Text::text, Text::font, managed = true) {
-        TextLine.make(text, font)
+    private val lineHeight by computedProp(Text::font) {
+        font.metrics.descent - font.metrics.ascent
+    }
+
+    private val renderData: RenderData by computedProp(Text::content, Text::font, Text::lineHeight) {
+        if (content.isEmpty()) return@computedProp RenderData.EMPTY
+        if (content.all { it.text.isEmpty() }) return@computedProp RenderData.EMPTY
+
+        val blobBuilder = TextBlobBuilder()
+        val bboxes = mutableListOf<Rect>()
+        var currentPosX = 0f
+
+        content.forEach { textRun ->
+            val scaleFactor = textRun.fontScale ?: 1f
+            val baseline = when (textRun.baselineShift) {
+                BaselineShift.SUPER -> lineHeight * 0.4f
+                BaselineShift.SUB -> lineHeight * -0.4f
+                else -> 0f
+            }
+
+            val glyphs = font.getStringGlyphs(textRun.text)
+            val glyphXPos = font.getXPositions(glyphs, currentPosX)
+            val xPosRange = (glyphXPos.firstOrNull() ?: 0f)..(glyphXPos.lastOrNull() ?: 0f)
+            fun scale(x: Float): Float = (x - xPosRange.start) * scaleFactor + xPosRange.start
+
+            val rsxTransforms = glyphXPos.map {
+                RSXform.makeFromRadians(
+                    scale = scaleFactor,
+                    radians = 0f,
+                    tx = ceil(scale(it)), // without ceil letters in tooltips are shaking (round doesn't work well - produces "din ner" on axis tick)
+                    ty = ceil(-baseline), // without ceil letters in tooltips are shaking (round doesn't work well - produces "din ner" on axis tick)
+                    ax = 0f,
+                    ay = 0f
+                )
+            }
+
+            blobBuilder.appendRunRSXform(font, glyphs, rsxTransforms.toTypedArray())
+
+            // Adjust bbox from skia (to not calculate it manually)
+            val bbox = font.measureText(textRun.text).let {
+                Rect.makeXYWH(
+                    l = it.left + currentPosX,
+                    t = it.top - baseline,
+                    w = it.width * scaleFactor + widthCorrectionCoef,
+                    h = it.height * scaleFactor
+                )
+            }
+            bboxes.add(bbox)
+
+            currentPosX += bbox.width
+        }
+
+        val textBlob = blobBuilder.build() ?: error("content is not empty, but textBlob is null")
+        val overallBbox = union(bboxes) ?: error("content is not empty, but overallBbox is null")
+
+        return@computedProp RenderData(
+            textBlob = textBlob,
+            left = overallBbox.left,
+            top = overallBbox.top,
+            width = overallBbox.width,
+            height = overallBbox.height,
+        )
+    }
+
+    private val cx by computedProp(Text::renderData, Text::textAlignment) {
+        val width = renderData.width
+
+        when (textAlignment) {
+            HorizontalAlignment.LEFT -> 0.0f
+            HorizontalAlignment.CENTER -> -width / 2.0f
+            HorizontalAlignment.RIGHT -> -width
+            null -> 0.0f
+        }
+    }
+
+    private val cy by computedProp(Text::textOrigin, Text::lineHeight) {
+        // Vertical alignment should be computed without sub/super script, that's why we don't use textBlobInfo here
+        when (textOrigin) {
+            VerticalAlignment.TOP -> lineHeight * 0.74f
+            VerticalAlignment.CENTER -> lineHeight * 0.37f
+            null -> 0.0f
+        }
     }
 
     override fun render(canvas: Canvas) {
-        //textLine
-        fillPaint?.let { canvas.drawTextLine(textLine, x + cx, y + cy, it) }
-        strokePaint?.let { canvas.drawTextLine(textLine, x + cx, y + cy, it) }
+        val textBlob = renderData.textBlob ?: return
+
+        fillPaint?.let { canvas.drawTextBlob(textBlob, x + cx, y + cy, it) }
+        strokePaint?.let { canvas.drawTextBlob(textBlob, x + cx, y + cy, it) }
     }
 
     override val localBounds: Rect
-        get() = font.measureText(text).let { bbox ->
-            Rect.makeLTRB(
-                bbox.left + x + cx,
-                bbox.top + y + cy,
-                bbox.right + x + cx,
-                bbox.bottom + y + cy
-            )
-        }
-
-    override fun repr(): String = text
+        get() = Rect.makeLTRB(
+            x + cx + renderData.left,
+            y + cy + renderData.top,
+            x + cx + renderData.right,
+            y + cy + renderData.bottom
+        )
 
     enum class VerticalAlignment {
         TOP,
-        CENTER,
-        BOTTOM
+        CENTER
     }
 
     enum class HorizontalAlignment {
@@ -76,4 +137,32 @@ internal class Text : Figure() {
         CENTER,
         RIGHT
     }
+
+    data class TextRun(
+        val text: String,
+        val baselineShift: BaselineShift? = null,
+        val fontScale: Float? = null,
+    )
+
+    enum class BaselineShift {
+        SUB,
+        SUPER
+    }
+
+    private class RenderData(
+        val textBlob: TextBlob?,
+        val left: Float,
+        val top: Float,
+        val width: Float,
+        val height: Float,
+    ) {
+        val right = left + width
+        val bottom = top + height
+
+        companion object {
+            val EMPTY = RenderData(null, 0f, 0f, 0f, 0f)
+        }
+    }
+
+    private val widthCorrectionCoef = 0f
 }

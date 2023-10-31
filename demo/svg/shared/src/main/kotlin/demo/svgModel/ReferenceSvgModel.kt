@@ -22,9 +22,22 @@ object ReferenceSvgModel {
 
         val textStyles: Map<String, TextStyle> = mapOf(
             "TEXT1" to TextStyle(FontFamily.SERIF.name, face = FontFace.ITALIC, size = 15.0, color = Color.BLUE),
-            "TEXT2" to TextStyle(FontFamily.SERIF.name, face = FontFace.BOLD, size = 20.0, color = Color.RED)
+            "TEXT2" to TextStyle(FontFamily.SERIF.name, face = FontFace.BOLD, size = 20.0, color = Color.RED),
+            "EMC2" to TextStyle(FontFamily.HELVETICA.name, face = FontFace.BOLD, size = 22.0, color = Color.BLUE),
         )
         svgRoot.children().add(createStyleElement(textStyles))
+
+        svgRoot.children().add(
+            SvgTextElement().apply {
+                addClass("EMC2")
+                transform().set(SvgTransformBuilder().translate(300.0, 150.0).build())
+                addTSpan(SvgTSpanElement("E=mc"))
+                addTSpan(SvgTSpanElement("2").apply {
+                    setAttribute(SvgTSpanElement.BASELINE_SHIFT, BaselineShift.SUPER.value)
+                    setAttribute(SvgTSpanElement.FONT_SIZE, "75%")
+                })
+            }
+        )
 
         var text = SvgTextElement(30.0, 85.0, "Slim elements")
         text.addClass("TEXT1")

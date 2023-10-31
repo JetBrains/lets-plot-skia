@@ -19,7 +19,7 @@ internal class PlotSpecsDemoWindow(
     maxCol: Int = 3,
     private val plotSize: Dimension? = null,
     background: Color = Color.WHITE,
-) : JFrame(title) {
+) : JFrame("$title (Skia Swing)") {
     private val rootPanel: JPanel
 
     init {
