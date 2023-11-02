@@ -30,7 +30,6 @@ class MainActivity : ComponentActivity() {
 
         setContent {
             val densityPlot = DensitySpec().createFigure()
-            val dummy = remember { mutableStateOf(false) }
             val keepRatio = remember { mutableStateOf(false) }
             MaterialTheme {
                 Column(
@@ -43,14 +42,6 @@ class MainActivity : ComponentActivity() {
                                 .align(Alignment.CenterVertically)
                         )
                         Checkbox(keepRatio.value, onCheckedChange = { keepRatio.value = it })
-                    }
-                    Row {
-                        Text(
-                            text = "Recomposition trigger",
-                            modifier = Modifier
-                                .align(Alignment.CenterVertically)
-                        )
-                        Checkbox(dummy.value, onCheckedChange = { dummy.value = it })
                     }
                     PlotPanel(
                         figure = densityPlot,

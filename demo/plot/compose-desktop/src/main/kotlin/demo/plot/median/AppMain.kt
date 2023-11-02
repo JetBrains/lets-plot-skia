@@ -34,7 +34,6 @@ fun main() = application {
         )
 
         val preserveAspectRatio = remember { mutableStateOf(false) }
-        val dummy = remember { mutableStateOf(false) }
         val figureIndex = remember { mutableStateOf(0) }
 
         MaterialTheme {
@@ -57,14 +56,6 @@ fun main() = application {
                                 .align(CenterVertically)
                         )
                         Checkbox(preserveAspectRatio.value, onCheckedChange = { preserveAspectRatio.value = it })
-                    }
-                    Row {
-                        Text(
-                            text = "Recomposition trigger",
-                            modifier = Modifier
-                                .align(CenterVertically)
-                        )
-                        Checkbox(dummy.value, onCheckedChange = { dummy.value = it })
                     }
                 }
                 Column(
