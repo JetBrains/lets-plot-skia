@@ -6,7 +6,6 @@
 package org.jetbrains.letsPlot.skia.shape
 
 import org.jetbrains.skia.*
-import kotlin.math.ceil
 
 
 // Single line text
@@ -25,7 +24,7 @@ internal class Text : Figure() {
     }
 
     private val font by computedProp(Text::typeface, Text::fontSize, managed = true) {
-        Font(typeface, fontSize)
+        Font(typeface, fontSize).apply { isSubpixel = true }
     }
 
     private val lineHeight by computedProp(Text::font) {
@@ -57,8 +56,8 @@ internal class Text : Figure() {
                 RSXform.makeFromRadians(
                     scale = scaleFactor,
                     radians = 0f,
-                    tx = ceil(scale(it)), // without ceil letters in tooltips are shaking (round doesn't work well - produces "din ner" on axis tick)
-                    ty = ceil(-baseline), // without ceil letters in tooltips are shaking (round doesn't work well - produces "din ner" on axis tick)
+                    tx = scale(it),
+                    ty = -baseline,
                     ax = 0f,
                     ay = 0f
                 )
