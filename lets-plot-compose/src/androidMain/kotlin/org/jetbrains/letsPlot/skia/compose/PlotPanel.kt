@@ -45,10 +45,14 @@ actual fun PlotPanel(
             plotViewContainer as PlotViewContainer
             LOG.print("UPDATE PlotViewContainer preserveAspectRatio ${plotViewContainer.preserveAspectRatio} ->  $preserveAspectRatio")
 
-            plotViewContainer.invalidatePlotView()
-            plotViewContainer.figure = figure
-            plotViewContainer.preserveAspectRatio = preserveAspectRatio
-            plotViewContainer.revalidatePlotView()
+            if (plotViewContainer.figure != figure
+                || plotViewContainer.preserveAspectRatio != preserveAspectRatio
+            ) {
+                plotViewContainer.invalidatePlotView()
+                plotViewContainer.figure = figure
+                plotViewContainer.preserveAspectRatio = preserveAspectRatio
+                plotViewContainer.revalidatePlotView()
+            }
         }
     )
 }
