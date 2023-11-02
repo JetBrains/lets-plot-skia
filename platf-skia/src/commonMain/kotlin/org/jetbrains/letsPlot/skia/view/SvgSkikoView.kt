@@ -73,6 +73,14 @@ abstract class SvgSkikoView(
     protected abstract fun createSkiaLayer(view: SvgSkikoView): SkiaLayer
 
     override fun onRender(canvas: Canvas, width: Int, height: Int, nanoTime: Long) {
+        if (width == 0 && height == 0) {
+            // Skiko may call onRender before OpenGL context is initialized.
+            // In this case we request another render call as soon as context is initialized.
+            // Skiko itself won't call onRender again when context is initialized.
+            skiaLayer.needRedraw()
+            return
+        }
+
         val scaleMatrix = IDENTITY.takeIf { skiaLayer.contentScale == 1f } ?: makeScale(skiaLayer.contentScale)
 
         render(rootElement, canvas, scaleMatrix)

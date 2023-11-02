@@ -32,10 +32,6 @@ class SvgPanel constructor(
 
     init {
         skikoView.skiaLayer.attachTo(this)
-
-        post {
-            skikoView.skiaLayer.needRedraw()
-        }
     }
 
     override fun onMeasure(widthMeasureSpec: Int, heightMeasureSpec: Int) {
