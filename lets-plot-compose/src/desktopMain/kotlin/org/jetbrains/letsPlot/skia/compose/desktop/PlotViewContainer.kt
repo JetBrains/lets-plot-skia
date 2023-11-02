@@ -50,12 +50,11 @@ class PlotViewContainer(
         cursor = Cursor(Cursor.CROSSHAIR_CURSOR)
     }
 
-    fun onSizeChanged(size: DoubleVector) {
-        invalidatePlotView()
-        revalidatePlotView(size)
-    }
+    fun rebuildPlotView(size: DoubleVector) {
+        LOG.print("revalidatePlotView() - preserveAspectRatio: $preserveAspectRatio size: $size")
 
-    fun revalidatePlotView(size: DoubleVector) {
+        disposePlotView()
+
         val plotSize = PlotSizeUtil.preferredFigureSize(
             processedSpec,
             preserveAspectRatio ?: throw IllegalStateException("'preserveAspectRatio' not set."),
@@ -89,9 +88,6 @@ class PlotViewContainer(
         this.add(plotComponent)
     }
 
-    fun invalidatePlotView() {
-        disposePlotView()
-    }
 
     fun disposePlotView() {
         for (component in components) {

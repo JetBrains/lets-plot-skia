@@ -13,15 +13,8 @@ internal class PlotComponentProvider(
     repaintDelay: Int, // ms
     computationMessagesHandler: ((List<String>) -> Unit)
 ) {
-
     var plotViewContainer: PlotViewContainer? = null
     private var containerSize: DoubleVector? = null
-
-    private val debouncedRefresh: DebouncedRunner = debounce(repaintDelay) {
-        if (containerSize != null && plotViewContainer != null) {
-            plotViewContainer!!.revalidatePlotView(containerSize!!)
-        }
-    }
 
     val factory: () -> Component = {
         check(plotViewContainer == null) { "An attempt to reuse a single-use view factory." }
@@ -32,16 +25,23 @@ internal class PlotComponentProvider(
         }
     }
 
-    fun onGloballyPositioned(w: Float, h: Float) {
-        plotViewContainer?.invalidatePlotView()
-
-        containerSize = DoubleVector(w.toDouble(), h.toDouble())
+    // TODO: need to fix empty plot view on debounce first
+    private fun resize(size: DoubleVector) {
+        containerSize = size
         debouncedRefresh.run()
     }
 
-    fun dispose() {
+    private fun dispose() {
         containerSize = null
         debouncedRefresh.cancel()
         plotViewContainer?.disposePlotView()
+    }
+
+    // Better to use coroutines and delay() in composable.
+    private val debouncedRefresh: DebouncedRunner = debounce(repaintDelay) {
+        val containerSize = containerSize ?: return@debounce
+        val plotViewContainer = plotViewContainer ?: return@debounce
+
+        plotViewContainer.rebuildPlotView(containerSize)
     }
 }
