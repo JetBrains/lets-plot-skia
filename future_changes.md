@@ -12,4 +12,4 @@
 
 ### Fixed
 
--
+- Crashes in Android when rebuild a PlotPanel ("keep aspect ratio" or plot spec change)
