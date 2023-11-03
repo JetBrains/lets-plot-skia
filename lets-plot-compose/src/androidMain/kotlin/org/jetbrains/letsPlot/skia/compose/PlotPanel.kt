@@ -5,8 +5,7 @@
 
 package org.jetbrains.letsPlot.skia.compose
 
-import androidx.compose.runtime.Composable
-import androidx.compose.runtime.DisposableEffect
+import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.viewinterop.AndroidView
 import org.jetbrains.letsPlot.Figure
@@ -14,7 +13,6 @@ import org.jetbrains.letsPlot.skia.compose.android.PlotComponentProvider
 import org.jetbrains.letsPlot.skia.compose.android.PlotViewContainer
 import org.jetbrains.letsPlot.skia.compose.util.NaiveLogger
 
-private const val PLOT_PANEL_DISPOSABLE_EFFECT_KEY = "Dispose only when leaves the composition."
 private val LOG = NaiveLogger("PlotPanel")
 
 @Suppress("FunctionName")
@@ -27,11 +25,15 @@ actual fun PlotPanel(
 ) {
     LOG.print("Recompose PlotPanel() preserveAspectRatio: $preserveAspectRatio ")
 
-    val provider = PlotComponentProvider(
-        computationMessagesHandler
-    )
+    val provider by remember {
+        mutableStateOf(
+            PlotComponentProvider(
+                computationMessagesHandler
+            )
+        )
+    }
 
-    DisposableEffect(PLOT_PANEL_DISPOSABLE_EFFECT_KEY) {
+    DisposableEffect(provider) {
         onDispose {
             LOG.print("DisposableEffect preserveAspectRatio: ${provider.plotViewContainer?.preserveAspectRatio} ")
             provider.dispose()
