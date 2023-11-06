@@ -11,7 +11,7 @@ import androidx.activity.compose.setContent
 import androidx.compose.foundation.layout.*
 import androidx.compose.material.MaterialTheme
 import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
+import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import ch.qos.logback.classic.android.BasicLogcatConfigurator
@@ -34,9 +34,8 @@ class MainActivity : ComponentActivity() {
                 "Violin" to ViolinSpec().createFigure(),
             )
 
-            // ToDo: save/restore state
-            val preserveAspectRatio = remember { mutableStateOf(false) }
-            val figureIndex = remember { mutableStateOf(0) }
+            val preserveAspectRatio = rememberSaveable { mutableStateOf(false) }
+            val figureIndex = rememberSaveable { mutableStateOf(0) }
 
             MaterialTheme {
                 Column(
