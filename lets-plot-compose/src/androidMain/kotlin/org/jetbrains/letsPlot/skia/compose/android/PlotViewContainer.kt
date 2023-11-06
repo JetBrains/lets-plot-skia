@@ -28,14 +28,20 @@ internal class PlotViewContainer(
     private val computationMessagesHandler: ((List<String>) -> Unit)
 ) : RelativeLayout(context) {
 
-    private var size = Vector.ZERO
+    private var needUpdate = true
     private lateinit var processedSpec: Map<String, Any>
 
-    // updatable state
     var figure: Figure? = null
         set(fig) {
             check(fig != null) { "The 'figure' can't be null." }
+
+            if (field == fig) {
+                return
+            }
+
             field = fig
+            needUpdate = true
+
             val rawSpec = fig.toSpec()
             processedSpec = MonolithicCommon.processRawSpecs(rawSpec, frontendOnly = false)
         }
@@ -43,9 +49,25 @@ internal class PlotViewContainer(
     var preserveAspectRatio: Boolean? = null
         set(v) {
             check(v != null) { "'preserveAspectRatio' value can't be null." }
+
+            if (field == v) {
+                return
+            }
+
             field = v
+            needUpdate = true
 //            background = ColorRect(if (v) Color.BLUE else Color.RED)
         }
+
+    private var size = Vector.ZERO
+        set(value) {
+            if (field == value) {
+                return
+            }
+            field = value
+            needUpdate = true
+        }
+
 
     init {
         LOG.print("New PlotViewContainer preserveAspectRatio: $preserveAspectRatio")
@@ -54,20 +76,27 @@ internal class PlotViewContainer(
     override fun onSizeChanged(w: Int, h: Int, oldw: Int, oldh: Int) {
         LOG.print("onSizeChanged $w, $h PlotViewContainer preserveAspectRatio: $preserveAspectRatio")
         super.onSizeChanged(w, h, oldw, oldh)
+
         size = Vector(w, h)
-        invalidatePlotView()
-        revalidatePlotView()
+        updatePlotView()
     }
 
-    fun revalidatePlotView() {
-        LOG.print("revalidate $size PlotViewContainer preserveAspectRatio: $preserveAspectRatio")
-        check(childCount == 0) { "Can't revalidate: childCount = $childCount but should be 0." }
+    fun updatePlotView() {
+        LOG.print("updatePlotView() - needUpdate: $needUpdate, preserveAspectRatio: $preserveAspectRatio size: $size")
+
+        if (!needUpdate) {
+            return
+        }
 
         // This happens when `revalidate` is invoked from the initial `update` in `PlotPanel:AndroidView` composable.
         if (size.x == 0 || size.y == 0) return
 
+        disposePlotView()
+
         // https://stackoverflow.com/questions/25516363/how-to-properly-add-child-views-to-view-group
         post {
+            check(childCount == 0) { "Can't revalidate: childCount = $childCount but should be 0." }
+
             val w = size.x
             val h = size.y
 
@@ -100,6 +129,8 @@ internal class PlotViewContainer(
                 MeasureSpec.makeMeasureSpec(height, MeasureSpec.EXACTLY)
             )
             plotView.layout(left, top, left + width, top + height)
+
+            needUpdate = false
         }
     }
 
@@ -132,10 +163,6 @@ internal class PlotViewContainer(
         }
 
         return Pair(bounds, plotComponent)
-    }
-
-    fun invalidatePlotView() {
-        disposePlotView()
     }
 
     fun disposePlotView() {

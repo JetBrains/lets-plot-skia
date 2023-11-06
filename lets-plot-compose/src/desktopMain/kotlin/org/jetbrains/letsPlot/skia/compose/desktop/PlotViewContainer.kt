@@ -23,24 +23,43 @@ class PlotViewContainer(
     private val computationMessagesHandler: ((List<String>) -> Unit)
 ) : JPanel() {
 
+    private var needUpdate = false
     private var dispatchComputationMessages = true
     private lateinit var processedSpec: Map<String, Any>
 
-    // updatable state
-    @Suppress("unused")
     var figure: Figure? = null
         set(fig) {
             check(fig != null) { "The 'figure' can't be null." }
+
+            if (field == fig) {
+                return
+            }
+
             field = fig
+            needUpdate = true
+
             val rawSpec = fig.toSpec()
             processedSpec = MonolithicCommon.processRawSpecs(rawSpec, frontendOnly = false)
         }
 
-    @Suppress("unused", "MemberVisibilityCanBePrivate")
     var preserveAspectRatio: Boolean? = null
         set(v) {
             check(v != null) { "'preserveAspectRatio' value can't be null." }
+
+            if (field == v) {
+                return
+            }
             field = v
+            needUpdate = true
+        }
+
+    var size: DoubleVector = DoubleVector.ZERO
+        set(v) {
+            if (field == v) {
+                return
+            }
+            field = v
+            needUpdate = true
         }
 
     init {
@@ -50,8 +69,12 @@ class PlotViewContainer(
         cursor = Cursor(Cursor.CROSSHAIR_CURSOR)
     }
 
-    fun rebuildPlotView(size: DoubleVector) {
-        LOG.print("revalidatePlotView() - preserveAspectRatio: $preserveAspectRatio size: $size")
+    fun updatePlotView() {
+        LOG.print("updatePlotView() - needUpdate: $needUpdate, preserveAspectRatio: $preserveAspectRatio size: $size")
+
+        if (!needUpdate) {
+            return
+        }
 
         disposePlotView()
 
@@ -86,6 +109,8 @@ class PlotViewContainer(
             plotSize.y.toInt(),
         )
         this.add(plotComponent)
+
+        needUpdate = false
     }
 
 

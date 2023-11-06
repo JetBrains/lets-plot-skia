@@ -42,6 +42,7 @@ internal class PlotComponentProvider(
         val containerSize = containerSize ?: return@debounce
         val plotViewContainer = plotViewContainer ?: return@debounce
 
-        plotViewContainer.rebuildPlotView(containerSize)
+        plotViewContainer.size = containerSize
+        plotViewContainer.updatePlotView()
     }
 }

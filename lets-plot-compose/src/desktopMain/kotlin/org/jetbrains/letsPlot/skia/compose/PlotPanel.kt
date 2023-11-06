@@ -10,6 +10,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.awt.SwingPanel
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.onSizeChanged
+import androidx.compose.ui.platform.LocalDensity
 import org.jetbrains.letsPlot.Figure
 import org.jetbrains.letsPlot.commons.geometry.DoubleVector
 import org.jetbrains.letsPlot.skia.compose.desktop.PlotComponentProvider
@@ -28,7 +29,8 @@ actual fun PlotPanel(
 ) {
     LOG.print("Recompose PlotPanel() preserveAspectRatio: $preserveAspectRatio ")
 
-    var size by remember { mutableStateOf(DoubleVector(0.0, 0.0)) }
+    // Update density on each recomposition to handle monitor DPI changes (e.g. drag between HIDPI/regular monitor)
+    val density = LocalDensity.current.density.toDouble()
 
     val provider by remember {
         mutableStateOf(
@@ -51,33 +53,23 @@ actual fun PlotPanel(
         background = Color.White,
         factory = provider.factory,
         modifier = modifier.onSizeChanged {
-            LOG.print("modifier.onSizeChanged: $it")
-            val newSize = DoubleVector(it.width.toDouble(), it.height.toDouble())
-            if (newSize != size) {
-                size = newSize
+            // TODO: move resize logic to PlotViewContainer with ComponentAdapter
+            // TODO: investigate, why size change should be handled within onSizeChanged.
+            // Not calling `rebuildPlotView()` here and calling `rebuildPlotView(size)` in `update()` instead
+            // leads to an empty plot view until next recomposition.
+            // Same happens with `ComponentAdapter` in PlotViewContainer, coroutine delay, debounce.
 
-                // TODO: mode resize logic to PlotViewContainer with ComponentAdapter
-                // TODO: investigate, why size change should be handled within onSizeChanged.
-                // Not calling `provider.resize()` here and calling `revalidatePlotView(size)` in `update()` instead
-                // leads to empty plot view until next recomposition.
-                // Same happens with `ComponentAdapter` in PlotViewContainer, coroutine delay, debounce.
-
-                provider.plotViewContainer?.rebuildPlotView(newSize)
-            }
+            LOG.print("modifier.onSizeChanged() - $it")
+            provider.plotViewContainer?.size = DoubleVector(it.width / density, it.height / density)
+            provider.plotViewContainer?.updatePlotView()
         },
         update = { plotViewContainer ->
             plotViewContainer as PlotViewContainer
-            LOG.print("UPDATE PlotViewContainer preserveAspectRatio ${plotViewContainer.preserveAspectRatio} ->  $preserveAspectRatio, size: $size")
+            LOG.print("UPDATE PlotViewContainer preserveAspectRatio ${plotViewContainer.preserveAspectRatio} ->  $preserveAspectRatio")
 
-            if (
-                plotViewContainer.figure != figure
-                || plotViewContainer.preserveAspectRatio != preserveAspectRatio
-            ) {
-                plotViewContainer.figure = figure
-                plotViewContainer.preserveAspectRatio = preserveAspectRatio
-
-                plotViewContainer.rebuildPlotView(size)
-            }
+            plotViewContainer.figure = figure
+            plotViewContainer.preserveAspectRatio = preserveAspectRatio
+            plotViewContainer.updatePlotView()
         }
     )
 }
