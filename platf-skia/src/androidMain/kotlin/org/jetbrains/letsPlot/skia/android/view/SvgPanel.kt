@@ -22,7 +22,10 @@ class SvgPanel constructor(
     eventDispatcher: SkikoViewEventDispatcher? = null
 ) : ViewGroup(context), Disposable, DisposingHub {
 
-    private val skikoView = SvgSkikoViewAndroid(svg, eventDispatcher)
+    private val skikoView = SvgSkikoViewAndroid().also {
+        it.svg = svg
+        it.eventDispatcher = eventDispatcher
+    }
     private val registrations = CompositeRegistration()
 
     val eventDispatcher: SkikoViewEventDispatcher

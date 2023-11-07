@@ -9,10 +9,7 @@ import org.jetbrains.letsPlot.commons.registration.CompositeRegistration
 import org.jetbrains.letsPlot.commons.registration.Disposable
 import org.jetbrains.letsPlot.commons.registration.DisposableRegistration
 import org.jetbrains.letsPlot.commons.registration.DisposingHub
-import org.jetbrains.letsPlot.datamodel.svg.dom.SvgConstants
-import org.jetbrains.letsPlot.datamodel.svg.dom.SvgElementListener
 import org.jetbrains.letsPlot.datamodel.svg.dom.SvgSvgElement
-import org.jetbrains.letsPlot.datamodel.svg.event.SvgAttributeEvent
 import org.jetbrains.letsPlot.skia.view.SkikoViewEventDispatcher
 import java.awt.Dimension
 import java.awt.Graphics
@@ -20,46 +17,53 @@ import java.awt.Point
 import java.awt.Rectangle
 import javax.swing.JPanel
 
-class SvgPanel(
-    svg: SvgSvgElement,
-    eventDispatcher: SkikoViewEventDispatcher? = null
-) : JPanel(), Disposable, DisposingHub {
+class SvgPanel() : JPanel(), Disposable, DisposingHub {
+    var svg: SvgSvgElement = SvgSvgElement()
+        set(value) {
+            field = value
+            skikoView.svg = value
+            skikoView.skiaLayer.bounds = Rectangle(Point(0, 0), skikoView.skiaLayer.preferredSize)
+        }
+
+    var eventDispatcher: SkikoViewEventDispatcher?
+        get() = skikoView.eventDispatcher
+        set(value) {
+            skikoView.eventDispatcher = value
+        }
 
     /**
      *  Use to create a simple SVG view without event handling.
      */
-    constructor(
-        svg: SvgSvgElement
-    ) : this(
-        svg = svg,
-        eventDispatcher = null
-    )
+    constructor(svg: SvgSvgElement) : this() {
+        this.svg = svg
+        this.eventDispatcher = null
+    }
 
-    private val skikoView = SvgSkikoViewAwt(svg, eventDispatcher)
+    constructor(svg: SvgSvgElement, eventDispatcher: SkikoViewEventDispatcher? = null) : this() {
+        this.svg = svg
+        this.eventDispatcher = eventDispatcher
+    }
+
+    private val skikoView = SvgSkikoViewAwt()
     private val registrations = CompositeRegistration()
-
-    val eventDispatcher: SkikoViewEventDispatcher
-        get() {
-            return skikoView.eventDispatcher ?: throw IllegalStateException("No SkikoViewEventDispatcher.")
-        }
 
     init {
         layout = null
         border = null // BorderFactory.createLineBorder(Color.ORANGE, 1)
-        skikoView.skiaLayer.bounds = Rectangle(Point(0, 0), skikoView.skiaLayer.preferredSize)
         skikoView.skiaLayer.attachTo(this)
 
-        registrations.add(
-            svg.addListener(object : SvgElementListener {
-                override fun onAttrSet(event: SvgAttributeEvent<*>) {
-                    if (SvgConstants.HEIGHT.equals(event.attrSpec.name, ignoreCase = true) ||
-                        SvgConstants.WIDTH.equals(event.attrSpec.name, ignoreCase = true)
-                    ) {
-                        throw IllegalStateException("Can't change SVG attribute $(event.attrSpec.name)")
-                    }
-                }
-            })
-        )
+        // Why?
+        //registrations.add(
+        //    svg.addListener(object : SvgElementListener {
+        //        override fun onAttrSet(event: SvgAttributeEvent<*>) {
+        //            if (SvgConstants.HEIGHT.equals(event.attrSpec.name, ignoreCase = true) ||
+        //                SvgConstants.WIDTH.equals(event.attrSpec.name, ignoreCase = true)
+        //            ) {
+        //                throw IllegalStateException("Can't change SVG attribute $(event.attrSpec.name)")
+        //            }
+        //        }
+        //    })
+        //)
     }
 
     override fun getPreferredSize(): Dimension {

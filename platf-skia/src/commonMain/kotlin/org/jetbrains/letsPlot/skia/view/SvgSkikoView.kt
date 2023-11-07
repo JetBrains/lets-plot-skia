@@ -26,13 +26,26 @@ import org.jetbrains.skiko.SkikoPointerEvent
 import org.jetbrains.skiko.SkikoView
 import kotlin.math.ceil
 
-abstract class SvgSkikoView(
-    svg: SvgSvgElement,
-    val eventDispatcher: SkikoViewEventDispatcher?
-) : SkikoView, Disposable {
+abstract class SvgSkikoView() : SkikoView, Disposable {
+    var eventDispatcher: SkikoViewEventDispatcher? = null
 
-    private val nodeContainer = SvgNodeContainer(svg)  // attach root
-    private val rootElement: Pane
+    var svg: SvgSvgElement = SvgSvgElement()
+        set(value) {
+            nodeContainer.root().set(value)
+            val rootMapper = SvgSvgElementMapper(value, SvgSkiaPeer())
+            rootMapper.attachRoot(MappingContext())
+            rootElement = rootMapper.target
+
+            width = value.width().get()?.let { ceil(it).toInt() } ?: 0
+            height = value.height().get()?.let { ceil(it).toInt() } ?: 0
+
+            updateSkiaLayerSize(width, height)
+
+            needRedraw()
+        }
+
+    private val nodeContainer = SvgNodeContainer(SvgSvgElement())  // attach root
+    private var rootElement: Pane = Pane()
     private lateinit var _nativeLayer: SkiaLayer
 
     private var disposed = false
@@ -46,14 +59,12 @@ abstract class SvgSkikoView(
             return _nativeLayer
         }
 
-    val width: Int = svg.width().get()?.let { ceil(it).toInt() } ?: 0
-    val height: Int = svg.height().get()?.let { ceil(it).toInt() } ?: 0
+    var width: Int = 0
+        private set
+    var height: Int = 0
+        private set
 
     init {
-        val rootMapper = SvgSvgElementMapper(svg, SvgSkiaPeer())
-        rootMapper.attachRoot(MappingContext())
-        rootElement = rootMapper.target
-
         nodeContainer.addListener(object : SvgNodeContainerListener {
             override fun onAttributeSet(element: SvgElement, event: SvgAttributeEvent<*>) = needRedraw()
             override fun onNodeAttached(node: SvgNode) = needRedraw()
@@ -62,6 +73,7 @@ abstract class SvgSkikoView(
     }
 
     protected abstract fun createSkiaLayer(view: SvgSkikoView): SkiaLayer
+    protected abstract fun updateSkiaLayerSize(width: Int, height: Int)
 
     override fun onRender(canvas: Canvas, width: Int, height: Int, nanoTime: Long) {
         if (width == 0 && height == 0) {

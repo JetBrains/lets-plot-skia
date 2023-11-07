@@ -8,10 +8,12 @@ package org.jetbrains.letsPlot.skia.compose.desktop
 import org.jetbrains.letsPlot.Figure
 import org.jetbrains.letsPlot.commons.geometry.DoubleVector
 import org.jetbrains.letsPlot.commons.registration.Disposable
+import org.jetbrains.letsPlot.commons.registration.Registration
 import org.jetbrains.letsPlot.core.util.MonolithicCommon
 import org.jetbrains.letsPlot.core.util.PlotSizeUtil
 import org.jetbrains.letsPlot.intern.toSpec
 import org.jetbrains.letsPlot.skia.awt.MonolithicSkiaAwt
+import org.jetbrains.letsPlot.skia.awt.view.SvgPanel
 import org.jetbrains.letsPlot.skia.compose.util.NaiveLogger
 import java.awt.Cursor
 import java.awt.Rectangle
@@ -19,13 +21,25 @@ import javax.swing.JPanel
 
 private val LOG = NaiveLogger("PlotViewContainer")
 
+// If false then new SvgPanel() is created for each update.
+val reusePlotSvgPanel = true
+
 class PlotViewContainer(
     private val computationMessagesHandler: ((List<String>) -> Unit)
 ) : JPanel() {
 
+    private val plotSvgPanel = SvgPanel()
+    private var plotSvgRegistration = Registration.EMPTY
+
     private var needUpdate = false
     private var dispatchComputationMessages = true
     private lateinit var processedSpec: Map<String, Any>
+
+    init {
+        if (reusePlotSvgPanel) {
+            this.add(plotSvgPanel)
+        }
+    }
 
     var figure: Figure? = null
         set(fig) {
@@ -78,7 +92,9 @@ class PlotViewContainer(
 
         needUpdate = false
 
-        disposePlotView()
+        if (!reusePlotSvgPanel) {
+            disposePlotView()
+        }
 
         val plotSize = PlotSizeUtil.preferredFigureSize(
             processedSpec,
@@ -93,24 +109,46 @@ class PlotViewContainer(
             (size.y - plotSize.y) / 2
         }
 
-        val plotComponent = MonolithicSkiaAwt.buildPlotFromProcessedSpecs(
-            plotSize = plotSize,
-            plotSpec = processedSpec as MutableMap<String, Any>,
-        ) { messages ->
-            if (dispatchComputationMessages) {
-                // do once
-                dispatchComputationMessages = false
-                computationMessagesHandler(messages)
-            }
-        }
+        if (reusePlotSvgPanel) {
+            plotSvgRegistration.dispose()
+            plotSvgPanel.bounds = Rectangle(
+                plotX.toInt(),
+                plotY.toInt(),
+                plotSize.x.toInt(),
+                plotSize.y.toInt(),
+            )
 
-        plotComponent.bounds = Rectangle(
-            plotX.toInt(),
-            plotY.toInt(),
-            plotSize.x.toInt(),
-            plotSize.y.toInt(),
-        )
-        this.add(plotComponent)
+            plotSvgRegistration = MonolithicSkiaAwt.buildPlotFromProcessedSpecs(
+                svgPanel = plotSvgPanel,
+                plotSize = plotSize,
+                plotSpec = processedSpec as MutableMap<String, Any>,
+            ) { messages ->
+                if (dispatchComputationMessages) {
+                    // do once
+                    dispatchComputationMessages = false
+                    computationMessagesHandler(messages)
+                }
+            }
+        } else {
+            val plotComponent = MonolithicSkiaAwt.buildPlotFromProcessedSpecs(
+                plotSize = plotSize,
+                plotSpec = processedSpec as MutableMap<String, Any>,
+            ) { messages ->
+                if (dispatchComputationMessages) {
+                    // do once
+                    dispatchComputationMessages = false
+                    computationMessagesHandler(messages)
+                }
+            }
+
+            plotComponent.bounds = Rectangle(
+                plotX.toInt(),
+                plotY.toInt(),
+                plotSize.x.toInt(),
+                plotSize.y.toInt(),
+            )
+            this.add(plotComponent)
+        }
     }
 
 
