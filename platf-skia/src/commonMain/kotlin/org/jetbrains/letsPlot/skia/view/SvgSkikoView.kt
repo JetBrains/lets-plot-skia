@@ -5,12 +5,10 @@
 
 package org.jetbrains.letsPlot.skia.view
 
-import org.jetbrains.letsPlot.commons.event.MouseEvent
-import org.jetbrains.letsPlot.commons.event.MouseEventSpec
 import org.jetbrains.letsPlot.commons.registration.Disposable
 import org.jetbrains.letsPlot.datamodel.mapping.framework.MappingContext
-import org.jetbrains.letsPlot.datamodel.svg.dom.SvgNodeContainer
-import org.jetbrains.letsPlot.datamodel.svg.dom.SvgSvgElement
+import org.jetbrains.letsPlot.datamodel.svg.dom.*
+import org.jetbrains.letsPlot.datamodel.svg.event.SvgAttributeEvent
 import org.jetbrains.letsPlot.skia.mapping.svg.DebugOptions
 import org.jetbrains.letsPlot.skia.mapping.svg.DebugOptions.drawBoundingBoxes
 import org.jetbrains.letsPlot.skia.mapping.svg.SvgSkiaPeer
@@ -30,7 +28,7 @@ import kotlin.math.ceil
 
 abstract class SvgSkikoView(
     svg: SvgSvgElement,
-    eventDispatcher: SkikoViewEventDispatcher?
+    val eventDispatcher: SkikoViewEventDispatcher?
 ) : SkikoView, Disposable {
 
     private val nodeContainer = SvgNodeContainer(svg)  // attach root
@@ -51,23 +49,16 @@ abstract class SvgSkikoView(
     val width: Int = svg.width().get()?.let { ceil(it).toInt() } ?: 0
     val height: Int = svg.height().get()?.let { ceil(it).toInt() } ?: 0
 
-    val eventDispatcher: SkikoViewEventDispatcher? by lazy {
-        eventDispatcher?.let { externalDispatcher ->
-            object : SkikoViewEventDispatcher {
-                override fun dispatchMouseEvent(kind: MouseEventSpec, e: MouseEvent) {
-                    if (!disposed) {
-                        externalDispatcher.dispatchMouseEvent(kind, e)
-                        skiaLayer.needRedraw()
-                    }
-                }
-            }
-        }
-    }
-
     init {
         val rootMapper = SvgSvgElementMapper(svg, SvgSkiaPeer())
         rootMapper.attachRoot(MappingContext())
         rootElement = rootMapper.target
+
+        nodeContainer.addListener(object : SvgNodeContainerListener {
+            override fun onAttributeSet(element: SvgElement, event: SvgAttributeEvent<*>) { needRedraw()}
+            override fun onNodeAttached(node: SvgNode) { needRedraw() }
+            override fun onNodeDetached(node: SvgNode) { needRedraw() }
+        })
     }
 
     protected abstract fun createSkiaLayer(view: SvgSkikoView): SkiaLayer
@@ -77,7 +68,7 @@ abstract class SvgSkikoView(
             // Skiko may call onRender before OpenGL context is initialized.
             // In this case we request another render call as soon as context is initialized.
             // Skiko itself won't call onRender again when context is initialized.
-            skiaLayer.needRedraw()
+            needRedraw()
             return
         }
 
@@ -114,6 +105,12 @@ abstract class SvgSkikoView(
 
         if (this::_nativeLayer.isInitialized) {
             _nativeLayer.detach()
+        }
+    }
+
+    private fun needRedraw() {
+        if (!disposed) {
+            skiaLayer.needRedraw()
         }
     }
 
