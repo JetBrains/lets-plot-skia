@@ -33,8 +33,8 @@ object ReferenceSvgModel {
                 transform().set(SvgTransformBuilder().translate(300.0, 150.0).build())
                 addTSpan(SvgTSpanElement("E=mc"))
                 addTSpan(SvgTSpanElement("2").apply {
-                    setAttribute(SvgTSpanElement.BASELINE_SHIFT, BaselineShift.SUPER.value)
-                    setAttribute(SvgTSpanElement.FONT_SIZE, "75%")
+                    setAttribute("baseline-shift", "super")
+                    setAttribute("font-size", "75%")
                 })
             }
         )

@@ -77,17 +77,20 @@ internal class SvgTextElementMapper(
                         is SvgTextNode -> listOf(Text.TextRun(node.textContent().get()))
                         is SvgTSpanElement -> node.children().map { child ->
                             require(child is SvgTextNode)
-                            val fontScale = node.getAttribute(SvgTSpanElement.FONT_SIZE).get()?.let {
+                            val fontScale = node.getAttribute("font-size").get()?.let {
+                                require(it is String) { "font-size: only string value is supported" }
+
                                 if ("%" in it) {
                                     it.removeSuffix("%").toFloat() / 100.0f
                                 } else {
                                     null
                                 }
                             }
-                            val baselineShift = node.getAttribute(SvgTSpanElement.BASELINE_SHIFT).get()?.let {
+                            // TODO: replace with Specs from LP
+                            val baselineShift = node.getAttribute("baseline-shift").get()?.let {
                                 when (it) {
-                                    BaselineShift.SUB.value -> Text.BaselineShift.SUB
-                                    BaselineShift.SUPER.value -> Text.BaselineShift.SUPER
+                                    "sub" -> Text.BaselineShift.SUB
+                                    "super" -> Text.BaselineShift.SUPER
                                     else -> error("Unexpected baseline-shift value: $it")
                                 }
                             }
