@@ -1,17 +1,7 @@
-## [1.X.X]] - 2023-XX-XX
+## [1.0.2] - 202x-mm-dd
 
 ### Added
 
-- Support for sub/super-scripts 
-
-
 ### Changed
 
--
-
-
 ### Fixed
-
-- Crashes in Android when rebuild a PlotPanel ("keep aspect ratio" or plot spec change).
-- Unexpected redraw [[#2](https://github.com/JetBrains/lets-plot-skia/issues/2)].
-- DisposableEffect is not called.

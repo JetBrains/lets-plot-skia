@@ -12,3 +12,12 @@ to [Semantic Versioning](https://semver.org/spec/v2.0.0.html). All scales should
 
 - Support for Android, Compose Desktop and Java Swing platforms.
 - Examples in a separate GitHub repository: [lets-plot-compose-demos](https://github.com/JetBrains/lets-plot-compose-demos).
+
+
+## [1.0.1] - 2023-11-09
+
+### Fixed
+
+- Crashes in Android when rebuild a PlotPanel ("keep aspect ratio" or plot spec change).
+- Unexpected redraw [[#2](https://github.com/JetBrains/lets-plot-skia/issues/2)].
+- DisposableEffect is not called.

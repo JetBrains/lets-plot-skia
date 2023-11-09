@@ -18,10 +18,11 @@
 
 ## Dependencies
 
-- [Compose Multiplatform](https://github.com/JetBrains/compose-multiplatform) (v.1.5.1 and later)
-- [Skiko](https://github.com/JetBrains/skiko) (v.0.7.80)
-- [Lets-Plot Kotlin API](https://github.com/JetBrains/lets-plot-kotlin) (v.4.4.3)
-- [Lets-Plot Multiplatform](https://github.com/JetBrains/lets-plot) (v.4.0.1)
+- [Compose Multiplatform](https://github.com/JetBrains/compose-multiplatform) (v.1.5.1 and up)
+- [Skiko](https://github.com/JetBrains/skiko) (v.0.7.86) \
+    `* v.0.7.87 - we faced certain issues`
+- [Lets-Plot Kotlin API](https://github.com/JetBrains/lets-plot-kotlin) (v.4.5.0)
+- [Lets-Plot Multiplatform](https://github.com/JetBrains/lets-plot) (v.4.1.0)
 
 ## Using as Dependency
 
@@ -32,11 +33,11 @@ dependencies {
     ...
 
     // Lets-Plot Kotlin API 
-    implementation("org.jetbrains.lets-plot:lets-plot-kotlin-kernel:4.4.3")
+    implementation("org.jetbrains.lets-plot:lets-plot-kotlin-kernel:4.5.0")
 
     // Lets-Plot Multiplatform 
-    implementation("org.jetbrains.lets-plot:lets-plot-common:4.0.1")
-    implementation("org.jetbrains.lets-plot:platf-awt:4.0.1")
+    implementation("org.jetbrains.lets-plot:lets-plot-common:4.1.0")
+    implementation("org.jetbrains.lets-plot:platf-awt:4.1.0")
 
     // Lets-Plot Skia Frontend
     implementation("org.jetbrains.lets-plot:lets-plot-compose:1.0.0")
@@ -52,10 +53,10 @@ dependencies {
     implementation("org.jetbrains.skiko:skiko-android:0.7.80")
 
     // Lets-Plot Kotlin API 
-    implementation("org.jetbrains.lets-plot:lets-plot-kotlin-kernel:4.4.3")
+    implementation("org.jetbrains.lets-plot:lets-plot-kotlin-kernel:4.5.0")
 
     // Lets-Plot Multiplatform 
-    implementation("org.jetbrains.lets-plot:lets-plot-common:4.0.1")
+    implementation("org.jetbrains.lets-plot:lets-plot-common:4.1.0")
 
     // Lets-Plot Skia Frontend
     implementation("org.jetbrains.lets-plot:lets-plot-compose:1.0.0")
@@ -73,11 +74,11 @@ dependencies {
     implementation("org.jetbrains.skiko:skiko-awt-runtime-macos-x64:0.7.80")
 
     // Lets-Plot Kotlin API 
-    implementation("org.jetbrains.lets-plot:lets-plot-kotlin-kernel:4.4.3")
+    implementation("org.jetbrains.lets-plot:lets-plot-kotlin-kernel:4.5.0")
 
     // Lets-Plot Multiplatform 
-    implementation("org.jetbrains.lets-plot:lets-plot-common:4.0.1")
-    implementation("org.jetbrains.lets-plot:platf-awt:4.0.1")
+    implementation("org.jetbrains.lets-plot:lets-plot-common:4.1.0")
+    implementation("org.jetbrains.lets-plot:platf-awt:4.1.0")
 
     // Lets-Plot Skia Frontend
     implementation("org.jetbrains.lets-plot:lets-plot-swing-skia:1.0.0")
