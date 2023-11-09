@@ -47,7 +47,7 @@ internal class FigureToSkiaAwt(
         svgRoot: CompositeFigureSvgRoot,
         bounds: Rectangle?,  // null -> root figure.
         parentEventDispatcher: CompositeFigureEventDispatcher? // null -> root figure.
-    ): JComponent {
+    ): DisposableJPanel {
 
         svgRoot.ensureContentBuilt()
 
@@ -116,6 +116,7 @@ internal class FigureToSkiaAwt(
             // Instead, build components tree: rootPanel -> rootComp -> [subComp->[subSubComp,...], ...].
             // Otherwise mouse events will not be handled properly.
             rootJComponent.add(elementComponent)
+            rootJComponent.registerDisposable(elementComponent)
         }
 
         return rootJPanel
@@ -126,7 +127,7 @@ internal class FigureToSkiaAwt(
         svgRoot: PlotSvgRoot,
         bounds: Rectangle?,  // null -> root figure
         parentEventDispatcher: CompositeFigureEventDispatcher?
-    ): JComponent {
+    ): DisposableJPanel {
         if (svgRoot.isLiveMap) {
             error("LiveMap is not supported")
         }
@@ -164,7 +165,7 @@ internal class FigureToSkiaAwt(
             plotContainer: PlotContainer,
             bounds: Rectangle?,
             parentEventDispatcher: CompositeFigureEventDispatcher?
-        ): JComponent {
+        ): DisposableJPanel {
             val svg = plotContainer.svg
 
 

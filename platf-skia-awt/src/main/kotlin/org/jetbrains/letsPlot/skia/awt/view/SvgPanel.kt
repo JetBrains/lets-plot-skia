@@ -5,10 +5,10 @@
 
 package org.jetbrains.letsPlot.skia.awt.view
 
+import org.jetbrains.letsPlot.awt.plot.DisposableJPanel
 import org.jetbrains.letsPlot.commons.registration.CompositeRegistration
 import org.jetbrains.letsPlot.commons.registration.Disposable
 import org.jetbrains.letsPlot.commons.registration.DisposableRegistration
-import org.jetbrains.letsPlot.commons.registration.DisposingHub
 import org.jetbrains.letsPlot.datamodel.svg.dom.SvgConstants
 import org.jetbrains.letsPlot.datamodel.svg.dom.SvgElementListener
 import org.jetbrains.letsPlot.datamodel.svg.dom.SvgSvgElement
@@ -18,12 +18,11 @@ import java.awt.Dimension
 import java.awt.Graphics
 import java.awt.Point
 import java.awt.Rectangle
-import javax.swing.JPanel
 
 class SvgPanel(
     svg: SvgSvgElement,
     eventDispatcher: SkikoViewEventDispatcher? = null
-) : JPanel(), Disposable, DisposingHub {
+) : DisposableJPanel(null) {
 
     /**
      *  Use to create a simple SVG view without event handling.
