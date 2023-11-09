@@ -76,6 +76,8 @@ class PlotViewContainer(
             return
         }
 
+        needUpdate = false
+
         disposePlotView()
 
         val plotSize = PlotSizeUtil.preferredFigureSize(
@@ -109,8 +111,6 @@ class PlotViewContainer(
             plotSize.y.toInt(),
         )
         this.add(plotComponent)
-
-        needUpdate = false
     }
 
 

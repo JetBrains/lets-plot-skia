@@ -84,13 +84,12 @@ internal class PlotViewContainer(
     fun updatePlotView() {
         LOG.print("updatePlotView() - needUpdate: $needUpdate, preserveAspectRatio: $preserveAspectRatio size: $size")
 
+        // This happens when `revalidate` is invoked from the initial `update` in `PlotPanel:AndroidView` composable.
+        if (size.x == 0 || size.y == 0) return
         if (!needUpdate) {
             return
         }
-
-        // This happens when `revalidate` is invoked from the initial `update` in `PlotPanel:AndroidView` composable.
-        if (size.x == 0 || size.y == 0) return
-
+        needUpdate = false
         disposePlotView()
 
         // https://stackoverflow.com/questions/25516363/how-to-properly-add-child-views-to-view-group
@@ -112,7 +111,7 @@ internal class PlotViewContainer(
             val width = unscaledSize.x.toInt()
             val height = unscaledSize.y.toInt()
 
-            val params = RelativeLayout.LayoutParams(width, height).also {
+            val params = LayoutParams(width, height).also {
                 it.leftMargin = left
                 it.topMargin = top
             }
@@ -129,8 +128,6 @@ internal class PlotViewContainer(
                 MeasureSpec.makeMeasureSpec(height, MeasureSpec.EXACTLY)
             )
             plotView.layout(left, top, left + width, top + height)
-
-            needUpdate = false
         }
     }
 
