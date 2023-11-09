@@ -55,9 +55,9 @@ abstract class SvgSkikoView(
         rootElement = rootMapper.target
 
         nodeContainer.addListener(object : SvgNodeContainerListener {
-            override fun onAttributeSet(element: SvgElement, event: SvgAttributeEvent<*>) { needRedraw()}
-            override fun onNodeAttached(node: SvgNode) { needRedraw() }
-            override fun onNodeDetached(node: SvgNode) { needRedraw() }
+            override fun onAttributeSet(element: SvgElement, event: SvgAttributeEvent<*>) = needRedraw()
+            override fun onNodeAttached(node: SvgNode) = needRedraw()
+            override fun onNodeDetached(node: SvgNode) = needRedraw()
         })
     }
 
@@ -65,9 +65,9 @@ abstract class SvgSkikoView(
 
     override fun onRender(canvas: Canvas, width: Int, height: Int, nanoTime: Long) {
         if (width == 0 && height == 0) {
-            // Skiko may call onRender before OpenGL context is initialized.
-            // In this case we request another render call as soon as context is initialized.
-            // Skiko itself won't call onRender again when context is initialized.
+            // Skiko may call onRender before SkiaLayer is initialized (width and height are 0).
+            // In this case we request another render call until SkiaLayer is initialized (width and height are not 0).
+            // Otherwise, Skiko won't call onRender again when initialization is done and screen will stay blank.
             needRedraw()
             return
         }
@@ -82,22 +82,24 @@ abstract class SvgSkikoView(
     }
 
     override fun onGestureEvent(event: SkikoGestureEvent) {
-        eventDispatcher?.let { dispatcher ->
-            event.translate()?.let {
-                dispatcher.dispatchMouseEvent(kind = it.first, e = it.second)
-            }
-        }
+        val dispatcher = eventDispatcher ?: return
+        val (kind, e) = event.translate() ?: return
+
+        dispatcher.dispatchMouseEvent(kind, e)
     }
 
     override fun onPointerEvent(event: SkikoPointerEvent) {
-        eventDispatcher?.let { dispatcher ->
-            event.translate()?.let {
-                dispatcher.dispatchMouseEvent(kind = it.first, e = it.second)
-            }
-        }
+        val dispatcher = eventDispatcher ?: return
+        val (kind, e) = event.translate() ?: return
+
+        dispatcher.dispatchMouseEvent(kind, e)
     }
 
     override fun dispose() {
+        if (disposed) {
+            return
+        }
+
         disposed = true
 
         // Detach svg root.

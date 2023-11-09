@@ -80,8 +80,19 @@ class SvgPanel(
     }
 
     override fun dispose() {
-        registrations.dispose()
+        // Order matters or:
+        // Exception in thread "AWT-EventQueue-0" java.lang.IllegalStateException: SkiaLayer is disposed
+        //   at org.jetbrains.skiko.SkiaLayer.needRedraw(SkiaLayer.awt.kt:518)
+
+        // 1. Dispose SvgSkikoView first. So it won't ask SkiaLayerAwt to redraw.
         skikoView.dispose()
+
+        // 2. If dispose is not in order this line causes changes in SVG, SvgSkikoView handles them
+        // and ask disposed SkiaLayerAwt to redraw.
+        // Not sure why SkiaLayerAwt is disposed at this point - may be post events from SVG, received after removeAll()?
+        registrations.dispose()
+
+        // 3. Now it's safe to remove SkiaLayerAwt from the parent component.
         removeAll()
     }
 }
