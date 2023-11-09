@@ -17,4 +17,5 @@ dependencies {
     implementation(project(":demo-svg-shared"))
 
     implementation("org.jetbrains.lets-plot:lets-plot-common:$letsPlotVersion")
+    implementation("org.jetbrains.lets-plot:platf-awt:$letsPlotVersion")
 }
