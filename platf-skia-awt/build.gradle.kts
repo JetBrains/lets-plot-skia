@@ -37,5 +37,7 @@ publishing {
 }
 
 signing {
-    sign(publishing.publications)
+    if (!(project.version as String).contains("SNAPSHOT")) {
+        sign(publishing.publications)
+    }
 }

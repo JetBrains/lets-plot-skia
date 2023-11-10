@@ -9,7 +9,7 @@
 
 ### Publishing to Sonatype Maven Repository
 
-> **Note**: When publishing to Sonatype, PGP signature is required.
+> **Note**: When publishing a "Release" version to Sonatype, PGP signature is required.
 >
 > See: https://central.sonatype.org/pages/working-with-pgp-signatures.html
         
