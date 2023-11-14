@@ -47,14 +47,14 @@ internal class FigureToSkiaAndroid(
             error("LiveMap is not supported")
         } else {
             val plotContainer = PlotContainer(svgRoot)
-            return SvgPanel(
-                context = ctx,
-                svg = plotContainer.svg,
+            return SvgPanel(context = ctx).apply {
+                svg = plotContainer.svg
                 eventDispatcher = object : SkikoViewEventDispatcher {
                     override fun dispatchMouseEvent(kind: MouseEventSpec, e: MouseEvent) {
                         plotContainer.mouseEventPeer.dispatch(kind, e)
                     }
-                })
+                }
+            }
         }
     }
 
@@ -77,11 +77,10 @@ internal class FigureToSkiaAndroid(
             }
         }
 
-        val rootView = SvgPanel(
-            context = ctx,
-            svg = svgRoot.svg,
+        val rootView = SvgPanel(context = ctx).apply {
+            svg = svgRoot.svg
             eventDispatcher = null
-        )
+        }
 //            eventDispatcher = object : SkikoViewEventDispatcher {
 //                override fun dispatchMouseEvent(kind: MouseEventSpec, e: MouseEvent) {
 //                    plotContainer.mouseEventPeer.dispatch(kind, e)

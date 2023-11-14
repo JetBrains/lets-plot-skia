@@ -8,11 +8,107 @@ package org.jetbrains.letsPlot.skia.android
 import android.content.Context
 import android.view.View
 import android.widget.TextView
+import org.jetbrains.letsPlot.commons.event.MouseEvent
+import org.jetbrains.letsPlot.commons.event.MouseEventSpec
+import org.jetbrains.letsPlot.commons.geometry.DoubleRectangle
 import org.jetbrains.letsPlot.commons.geometry.DoubleVector
+import org.jetbrains.letsPlot.commons.geometry.Rectangle
+import org.jetbrains.letsPlot.commons.geometry.Vector
+import org.jetbrains.letsPlot.commons.registration.CompositeRegistration
+import org.jetbrains.letsPlot.commons.registration.Registration
+import org.jetbrains.letsPlot.core.plot.builder.FigureBuildInfo
+import org.jetbrains.letsPlot.core.plot.builder.PlotContainer
+import org.jetbrains.letsPlot.core.plot.builder.PlotSvgRoot
+import org.jetbrains.letsPlot.core.plot.builder.subPlots.CompositeFigureSvgRoot
 import org.jetbrains.letsPlot.core.spec.FailureHandler
 import org.jetbrains.letsPlot.core.util.MonolithicCommon
+import org.jetbrains.letsPlot.datamodel.svg.dom.SvgSvgElement
+import org.jetbrains.letsPlot.datamodel.svg.dom.SvgTextElement
+import org.jetbrains.letsPlot.skia.android.view.SvgPanel
+import org.jetbrains.letsPlot.skia.view.SkikoViewEventDispatcher
 
 object MonolithicSkiaAndroid {
+    fun buildPlotFromProcessedSpecs(
+        svgPanel: SvgPanel,
+        plotSpec: MutableMap<String, Any>,
+        plotSize: DoubleVector?,
+        computationMessagesHandler: (List<String>) -> Unit
+    ): Registration {
+        val buildResult = MonolithicCommon.buildPlotsFromProcessedSpecs(plotSpec, plotSize)
+        if (buildResult is MonolithicCommon.PlotsBuildResult.Error) {
+            svgPanel.svg = createErrorSvgText(buildResult.error)
+            svgPanel.eventDispatcher = null
+            return Registration.EMPTY
+        }
+
+        val reg = CompositeRegistration()
+
+        fun processPlotFigure(svgRoot: PlotSvgRoot, parentEventDispatcher: CompositeFigureEventDispatcher? = null): CompositeFigureEventDispatcher {
+            val plotContainer = PlotContainer(svgRoot)
+            reg.add(Registration.from(plotContainer))
+
+            val panelDispatcher = object : SkikoViewEventDispatcher {
+                override fun dispatchMouseEvent(kind: MouseEventSpec, e: MouseEvent) {
+                    plotContainer.mouseEventPeer.dispatch(kind, e)
+                }
+            }
+
+            val dispatcher = parentEventDispatcher ?: CompositeFigureEventDispatcher()
+            dispatcher.addEventDispatcher(svgRoot.bounds, panelDispatcher)
+            return dispatcher
+        }
+
+        fun processCompositeFigure(
+            svgRoot: CompositeFigureSvgRoot,
+            topSvgSvg: SvgSvgElement,
+            origin: DoubleVector = DoubleVector.ZERO,
+            parentEventDispatcher: CompositeFigureEventDispatcher? = null
+        ): CompositeFigureEventDispatcher {
+            svgRoot.ensureContentBuilt()
+
+            val dispatcher = CompositeFigureEventDispatcher()
+            parentEventDispatcher?.addEventDispatcher(svgRoot.bounds, dispatcher)
+
+            // Sub-figures
+
+            for (element in svgRoot.elements) {
+                val elementOrigin = element.bounds.origin.add(origin)
+
+                val elementSvg = element.svg
+                elementSvg.x().set(elementOrigin.x)
+                elementSvg.y().set(elementOrigin.y)
+
+                when (element) {
+                    is CompositeFigureSvgRoot -> processCompositeFigure(element, topSvgSvg, elementOrigin, dispatcher)
+                    is PlotSvgRoot -> processPlotFigure(element, dispatcher)
+                }
+
+                topSvgSvg.children().add(elementSvg)
+            }
+            return dispatcher
+        }
+
+        val success = buildResult as MonolithicCommon.PlotsBuildResult.Success
+        val computationMessages = success.buildInfos.flatMap(FigureBuildInfo::computationMessages)
+        computationMessagesHandler(computationMessages)
+
+        require(success.buildInfos.size == 1) { "GGBunch is not supported." }
+
+        val buildInfo = success.buildInfos.single()
+        val svgRoot = buildInfo.layoutedByOuterSize().createSvgRoot()
+        val topSvgSvg: SvgSvgElement = svgRoot.svg
+
+        val dispatcher = when (svgRoot) {
+            is CompositeFigureSvgRoot -> processCompositeFigure(svgRoot, topSvgSvg)
+            is PlotSvgRoot -> processPlotFigure(svgRoot)
+            else -> error("Unexpected root figure type: ${svgRoot::class.simpleName}")
+        }
+
+        svgPanel.svg = topSvgSvg
+        svgPanel.eventDispatcher = dispatcher
+        return reg
+    }
+
     fun buildPlotFromRawSpecs(
         ctx: Context,
         plotSpec: MutableMap<String, Any>,
@@ -75,5 +171,44 @@ object MonolithicSkiaAndroid {
         label.text = s
         label.setTextColor(0x00FF0000)
         return label
+    }
+
+    private fun createErrorSvgText(s: String): SvgSvgElement {
+        return SvgSvgElement().apply {
+            children().add(
+                SvgTextElement(s)
+            )
+        }
+    }
+
+}
+
+internal class CompositeFigureEventDispatcher() : SkikoViewEventDispatcher {
+    private val dispatchers = LinkedHashMap<Rectangle, SkikoViewEventDispatcher>()
+
+    fun addEventDispatcher(bounds: DoubleRectangle, eventDispatcher: SkikoViewEventDispatcher) {
+        val rect = Rectangle(
+            bounds.origin.x.toInt(),
+            bounds.origin.y.toInt(),
+            bounds.dimension.x.toInt(),
+            bounds.dimension.y.toInt()
+        )
+        dispatchers[rect] = eventDispatcher
+    }
+
+    override fun dispatchMouseEvent(kind: MouseEventSpec, e: MouseEvent) {
+        val loc = Vector(e.x, e.y)
+        val target = dispatchers.keys.find { it.contains(loc) }
+        if (target != null) {
+            val dispatcher = dispatchers.getValue(target)
+            dispatcher.dispatchMouseEvent(
+                kind,
+                MouseEvent(
+                    v = Vector(loc.x - target.origin.x, loc.y - target.origin.y),
+                    button = e.button,
+                    modifiers = e.modifiers
+                )
+            )
+        }
     }
 }

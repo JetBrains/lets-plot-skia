@@ -16,22 +16,28 @@ import org.jetbrains.letsPlot.datamodel.svg.dom.SvgSvgElement
 import org.jetbrains.letsPlot.skia.view.SkikoViewEventDispatcher
 
 @SuppressLint("ViewConstructor")
-class SvgPanel constructor(
-    context: Context,
-    svg: SvgSvgElement,
-    eventDispatcher: SkikoViewEventDispatcher? = null
-) : ViewGroup(context), Disposable, DisposingHub {
-
-    private val skikoView = SvgSkikoViewAndroid().also {
-        it.svg = svg
-        it.eventDispatcher = eventDispatcher
+class SvgPanel(context: Context) : ViewGroup(context), Disposable, DisposingHub {
+    // For a simple svg, when events handling is not needed
+    constructor(context: Context, svg: SvgSvgElement) : this(context) {
+        this.svg = svg
+        this.eventDispatcher = null
     }
-    private val registrations = CompositeRegistration()
 
-    val eventDispatcher: SkikoViewEventDispatcher
-        get() {
-            return skikoView.eventDispatcher ?: throw IllegalStateException("No SkikoViewEventDispatcher.")
+    var svg: SvgSvgElement = SvgSvgElement()
+        set(value) {
+            field = value
+            skikoView.svg = value
+            //skikoView.skiaLayer.bounds = boundsPxToDp(skikoView.skiaLayer.preferredSize)
         }
+
+    var eventDispatcher: SkikoViewEventDispatcher?
+        get() = skikoView.eventDispatcher
+        set(value) {
+            skikoView.eventDispatcher = value
+        }
+
+    private val skikoView = SvgSkikoViewAndroid()
+    private val registrations = CompositeRegistration()
 
     init {
         skikoView.skiaLayer.attachTo(this)
