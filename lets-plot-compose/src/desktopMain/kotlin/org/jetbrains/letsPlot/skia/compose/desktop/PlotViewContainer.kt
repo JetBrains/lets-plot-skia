@@ -159,5 +159,9 @@ class PlotViewContainer(
             }
         }
         removeAll()
+
+        if (reusePlotSvgPanel) {
+            plotSvgRegistration.dispose()
+        }
     }
 }

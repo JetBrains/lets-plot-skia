@@ -203,5 +203,9 @@ internal class PlotViewContainer(
         }
 
         removeAllViews()
+
+        if (reusePlotSvgPanel) {
+            plotSvgRegistration.dispose()
+        }
     }
 }
