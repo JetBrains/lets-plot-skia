@@ -25,15 +25,15 @@ import javax.swing.JTextArea
 
 object MonolithicSkiaAwt {
     fun buildPlotFromProcessedSpecs(
-        svgPanel: SvgPanel,
+        dest: SvgPanel,
         plotSpec: MutableMap<String, Any>,
         plotSize: DoubleVector?,
         computationMessagesHandler: (List<String>) -> Unit
     ): Registration {
         val buildResult = MonolithicCommon.buildPlotsFromProcessedSpecs(plotSpec, plotSize)
         if (buildResult is MonolithicCommon.PlotsBuildResult.Error) {
-            svgPanel.svg = createErrorSvgText(buildResult.error)
-            svgPanel.eventDispatcher = null
+            dest.svg = createErrorSvgText(buildResult.error)
+            dest.eventDispatcher = null
             return Registration.EMPTY
         }
 
@@ -100,8 +100,8 @@ object MonolithicSkiaAwt {
             else -> error("Unexpected root figure type: ${svgRoot::class.simpleName}")
         }
 
-        svgPanel.svg = topSvgSvg
-        svgPanel.eventDispatcher = dispatcher
+        dest.svg = topSvgSvg
+        dest.eventDispatcher = dispatcher
         return reg
     }
 

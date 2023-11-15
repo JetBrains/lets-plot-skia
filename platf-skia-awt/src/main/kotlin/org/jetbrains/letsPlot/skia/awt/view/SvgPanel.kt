@@ -9,7 +9,10 @@ import org.jetbrains.letsPlot.commons.registration.CompositeRegistration
 import org.jetbrains.letsPlot.commons.registration.Disposable
 import org.jetbrains.letsPlot.commons.registration.DisposableRegistration
 import org.jetbrains.letsPlot.commons.registration.DisposingHub
+import org.jetbrains.letsPlot.datamodel.svg.dom.SvgConstants
+import org.jetbrains.letsPlot.datamodel.svg.dom.SvgElementListener
 import org.jetbrains.letsPlot.datamodel.svg.dom.SvgSvgElement
+import org.jetbrains.letsPlot.datamodel.svg.event.SvgAttributeEvent
 import org.jetbrains.letsPlot.skia.view.SkikoViewEventDispatcher
 import java.awt.Dimension
 import java.awt.Graphics
@@ -52,18 +55,17 @@ class SvgPanel() : JPanel(), Disposable, DisposingHub {
         border = null // BorderFactory.createLineBorder(Color.ORANGE, 1)
         skikoView.skiaLayer.attachTo(this)
 
-        // Why?
-        //registrations.add(
-        //    svg.addListener(object : SvgElementListener {
-        //        override fun onAttrSet(event: SvgAttributeEvent<*>) {
-        //            if (SvgConstants.HEIGHT.equals(event.attrSpec.name, ignoreCase = true) ||
-        //                SvgConstants.WIDTH.equals(event.attrSpec.name, ignoreCase = true)
-        //            ) {
-        //                throw IllegalStateException("Can't change SVG attribute $(event.attrSpec.name)")
-        //            }
-        //        }
-        //    })
-        //)
+        registrations.add(
+            svg.addListener(object : SvgElementListener {
+                override fun onAttrSet(event: SvgAttributeEvent<*>) {
+                    if (SvgConstants.HEIGHT.equals(event.attrSpec.name, ignoreCase = true) ||
+                        SvgConstants.WIDTH.equals(event.attrSpec.name, ignoreCase = true)
+                    ) {
+                        throw IllegalStateException("Can't change SVG attribute $(event.attrSpec.name)")
+                    }
+                }
+            })
+        )
     }
 
     override fun getPreferredSize(): Dimension {

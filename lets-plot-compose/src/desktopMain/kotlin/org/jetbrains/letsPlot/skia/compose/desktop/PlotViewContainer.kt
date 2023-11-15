@@ -7,7 +7,6 @@ package org.jetbrains.letsPlot.skia.compose.desktop
 
 import org.jetbrains.letsPlot.Figure
 import org.jetbrains.letsPlot.commons.geometry.DoubleVector
-import org.jetbrains.letsPlot.commons.registration.Disposable
 import org.jetbrains.letsPlot.commons.registration.Registration
 import org.jetbrains.letsPlot.core.util.MonolithicCommon
 import org.jetbrains.letsPlot.core.util.PlotSizeUtil
@@ -21,24 +20,19 @@ import javax.swing.JPanel
 
 private val LOG = NaiveLogger("PlotViewContainer")
 
-// If false then new SvgPanel() is created for each update.
-val reusePlotSvgPanel = true
-
 class PlotViewContainer(
     private val computationMessagesHandler: ((List<String>) -> Unit)
 ) : JPanel() {
 
     private val plotSvgPanel = SvgPanel()
-    private var plotSvgRegistration = Registration.EMPTY
+    private var plotCleanup = Registration.EMPTY
 
     private var needUpdate = false
     private var dispatchComputationMessages = true
     private lateinit var processedSpec: Map<String, Any>
 
     init {
-        if (reusePlotSvgPanel) {
-            this.add(plotSvgPanel)
-        }
+        this.add(plotSvgPanel)
     }
 
     var figure: Figure? = null
@@ -92,10 +86,6 @@ class PlotViewContainer(
 
         needUpdate = false
 
-        if (!reusePlotSvgPanel) {
-            disposePlotView()
-        }
-
         val plotSize = PlotSizeUtil.preferredFigureSize(
             processedSpec,
             preserveAspectRatio ?: throw IllegalStateException("'preserveAspectRatio' not set."),
@@ -109,59 +99,33 @@ class PlotViewContainer(
             (size.y - plotSize.y) / 2
         }
 
-        if (reusePlotSvgPanel) {
-            plotSvgRegistration.dispose()
-            plotSvgPanel.bounds = Rectangle(
-                plotX.toInt(),
-                plotY.toInt(),
-                plotSize.x.toInt(),
-                plotSize.y.toInt(),
-            )
+        plotCleanup.dispose()
+        plotSvgPanel.bounds = Rectangle(
+            plotX.toInt(),
+            plotY.toInt(),
+            plotSize.x.toInt(),
+            plotSize.y.toInt(),
+        )
 
-            plotSvgRegistration = MonolithicSkiaAwt.buildPlotFromProcessedSpecs(
-                svgPanel = plotSvgPanel,
-                plotSize = plotSize,
-                plotSpec = processedSpec as MutableMap<String, Any>,
-            ) { messages ->
-                if (dispatchComputationMessages) {
-                    // do once
-                    dispatchComputationMessages = false
-                    computationMessagesHandler(messages)
-                }
+        plotCleanup = MonolithicSkiaAwt.buildPlotFromProcessedSpecs(
+            dest = plotSvgPanel,
+            plotSize = plotSize,
+            plotSpec = processedSpec as MutableMap<String, Any>,
+        ) { messages ->
+            if (dispatchComputationMessages) {
+                // do once
+                dispatchComputationMessages = false
+                computationMessagesHandler(messages)
             }
-        } else {
-            val plotComponent = MonolithicSkiaAwt.buildPlotFromProcessedSpecs(
-                plotSize = plotSize,
-                plotSpec = processedSpec as MutableMap<String, Any>,
-            ) { messages ->
-                if (dispatchComputationMessages) {
-                    // do once
-                    dispatchComputationMessages = false
-                    computationMessagesHandler(messages)
-                }
-            }
-
-            plotComponent.bounds = Rectangle(
-                plotX.toInt(),
-                plotY.toInt(),
-                plotSize.x.toInt(),
-                plotSize.y.toInt(),
-            )
-            this.add(plotComponent)
         }
     }
 
-
     fun disposePlotView() {
-        for (component in components) {
-            if (component is Disposable) {
-                component.dispose()
-            }
-        }
-        removeAll()
+        check(componentCount == 1) { "Unexpected number of children: $componentCount" }
+        check(components[0] == plotSvgPanel) { "Unexpected child: should be SvgPanel but was ${components[0]::class.simpleName}" }
 
-        if (reusePlotSvgPanel) {
-            plotSvgRegistration.dispose()
-        }
+        plotSvgPanel.dispose()
+        plotCleanup.dispose()
+        removeAll()
     }
 }

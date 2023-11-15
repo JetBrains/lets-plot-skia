@@ -12,7 +12,6 @@ import org.jetbrains.letsPlot.Figure
 import org.jetbrains.letsPlot.commons.geometry.DoubleRectangle
 import org.jetbrains.letsPlot.commons.geometry.DoubleVector
 import org.jetbrains.letsPlot.commons.geometry.Vector
-import org.jetbrains.letsPlot.commons.registration.Disposable
 import org.jetbrains.letsPlot.commons.registration.Registration
 import org.jetbrains.letsPlot.core.util.MonolithicCommon
 import org.jetbrains.letsPlot.core.util.PlotSizeUtil
@@ -23,25 +22,20 @@ import org.jetbrains.letsPlot.skia.compose.util.NaiveLogger
 
 private val LOG = NaiveLogger("PlotViewContainer")
 
-// If false then new SvgPanel() is created for each update.
-val reusePlotSvgPanel = true
-
 @SuppressLint("ViewConstructor")
 internal class PlotViewContainer(
-    private val context: Context,
+    private context: Context,
     private val computationMessagesHandler: ((List<String>) -> Unit)
 ) : RelativeLayout(context) {
 
     private val plotSvgPanel = SvgPanel(context)
-    private var plotSvgRegistration = Registration.EMPTY
+    private var plotCleanup = Registration.EMPTY
 
     private var needUpdate = true
     private lateinit var processedSpec: Map<String, Any>
 
     init {
-        if (reusePlotSvgPanel) {
-            addView(plotSvgPanel)
-        }
+        addView(plotSvgPanel)
     }
 
     var figure: Figure? = null
@@ -133,79 +127,36 @@ internal class PlotViewContainer(
         val width = unscaledSize.x.toInt()
         val height = unscaledSize.y.toInt()
 
-        if (!reusePlotSvgPanel) {
-            disposePlotView()
-
-            // https://stackoverflow.com/questions/25516363/how-to-properly-add-child-views-to-view-group
-            post {
-                check(childCount == 0) { "Can't revalidate: childCount = $childCount but should be 0." }
-
-                val plotComponent = MonolithicSkiaAndroid.buildPlotFromProcessedSpecs(
-                    ctx = context,
-                    plotSize = plotSize,
-                    plotSpec = processedSpec as MutableMap<String, Any>,
-                ) { messages ->
-                    computationMessagesHandler(messages)
-                }
-
-                val params = LayoutParams(width, height).also {
-                    it.leftMargin = left
-                    it.topMargin = top
-                }
-
-                addView(plotComponent, params)
-//            this.requestLayout()
-//            this.forceLayout()
-
-                // Add measure/layout plotView.
-                // Without this trick Skia layer do not re-draw after thw screen (device) rotation.
-                measureChild(
-                    plotComponent,
-                    MeasureSpec.makeMeasureSpec(width, MeasureSpec.EXACTLY),
-                    MeasureSpec.makeMeasureSpec(height, MeasureSpec.EXACTLY)
-                )
-                plotComponent.layout(left, top, left + width, top + height)
-            }
-        } else {
-            post {
-                plotSvgRegistration.dispose()
-                plotSvgRegistration = MonolithicSkiaAndroid.buildPlotFromProcessedSpecs(
-                    svgPanel = plotSvgPanel,
-                    plotSize = plotSize,
-                    plotSpec = processedSpec as MutableMap<String, Any>,
-                ) { messages ->
-                    computationMessagesHandler(messages)
-                    //if (dispatchComputationMessages) {
-                    //    // do once
-                    //    dispatchComputationMessages = false
-                    //    computationMessagesHandler(messages)
-                    //}
-                }
-
-                measureChild(
-                    plotSvgPanel,
-                    MeasureSpec.makeMeasureSpec(width, MeasureSpec.EXACTLY),
-                    MeasureSpec.makeMeasureSpec(height, MeasureSpec.EXACTLY)
-                )
-                plotSvgPanel.layout(left, top, left + width, top + height)
+        post {
+            plotCleanup.dispose()
+            plotCleanup = MonolithicSkiaAndroid.buildPlotFromProcessedSpecs(
+                dest = plotSvgPanel,
+                plotSize = plotSize,
+                plotSpec = processedSpec as MutableMap<String, Any>,
+            ) { messages ->
+                computationMessagesHandler(messages)
+                //if (dispatchComputationMessages) {
+                //    // do once
+                //    dispatchComputationMessages = false
+                //    computationMessagesHandler(messages)
+                //}
             }
 
+            measureChild(
+                plotSvgPanel,
+                MeasureSpec.makeMeasureSpec(width, MeasureSpec.EXACTLY),
+                MeasureSpec.makeMeasureSpec(height, MeasureSpec.EXACTLY)
+            )
+            plotSvgPanel.layout(left, top, left + width, top + height)
         }
     }
 
     fun disposePlotView() {
-        for (ind in 0 until childCount) {
-            getChildAt(ind).let {
-                if (it is Disposable) {
-                    it.dispose()
-                }
-            }
-        }
+        check(childCount == 1) { "Unexpected number of children: $childCount" }
+        check(getChildAt(0) == plotSvgPanel) { "Unexpected child: should be SvgPanel but was ${getChildAt(0)::class.simpleName}" }
 
+        plotSvgPanel.dispose()
+        plotCleanup.dispose()
         removeAllViews()
-
-        if (reusePlotSvgPanel) {
-            plotSvgRegistration.dispose()
-        }
     }
 }

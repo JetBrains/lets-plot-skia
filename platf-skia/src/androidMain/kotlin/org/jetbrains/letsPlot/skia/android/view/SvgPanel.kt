@@ -12,7 +12,10 @@ import org.jetbrains.letsPlot.commons.registration.CompositeRegistration
 import org.jetbrains.letsPlot.commons.registration.Disposable
 import org.jetbrains.letsPlot.commons.registration.DisposableRegistration
 import org.jetbrains.letsPlot.commons.registration.DisposingHub
+import org.jetbrains.letsPlot.datamodel.svg.dom.SvgConstants
+import org.jetbrains.letsPlot.datamodel.svg.dom.SvgElementListener
 import org.jetbrains.letsPlot.datamodel.svg.dom.SvgSvgElement
+import org.jetbrains.letsPlot.datamodel.svg.event.SvgAttributeEvent
 import org.jetbrains.letsPlot.skia.view.SkikoViewEventDispatcher
 
 @SuppressLint("ViewConstructor")
@@ -41,6 +44,18 @@ class SvgPanel(context: Context) : ViewGroup(context), Disposable, DisposingHub 
 
     init {
         skikoView.skiaLayer.attachTo(this)
+
+        registrations.add(
+            svg.addListener(object : SvgElementListener {
+                override fun onAttrSet(event: SvgAttributeEvent<*>) {
+                    if (SvgConstants.HEIGHT.equals(event.attrSpec.name, ignoreCase = true) ||
+                        SvgConstants.WIDTH.equals(event.attrSpec.name, ignoreCase = true)
+                    ) {
+                        throw IllegalStateException("Can't change SVG attribute $(event.attrSpec.name)")
+                    }
+                }
+            })
+        )
     }
 
     override fun onMeasure(widthMeasureSpec: Int, heightMeasureSpec: Int) {
