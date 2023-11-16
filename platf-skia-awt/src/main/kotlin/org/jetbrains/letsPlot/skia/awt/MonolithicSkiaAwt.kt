@@ -37,53 +37,6 @@ object MonolithicSkiaAwt {
             return Registration.EMPTY
         }
 
-        val reg = CompositeRegistration()
-
-        fun processPlotFigure(svgRoot: PlotSvgRoot, parentEventDispatcher: CompositeFigureEventDispatcher? = null): CompositeFigureEventDispatcher {
-            val plotContainer = PlotContainer(svgRoot)
-            reg.add(Registration.from(plotContainer))
-
-            val panelDispatcher = object : SkikoViewEventDispatcher {
-                override fun dispatchMouseEvent(kind: MouseEventSpec, e: MouseEvent) {
-                    plotContainer.mouseEventPeer.dispatch(kind, e)
-                }
-            }
-
-            val dispatcher = parentEventDispatcher ?: CompositeFigureEventDispatcher()
-            dispatcher.addEventDispatcher(toAwtRect(svgRoot.bounds), panelDispatcher)
-            return dispatcher
-        }
-
-        fun processCompositeFigure(
-            svgRoot: CompositeFigureSvgRoot,
-            topSvgSvg: SvgSvgElement,
-            origin: DoubleVector = DoubleVector.ZERO,
-            parentEventDispatcher: CompositeFigureEventDispatcher? = null
-        ): CompositeFigureEventDispatcher {
-            svgRoot.ensureContentBuilt()
-
-            val dispatcher = CompositeFigureEventDispatcher()
-            parentEventDispatcher?.addEventDispatcher(toAwtRect(svgRoot.bounds), dispatcher)
-
-            // Sub-figures
-
-            for (element in svgRoot.elements) {
-                val elementOrigin = element.bounds.origin.add(origin)
-
-                val elementSvg = element.svg
-                elementSvg.x().set(elementOrigin.x)
-                elementSvg.y().set(elementOrigin.y)
-
-                when (element) {
-                    is CompositeFigureSvgRoot -> processCompositeFigure(element, topSvgSvg, elementOrigin, dispatcher)
-                    is PlotSvgRoot -> processPlotFigure(element, dispatcher)
-                }
-
-                topSvgSvg.children().add(elementSvg)
-            }
-            return dispatcher
-        }
-
         val success = buildResult as MonolithicCommon.PlotsBuildResult.Success
         val computationMessages = success.buildInfos.flatMap(FigureBuildInfo::computationMessages)
         computationMessagesHandler(computationMessages)
@@ -94,15 +47,62 @@ object MonolithicSkiaAwt {
         val svgRoot = buildInfo.layoutedByOuterSize().createSvgRoot()
         val topSvgSvg: SvgSvgElement = svgRoot.svg
 
+        val containerCleanup = CompositeRegistration()
         val dispatcher = when (svgRoot) {
-            is CompositeFigureSvgRoot -> processCompositeFigure(svgRoot, topSvgSvg)
-            is PlotSvgRoot -> processPlotFigure(svgRoot)
+            is CompositeFigureSvgRoot -> processCompositeFigure(svgRoot, topSvgSvg, containerCleanup)
+            is PlotSvgRoot -> processPlotFigure(svgRoot, containerCleanup)
             else -> error("Unexpected root figure type: ${svgRoot::class.simpleName}")
         }
 
         dest.svg = topSvgSvg
         dest.eventDispatcher = dispatcher
-        return reg
+        return containerCleanup
+    }
+
+    private fun processPlotFigure(svgRoot: PlotSvgRoot, containerCleanup: CompositeRegistration, parentEventDispatcher: CompositeFigureEventDispatcher? = null): CompositeFigureEventDispatcher {
+        val plotContainer = PlotContainer(svgRoot)
+        containerCleanup.add(Registration.from(plotContainer))
+
+        val panelDispatcher = object : SkikoViewEventDispatcher {
+            override fun dispatchMouseEvent(kind: MouseEventSpec, e: MouseEvent) {
+                plotContainer.mouseEventPeer.dispatch(kind, e)
+            }
+        }
+
+        val dispatcher = parentEventDispatcher ?: CompositeFigureEventDispatcher()
+        dispatcher.addEventDispatcher(toAwtRect(svgRoot.bounds), panelDispatcher)
+        return dispatcher
+    }
+
+    private fun processCompositeFigure(
+        svgRoot: CompositeFigureSvgRoot,
+        topSvgSvg: SvgSvgElement,
+        containerCleanup: CompositeRegistration,
+        origin: DoubleVector = DoubleVector.ZERO,
+        parentEventDispatcher: CompositeFigureEventDispatcher? = null
+    ): CompositeFigureEventDispatcher {
+        svgRoot.ensureContentBuilt()
+
+        val dispatcher = CompositeFigureEventDispatcher()
+        parentEventDispatcher?.addEventDispatcher(toAwtRect(svgRoot.bounds), dispatcher)
+
+        // Sub-figures
+
+        for (element in svgRoot.elements) {
+            val elementOrigin = element.bounds.origin.add(origin)
+
+            val elementSvg = element.svg
+            elementSvg.x().set(elementOrigin.x)
+            elementSvg.y().set(elementOrigin.y)
+
+            when (element) {
+                is CompositeFigureSvgRoot -> processCompositeFigure(element, topSvgSvg, containerCleanup, elementOrigin, dispatcher)
+                is PlotSvgRoot -> processPlotFigure(element, containerCleanup, dispatcher)
+            }
+
+            topSvgSvg.children().add(elementSvg)
+        }
+        return dispatcher
     }
 
     fun buildPlotFromRawSpecs(

@@ -24,7 +24,7 @@ private val LOG = NaiveLogger("PlotViewContainer")
 
 @SuppressLint("ViewConstructor")
 internal class PlotViewContainer(
-    private context: Context,
+    context: Context,
     private val computationMessagesHandler: ((List<String>) -> Unit)
 ) : RelativeLayout(context) {
 
