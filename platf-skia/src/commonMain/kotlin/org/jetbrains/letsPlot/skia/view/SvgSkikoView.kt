@@ -76,6 +76,11 @@ abstract class SvgSkikoView() : SkikoView, Disposable {
     protected abstract fun updateSkiaLayerSize(width: Int, height: Int)
 
     override fun onRender(canvas: Canvas, width: Int, height: Int, nanoTime: Long) {
+        if (disposed) {
+            // needRedraw() schedules render call, but SvgSkikoView may be disposed before it happens between frames.
+            return
+        }
+
         if (width == 0 && height == 0) {
             // Skiko may call onRender before SkiaLayer is initialized (width and height are 0).
             // In this case we request another render call until SkiaLayer is initialized (width and height are not 0).

@@ -107,9 +107,10 @@ class SvgPanel(
         //        #42 pc 00000000003c6644  /system/lib64/libhwui.so (android::uirenderer::renderthread::RenderThread::threadLoop()+84) (BuildId: a241a5dc738c2fe8686d91f83b94d911)
         //        ...
 
-        post {
+        // Didn't see any fixes in skiko, but now it works without post().
+        //post {
             registrations.dispose()
             skikoView.dispose()
-        }
+        //}
     }
 }

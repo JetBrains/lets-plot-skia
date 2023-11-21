@@ -28,14 +28,14 @@ internal class PlotViewContainer(
     private val computationMessagesHandler: ((List<String>) -> Unit)
 ) : RelativeLayout(context) {
 
-    private val plotSvgPanel = SvgPanel(context)
+    private lateinit var plotSvgPanel: SvgPanel
     private var plotCleanup = Registration.EMPTY
 
     private var needUpdate = true
     private lateinit var processedSpec: Map<String, Any>
 
     init {
-        addView(plotSvgPanel)
+        rebuildSvgPanel()
     }
 
     var figure: Figure? = null
@@ -61,6 +61,9 @@ internal class PlotViewContainer(
                 return
             }
 
+            // TODO: investigate. Most likely a Skiko bug.
+            // Switching the aspect ratio causes flickering - extended plot area is rendered with black background.
+            rebuildSvgPanel()
             field = v
             needUpdate = true
 //            background = ColorRect(if (v) Color.BLUE else Color.RED)
@@ -158,5 +161,17 @@ internal class PlotViewContainer(
         plotSvgPanel.dispose()
         plotCleanup.dispose()
         removeAllViews()
+    }
+
+    private fun rebuildSvgPanel() {
+        if (childCount == 1) {
+            plotSvgPanel.dispose()
+            plotCleanup.dispose()
+            removeAllViews()
+        }
+
+        plotSvgPanel = SvgPanel(context)
+        plotCleanup = Registration.EMPTY
+        addView(plotSvgPanel)
     }
 }

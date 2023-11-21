@@ -24,16 +24,12 @@ class PlotViewContainer(
     private val computationMessagesHandler: ((List<String>) -> Unit)
 ) : JPanel() {
 
-    private val plotSvgPanel = SvgPanel()
+    private lateinit var plotSvgPanel: SvgPanel
     private var plotCleanup = Registration.EMPTY
 
     private var needUpdate = false
     private var dispatchComputationMessages = true
     private lateinit var processedSpec: Map<String, Any>
-
-    init {
-        this.add(plotSvgPanel)
-    }
 
     var figure: Figure? = null
         set(fig) {
@@ -57,6 +53,10 @@ class PlotViewContainer(
             if (field == v) {
                 return
             }
+
+            // TODO: investigate and report the bug, most likely in Skiko.
+            // Switching the aspect ratio causes flickering - extended plot area is rendered with black background.
+            rebuildSvgPanel()
             field = v
             needUpdate = true
         }
@@ -66,6 +66,10 @@ class PlotViewContainer(
             if (field == v) {
                 return
             }
+
+            // TODO: investigate and report the bug, most likely in Skiko.
+            // With fixed aspect ratio the horizontal resize causes the plot to be rendered at wrong position, even outside the panel.
+            rebuildSvgPanel()
             field = v
             needUpdate = true
         }
@@ -75,6 +79,7 @@ class PlotViewContainer(
         isOpaque = false
         layout = null
         cursor = Cursor(Cursor.CROSSHAIR_CURSOR)
+        rebuildSvgPanel()
     }
 
     fun updatePlotView() {
@@ -127,5 +132,17 @@ class PlotViewContainer(
         plotSvgPanel.dispose()
         plotCleanup.dispose()
         removeAll()
+    }
+
+    private fun rebuildSvgPanel() {
+        if (componentCount == 1) {
+            plotSvgPanel.dispose()
+            plotCleanup.dispose()
+            removeAll()
+        }
+
+        plotSvgPanel = SvgPanel()
+        plotCleanup = Registration.EMPTY
+        add(plotSvgPanel)
     }
 }
