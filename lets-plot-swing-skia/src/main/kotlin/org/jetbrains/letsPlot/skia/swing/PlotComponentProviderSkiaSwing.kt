@@ -10,7 +10,7 @@ import org.jetbrains.letsPlot.commons.geometry.DoubleVector
 import org.jetbrains.letsPlot.commons.unsupported.UNSUPPORTED
 import org.jetbrains.letsPlot.core.util.PlotSizeUtil
 import org.jetbrains.letsPlot.datamodel.svg.dom.SvgSvgElement
-import org.jetbrains.letsPlot.skia.awt.MonolithicSkiaAwt
+import org.jetbrains.letsPlot.skia.awt.hw.MonolithicSkiaAwt
 import java.awt.Dimension
 import javax.swing.JComponent
 

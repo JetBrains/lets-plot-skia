@@ -3,17 +3,14 @@
  * Use of this source code is governed by the MIT license that can be found in the LICENSE file.
  */
 
-package org.jetbrains.letsPlot.skia.android
+package org.jetbrains.letsPlot.skia.android.hw
 
 import android.content.Context
 import android.view.View
 import android.widget.TextView
 import org.jetbrains.letsPlot.commons.event.MouseEvent
 import org.jetbrains.letsPlot.commons.event.MouseEventSpec
-import org.jetbrains.letsPlot.commons.geometry.DoubleRectangle
 import org.jetbrains.letsPlot.commons.geometry.DoubleVector
-import org.jetbrains.letsPlot.commons.geometry.Rectangle
-import org.jetbrains.letsPlot.commons.geometry.Vector
 import org.jetbrains.letsPlot.commons.registration.CompositeRegistration
 import org.jetbrains.letsPlot.commons.registration.Registration
 import org.jetbrains.letsPlot.core.plot.builder.FigureBuildInfo
@@ -24,9 +21,13 @@ import org.jetbrains.letsPlot.core.spec.FailureHandler
 import org.jetbrains.letsPlot.core.util.MonolithicCommon
 import org.jetbrains.letsPlot.datamodel.svg.dom.SvgSvgElement
 import org.jetbrains.letsPlot.datamodel.svg.dom.SvgTextElement
+import org.jetbrains.letsPlot.skia.android.CompositeFigureEventDispatcher
 import org.jetbrains.letsPlot.skia.android.view.SvgPanel
 import org.jetbrains.letsPlot.skia.view.SkikoViewEventDispatcher
 
+/**
+ * "heavyweight" - one android View is built per plot spec.
+ */
 object MonolithicSkiaAndroid {
     fun buildPlotFromProcessedSpecs(
         dest: SvgPanel,
@@ -106,7 +107,14 @@ object MonolithicSkiaAndroid {
             elementSvg.y().set(elementOrigin.y)
 
             when (element) {
-                is CompositeFigureSvgRoot -> processCompositeFigure(element, topSvgSvg, containerCleanup, elementOrigin, dispatcher)
+                is CompositeFigureSvgRoot -> processCompositeFigure(
+                    element,
+                    topSvgSvg,
+                    containerCleanup,
+                    elementOrigin,
+                    dispatcher
+                )
+
                 is PlotSvgRoot -> processPlotFigure(element, containerCleanup, dispatcher)
             }
 
@@ -183,37 +191,6 @@ object MonolithicSkiaAndroid {
         return SvgSvgElement().apply {
             children().add(
                 SvgTextElement(s)
-            )
-        }
-    }
-
-}
-
-internal class CompositeFigureEventDispatcher() : SkikoViewEventDispatcher {
-    private val dispatchers = LinkedHashMap<Rectangle, SkikoViewEventDispatcher>()
-
-    fun addEventDispatcher(bounds: DoubleRectangle, eventDispatcher: SkikoViewEventDispatcher) {
-        val rect = Rectangle(
-            bounds.origin.x.toInt(),
-            bounds.origin.y.toInt(),
-            bounds.dimension.x.toInt(),
-            bounds.dimension.y.toInt()
-        )
-        dispatchers[rect] = eventDispatcher
-    }
-
-    override fun dispatchMouseEvent(kind: MouseEventSpec, e: MouseEvent) {
-        val loc = Vector(e.x, e.y)
-        val target = dispatchers.keys.find { it.contains(loc) }
-        if (target != null) {
-            val dispatcher = dispatchers.getValue(target)
-            dispatcher.dispatchMouseEvent(
-                kind,
-                MouseEvent(
-                    v = Vector(loc.x - target.origin.x, loc.y - target.origin.y),
-                    button = e.button,
-                    modifiers = e.modifiers
-                )
             )
         }
     }

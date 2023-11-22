@@ -10,7 +10,7 @@ import android.util.TypedValue
 import org.jetbrains.letsPlot.commons.geometry.DoubleRectangle
 import org.jetbrains.letsPlot.commons.geometry.Rectangle
 
-object SizeConverter {
+internal object SizeConverter {
 
     fun boundsPxToDp(from: DoubleRectangle, ctx: Context): Rectangle {
         val x: Int = pxToDp(from.origin.x, ctx).toInt()

@@ -3,7 +3,7 @@
  * Use of this source code is governed by the MIT license that can be found in the LICENSE file.
  */
 
-package org.jetbrains.letsPlot.skia.awt
+package org.jetbrains.letsPlot.skia.awt.hw
 
 import org.jetbrains.letsPlot.awt.plot.DisposableJPanel
 import org.jetbrains.letsPlot.commons.event.MouseEvent
@@ -16,21 +16,12 @@ import org.jetbrains.letsPlot.core.plot.builder.FigureBuildInfo
 import org.jetbrains.letsPlot.core.plot.builder.PlotContainer
 import org.jetbrains.letsPlot.core.plot.builder.PlotSvgRoot
 import org.jetbrains.letsPlot.core.plot.builder.subPlots.CompositeFigureSvgRoot
+import org.jetbrains.letsPlot.skia.awt.CompositeFigureEventDispatcher
+import org.jetbrains.letsPlot.skia.awt.toAwtRect
 import org.jetbrains.letsPlot.skia.awt.view.SvgPanel
 import org.jetbrains.letsPlot.skia.view.SkikoViewEventDispatcher
 import java.awt.Rectangle
 import javax.swing.JComponent
-
-
-internal fun toAwtRect(from: DoubleRectangle): Rectangle {
-    return Rectangle(
-        from.origin.x.toInt(),
-        from.origin.y.toInt(),
-        (from.dimension.x + 0.5).toInt(),
-        (from.dimension.y + 0.5).toInt()
-    )
-}
-
 
 internal class FigureToSkiaAwt(
     private val buildInfo: FigureBuildInfo,
@@ -156,7 +147,8 @@ internal class FigureToSkiaAwt(
 
             parentEventDispatcher?.addEventDispatcher(
                 bounds = bounds!!,
-                eventDispatcher = plotComponent.eventDispatcher ?: throw IllegalStateException("No SkikoViewEventDispatcher.")
+                eventDispatcher = plotComponent.eventDispatcher
+                    ?: throw IllegalStateException("No SkikoViewEventDispatcher.")
             )
 
             (plotComponent as DisposingHub).registerDisposable(plotContainer)

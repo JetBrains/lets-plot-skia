@@ -3,7 +3,7 @@
  * Use of this source code is governed by the MIT license that can be found in the LICENSE file.
  */
 
-package org.jetbrains.letsPlot.skia.awt
+package org.jetbrains.letsPlot.skia.android.lw
 
 import org.jetbrains.letsPlot.commons.event.MouseEvent
 import org.jetbrains.letsPlot.commons.event.MouseEventSpec
@@ -14,16 +14,17 @@ import org.jetbrains.letsPlot.core.plot.builder.FigureBuildInfo
 import org.jetbrains.letsPlot.core.plot.builder.PlotContainer
 import org.jetbrains.letsPlot.core.plot.builder.PlotSvgRoot
 import org.jetbrains.letsPlot.core.plot.builder.subPlots.CompositeFigureSvgRoot
-import org.jetbrains.letsPlot.core.spec.FailureHandler
 import org.jetbrains.letsPlot.core.util.MonolithicCommon
 import org.jetbrains.letsPlot.datamodel.svg.dom.SvgSvgElement
 import org.jetbrains.letsPlot.datamodel.svg.dom.SvgTextElement
-import org.jetbrains.letsPlot.skia.awt.view.SvgPanel
+import org.jetbrains.letsPlot.skia.android.CompositeFigureEventDispatcher
+import org.jetbrains.letsPlot.skia.android.view.SvgPanel
 import org.jetbrains.letsPlot.skia.view.SkikoViewEventDispatcher
-import javax.swing.JComponent
-import javax.swing.JTextArea
 
-object MonolithicSkiaAwt {
+/**
+ * "lightweight" - no android Views are created here.
+ */
+object MonolithicSkiaAndroid {
     fun buildPlotFromProcessedSpecs(
         dest: SvgPanel,
         plotSpec: MutableMap<String, Any>,
@@ -36,6 +37,8 @@ object MonolithicSkiaAwt {
             dest.eventDispatcher = null
             return Registration.EMPTY
         }
+
+        val reg = CompositeRegistration()
 
         val success = buildResult as MonolithicCommon.PlotsBuildResult.Success
         val computationMessages = success.buildInfos.flatMap(FigureBuildInfo::computationMessages)
@@ -56,10 +59,14 @@ object MonolithicSkiaAwt {
 
         dest.svg = topSvgSvg
         dest.eventDispatcher = dispatcher
-        return containerCleanup
+        return reg
     }
 
-    private fun processPlotFigure(svgRoot: PlotSvgRoot, containerCleanup: CompositeRegistration, parentEventDispatcher: CompositeFigureEventDispatcher? = null): CompositeFigureEventDispatcher {
+    private fun processPlotFigure(
+        svgRoot: PlotSvgRoot,
+        containerCleanup: CompositeRegistration,
+        parentEventDispatcher: CompositeFigureEventDispatcher? = null
+    ): CompositeFigureEventDispatcher {
         val plotContainer = PlotContainer(svgRoot)
         containerCleanup.add(Registration.from(plotContainer))
 
@@ -70,7 +77,7 @@ object MonolithicSkiaAwt {
         }
 
         val dispatcher = parentEventDispatcher ?: CompositeFigureEventDispatcher()
-        dispatcher.addEventDispatcher(toAwtRect(svgRoot.bounds), panelDispatcher)
+        dispatcher.addEventDispatcher(svgRoot.bounds, panelDispatcher)
         return dispatcher
     }
 
@@ -84,7 +91,7 @@ object MonolithicSkiaAwt {
         svgRoot.ensureContentBuilt()
 
         val dispatcher = CompositeFigureEventDispatcher()
-        parentEventDispatcher?.addEventDispatcher(toAwtRect(svgRoot.bounds), dispatcher)
+        parentEventDispatcher?.addEventDispatcher(svgRoot.bounds, dispatcher)
 
         // Sub-figures
 
@@ -96,69 +103,20 @@ object MonolithicSkiaAwt {
             elementSvg.y().set(elementOrigin.y)
 
             when (element) {
-                is CompositeFigureSvgRoot -> processCompositeFigure(element, topSvgSvg, containerCleanup, elementOrigin, dispatcher)
+                is CompositeFigureSvgRoot -> processCompositeFigure(
+                    element,
+                    topSvgSvg,
+                    containerCleanup,
+                    elementOrigin,
+                    dispatcher
+                )
+
                 is PlotSvgRoot -> processPlotFigure(element, containerCleanup, dispatcher)
             }
 
             topSvgSvg.children().add(elementSvg)
         }
         return dispatcher
-    }
-
-    fun buildPlotFromRawSpecs(
-        plotSpec: MutableMap<String, Any>,
-        plotSize: DoubleVector?,
-        computationMessagesHandler: ((List<String>) -> Unit)
-    ): JComponent {
-        return try {
-            @Suppress("NAME_SHADOWING")
-            val plotSpec = MonolithicCommon.processRawSpecs(plotSpec, frontendOnly = false)
-            buildPlotFromProcessedSpecs(plotSpec, plotSize, computationMessagesHandler)
-        } catch (e: RuntimeException) {
-            handleException(e)
-        }
-    }
-
-    fun buildPlotFromProcessedSpecs(
-        plotSpec: MutableMap<String, Any>,
-        plotSize: DoubleVector?,
-        computationMessagesHandler: (List<String>) -> Unit
-    ): JComponent {
-        val buildResult = MonolithicCommon.buildPlotsFromProcessedSpecs(
-            plotSpec,
-            plotSize,
-            plotMaxWidth = null,
-            plotPreferredWidth = null
-        )
-
-        if (buildResult.isError) {
-            val errorMessage =
-                (buildResult as MonolithicCommon.PlotsBuildResult.Error).error
-            return createErrorLabel(errorMessage)
-        }
-
-        val success = buildResult as MonolithicCommon.PlotsBuildResult.Success
-        val computationMessages = success.buildInfos.flatMap { it.computationMessages }
-        computationMessagesHandler(computationMessages)
-
-        return if (success.buildInfos.size == 1) {
-            val buildInfo = success.buildInfos.single()
-            FigureToSkiaAwt(buildInfo).eval()
-        } else {
-            throw IllegalArgumentException("GGBunch is not supported.")
-        }
-    }
-
-    private fun handleException(e: RuntimeException): JComponent {
-        val failureInfo = FailureHandler.failureInfo(e)
-        if (failureInfo.isInternalError) {
-            println(e)
-        }
-        return createErrorLabel(failureInfo.message)
-    }
-
-    private fun createErrorLabel(s: String): JComponent {
-        return JTextArea(s)
     }
 
     private fun createErrorSvgText(s: String): SvgSvgElement {

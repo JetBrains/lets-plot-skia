@@ -11,7 +11,7 @@ import org.jetbrains.letsPlot.commons.registration.Registration
 import org.jetbrains.letsPlot.core.util.MonolithicCommon
 import org.jetbrains.letsPlot.core.util.PlotSizeUtil
 import org.jetbrains.letsPlot.intern.toSpec
-import org.jetbrains.letsPlot.skia.awt.MonolithicSkiaAwt
+import org.jetbrains.letsPlot.skia.awt.lw.MonolithicSkiaAwt
 import org.jetbrains.letsPlot.skia.awt.view.SvgPanel
 import org.jetbrains.letsPlot.skia.compose.util.NaiveLogger
 import java.awt.Cursor
@@ -129,16 +129,16 @@ class PlotViewContainer(
         check(componentCount == 1) { "Unexpected number of children: $componentCount" }
         check(components[0] == plotSvgPanel) { "Unexpected child: should be SvgPanel but was ${components[0]::class.simpleName}" }
 
+        removeAll()
         plotSvgPanel.dispose()
         plotCleanup.dispose()
-        removeAll()
     }
 
     private fun rebuildSvgPanel() {
         if (componentCount == 1) {
+            removeAll()
             plotSvgPanel.dispose()
             plotCleanup.dispose()
-            removeAll()
         }
 
         plotSvgPanel = SvgPanel()

@@ -16,7 +16,7 @@ import org.jetbrains.letsPlot.commons.registration.Registration
 import org.jetbrains.letsPlot.core.util.MonolithicCommon
 import org.jetbrains.letsPlot.core.util.PlotSizeUtil
 import org.jetbrains.letsPlot.intern.toSpec
-import org.jetbrains.letsPlot.skia.android.MonolithicSkiaAndroid
+import org.jetbrains.letsPlot.skia.android.lw.MonolithicSkiaAndroid
 import org.jetbrains.letsPlot.skia.android.view.SvgPanel
 import org.jetbrains.letsPlot.skia.compose.util.NaiveLogger
 
@@ -158,16 +158,16 @@ internal class PlotViewContainer(
         check(childCount == 1) { "Unexpected number of children: $childCount" }
         check(getChildAt(0) == plotSvgPanel) { "Unexpected child: should be SvgPanel but was ${getChildAt(0)::class.simpleName}" }
 
+        removeAllViews()
         plotSvgPanel.dispose()
         plotCleanup.dispose()
-        removeAllViews()
     }
 
     private fun rebuildSvgPanel() {
         if (childCount == 1) {
+            removeAllViews()
             plotSvgPanel.dispose()
             plotCleanup.dispose()
-            removeAllViews()
         }
 
         plotSvgPanel = SvgPanel(context)
