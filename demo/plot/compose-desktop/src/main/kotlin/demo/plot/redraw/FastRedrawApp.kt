@@ -4,7 +4,7 @@
  */
 
 
-package demo.plot.live
+package demo.plot.redraw
 
 import androidx.compose.foundation.layout.*
 import androidx.compose.material.Button
@@ -28,7 +28,7 @@ import org.jetbrains.letsPlot.skia.compose.PlotPanel
 
 
 fun main() = application {
-    Window(onCloseRequest = ::exitApplication, title = "Live Data Plot (Compose Desktop)") {
+    Window(onCloseRequest = ::exitApplication, title = "Fast Plot Redraw (Compose Desktop)") {
         var rand by remember { mutableStateOf(java.util.Random()) }
         val maxN by remember { mutableStateOf(600) }
         val xs by remember { mutableStateOf(mutableListOf<Double>()) }
