@@ -39,6 +39,6 @@ internal abstract class Element() : Node() {
     open fun render(canvas: Canvas) {}
 
     override fun repr(): String? {
-        return ctm.mat.let { ", ctm: ${it.joinToString(transform = Float::toString)}" } + ", $screenBounds"
+        return ", ctm: ${ctm.repr()}, $screenBounds"
     }
 }
