@@ -102,6 +102,8 @@ object MonolithicSkiaAndroid {
             elementSvg.x().set(elementOrigin.x)
             elementSvg.y().set(elementOrigin.y)
 
+            topSvgSvg.children().add(elementSvg)
+
             when (element) {
                 is CompositeFigureSvgRoot -> processCompositeFigure(
                     element,
@@ -113,8 +115,6 @@ object MonolithicSkiaAndroid {
 
                 is PlotSvgRoot -> processPlotFigure(element, containerCleanup, dispatcher)
             }
-
-            topSvgSvg.children().add(elementSvg)
         }
         return dispatcher
     }
