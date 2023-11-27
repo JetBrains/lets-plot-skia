@@ -10,6 +10,7 @@ import org.jetbrains.letsPlot.commons.event.MouseEvent
 import org.jetbrains.letsPlot.commons.event.MouseEventSpec
 import org.jetbrains.letsPlot.commons.geometry.DoubleRectangle
 import org.jetbrains.letsPlot.commons.geometry.DoubleVector
+import org.jetbrains.letsPlot.commons.geometry.Rectangle
 import org.jetbrains.letsPlot.commons.registration.Disposable
 import org.jetbrains.letsPlot.commons.registration.DisposingHub
 import org.jetbrains.letsPlot.core.plot.builder.FigureBuildInfo
@@ -17,8 +18,8 @@ import org.jetbrains.letsPlot.core.plot.builder.PlotContainer
 import org.jetbrains.letsPlot.core.plot.builder.PlotSvgRoot
 import org.jetbrains.letsPlot.core.plot.builder.subPlots.CompositeFigureSvgRoot
 import org.jetbrains.letsPlot.skia.awt.view.SvgPanel
+import org.jetbrains.letsPlot.skia.builderLW.CompositeFigureEventDispatcher
 import org.jetbrains.letsPlot.skia.view.SkikoViewEventDispatcher
-import java.awt.Rectangle
 import javax.swing.JComponent
 
 internal class FigureToSkiaAwt(
@@ -62,10 +63,10 @@ internal class FigureToSkiaAwt(
         rootJPanel.border = null
         rootJPanel.isOpaque = false
         bounds?.let {
-            rootJPanel.bounds = bounds
+            rootJPanel.bounds = toAwtRect(bounds)
         }
 
-//        val compositeEventDispatcher = CompositeFigureEventDispatcher()
+        //        val compositeEventDispatcher = CompositeFigureEventDispatcher()
         // For "gggrid" in Swing:
         // Child SvgPanels (SkikoView-s) do not receive Skiko mouse events.
         // So we have to receive events in the root SkikoView and dispatch them to child Skiko View-s.
@@ -92,11 +93,11 @@ internal class FigureToSkiaAwt(
         //
 
         for (element in svgRoot.elements) {
-            val awtBounds = toAwtRect(element.bounds)
+            val elementBounds = fromDoubleRect(element.bounds)
             val elementComponent = if (element is PlotSvgRoot) {
-                processPlotFigure(element, awtBounds, compositeEventDispatcher)
+                processPlotFigure(element, elementBounds, compositeEventDispatcher)
             } else {
-                processCompositeFigure(element as CompositeFigureSvgRoot, awtBounds, compositeEventDispatcher)
+                processCompositeFigure(element as CompositeFigureSvgRoot, elementBounds, compositeEventDispatcher)
             }
 
 //            rootJPanel.add(it)   // Do not!!!
@@ -151,7 +152,7 @@ internal class FigureToSkiaAwt(
 
             (plotComponent as DisposingHub).registerDisposable(plotContainer)
             bounds?.let {
-                plotComponent.bounds = it
+                plotComponent.bounds = toAwtRect(it)
             }
 
             return plotComponent

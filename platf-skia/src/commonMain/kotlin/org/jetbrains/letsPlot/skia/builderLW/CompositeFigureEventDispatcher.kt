@@ -11,7 +11,7 @@ import org.jetbrains.letsPlot.commons.geometry.Rectangle
 import org.jetbrains.letsPlot.commons.geometry.Vector
 import org.jetbrains.letsPlot.skia.view.SkikoViewEventDispatcher
 
-internal class CompositeFigureEventDispatcher() : SkikoViewEventDispatcher {
+class CompositeFigureEventDispatcher() : SkikoViewEventDispatcher {
     private val dispatchers = LinkedHashMap<Rectangle, SkikoViewEventDispatcher>()
 
     fun addEventDispatcher(bounds: Rectangle, eventDispatcher: SkikoViewEventDispatcher) {
