@@ -12,26 +12,50 @@ import org.jetbrains.letsPlot.commons.registration.CompositeRegistration
 import org.jetbrains.letsPlot.commons.registration.Disposable
 import org.jetbrains.letsPlot.commons.registration.DisposableRegistration
 import org.jetbrains.letsPlot.commons.registration.DisposingHub
+import org.jetbrains.letsPlot.datamodel.svg.dom.SvgConstants
+import org.jetbrains.letsPlot.datamodel.svg.dom.SvgElementListener
 import org.jetbrains.letsPlot.datamodel.svg.dom.SvgSvgElement
+import org.jetbrains.letsPlot.datamodel.svg.event.SvgAttributeEvent
 import org.jetbrains.letsPlot.skia.view.SkikoViewEventDispatcher
 
 @SuppressLint("ViewConstructor")
-class SvgPanel constructor(
+class SvgPanel(
     context: Context,
-    svg: SvgSvgElement,
+    svg: SvgSvgElement = SvgSvgElement(),
     eventDispatcher: SkikoViewEventDispatcher? = null
 ) : ViewGroup(context), Disposable, DisposingHub {
-
-    private val skikoView = SvgSkikoViewAndroid(svg, eventDispatcher)
-    private val registrations = CompositeRegistration()
-
-    val eventDispatcher: SkikoViewEventDispatcher
-        get() {
-            return skikoView.eventDispatcher ?: throw IllegalStateException("No SkikoViewEventDispatcher.")
+    var svg: SvgSvgElement
+        get() = skikoView.svg
+        set(value) {
+            skikoView.svg = value
         }
 
+    var eventDispatcher: SkikoViewEventDispatcher?
+        get() = skikoView.eventDispatcher
+        set(value) {
+            skikoView.eventDispatcher = value
+        }
+
+    private val skikoView = SvgSkikoViewAndroid()
+    private val registrations = CompositeRegistration()
+
     init {
+        this.svg = svg
+        this.eventDispatcher = eventDispatcher
+
         skikoView.skiaLayer.attachTo(this)
+
+        registrations.add(
+            svg.addListener(object : SvgElementListener {
+                override fun onAttrSet(event: SvgAttributeEvent<*>) {
+                    if (SvgConstants.HEIGHT.equals(event.attrSpec.name, ignoreCase = true) ||
+                        SvgConstants.WIDTH.equals(event.attrSpec.name, ignoreCase = true)
+                    ) {
+                        throw IllegalStateException("Can't change SVG attribute $(event.attrSpec.name)")
+                    }
+                }
+            })
+        )
     }
 
     override fun onMeasure(widthMeasureSpec: Int, heightMeasureSpec: Int) {
@@ -83,9 +107,10 @@ class SvgPanel constructor(
         //        #42 pc 00000000003c6644  /system/lib64/libhwui.so (android::uirenderer::renderthread::RenderThread::threadLoop()+84) (BuildId: a241a5dc738c2fe8686d91f83b94d911)
         //        ...
 
-        post {
+        // Didn't see any fixes in skiko, but now it works without post().
+        //post {
             registrations.dispose()
             skikoView.dispose()
-        }
+        //}
     }
 }

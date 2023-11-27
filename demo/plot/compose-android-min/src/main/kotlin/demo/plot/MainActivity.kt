@@ -16,7 +16,7 @@ import androidx.compose.material.Checkbox
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Text
 import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
+import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
@@ -30,7 +30,7 @@ class MainActivity : ComponentActivity() {
 
         setContent {
             val densityPlot = DensitySpec().createFigure()
-            val keepRatio = remember { mutableStateOf(false) }
+            val keepRatio = rememberSaveable { mutableStateOf(false) }
             MaterialTheme {
                 Column(
                     modifier = Modifier.fillMaxSize().padding(start = 10.dp, top = 10.dp, end = 10.dp, bottom = 10.dp),

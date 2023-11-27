@@ -15,21 +15,21 @@ internal fun sdot(a: Float, b: Float, c: Float, d: Float): Float {
     return a * b + c * d
 }
 
-internal const val scaleX = 0
-internal const val skewX = 1
-internal const val translateX = 2
-internal const val skewY = 3
-internal const val scaleY = 4
-internal const val translateY = 5
-internal const val persp0 = 6
-internal const val persp1 = 7
-internal const val persp2 = 8
+internal const val SCALE_X = 0
+internal const val SKEW_X = 1
+internal const val TRANSLATE_X = 2
+internal const val SKEW_Y = 3
+internal const val SCALE_Y = 4
+internal const val TRANSLATE_Y = 5
+internal const val PERSP0 = 6
+internal const val PERSP1 = 7
+internal const val PERSP2 = 8
 
 
 internal fun Matrix33.apply(sx: Float, sy: Float): Point {
-    val x = sdot(sx, mat[scaleX], sy, mat[skewX]) + mat[org.jetbrains.letsPlot.skia.shape.translateX]
-    val y = sdot(sx, mat[skewY], sy, mat[scaleY]) + mat[org.jetbrains.letsPlot.skia.shape.translateY]
-    val z = (sdot(sx, mat[persp0], sy, mat[persp1]) + mat[persp2]).let { if (it != 0f) 1 / it else it }
+    val x = sdot(sx, scaleX, sy, skewX) + translateX
+    val y = sdot(sx, skewY, sy, scaleY) + translateY
+    val z = (sdot(sx, persp0, sy, persp1) + persp2).let { if (it != 0f) 1 / it else it }
     return Point(x * z, y * z)
 }
 
@@ -49,8 +49,18 @@ internal fun Matrix33.apply(r: Rect): Rect {
     return Rect.makeLTRB(xs.min(), ys.min(), xs.max(), ys.max())
 }
 
-internal val Matrix33.translateX get() = mat[org.jetbrains.letsPlot.skia.shape.translateX]
-internal val Matrix33.translateY get() = mat[org.jetbrains.letsPlot.skia.shape.translateY]
+internal val Matrix33.translateX get() = mat[TRANSLATE_X]
+internal val Matrix33.translateY get() = mat[TRANSLATE_Y]
+
+internal val Matrix33.scaleX get() = mat[SCALE_X]
+internal val Matrix33.scaleY get() = mat[SCALE_Y]
+
+internal val Matrix33.skewX get() = mat[SKEW_X]
+internal val Matrix33.skewY get() = mat[SKEW_Y]
+
+internal val Matrix33.persp0 get() = mat[PERSP0]
+internal val Matrix33.persp1 get() = mat[PERSP1]
+internal val Matrix33.persp2 get() = mat[PERSP2]
 
 internal fun union(rects: List<Rect>): Rect? =
     rects.fold<Rect, Rect?>(null) { acc, rect ->
@@ -91,4 +101,25 @@ internal fun depthFirstTraversal(elements: List<Element>, visit: (Element) -> Un
             else -> visit(it)
         }
     }
+}
+
+fun Matrix33.repr(): String {
+    val elements = mutableListOf<String>()
+    if (translateX != 0f || translateY != 0f) {
+        elements += "translate($translateX, $translateY)"
+    }
+
+    if (scaleX != 1f || scaleY != 1f) {
+        elements += "scale($scaleX, $scaleY)"
+    }
+
+    if (skewX != 0f || skewY != 0f) {
+        elements += "skew($skewX, $skewY)"
+    }
+
+    if (elements.isEmpty()) {
+        return "identity"
+    }
+        
+    return elements.joinToString(separator = " ")
 }

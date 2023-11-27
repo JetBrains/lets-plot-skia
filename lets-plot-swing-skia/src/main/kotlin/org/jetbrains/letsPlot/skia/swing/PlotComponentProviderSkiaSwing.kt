@@ -10,7 +10,7 @@ import org.jetbrains.letsPlot.commons.geometry.DoubleVector
 import org.jetbrains.letsPlot.commons.unsupported.UNSUPPORTED
 import org.jetbrains.letsPlot.core.util.PlotSizeUtil
 import org.jetbrains.letsPlot.datamodel.svg.dom.SvgSvgElement
-import org.jetbrains.letsPlot.skia.awt.MonolithicSkiaAwt
+import org.jetbrains.letsPlot.skia.awt.builderHW.MonolithicSkiaAwt
 import java.awt.Dimension
 import javax.swing.JComponent
 
@@ -50,20 +50,6 @@ internal class PlotComponentProviderSkiaSwing(
             preserveAspectRatio: Boolean,
             containerSize: Dimension,
         ): Dimension {
-//            // ToDo: this isn't looking nice.
-//            val sizeEstimator = object : PlotSpecComponentProvider(
-//                processedSpec = processedSpec,
-//                preserveAspectRatio = preserveAspectRatio,
-//                svgComponentFactory = DUMMY_SVG_COMPONENT_FACTORY,
-//                executor = DUMMY_EXECUTOR,
-//                computationMessagesHandler = { /*no messages when measuring plot size*/ }
-//            ) {
-//                override fun createScrollPane(plotComponent: JComponent): JScrollPane {
-//                    UNSUPPORTED("'createScrollPane()' should not be invoked.")
-//                }
-//            }
-//
-//            return sizeEstimator.getPreferredSize(containerSize)
             return PlotSizeUtil.preferredFigureSize(
                 figureSpec = processedSpec,
                 preserveAspectRatio = preserveAspectRatio,

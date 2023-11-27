@@ -3,7 +3,7 @@
  * Use of this source code is governed by the MIT license that can be found in the LICENSE file.
  */
 
-package org.jetbrains.letsPlot.skia.android
+package org.jetbrains.letsPlot.skia.android.builderHW
 
 import android.content.Context
 import android.view.View
@@ -17,7 +17,7 @@ import org.jetbrains.letsPlot.core.plot.builder.FigureBuildInfo
 import org.jetbrains.letsPlot.core.plot.builder.PlotContainer
 import org.jetbrains.letsPlot.core.plot.builder.PlotSvgRoot
 import org.jetbrains.letsPlot.core.plot.builder.subPlots.CompositeFigureSvgRoot
-import org.jetbrains.letsPlot.skia.android.SizeConverter.boundsPxToDp
+import org.jetbrains.letsPlot.skia.android.builderHW.SizeConverter.boundsPxToDp
 import org.jetbrains.letsPlot.skia.android.view.SvgPanel
 import org.jetbrains.letsPlot.skia.view.SkikoViewEventDispatcher
 
@@ -47,14 +47,14 @@ internal class FigureToSkiaAndroid(
             error("LiveMap is not supported")
         } else {
             val plotContainer = PlotContainer(svgRoot)
-            return SvgPanel(
-                context = ctx,
-                svg = plotContainer.svg,
+            return SvgPanel(context = ctx).apply {
+                svg = plotContainer.svg
                 eventDispatcher = object : SkikoViewEventDispatcher {
                     override fun dispatchMouseEvent(kind: MouseEventSpec, e: MouseEvent) {
                         plotContainer.mouseEventPeer.dispatch(kind, e)
                     }
-                })
+                }
+            }
         }
     }
 
@@ -77,11 +77,10 @@ internal class FigureToSkiaAndroid(
             }
         }
 
-        val rootView = SvgPanel(
-            context = ctx,
-            svg = svgRoot.svg,
+        val rootView = SvgPanel(context = ctx).apply {
+            svg = svgRoot.svg
             eventDispatcher = null
-        )
+        }
 //            eventDispatcher = object : SkikoViewEventDispatcher {
 //                override fun dispatchMouseEvent(kind: MouseEventSpec, e: MouseEvent) {
 //                    plotContainer.mouseEventPeer.dispatch(kind, e)

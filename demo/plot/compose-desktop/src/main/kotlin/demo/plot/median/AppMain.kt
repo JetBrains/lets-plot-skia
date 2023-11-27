@@ -25,7 +25,7 @@ import plotSpec.PerfSpec
 import plotSpec.PlotGridSpec
 
 fun main() = application {
-    Window(onCloseRequest = ::exitApplication, title = "Density Plot (Compose Desktop)") {
+    Window(onCloseRequest = ::exitApplication, title = "Demo (Compose Desktop, median)") {
 
         val figures = listOf(
             "Density Plot" to DensitySpec().createFigure(),

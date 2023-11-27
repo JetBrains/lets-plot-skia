@@ -18,6 +18,10 @@ import org.jetbrains.letsPlot.themes.themeBW
 
 class PlotGridSpec : PlotDemoSpec {
 
+    override fun createFigure(): Figure {
+        return irisTriple_compositeCell(innerAlignment = true)
+    }
+
     override fun createFigureList(): List<Figure> {
         return listOf(
             irisTriple(innerAlignment = false),

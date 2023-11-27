@@ -21,32 +21,31 @@ import java.awt.Rectangle
 import javax.swing.JPanel
 
 class SvgPanel(
-    svg: SvgSvgElement,
+    svg: SvgSvgElement = SvgSvgElement(),
     eventDispatcher: SkikoViewEventDispatcher? = null
 ) : JPanel(), Disposable, DisposingHub {
-
-    /**
-     *  Use to create a simple SVG view without event handling.
-     */
-    constructor(
-        svg: SvgSvgElement
-    ) : this(
-        svg = svg,
-        eventDispatcher = null
-    )
-
-    private val skikoView = SvgSkikoViewAwt(svg, eventDispatcher)
-    private val registrations = CompositeRegistration()
-
-    val eventDispatcher: SkikoViewEventDispatcher
-        get() {
-            return skikoView.eventDispatcher ?: throw IllegalStateException("No SkikoViewEventDispatcher.")
+    var svg: SvgSvgElement
+        get() = skikoView.svg
+        set(value) {
+            skikoView.svg = value
+            skikoView.skiaLayer.bounds = Rectangle(Point(0, 0), skikoView.skiaLayer.preferredSize)
         }
 
+    var eventDispatcher: SkikoViewEventDispatcher?
+        get() = skikoView.eventDispatcher
+        set(value) {
+            skikoView.eventDispatcher = value
+        }
+
+    private val skikoView = SvgSkikoViewAwt()
+    private val registrations = CompositeRegistration()
+
     init {
+        this.svg = svg
+        this.eventDispatcher = eventDispatcher
+
         layout = null
         border = null // BorderFactory.createLineBorder(Color.ORANGE, 1)
-        skikoView.skiaLayer.bounds = Rectangle(Point(0, 0), skikoView.skiaLayer.preferredSize)
         skikoView.skiaLayer.attachTo(this)
 
         registrations.add(

@@ -7,11 +7,12 @@ package org.jetbrains.letsPlot.skia.compose.desktop
 
 import org.jetbrains.letsPlot.Figure
 import org.jetbrains.letsPlot.commons.geometry.DoubleVector
-import org.jetbrains.letsPlot.commons.registration.Disposable
 import org.jetbrains.letsPlot.core.util.MonolithicCommon
 import org.jetbrains.letsPlot.core.util.PlotSizeUtil
 import org.jetbrains.letsPlot.intern.toSpec
-import org.jetbrains.letsPlot.skia.awt.MonolithicSkiaAwt
+import org.jetbrains.letsPlot.skia.awt.view.SvgPanel
+import org.jetbrains.letsPlot.skia.builderLW.MonolithicSkiaLW
+import org.jetbrains.letsPlot.skia.builderLW.ViewModel
 import org.jetbrains.letsPlot.skia.compose.util.NaiveLogger
 import java.awt.Cursor
 import java.awt.Rectangle
@@ -22,6 +23,9 @@ private val LOG = NaiveLogger("PlotViewContainer")
 class PlotViewContainer(
     private val computationMessagesHandler: ((List<String>) -> Unit)
 ) : JPanel() {
+
+    private lateinit var plotSvgPanel: SvgPanel
+    private var viewModel: ViewModel? = null
 
     private var needUpdate = false
     private var dispatchComputationMessages = true
@@ -49,6 +53,10 @@ class PlotViewContainer(
             if (field == v) {
                 return
             }
+
+            // TODO: investigate and report the bug, most likely in Skiko.
+            // Switching the aspect ratio causes flickering - extended plot area is rendered with black background.
+            rebuildSvgPanel()
             field = v
             needUpdate = true
         }
@@ -58,6 +66,10 @@ class PlotViewContainer(
             if (field == v) {
                 return
             }
+
+            // TODO: investigate and report the bug, most likely in Skiko.
+            // With fixed aspect ratio the horizontal resize causes the plot to be rendered at wrong position, even outside the panel.
+            rebuildSvgPanel()
             field = v
             needUpdate = true
         }
@@ -67,6 +79,7 @@ class PlotViewContainer(
         isOpaque = false
         layout = null
         cursor = Cursor(Cursor.CROSSHAIR_CURSOR)
+        rebuildSvgPanel()
     }
 
     fun updatePlotView() {
@@ -77,8 +90,6 @@ class PlotViewContainer(
         }
 
         needUpdate = false
-
-        disposePlotView()
 
         val plotSize = PlotSizeUtil.preferredFigureSize(
             processedSpec,
@@ -93,9 +104,17 @@ class PlotViewContainer(
             (size.y - plotSize.y) / 2
         }
 
-        val plotComponent = MonolithicSkiaAwt.buildPlotFromProcessedSpecs(
-            plotSize = plotSize,
+        plotSvgPanel.bounds = Rectangle(
+            plotX.toInt(),
+            plotY.toInt(),
+            plotSize.x.toInt(),
+            plotSize.y.toInt(),
+        )
+
+        viewModel?.dispose()
+        viewModel = MonolithicSkiaLW.buildPlotFromProcessedSpecs(
             plotSpec = processedSpec as MutableMap<String, Any>,
+            plotSize = plotSize,
         ) { messages ->
             if (dispatchComputationMessages) {
                 // do once
@@ -103,23 +122,28 @@ class PlotViewContainer(
                 computationMessagesHandler(messages)
             }
         }
-
-        plotComponent.bounds = Rectangle(
-            plotX.toInt(),
-            plotY.toInt(),
-            plotSize.x.toInt(),
-            plotSize.y.toInt(),
-        )
-        this.add(plotComponent)
+        plotSvgPanel.svg = viewModel!!.svg
+        plotSvgPanel.eventDispatcher = viewModel!!.eventDispatcher
     }
 
-
     fun disposePlotView() {
-        for (component in components) {
-            if (component is Disposable) {
-                component.dispose()
-            }
-        }
+        check(componentCount == 1) { "Unexpected number of children: $componentCount" }
+        check(components[0] == plotSvgPanel) { "Unexpected child: should be SvgPanel but was ${components[0]::class.simpleName}" }
+
         removeAll()
+        plotSvgPanel.dispose()
+        viewModel?.dispose()
+    }
+
+    private fun rebuildSvgPanel() {
+        if (componentCount == 1) {
+            removeAll()
+            plotSvgPanel.dispose()
+            viewModel?.dispose()
+        }
+
+        plotSvgPanel = SvgPanel()
+        viewModel = null
+        add(plotSvgPanel)
     }
 }

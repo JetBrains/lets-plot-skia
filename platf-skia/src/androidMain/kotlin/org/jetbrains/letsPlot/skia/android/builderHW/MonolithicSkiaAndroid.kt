@@ -3,7 +3,7 @@
  * Use of this source code is governed by the MIT license that can be found in the LICENSE file.
  */
 
-package org.jetbrains.letsPlot.skia.android
+package org.jetbrains.letsPlot.skia.android.builderHW
 
 import android.content.Context
 import android.view.View
@@ -12,7 +12,13 @@ import org.jetbrains.letsPlot.commons.geometry.DoubleVector
 import org.jetbrains.letsPlot.core.spec.FailureHandler
 import org.jetbrains.letsPlot.core.util.MonolithicCommon
 
+/**
+ * "heavyweight" - one android View is built per plot spec.
+ *
+ * Note: "temporary" not used.
+ */
 object MonolithicSkiaAndroid {
+
     fun buildPlotFromRawSpecs(
         ctx: Context,
         plotSpec: MutableMap<String, Any>,

@@ -3,14 +3,14 @@
  * Use of this source code is governed by the MIT license that can be found in the LICENSE file.
  */
 
-package org.jetbrains.letsPlot.skia.android
+package org.jetbrains.letsPlot.skia.android.builderHW
 
 import android.content.Context
 import android.util.TypedValue
 import org.jetbrains.letsPlot.commons.geometry.DoubleRectangle
 import org.jetbrains.letsPlot.commons.geometry.Rectangle
 
-object SizeConverter {
+internal object SizeConverter {
 
     fun boundsPxToDp(from: DoubleRectangle, ctx: Context): Rectangle {
         val x: Int = pxToDp(from.origin.x, ctx).toInt()

@@ -3,7 +3,7 @@
  * Use of this source code is governed by the MIT license that can be found in the LICENSE file.
  */
 
-package org.jetbrains.letsPlot.skia.awt
+package org.jetbrains.letsPlot.skia.awt.builderHW
 
 import org.jetbrains.letsPlot.commons.geometry.DoubleVector
 import org.jetbrains.letsPlot.core.spec.FailureHandler
@@ -11,7 +11,11 @@ import org.jetbrains.letsPlot.core.util.MonolithicCommon
 import javax.swing.JComponent
 import javax.swing.JTextArea
 
+/**
+ * "heavyweight" - one JComponent is built per plot spec.
+ */
 object MonolithicSkiaAwt {
+
     fun buildPlotFromRawSpecs(
         plotSpec: MutableMap<String, Any>,
         plotSize: DoubleVector?,

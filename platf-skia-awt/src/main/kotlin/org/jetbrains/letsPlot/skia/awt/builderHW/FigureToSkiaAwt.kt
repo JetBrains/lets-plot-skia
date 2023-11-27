@@ -3,14 +3,13 @@
  * Use of this source code is governed by the MIT license that can be found in the LICENSE file.
  */
 
-package org.jetbrains.letsPlot.skia.awt
+package org.jetbrains.letsPlot.skia.awt.builderHW
 
 import org.jetbrains.letsPlot.awt.plot.DisposableJPanel
 import org.jetbrains.letsPlot.commons.event.MouseEvent
 import org.jetbrains.letsPlot.commons.event.MouseEventSpec
 import org.jetbrains.letsPlot.commons.geometry.DoubleRectangle
 import org.jetbrains.letsPlot.commons.geometry.DoubleVector
-import org.jetbrains.letsPlot.commons.geometry.Vector
 import org.jetbrains.letsPlot.commons.registration.Disposable
 import org.jetbrains.letsPlot.commons.registration.DisposingHub
 import org.jetbrains.letsPlot.core.plot.builder.FigureBuildInfo
@@ -19,7 +18,6 @@ import org.jetbrains.letsPlot.core.plot.builder.PlotSvgRoot
 import org.jetbrains.letsPlot.core.plot.builder.subPlots.CompositeFigureSvgRoot
 import org.jetbrains.letsPlot.skia.awt.view.SvgPanel
 import org.jetbrains.letsPlot.skia.view.SkikoViewEventDispatcher
-import java.awt.Point
 import java.awt.Rectangle
 import javax.swing.JComponent
 
@@ -77,15 +75,6 @@ internal class FigureToSkiaAwt(
             parentEventDispatcher?.addEventDispatcher(bounds!!, it)
         }
 
-        fun toAwtRect(from: DoubleRectangle): Rectangle {
-            return Rectangle(
-                from.origin.x.toInt(),
-                from.origin.y.toInt(),
-                (from.dimension.x + 0.5).toInt(),
-                (from.dimension.y + 0.5).toInt()
-            )
-        }
-
         val componentBounds = toAwtRect(
             DoubleRectangle(DoubleVector.ZERO, svgRoot.bounds.dimension)
         )
@@ -136,29 +125,6 @@ internal class FigureToSkiaAwt(
         return buildSinglePlotComponent(plotContainer, bounds, parentEventDispatcher)
     }
 
-    private class CompositeFigureEventDispatcher() : SkikoViewEventDispatcher {
-        private val dispatchers = LinkedHashMap<Rectangle, SkikoViewEventDispatcher>()
-
-        fun addEventDispatcher(bounds: Rectangle, eventDispatcher: SkikoViewEventDispatcher) {
-            dispatchers[bounds] = eventDispatcher
-        }
-
-        override fun dispatchMouseEvent(kind: MouseEventSpec, e: MouseEvent) {
-            val loc = Point(e.x, e.y)
-            val target = dispatchers.keys.find { it.contains(loc) }
-            if (target != null) {
-                val dispatcher = dispatchers.getValue(target)
-                dispatcher.dispatchMouseEvent(
-                    kind,
-                    MouseEvent(
-                        v = Vector(loc.x - target.x, loc.y - target.y),
-                        button = e.button,
-                        modifiers = e.modifiers
-                    )
-                )
-            }
-        }
-    }
 
     companion object {
         private fun buildSinglePlotComponent(
@@ -180,6 +146,7 @@ internal class FigureToSkiaAwt(
             parentEventDispatcher?.addEventDispatcher(
                 bounds = bounds!!,
                 eventDispatcher = plotComponent.eventDispatcher
+                    ?: throw IllegalStateException("No SkikoViewEventDispatcher.")
             )
 
             (plotComponent as DisposingHub).registerDisposable(plotContainer)
