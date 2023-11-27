@@ -12,12 +12,12 @@ import org.jetbrains.letsPlot.Figure
 import org.jetbrains.letsPlot.commons.geometry.DoubleRectangle
 import org.jetbrains.letsPlot.commons.geometry.DoubleVector
 import org.jetbrains.letsPlot.commons.geometry.Vector
-import org.jetbrains.letsPlot.commons.registration.Registration
 import org.jetbrains.letsPlot.core.util.MonolithicCommon
 import org.jetbrains.letsPlot.core.util.PlotSizeUtil
 import org.jetbrains.letsPlot.intern.toSpec
-import org.jetbrains.letsPlot.skia.android.lw.MonolithicSkiaAndroid
 import org.jetbrains.letsPlot.skia.android.view.SvgPanel
+import org.jetbrains.letsPlot.skia.builderLW.MonolithicSkiaLW
+import org.jetbrains.letsPlot.skia.builderLW.ViewModel
 import org.jetbrains.letsPlot.skia.compose.util.NaiveLogger
 
 private val LOG = NaiveLogger("PlotViewContainer")
@@ -29,7 +29,7 @@ internal class PlotViewContainer(
 ) : RelativeLayout(context) {
 
     private lateinit var plotSvgPanel: SvgPanel
-    private var plotCleanup = Registration.EMPTY
+    private var viewModel: ViewModel? = null
 
     private var needUpdate = true
     private lateinit var processedSpec: Map<String, Any>
@@ -131,9 +131,8 @@ internal class PlotViewContainer(
         val height = unscaledSize.y.toInt()
 
         post {
-            plotCleanup.dispose()
-            plotCleanup = MonolithicSkiaAndroid.buildPlotFromProcessedSpecs(
-                dest = plotSvgPanel,
+            viewModel?.dispose()
+            viewModel = MonolithicSkiaLW.buildPlotFromProcessedSpecs(
                 plotSize = plotSize,
                 plotSpec = processedSpec as MutableMap<String, Any>,
             ) { messages ->
@@ -144,6 +143,9 @@ internal class PlotViewContainer(
                 //    computationMessagesHandler(messages)
                 //}
             }
+
+            plotSvgPanel.svg = viewModel!!.svg
+            plotSvgPanel.eventDispatcher = viewModel!!.eventDispatcher
 
             measureChild(
                 plotSvgPanel,
@@ -160,18 +162,18 @@ internal class PlotViewContainer(
 
         removeAllViews()
         plotSvgPanel.dispose()
-        plotCleanup.dispose()
+        viewModel?.dispose()
     }
 
     private fun rebuildSvgPanel() {
         if (childCount == 1) {
             removeAllViews()
             plotSvgPanel.dispose()
-            plotCleanup.dispose()
+            viewModel?.dispose()
         }
 
         plotSvgPanel = SvgPanel(context)
-        plotCleanup = Registration.EMPTY
+        viewModel = null
         addView(plotSvgPanel)
     }
 }

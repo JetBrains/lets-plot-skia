@@ -3,7 +3,7 @@
  * Use of this source code is governed by the MIT license that can be found in the LICENSE file.
  */
 
-package org.jetbrains.letsPlot.skia.awt.hw
+package org.jetbrains.letsPlot.skia.awt.builderHW
 
 import org.jetbrains.letsPlot.awt.plot.DisposableJPanel
 import org.jetbrains.letsPlot.commons.event.MouseEvent
@@ -16,8 +16,6 @@ import org.jetbrains.letsPlot.core.plot.builder.FigureBuildInfo
 import org.jetbrains.letsPlot.core.plot.builder.PlotContainer
 import org.jetbrains.letsPlot.core.plot.builder.PlotSvgRoot
 import org.jetbrains.letsPlot.core.plot.builder.subPlots.CompositeFigureSvgRoot
-import org.jetbrains.letsPlot.skia.awt.CompositeFigureEventDispatcher
-import org.jetbrains.letsPlot.skia.awt.toAwtRect
 import org.jetbrains.letsPlot.skia.awt.view.SvgPanel
 import org.jetbrains.letsPlot.skia.view.SkikoViewEventDispatcher
 import java.awt.Rectangle

@@ -3,11 +3,10 @@
  * Use of this source code is governed by the MIT license that can be found in the LICENSE file.
  */
 
-package org.jetbrains.letsPlot.skia.android
+package org.jetbrains.letsPlot.skia.builderLW
 
 import org.jetbrains.letsPlot.commons.event.MouseEvent
 import org.jetbrains.letsPlot.commons.event.MouseEventSpec
-import org.jetbrains.letsPlot.commons.geometry.DoubleRectangle
 import org.jetbrains.letsPlot.commons.geometry.Rectangle
 import org.jetbrains.letsPlot.commons.geometry.Vector
 import org.jetbrains.letsPlot.skia.view.SkikoViewEventDispatcher
@@ -15,14 +14,8 @@ import org.jetbrains.letsPlot.skia.view.SkikoViewEventDispatcher
 internal class CompositeFigureEventDispatcher() : SkikoViewEventDispatcher {
     private val dispatchers = LinkedHashMap<Rectangle, SkikoViewEventDispatcher>()
 
-    fun addEventDispatcher(bounds: DoubleRectangle, eventDispatcher: SkikoViewEventDispatcher) {
-        val rect = Rectangle(
-            bounds.origin.x.toInt(),
-            bounds.origin.y.toInt(),
-            bounds.dimension.x.toInt(),
-            bounds.dimension.y.toInt()
-        )
-        dispatchers[rect] = eventDispatcher
+    fun addEventDispatcher(bounds: Rectangle, eventDispatcher: SkikoViewEventDispatcher) {
+        dispatchers[bounds] = eventDispatcher
     }
 
     override fun dispatchMouseEvent(kind: MouseEventSpec, e: MouseEvent) {

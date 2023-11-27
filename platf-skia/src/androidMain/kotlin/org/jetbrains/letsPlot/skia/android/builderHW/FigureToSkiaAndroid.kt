@@ -3,7 +3,7 @@
  * Use of this source code is governed by the MIT license that can be found in the LICENSE file.
  */
 
-package org.jetbrains.letsPlot.skia.android.hw
+package org.jetbrains.letsPlot.skia.android.builderHW
 
 import android.content.Context
 import android.view.View
@@ -17,7 +17,7 @@ import org.jetbrains.letsPlot.core.plot.builder.FigureBuildInfo
 import org.jetbrains.letsPlot.core.plot.builder.PlotContainer
 import org.jetbrains.letsPlot.core.plot.builder.PlotSvgRoot
 import org.jetbrains.letsPlot.core.plot.builder.subPlots.CompositeFigureSvgRoot
-import org.jetbrains.letsPlot.skia.android.SizeConverter.boundsPxToDp
+import org.jetbrains.letsPlot.skia.android.builderHW.SizeConverter.boundsPxToDp
 import org.jetbrains.letsPlot.skia.android.view.SvgPanel
 import org.jetbrains.letsPlot.skia.view.SkikoViewEventDispatcher
 

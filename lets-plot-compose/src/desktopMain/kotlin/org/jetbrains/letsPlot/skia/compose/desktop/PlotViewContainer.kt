@@ -7,12 +7,12 @@ package org.jetbrains.letsPlot.skia.compose.desktop
 
 import org.jetbrains.letsPlot.Figure
 import org.jetbrains.letsPlot.commons.geometry.DoubleVector
-import org.jetbrains.letsPlot.commons.registration.Registration
 import org.jetbrains.letsPlot.core.util.MonolithicCommon
 import org.jetbrains.letsPlot.core.util.PlotSizeUtil
 import org.jetbrains.letsPlot.intern.toSpec
-import org.jetbrains.letsPlot.skia.awt.lw.MonolithicSkiaAwt
 import org.jetbrains.letsPlot.skia.awt.view.SvgPanel
+import org.jetbrains.letsPlot.skia.builderLW.MonolithicSkiaLW
+import org.jetbrains.letsPlot.skia.builderLW.ViewModel
 import org.jetbrains.letsPlot.skia.compose.util.NaiveLogger
 import java.awt.Cursor
 import java.awt.Rectangle
@@ -25,7 +25,7 @@ class PlotViewContainer(
 ) : JPanel() {
 
     private lateinit var plotSvgPanel: SvgPanel
-    private var plotCleanup = Registration.EMPTY
+    private var viewModel: ViewModel? = null
 
     private var needUpdate = false
     private var dispatchComputationMessages = true
@@ -104,7 +104,6 @@ class PlotViewContainer(
             (size.y - plotSize.y) / 2
         }
 
-        plotCleanup.dispose()
         plotSvgPanel.bounds = Rectangle(
             plotX.toInt(),
             plotY.toInt(),
@@ -112,10 +111,10 @@ class PlotViewContainer(
             plotSize.y.toInt(),
         )
 
-        plotCleanup = MonolithicSkiaAwt.buildPlotFromProcessedSpecs(
-            dest = plotSvgPanel,
-            plotSize = plotSize,
+        viewModel?.dispose()
+        viewModel = MonolithicSkiaLW.buildPlotFromProcessedSpecs(
             plotSpec = processedSpec as MutableMap<String, Any>,
+            plotSize = plotSize,
         ) { messages ->
             if (dispatchComputationMessages) {
                 // do once
@@ -123,6 +122,8 @@ class PlotViewContainer(
                 computationMessagesHandler(messages)
             }
         }
+        plotSvgPanel.svg = viewModel!!.svg
+        plotSvgPanel.eventDispatcher = viewModel!!.eventDispatcher
     }
 
     fun disposePlotView() {
@@ -131,18 +132,18 @@ class PlotViewContainer(
 
         removeAll()
         plotSvgPanel.dispose()
-        plotCleanup.dispose()
+        viewModel?.dispose()
     }
 
     private fun rebuildSvgPanel() {
         if (componentCount == 1) {
             removeAll()
             plotSvgPanel.dispose()
-            plotCleanup.dispose()
+            viewModel?.dispose()
         }
 
         plotSvgPanel = SvgPanel()
-        plotCleanup = Registration.EMPTY
+        viewModel = null
         add(plotSvgPanel)
     }
 }
