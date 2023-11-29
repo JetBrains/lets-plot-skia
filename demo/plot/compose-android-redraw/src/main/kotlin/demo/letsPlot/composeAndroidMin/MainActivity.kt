@@ -30,16 +30,17 @@ import org.jetbrains.letsPlot.skia.compose.PlotPanel
 import kotlin.math.sin
 
 class MainActivity : ComponentActivity() {
+    private val maxPointsCount = 100
+    private val step = 0.1
+    private val refreshDelayMs = 32L
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
         setContent {
             val xs = rememberSaveable { mutableListOf<Double>() }
             val ys = rememberSaveable { mutableListOf<Double>() }
-            val maxPointsCount = 100
-            val step = 0.1
 
-            val refreshDelayMs by remember { mutableLongStateOf(32) }
             var isPaused by rememberSaveable { mutableStateOf(true) }
             var fixedAxis by rememberSaveable { mutableStateOf(true) }
 
@@ -60,17 +61,16 @@ class MainActivity : ComponentActivity() {
                     if (fixedAxis) {
                         // With fixed wait until we run out of axis and then clear the data to start from the beginning.
                         val firstX = xs.firstOrNull() ?: 0.0
+                        println("firstX: $firstX, step: $step, maxPointsCount: $maxPointsCount, firstX > step * maxPointsCount: ${firstX > step * maxPointsCount}")
                         if (firstX > step * maxPointsCount) { // run out of axis
                             xs.clear()
                             ys.clear()
                         }
-                    } else {
-                        // Without fixed axis remove first point when we reach maxPointsCount to keep the plot moving
-                        // yet not growing indefinitely.
-                        if (xs.size > maxPointsCount) {
-                            xs.removeFirst()
-                            ys.removeFirst()
-                        }
+                    }
+
+                    if (xs.size > maxPointsCount) {
+                        xs.removeFirst()
+                        ys.removeFirst()
                     }
 
                     val lastX = xs.lastOrNull() ?: 0.0
