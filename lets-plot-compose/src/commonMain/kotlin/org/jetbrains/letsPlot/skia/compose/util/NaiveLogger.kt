@@ -13,4 +13,10 @@ class NaiveLogger(val key: String) {
             println("[$key] $s")
         }
     }
+
+    fun print(message: () -> String) {
+        if (ENABLED) {
+            print(message())
+        }
+    }
 }

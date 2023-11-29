@@ -34,41 +34,46 @@ class MainActivity : ComponentActivity() {
         super.onCreate(savedInstanceState)
 
         setContent {
+            val xs = rememberSaveable { mutableListOf<Double>() }
+            val ys = rememberSaveable { mutableListOf<Double>() }
+            val maxPointsCount = 100
             val step = 0.1
-            val pointsLimit by rememberSaveable { mutableIntStateOf(100) }
-            val xs = remember { mutableListOf<Double>() }
-            val ys = remember { mutableListOf<Double>() }
-            val updatePause by remember { mutableLongStateOf(32L) }
+
+            val refreshDelayMs by remember { mutableLongStateOf(32) }
             var isPaused by rememberSaveable { mutableStateOf(true) }
             var fixedAxis by rememberSaveable { mutableStateOf(true) }
 
-            fun blankPlot(): Plot {
+            fun plot(): Plot {
                 var p = letsPlot() + ylim(listOf(-1.0, 1.0)) + geomPoint() // missing geomBlank() to not fail with "no layers in plot" error on init/clean
                 if (fixedAxis) {
-                    p += xlim(listOf(0.0, step * pointsLimit))
+                    p += xlim(listOf(0.0, step * maxPointsCount))
                 }
                 return p
             }
 
-            var figure: Plot by remember { mutableStateOf(blankPlot()) }
+            var figure: Plot by remember { mutableStateOf(plot()) }
 
             LaunchedEffect(key1 = isPaused) {
                 while (!isPaused) {
-                    delay(updatePause)
+                    delay(refreshDelayMs)
 
-                    if (xs.size > pointsLimit) {
-                        xs.removeFirst()
-                        ys.removeFirst()
-                    }
-
-                    val firstX = xs.firstOrNull() ?: 0.0
-                    if (fixedAxis && firstX > step * pointsLimit) { // run out of axis
-                        xs.clear()
-                        ys.clear()
+                    if (fixedAxis) {
+                        // With fixed wait until we run out of axis and then clear the data to start from the beginning.
+                        val firstX = xs.firstOrNull() ?: 0.0
+                        if (firstX > step * maxPointsCount) { // run out of axis
+                            xs.clear()
+                            ys.clear()
+                        }
+                    } else {
+                        // Without fixed axis remove first point when we reach maxPointsCount to keep the plot moving
+                        // yet not growing indefinitely.
+                        if (xs.size > maxPointsCount) {
+                            xs.removeFirst()
+                            ys.removeFirst()
+                        }
                     }
 
                     val lastX = xs.lastOrNull() ?: 0.0
-
                     val nextX = lastX + step
                     val nextY = sin(nextX)
 
@@ -79,7 +84,7 @@ class MainActivity : ComponentActivity() {
                         "x" to xs,
                         "y" to ys
                     )
-                    figure = blankPlot() + geomLine(data = data, color = "black", size = 1.2) { x = "x"; y = "y" }
+                    figure = plot() + geomLine(data = data, color = "black", size = 1.2) { x = "x"; y = "y" }
                 }
             }
 
@@ -105,7 +110,7 @@ class MainActivity : ComponentActivity() {
                                 onClick = {
                                     xs.clear()
                                     ys.clear()
-                                    figure = blankPlot()
+                                    figure = plot()
                                 }, modifier = Modifier
                                     .width(100.dp)
                             ) {

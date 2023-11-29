@@ -23,7 +23,7 @@ actual fun PlotPanel(
     modifier: Modifier,
     computationMessagesHandler: (List<String>) -> Unit
 ) {
-    LOG.print("Recompose PlotPanel() preserveAspectRatio: $preserveAspectRatio ")
+    LOG.print { "Recompose PlotPanel() preserveAspectRatio: $preserveAspectRatio " }
 
     val provider by remember {
         mutableStateOf(
@@ -35,7 +35,7 @@ actual fun PlotPanel(
 
     DisposableEffect(provider) {
         onDispose {
-            LOG.print("DisposableEffect preserveAspectRatio: ${provider.plotViewContainer?.preserveAspectRatio} ")
+            LOG.print { "DisposableEffect preserveAspectRatio: ${provider.plotViewContainer?.preserveAspectRatio} " }
             provider.dispose()
         }
     }
@@ -45,11 +45,10 @@ actual fun PlotPanel(
         modifier = modifier,
         update = { plotViewContainer ->
             plotViewContainer as PlotViewContainer
-            LOG.print("UPDATE PlotViewContainer preserveAspectRatio ${plotViewContainer.preserveAspectRatio} ->  $preserveAspectRatio")
+            LOG.print { "UPDATE PlotViewContainer preserveAspectRatio ${plotViewContainer.preserveAspectRatio} ->  $preserveAspectRatio" }
 
             plotViewContainer.figure = figure
             plotViewContainer.preserveAspectRatio = preserveAspectRatio
-            plotViewContainer.updatePlotView()
         }
     )
 }

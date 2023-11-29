@@ -31,12 +31,9 @@ internal class PlotViewContainer(
     private lateinit var plotSvgPanel: SvgPanel
     private var viewModel: ViewModel? = null
 
-    private var needUpdate = true
     private lateinit var processedSpec: Map<String, Any>
 
-    init {
-        rebuildSvgPanel()
-    }
+    private var disposed = false
 
     var figure: Figure? = null
         set(fig) {
@@ -47,10 +44,10 @@ internal class PlotViewContainer(
             }
 
             field = fig
-            needUpdate = true
 
             val rawSpec = fig.toSpec()
             processedSpec = MonolithicCommon.processRawSpecs(rawSpec, frontendOnly = false)
+            updatePlotView()
         }
 
     var preserveAspectRatio: Boolean? = null
@@ -65,7 +62,8 @@ internal class PlotViewContainer(
             // Switching the aspect ratio causes flickering - extended plot area is rendered with black background.
             rebuildSvgPanel()
             field = v
-            needUpdate = true
+
+            updatePlotView()
 //            background = ColorRect(if (v) Color.BLUE else Color.RED)
         }
 
@@ -75,31 +73,43 @@ internal class PlotViewContainer(
                 return
             }
             field = value
-            needUpdate = true
+
+            updatePlotView()
         }
 
 
     init {
-        LOG.print("New PlotViewContainer preserveAspectRatio: $preserveAspectRatio")
+        LOG.print { "New PlotViewContainer preserveAspectRatio: $preserveAspectRatio" }
+
+        rebuildSvgPanel()
+
+        // Make plot visible on the first render.
+        post {
+            measureChild(
+                plotSvgPanel,
+                MeasureSpec.makeMeasureSpec(width, MeasureSpec.EXACTLY),
+                MeasureSpec.makeMeasureSpec(height, MeasureSpec.EXACTLY)
+            )
+            plotSvgPanel.layout(left, top, left + width, top + height)
+        }
     }
 
     override fun onSizeChanged(w: Int, h: Int, oldw: Int, oldh: Int) {
-        LOG.print("onSizeChanged $w, $h PlotViewContainer preserveAspectRatio: $preserveAspectRatio")
+        LOG.print { "onSizeChanged $w, $h PlotViewContainer preserveAspectRatio: $preserveAspectRatio" }
         super.onSizeChanged(w, h, oldw, oldh)
 
+        // Crash on rotation. Do not call `updatePlotView()` (internally called from `size` property setter).
+        if (disposed) return
         size = Vector(w, h)
-        updatePlotView()
     }
 
-    fun updatePlotView() {
-        LOG.print("updatePlotView() - needUpdate: $needUpdate, preserveAspectRatio: $preserveAspectRatio size: $size")
+    private fun updatePlotView() {
+        LOG.print { "updatePlotView() - preserveAspectRatio: $preserveAspectRatio size: $size" }
+
+        check(!disposed) { "PlotViewContainer is disposed." }
 
         // This happens when `revalidate` is invoked from the initial `update` in `PlotPanel:AndroidView` composable.
         if (size.x == 0 || size.y == 0) return
-        if (!needUpdate) {
-            return
-        }
-        needUpdate = false
 
         val w = size.x
         val h = size.y
@@ -130,42 +140,44 @@ internal class PlotViewContainer(
         val width = unscaledSize.x.toInt()
         val height = unscaledSize.y.toInt()
 
-        post {
-            viewModel?.dispose()
-            viewModel = MonolithicSkiaLW.buildPlotFromProcessedSpecs(
-                plotSize = plotSize,
-                plotSpec = processedSpec as MutableMap<String, Any>,
-            ) { messages ->
-                computationMessagesHandler(messages)
-                //if (dispatchComputationMessages) {
-                //    // do once
-                //    dispatchComputationMessages = false
-                //    computationMessagesHandler(messages)
-                //}
-            }
-
-            plotSvgPanel.svg = viewModel!!.svg
-            plotSvgPanel.eventDispatcher = viewModel!!.eventDispatcher
-
-            measureChild(
-                plotSvgPanel,
-                MeasureSpec.makeMeasureSpec(width, MeasureSpec.EXACTLY),
-                MeasureSpec.makeMeasureSpec(height, MeasureSpec.EXACTLY)
-            )
-            plotSvgPanel.layout(left, top, left + width, top + height)
+        viewModel?.dispose()
+        viewModel = MonolithicSkiaLW.buildPlotFromProcessedSpecs(
+            plotSize = plotSize,
+            plotSpec = processedSpec as MutableMap<String, Any>,
+        ) { messages ->
+            computationMessagesHandler(messages)
+            //if (dispatchComputationMessages) {
+            //    // do once
+            //    dispatchComputationMessages = false
+            //    computationMessagesHandler(messages)
+            //}
         }
+
+        plotSvgPanel.svg = viewModel!!.svg
+        plotSvgPanel.eventDispatcher = viewModel!!.eventDispatcher
+
+        measureChild(
+            plotSvgPanel,
+            MeasureSpec.makeMeasureSpec(width, MeasureSpec.EXACTLY),
+            MeasureSpec.makeMeasureSpec(height, MeasureSpec.EXACTLY)
+        )
+        plotSvgPanel.layout(left, top, left + width, top + height)
     }
 
     fun disposePlotView() {
+        LOG.print { "disposePlotView()" }
         check(childCount == 1) { "Unexpected number of children: $childCount" }
         check(getChildAt(0) == plotSvgPanel) { "Unexpected child: should be SvgPanel but was ${getChildAt(0)::class.simpleName}" }
 
         removeAllViews()
         plotSvgPanel.dispose()
         viewModel?.dispose()
+        disposed = true
     }
 
     private fun rebuildSvgPanel() {
+        LOG.print { "rebuildSvgPanel()" }
+
         if (childCount == 1) {
             removeAllViews()
             plotSvgPanel.dispose()
