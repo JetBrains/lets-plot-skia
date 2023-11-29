@@ -5,3 +5,5 @@
 ### Changed
 
 ### Fixed
+
+ - Panel flickering when updating data [[#6](https://github.com/JetBrains/lets-plot-skia/issues/6)].
