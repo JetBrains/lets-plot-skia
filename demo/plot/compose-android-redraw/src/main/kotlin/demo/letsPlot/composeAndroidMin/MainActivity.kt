@@ -20,31 +20,32 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import ch.qos.logback.classic.android.BasicLogcatConfigurator
 import kotlinx.coroutines.delay
-import org.jetbrains.letsPlot.geom.geomDensity
+import org.jetbrains.letsPlot.geom.geomLine
 import org.jetbrains.letsPlot.geom.geomPoint
 import org.jetbrains.letsPlot.intern.Plot
 import org.jetbrains.letsPlot.letsPlot
 import org.jetbrains.letsPlot.scale.xlim
 import org.jetbrains.letsPlot.scale.ylim
 import org.jetbrains.letsPlot.skia.compose.PlotPanel
-import java.util.*
+import kotlin.math.sin
 
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
         setContent {
-            var rand by rememberSaveable { mutableStateOf(Random()) }
-            val pointsLimit by rememberSaveable { mutableIntStateOf(600) }
-            val values = remember { mutableListOf<Double>() }
+            val step = 0.1
+            val pointsLimit by rememberSaveable { mutableIntStateOf(100) }
+            val xs = remember { mutableListOf<Double>() }
+            val ys = remember { mutableListOf<Double>() }
             val updatePause by remember { mutableLongStateOf(32L) }
             var isPaused by rememberSaveable { mutableStateOf(true) }
-            var limAxis by rememberSaveable { mutableStateOf(true) }
+            var fixedAxis by rememberSaveable { mutableStateOf(true) }
 
             fun blankPlot(): Plot {
-                var p = letsPlot() + geomPoint() // missing geomBlank() to not fail with "no layers in plot" error on init/clean
-                if (limAxis) {
-                    p += xlim(listOf(-3.0, 3.0)) + ylim(listOf(0.0, 0.5))
+                var p = letsPlot() + ylim(listOf(-1.0, 1.0)) + geomPoint() // missing geomBlank() to not fail with "no layers in plot" error on init/clean
+                if (fixedAxis) {
+                    p += xlim(listOf(0.0, step * pointsLimit))
                 }
                 return p
             }
@@ -55,16 +56,32 @@ class MainActivity : ComponentActivity() {
                 while (!isPaused) {
                     delay(updatePause)
 
-                    values.add(rand.nextGaussian())
-                    if (values.size > pointsLimit) {
-                        values.removeFirst()
+                    if (xs.size > pointsLimit) {
+                        xs.removeFirst()
+                        ys.removeFirst()
                     }
 
-                    val data = mapOf<String, Any>("value" to values)
-                    figure = blankPlot() + geomDensity(data = data, color = "black", size = 1.2) { x = "value" }
+                    val firstX = xs.firstOrNull() ?: 0.0
+                    if (fixedAxis && firstX > step * pointsLimit) { // run out of axis
+                        xs.clear()
+                        ys.clear()
+                    }
+
+                    val lastX = xs.lastOrNull() ?: 0.0
+
+                    val nextX = lastX + step
+                    val nextY = sin(nextX)
+
+                    xs.add(nextX)
+                    ys.add(nextY)
+
+                    val data = mapOf<String, Any>(
+                        "x" to xs,
+                        "y" to ys
+                    )
+                    figure = blankPlot() + geomLine(data = data, color = "black", size = 1.2) { x = "x"; y = "y" }
                 }
             }
-
 
             MaterialTheme {
                 Row {
@@ -86,8 +103,8 @@ class MainActivity : ComponentActivity() {
                             }
                             Button(
                                 onClick = {
-                                    values.clear()
-                                    rand = Random()
+                                    xs.clear()
+                                    ys.clear()
                                     figure = blankPlot()
                                 }, modifier = Modifier
                                     .width(100.dp)
@@ -97,11 +114,11 @@ class MainActivity : ComponentActivity() {
                         }
                         Row {
                             Text(
-                                text = "Axis limits:",
+                                text = "Fixed axis:",
                                 modifier = Modifier
                                     .align(Alignment.CenterVertically)
                             )
-                            Checkbox(limAxis, onCheckedChange = { limAxis = it })
+                            Checkbox(fixedAxis, onCheckedChange = { fixedAxis = it })
                         }
                     }
                     Row(
