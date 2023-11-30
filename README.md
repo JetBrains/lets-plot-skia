@@ -19,8 +19,7 @@
 ## Dependencies
 
 - [Compose Multiplatform](https://github.com/JetBrains/compose-multiplatform) (v.1.5.1 and up)
-- [Skiko](https://github.com/JetBrains/skiko) (v.0.7.86) \
-    `* v.0.7.87 - we faced certain issues`
+- [Skiko](https://github.com/JetBrains/skiko) (v.0.7.89 and up)
 - [Lets-Plot Kotlin API](https://github.com/JetBrains/lets-plot-kotlin) (v.4.5.0)
 - [Lets-Plot Multiplatform](https://github.com/JetBrains/lets-plot) (v.4.1.0)
 
@@ -40,7 +39,7 @@ dependencies {
     implementation("org.jetbrains.lets-plot:platf-awt:4.1.0")
 
     // Lets-Plot Skia Frontend
-    implementation("org.jetbrains.lets-plot:lets-plot-compose:1.0.0")
+    implementation("org.jetbrains.lets-plot:lets-plot-compose:1.0.2")
 }
 ```
 
@@ -50,7 +49,7 @@ dependencies {
 dependencies {
     ...
 
-    implementation("org.jetbrains.skiko:skiko-android:0.7.80")
+    implementation("org.jetbrains.skiko:skiko-android:0.7.89")
 
     // Lets-Plot Kotlin API 
     implementation("org.jetbrains.lets-plot:lets-plot-kotlin-kernel:4.5.0")
@@ -59,7 +58,7 @@ dependencies {
     implementation("org.jetbrains.lets-plot:lets-plot-common:4.1.0")
 
     // Lets-Plot Skia Frontend
-    implementation("org.jetbrains.lets-plot:lets-plot-compose:1.0.0")
+    implementation("org.jetbrains.lets-plot:lets-plot-compose:1.0.2")
 }
 ```
 
@@ -69,9 +68,9 @@ dependencies {
 dependencies {
     ...
 
-    implementation("org.jetbrains.skiko:skiko:0.7.80")
+    implementation("org.jetbrains.skiko:skiko:0.7.89")
     // The host OS and architecture should be specified explicitly.
-    implementation("org.jetbrains.skiko:skiko-awt-runtime-macos-x64:0.7.80")
+    implementation("org.jetbrains.skiko:skiko-awt-runtime-macos-x64:0.7.89")
 
     // Lets-Plot Kotlin API 
     implementation("org.jetbrains.lets-plot:lets-plot-kotlin-kernel:4.5.0")
@@ -81,7 +80,7 @@ dependencies {
     implementation("org.jetbrains.lets-plot:platf-awt:4.1.0")
 
     // Lets-Plot Skia Frontend
-    implementation("org.jetbrains.lets-plot:lets-plot-swing-skia:1.0.0")
+    implementation("org.jetbrains.lets-plot:lets-plot-swing-skia:1.0.2")
 }
 ```
 
