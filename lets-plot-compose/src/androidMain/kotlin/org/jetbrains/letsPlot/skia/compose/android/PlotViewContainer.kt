@@ -169,23 +169,40 @@ internal class PlotViewContainer(
         check(childCount == 1) { "Unexpected number of children: $childCount" }
         check(getChildAt(0) == plotSvgPanel) { "Unexpected child: should be SvgPanel but was ${getChildAt(0)::class.simpleName}" }
 
-        removeAllViews()
-        plotSvgPanel.dispose()
-        viewModel?.dispose()
         disposed = true
+
+        clearContainer()
     }
 
     private fun rebuildSvgPanel() {
         LOG.print { "rebuildSvgPanel()" }
 
         if (childCount == 1) {
-            removeAllViews()
-            plotSvgPanel.dispose()
-            viewModel?.dispose()
+            clearContainer()
         }
 
         plotSvgPanel = SvgPanel(context)
         viewModel = null
         addView(plotSvgPanel)
+    }
+
+    /**
+     * Looks likely Skiko tries to finish rendering tasks in a same frame where the plot was disposed.
+     * Deferring plot panel disposing to the next frame seems to fix the error.
+
+     * See:
+     * Android: fast plot rebuild can cause a crash (https://github.com/JetBrains/lets-plot-skia/issues/9)
+     */
+    private fun clearContainer() {
+        removeAllViews()
+
+        // Copy for closure
+        val panel = plotSvgPanel
+        val vm = viewModel
+
+        post {
+            panel.dispose()
+            vm?.dispose()
+        }
     }
 }
