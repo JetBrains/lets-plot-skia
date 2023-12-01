@@ -61,7 +61,7 @@ class MainActivity : ComponentActivity() {
                     if (fixedAxis) {
                         // With fixed wait until we run out of axis and then clear the data to start from the beginning.
                         val firstX = xs.firstOrNull() ?: 0.0
-                        println("firstX: $firstX, step: $step, maxPointsCount: $maxPointsCount, firstX > step * maxPointsCount: ${firstX > step * maxPointsCount}")
+
                         if (firstX > step * maxPointsCount) { // run out of axis
                             xs.clear()
                             ys.clear()
