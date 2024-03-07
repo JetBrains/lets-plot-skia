@@ -18,7 +18,7 @@ internal abstract class SvgAttrMapping<in TargetT : Element> {
         when (name) {
             SvgGraphicsElement.VISIBILITY.name -> target.isVisible = visibilityAsBoolean(value)
             SvgGraphicsElement.OPACITY.name -> TODO() //target.opacity = asDouble(value)
-            SvgGraphicsElement.CLIP_BOUNDS_JFX.name -> target.clipPath = (value as? DoubleRectangle)?.let {
+            SvgGraphicsElement.CLIP_BOUNDS_JFX.name -> target.clipPath = (value as DoubleRectangle).let {
                 SkPath().addRect(
                     Rect.makeLTRB(
                         it.left.toFloat(),
@@ -26,6 +26,13 @@ internal abstract class SvgAttrMapping<in TargetT : Element> {
                         it.right.toFloat(),
                         it.bottom.toFloat()
                     )
+                )
+            }
+            SvgGraphicsElement.CLIP_CIRCLE_JFX.name -> target.clipPath = (value as DoubleRectangle).let {
+                SkPath().addCircle(
+                    it.center.x.toFloat(),
+                    it.center.y.toFloat(),
+                    it.width.toFloat() / 2
                 )
             }
 
