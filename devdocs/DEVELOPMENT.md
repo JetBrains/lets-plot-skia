@@ -1,5 +1,9 @@
 ### Configuring IntelliJ IDEA for Android development
 
+- #### Android Plugin
+
+Make sure the [Android plugin](https://plugins.jetbrains.com/plugin/22989-android) is installed.
+
 - #### Android SDK
 
 From menu `Tools -> Android -> SDK Manager` setup an Android SDK.
