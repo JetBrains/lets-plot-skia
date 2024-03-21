@@ -13,6 +13,8 @@ import org.jetbrains.skia.Path.Companion.makeFromSVGString
 internal object SvgPathAttrMapping : SvgShapeMapping<Path>() {
     override fun setAttribute(target: Path, name: String, value: Any?) {
         when (name) {
+            SvgPathElement.STROKE_MITER_LIMIT.name -> target.strokeMiter = value?.asFloat
+
             SvgPathElement.FILL_RULE.name -> {
                 val fillRule = when (value) {
                     SvgPathElement.FillRule.NON_ZERO -> org.jetbrains.skia.PathFillMode.WINDING
@@ -23,6 +25,7 @@ internal object SvgPathAttrMapping : SvgShapeMapping<Path>() {
 
                 target.fillRule = fillRule
             }
+
             SvgPathElement.D.name -> {
                 // Can be string (slim path) or SvgPathData
                 val pathStr = when (value) {

@@ -15,6 +15,7 @@ internal abstract class Figure : Element() {
     var strokeWidth: Float by visualProp(1f)
     var strokeOpacity: Float by visualProp(1f)
     var strokeDashArray: List<Float>? by visualProp(null)
+    var strokeMiter: Float? by visualProp(null) // not mandatory, default works fine
 
     var fill: Color4f? by visualProp(Color4f(Color.BLACK))
     var fillOpacity: Float by visualProp(1f)
@@ -31,6 +32,8 @@ internal abstract class Figure : Element() {
         Figure::stroke,
         Figure::strokeWidth,
         Figure::strokeDashArray,
+        Figure::strokeOpacity,
+        Figure::strokeMiter,
         managed = true
     ) {
         val stroke = stroke ?: return@computedProp null
@@ -47,6 +50,7 @@ internal abstract class Figure : Element() {
             paint.setStroke(true)
             paint.color4f = stroke.withA(strokeOpacity)
             paint.strokeWidth = strokeWidth
+            strokeMiter?.let { paint.strokeMiter = it }
             strokeDashArray?.let { paint.pathEffect = makeDash(it.toFloatArray(), 0.0f) }
         }
     }
