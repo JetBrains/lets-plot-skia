@@ -6,6 +6,34 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 to [Semantic Versioning](https://semver.org/spec/v2.0.0.html). All scales should have the 'format' parameter.
 
 
+## [1.0.3] - 2024-03-21
+
+### Added
+
+- Support for round `clip-path` for `coordPolar()`.
+- Support for `geomCurve()`.
+
+### Changed
+
+Dev settings were updated:
+- Gradle: v 8.6
+- Kotlin: v1.9.22
+- Android Gradle Plugin (AGP): v8.2.2 (see notes below)
+- Compose Multiplatform: v1.6.1
+- Androidx activity-compose: v1.8.2
+- Skiko: v0.7.92 (see notes below)
+
+- Lets-Plot Multiplatform: v4.3.0
+- Lets-Plot Kotlin API: v4.7.0
+
+> Notes:
+>  - Minimum required JDK: 17.
+>  - KMP is not yet compatible with AGP 8.3 and up.
+>  - Skiko found to have issues with Android devtools (build, emulator):
+>    - Skiko v0.7.93 and higher crashes in emulator on ARM arch.
+>    - Skiko v0.7.98.1 crashes in emulator on x86 and AMR arch.
+
+
 ## [1.0.2] - 2023-11-30
 
 ### Fixed
