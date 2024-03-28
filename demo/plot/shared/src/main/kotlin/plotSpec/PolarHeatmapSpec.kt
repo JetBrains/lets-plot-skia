@@ -6,7 +6,7 @@
 package plotSpec
 
 import org.jetbrains.letsPlot.Figure
-import org.jetbrains.letsPlot.coord.coordCartesian
+import org.jetbrains.letsPlot.coord.coordPolar
 import org.jetbrains.letsPlot.geom.geomTile
 import org.jetbrains.letsPlot.ggplot
 import org.jetbrains.letsPlot.label.ggtitle
@@ -62,6 +62,6 @@ class PolarHeatmapSpec : PlotDemoSpec {
                 scaleBrewer(listOf("color", "fill"), palette = "Spectral", direction = -1) +
                 theme(axisTitle = elementBlank())
 
-        return p + coordCartesian() + ggtitle("Cartesian Heatmap")
+        return p + coordPolar() + ggtitle("Cartesian Heatmap")
     }
 }
