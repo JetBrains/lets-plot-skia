@@ -19,7 +19,7 @@ internal object SvgSvgAttrMapping : SvgAttrMapping<Pane>() {
             SvgSvgElement.Y.name -> target.transform = target.transform.with(TRANSLATE_Y, value?.asFloat ?: 0.0f)
             SvgSvgElement.WIDTH.name -> target.width = value?.asFloat ?: 0.0f
             SvgSvgElement.HEIGHT.name -> target.height = value?.asFloat ?: 0.0f
-//            SvgSvgElement.VIEW_BOX  ??
+            SvgSvgElement.DISPLAY.name -> { }  // ignore
             else -> super.setAttribute(target, name, value)
         }
     }
