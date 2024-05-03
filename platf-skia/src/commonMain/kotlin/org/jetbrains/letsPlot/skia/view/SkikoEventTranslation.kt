@@ -31,8 +31,9 @@ private fun SkikoGestureEvent.toMouseEvent(): MouseEvent {
     )
 }
 
-internal fun SkikoPointerEvent.translate(): Pair<MouseEventSpec, MouseEvent>? {
-    return when (this.kind) {
+internal fun SkikoPointerEvent.translate(): List<Pair<MouseEventSpec, MouseEvent>> {
+    val mouseEvent = this.toMouseEvent()
+    val primitiveEventSpec = when (this.kind) {
         SkikoPointerEventKind.UP -> MouseEventSpec.MOUSE_RELEASED
         SkikoPointerEventKind.DOWN -> MouseEventSpec.MOUSE_PRESSED
         SkikoPointerEventKind.MOVE -> MouseEventSpec.MOUSE_MOVED
@@ -40,9 +41,15 @@ internal fun SkikoPointerEvent.translate(): Pair<MouseEventSpec, MouseEvent>? {
         SkikoPointerEventKind.ENTER -> MouseEventSpec.MOUSE_ENTERED
         SkikoPointerEventKind.EXIT -> MouseEventSpec.MOUSE_LEFT
         else -> null
-    }?.let { mouseEventSpec ->
-        mouseEventSpec to this.toMouseEvent()
-    }
+    }?.let { it to mouseEvent }
+    
+    val clickEventSpec = when {
+        isLeftClick -> MouseEventSpec.MOUSE_CLICKED
+        isRightClick -> MouseEventSpec.MOUSE_CLICKED
+        else -> null
+    }?.let { it to mouseEvent }
+    
+    return listOfNotNull(primitiveEventSpec, clickEventSpec)
 }
 
 private fun SkikoPointerEvent.toMouseEvent(): MouseEvent {

@@ -107,9 +107,11 @@ abstract class SvgSkikoView() : SkikoView, Disposable {
 
     override fun onPointerEvent(event: SkikoPointerEvent) {
         val dispatcher = eventDispatcher ?: return
-        val (kind, e) = event.translate() ?: return
+        val events = event.translate()
 
-        dispatcher.dispatchMouseEvent(kind, e)
+        events.forEach { (kind, e) ->
+            dispatcher.dispatchMouseEvent(kind, e)
+        }
     }
 
     override fun dispose() {
