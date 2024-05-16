@@ -9,6 +9,7 @@ import demo.svgMapping.utils.DemoBase
 import demo.svgMapping.utils.DemoWindow
 import org.jetbrains.letsPlot.commons.geometry.DoubleVector
 import org.jetbrains.letsPlot.commons.values.Color
+import org.jetbrains.letsPlot.core.plot.base.render.linetype.NamedLineType
 import org.jetbrains.letsPlot.core.plot.base.render.svg.GroupComponent
 import org.jetbrains.letsPlot.core.plot.builder.presentation.Style
 import org.jetbrains.letsPlot.core.plot.builder.tooltip.component.TooltipBox
@@ -73,6 +74,7 @@ private class TooltipBoxDemo : DemoBase(DEMO_BOX_SIZE) {
                 textColor,
                 borderColor,
                 strokeWidth,
+                NamedLineType.SOLID,
                 lines,
                 title,
                 textClassName,
