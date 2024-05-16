@@ -44,6 +44,15 @@ allprojects {
     }
 }
 
+// Configure repositories in root build.gradle.kts to fix
+//  > Cannot resolve external dependency org.jetbrains.kotlin:kotlin-klib-commonizer-embeddable:XXX because no repositories are defined.
+// in export-native project
+// Link:
+// https://stackoverflow.com/questions/77422092/kotlin-multiplatform-macosarm64-execution-failed-for-task-commonizenativedist
+repositories {
+    mavenCentral()
+}
+
 subprojects {
     repositories {
         mavenCentral()
