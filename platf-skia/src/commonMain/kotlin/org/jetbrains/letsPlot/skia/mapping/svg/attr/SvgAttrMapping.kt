@@ -76,6 +76,19 @@ internal abstract class SvgAttrMapping<in TargetT : Element> {
                 else -> error("Unsupported float value: $this")
             }
 
+        val Any.asPxSize: Float?
+            get() = when (this) {
+                is Number -> this.toFloat()
+                is String -> kotlin.runCatching { this.removeSuffix("px").toFloat() }.getOrNull()
+                else -> null.also { println("Unsupported px size value: $this") }
+            }
+
+        val Any.asFontFamily: List<String>
+            get() = (this as? String)
+                ?.split(",")
+                ?.map(String::trim)
+                ?: emptyList()
+
         internal fun asBoolean(value: Any?): Boolean {
             return (value as? String)?.toBoolean() ?: false
         }
