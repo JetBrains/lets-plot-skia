@@ -11,6 +11,7 @@ import org.jetbrains.letsPlot.datamodel.svg.dom.*
 import org.jetbrains.letsPlot.datamodel.svg.event.SvgAttributeEvent
 import org.jetbrains.letsPlot.skia.mapping.svg.DebugOptions
 import org.jetbrains.letsPlot.skia.mapping.svg.DebugOptions.drawBoundingBoxes
+import org.jetbrains.letsPlot.skia.mapping.svg.FontManager
 import org.jetbrains.letsPlot.skia.mapping.svg.SvgSkiaPeer
 import org.jetbrains.letsPlot.skia.mapping.svg.SvgSvgElementMapper
 import org.jetbrains.letsPlot.skia.shape.Container
@@ -28,11 +29,12 @@ import kotlin.math.ceil
 
 abstract class SvgSkikoView() : SkikoView, Disposable {
     var eventDispatcher: SkikoViewEventDispatcher? = null
+    private val fontManager = FontManager()
 
     var svg: SvgSvgElement = SvgSvgElement()
         set(value) {
             nodeContainer.root().set(value)
-            val rootMapper = SvgSvgElementMapper(value, SvgSkiaPeer())
+            val rootMapper = SvgSvgElementMapper(value, SvgSkiaPeer(fontManager))
             rootMapper.attachRoot(MappingContext())
             rootElement = rootMapper.target
 
@@ -121,12 +123,15 @@ abstract class SvgSkikoView() : SkikoView, Disposable {
 
         disposed = true
 
+        fontManager.dispose()
+
         // Detach svg root.
         nodeContainer.root().set(SvgSvgElement())
 
         if (this::_nativeLayer.isInitialized) {
             _nativeLayer.detach()
         }
+
     }
 
     private fun needRedraw() {

@@ -7,6 +7,7 @@ package org.jetbrains.letsPlot.skia.shape
 
 import org.assertj.core.api.Assertions.assertThat
 import org.jetbrains.letsPlot.datamodel.svg.dom.SvgGraphicsElement.Visibility.HIDDEN
+import org.jetbrains.letsPlot.skia.mapping.svg.FontManager
 import org.jetbrains.skia.Matrix33
 import org.jetbrains.skia.Rect.Companion.makeLTRB
 import org.junit.Test

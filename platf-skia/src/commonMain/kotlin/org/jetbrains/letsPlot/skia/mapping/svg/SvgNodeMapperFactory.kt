@@ -23,7 +23,7 @@ internal class SvgNodeMapperFactory(private val peer: SvgSkiaPeer) : MapperFacto
 
     override fun createMapper(source: SvgNode): Mapper<out SvgNode, out Element> {
         var src = source
-        val target = SvgUtils.newElement(src)
+        val target = SvgUtils.newElement(src, peer)
 
         if (src is SvgImageElementEx) {
             src = src.asImageElement(SkiaRGBEncoder)

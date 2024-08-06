@@ -64,12 +64,12 @@ internal object SvgUtils {
         }
     }
 
-    fun newElement(source: SvgNode): Element {
+    fun newElement(source: SvgNode, peer: SvgSkiaPeer): Element {
         return when (source) {
             is SvgEllipseElement -> Ellipse()
             is SvgCircleElement -> Circle()
             is SvgRectElement -> Rectangle()
-            is SvgTextElement -> Text()
+            is SvgTextElement -> Text(peer.fontManager)
             is SvgPathElement -> Path()
             is SvgLineElement -> Line()
             is SvgSvgElement -> Pane()
