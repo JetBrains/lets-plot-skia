@@ -7,17 +7,19 @@ package org.jetbrains.letsPlot.skia.shape
 
 import org.jetbrains.letsPlot.datamodel.mapping.framework.MappingContext
 import org.jetbrains.letsPlot.datamodel.svg.dom.*
+import org.jetbrains.letsPlot.skia.mapping.svg.FontManager
 import org.jetbrains.letsPlot.skia.mapping.svg.SvgSkiaPeer
 import org.jetbrains.letsPlot.skia.mapping.svg.SvgSvgElementMapper
 
 
 internal fun mapSvg(builder: () -> SvgSvgElement): Pane {
+    val fontManager = FontManager()
     val svgDocument = builder()
 
     // attach root
     SvgNodeContainer(svgDocument)
 
-    val rootMapper = SvgSvgElementMapper(svgDocument, SvgSkiaPeer())
+    val rootMapper = SvgSvgElementMapper(svgDocument, SvgSkiaPeer(fontManager))
     rootMapper.attachRoot(MappingContext())
     return rootMapper.target
 }

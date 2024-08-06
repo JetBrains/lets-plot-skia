@@ -5,11 +5,15 @@
 
 package org.jetbrains.letsPlot.skia.shape
 
+import org.jetbrains.letsPlot.skia.mapping.svg.FontManager
 import org.jetbrains.skia.*
 
 
 // Single line text
-internal class Text : Figure() {
+internal class Text(
+    val fontManager: FontManager
+) : Figure() {
+
     var textOrigin: VerticalAlignment? by visualProp(null)
     var textAlignment: HorizontalAlignment? by visualProp(null)
     var x: Float by visualProp(0.0f)
@@ -19,12 +23,12 @@ internal class Text : Figure() {
     var fontStyle: FontStyle by visualProp(FontStyle.NORMAL)
     var fontSize by visualProp(DEFAULT_FONT_SIZE)
 
-    private val typeface by computedProp(Text::fontFamily, Text::fontStyle, managed = true) {
-        FontMgr.default.matchFamiliesStyle(fontFamily.toTypedArray(), fontStyle) ?: Typeface.makeDefault()
+    private val typeface by computedProp(Text::fontFamily, Text::fontStyle) {
+        fontManager.matchFamiliesStyle(fontFamily, fontStyle)
     }
 
-    private val font by computedProp(Text::typeface, Text::fontSize, managed = true) {
-        Font(typeface, fontSize).apply { isSubpixel = true }
+    private val font by computedProp(Text::typeface, Text::fontSize) {
+        fontManager.font(typeface, fontSize)
     }
 
     private val lineHeight by computedProp(Text::font) {

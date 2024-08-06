@@ -16,7 +16,9 @@ import org.jetbrains.letsPlot.skia.mapping.svg.SvgUtils.getChildren
 import org.jetbrains.letsPlot.skia.mapping.svg.SvgUtils.newElement
 import org.jetbrains.letsPlot.skia.shape.*
 
-internal class SkiaTargetPeer : TargetPeer<Element> {
+internal class SkiaTargetPeer(
+    private val peer: SvgSkiaPeer
+) : TargetPeer<Element> {
     override fun appendChild(target: Element, child: Element) {
         getChildren(target as Group).add(child)
     }
@@ -28,7 +30,7 @@ internal class SkiaTargetPeer : TargetPeer<Element> {
     }
 
     override fun newSvgElement(source: SvgElement): Element {
-        return newElement(source)
+        return newElement(source, peer)
     }
 
     override fun newSvgTextNode(source: SvgTextNode): Element {

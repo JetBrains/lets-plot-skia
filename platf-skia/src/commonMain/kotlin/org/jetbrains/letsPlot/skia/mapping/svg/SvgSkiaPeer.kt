@@ -15,7 +15,9 @@ import org.jetbrains.letsPlot.datamodel.svg.dom.SvgTextContent
 import org.jetbrains.letsPlot.datamodel.svg.style.StyleSheet
 import org.jetbrains.letsPlot.skia.shape.Element
 
-internal class SvgSkiaPeer : SvgPlatformPeer {
+internal class SvgSkiaPeer(
+    val fontManager: FontManager
+) : SvgPlatformPeer {
     private val myMappingMap = HashMap<SvgNode, Mapper<out SvgNode, out Element>>()
     var styleSheet: StyleSheet? = null
         private set

@@ -27,11 +27,7 @@ internal abstract class Node {
     }
 
     private fun handlePropertyChange(property: KProperty<*>, oldValue: Any?, newValue: Any?) {
-        if (VALIDATE_MANAGED_PROPERTIES && property !in managedProperties) {
-            require(newValue == null || newValue !is Managed) { "Property ${property.name} should be marked as managed" }
-        }
-
-        if (oldValue is Managed) {
+        if (property in managedProperties && oldValue is Managed) {
             oldValue.close()
         }
 
