@@ -15,6 +15,8 @@ import org.jetbrains.letsPlot.skia.shape.Text
 internal object SvgTextElementAttrMapping : SvgShapeMapping<Text>() {
     override fun setAttribute(target: Text, name: String, value: Any?) {
         when (name) {
+            "font-size" -> target.fontSize = value?.asPxSize ?: Text.DEFAULT_FONT_SIZE
+            "font-family" -> target.fontFamily = value?.asFontFamily ?: Text.DEFAULT_FONT_FAMILY
             SvgTextElement.X.name -> target.x = value?.asFloat ?: 0.0f
             SvgTextElement.Y.name -> target.y = value?.asFloat ?: 0.0f
             SvgTextContent.TEXT_ANCHOR.name -> {

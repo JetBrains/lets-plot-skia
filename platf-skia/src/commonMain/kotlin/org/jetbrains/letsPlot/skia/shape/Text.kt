@@ -17,7 +17,7 @@ internal class Text : Figure() {
     var content: List<TextRun> by visualProp(emptyList())
     var fontFamily: List<String> by visualProp(emptyList())
     var fontStyle: FontStyle by visualProp(FontStyle.NORMAL)
-    var fontSize by visualProp(16.0f)
+    var fontSize by visualProp(DEFAULT_FONT_SIZE)
 
     private val typeface by computedProp(Text::fontFamily, Text::fontStyle, managed = true) {
         FontMgr.default.matchFamiliesStyle(fontFamily.toTypedArray(), fontStyle) ?: Typeface.makeDefault()
@@ -164,4 +164,9 @@ internal class Text : Figure() {
     }
 
     private val widthCorrectionCoef = 0f
+
+    companion object {
+        const val DEFAULT_FONT_SIZE: Float = 16f
+        val DEFAULT_FONT_FAMILY: List<String> = emptyList()
+    }
 }

@@ -5,3 +5,4 @@
 ### Changed
 
 ### Fixed
+- fontfamily aes is not supported [[#15](https://github.com/JetBrains/lets-plot-skia/issues/15)].
