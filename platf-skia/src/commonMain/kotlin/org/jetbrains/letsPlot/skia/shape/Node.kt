@@ -5,7 +5,6 @@
 
 package org.jetbrains.letsPlot.skia.shape
 
-import org.jetbrains.letsPlot.skia.mapping.svg.DebugOptions.VALIDATE_MANAGED_PROPERTIES
 import org.jetbrains.skia.impl.Managed
 import kotlin.properties.PropertyDelegateProvider
 import kotlin.properties.ReadOnlyProperty
@@ -20,6 +19,7 @@ internal abstract class Node {
     private val dependentComputedProperties = mutableMapOf<KProperty<*>, List<ComputedProperty<*>>>()
     private val computedProperties = mutableMapOf<KProperty<*>, ComputedProperty<*>>()
     private val managedProperties = mutableMapOf<KProperty<*>, () -> Managed?>()
+    private val computedDependencies = mutableMapOf<KProperty<*>, Set<KProperty<*>>>()
 
     internal fun invalidateComputedProp(prop: KProperty<*>) {
         computedProperties[prop]?.invalidate()
@@ -60,6 +60,8 @@ internal abstract class Node {
             }
 
             computedProperties[property] = computedProperty
+            val nestedDeps = dependencies.map { computedDependencies[it] ?: error("Missing dependency: ${it.name}. All dependencies must be defines before") }.flatten()
+            computedDependencies[property] = dependencies.toSet() + nestedDeps.toSet()
 
             return@PropertyDelegateProvider computedProperty
         }
