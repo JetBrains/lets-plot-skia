@@ -44,24 +44,18 @@ internal class Text(
         var currentPosX = 0f
 
         content.forEach { textRun ->
-            val scaleFactor = textRun.fontScale ?: 1f
-            val baseline = when (textRun.baselineShift) {
-                BaselineShift.SUPER -> lineHeight * 0.4f
-                BaselineShift.SUB -> lineHeight * -0.4f
-                else -> 0f
-            }
 
             val glyphs = font.getStringGlyphs(textRun.text)
             val glyphXPos = font.getXPositions(glyphs, currentPosX)
             val xPosRange = (glyphXPos.firstOrNull() ?: 0f)..(glyphXPos.lastOrNull() ?: 0f)
-            fun scale(x: Float): Float = (x - xPosRange.start) * scaleFactor + xPosRange.start
+            fun scale(x: Float): Float = (x - xPosRange.start) * textRun.fontScale + xPosRange.start
 
             val rsxTransforms = glyphXPos.map {
                 RSXform.makeFromRadians(
-                    scale = scaleFactor,
+                    scale = textRun.fontScale,
                     radians = 0f,
                     tx = scale(it),
-                    ty = -baseline,
+                    ty = -(textRun.baselineShift.percent * lineHeight) + lineHeight * textRun.dy,
                     ax = 0f,
                     ay = 0f
                 )
@@ -73,9 +67,9 @@ internal class Text(
             val bbox = font.measureText(textRun.text).let {
                 Rect.makeXYWH(
                     l = it.left + currentPosX,
-                    t = it.top - baseline,
-                    w = it.width * scaleFactor + widthCorrectionCoef,
-                    h = it.height * scaleFactor
+                    t = it.top - textRun.baselineShift.percent * lineHeight,
+                    w = it.width * textRun.fontScale + widthCorrectionCoef,
+                    h = it.height * textRun.fontScale
                 )
             }
             bboxes.add(bbox)
@@ -143,13 +137,17 @@ internal class Text(
 
     data class TextRun(
         val text: String,
-        val baselineShift: BaselineShift? = null,
-        val fontScale: Float? = null,
+        val baselineShift: BaselineShift = BaselineShift.NONE,
+        val dy: Float = 0f,
+        val fontScale: Float = 1f,
     )
 
-    enum class BaselineShift {
-        SUB,
-        SUPER
+    enum class BaselineShift(
+        val percent: Float
+    ) {
+        SUB(-0.4f),
+        SUPER(0.4f),
+        NONE(0f)
     }
 
     private class RenderData(
