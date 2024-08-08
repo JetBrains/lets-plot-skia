@@ -15,19 +15,9 @@ import kotlin.math.pow
 class SuperscriptExponentNotationSpec : PlotDemoSpec {
     override fun createFigureList(): List<Figure> {
         return listOf(
-            simple(),
-            f()
-
+            simple()
         )
     }
-
-    private fun f(): Figure =
-        letsPlot() +
-                geomPoint {
-                    x = listOf(1e-7, 2e-7, 3e-7)
-                    y = listOf(0, 0, 0)
-                } +
-                theme(exponentFormat = "pow")
 
     private fun simple(): Figure {
         val xs: List<Double> = (-10..10).map(Int::toDouble).toList()
