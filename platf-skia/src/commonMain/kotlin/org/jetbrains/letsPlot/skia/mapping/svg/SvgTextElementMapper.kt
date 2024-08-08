@@ -79,11 +79,10 @@ internal class SvgTextElementMapper(
                             require(child is SvgTextNode)
                             val fontScale = node.getAttribute("font-size").get()?.let {
                                 require(it is String) { "font-size: only string value is supported" }
-
-                                if ("%" in it) {
-                                    it.removeSuffix("%").toFloat() / 100.0f
-                                } else {
-                                    null
+                                when {
+                                    "em" in it -> it.removeSuffix("em").toFloat()
+                                    "%" in it -> it.removeSuffix("%").toFloat() / 100.0f
+                                    else -> null
                                 }
                             }
                             // TODO: replace with Specs from LP
@@ -95,10 +94,20 @@ internal class SvgTextElementMapper(
                                 }
                             }
 
+                            val dy = node.getAttribute("dy").get()?.let {
+                                require(it is String) { "dy: only string value is supported" }
+                                when {
+                                    "em" in it -> it.removeSuffix("em").toFloat()
+                                    "%" in it -> it.removeSuffix("%").toFloat() / 100.0f
+                                    else -> null
+                                }
+                            }
+
                             Text.TextRun(
                                 text = child.textContent().get(),
-                                baselineShift = baselineShift,
-                                fontScale = fontScale
+                                baselineShift = baselineShift ?: Text.BaselineShift.NONE,
+                                dy = dy ?: 0f,
+                                fontScale = fontScale ?: 1f,
                             )
                         }
 

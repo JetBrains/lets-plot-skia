@@ -23,6 +23,8 @@ class SuperscriptExponentNotationSpec : PlotDemoSpec {
         val xs: List<Double> = (-10..10).map(Int::toDouble).toList()
         val f: (Double) -> Double = { it * 10.0.pow(-5) }
         val data = mapOf("x" to xs, "y" to xs.map(f))
-        return letsPlot(data) { x = "x"; y = "y" } + geomPoint() + ggtitle("No transform") + theme(exponentFormat = "pow")
+        return letsPlot(data) {
+            x = "x"; y = "y"
+        } + geomPoint() + ggtitle("No transform") + theme(exponentFormat = "pow")
     }
 }
