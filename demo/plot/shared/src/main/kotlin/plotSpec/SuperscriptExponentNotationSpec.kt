@@ -9,6 +9,7 @@ import org.jetbrains.letsPlot.Figure
 import org.jetbrains.letsPlot.geom.geomPoint
 import org.jetbrains.letsPlot.label.ggtitle
 import org.jetbrains.letsPlot.letsPlot
+import org.jetbrains.letsPlot.themes.theme
 import kotlin.math.pow
 
 class SuperscriptExponentNotationSpec : PlotDemoSpec {
@@ -22,6 +23,6 @@ class SuperscriptExponentNotationSpec : PlotDemoSpec {
         val xs: List<Double> = (-10..10).map(Int::toDouble).toList()
         val f: (Double) -> Double = { it * 10.0.pow(-5) }
         val data = mapOf("x" to xs, "y" to xs.map(f))
-        return letsPlot(data) { x = "x"; y = "y" } + geomPoint() + ggtitle("No transform")
+        return letsPlot(data) { x = "x"; y = "y" } + geomPoint() + ggtitle("No transform") + theme(exponentFormat = "pow")
     }
 }
