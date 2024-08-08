@@ -36,6 +36,24 @@ object ReferenceSvgModel {
                     setAttribute("baseline-shift", "super")
                     setAttribute("font-size", "75%")
                 })
+                addTSpan(SvgTSpanElement("with baseline-shift").apply {
+                    setAttribute("font-size", "50%")
+                })
+            }
+        )
+
+        svgRoot.children().add(
+            SvgTextElement().apply {
+                addClass("EMC2")
+                transform().set(SvgTransformBuilder().translate(300.0, 180.0).build())
+                addTSpan(SvgTSpanElement("E=mc"))
+                addTSpan(SvgTSpanElement("2").apply {
+                    setAttribute("dy", "-0.4em")
+                    setAttribute("font-size", "75%")
+                })
+                addTSpan(SvgTSpanElement("with dy").apply {
+                    setAttribute("font-size", "50%")
+                })
             }
         )
 

@@ -11,7 +11,7 @@ import org.jetbrains.skia.*
 
 // Single line text
 internal class Text(
-    val fontManager: FontManager
+    private val fontManager: FontManager
 ) : Figure() {
 
     var textOrigin: VerticalAlignment? by visualProp(null)
