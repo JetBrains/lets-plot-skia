@@ -86,7 +86,7 @@ class ThemeOptionsSpec : PlotDemoSpec {
     private fun setThemeOptions(): Figure {
         val theme = theme(
             title = elementText(color = "#2a14a8"),
-            plotTitle = elementText(face = "bold_italic"),
+            plotTitle = elementText(face = "bold_italic", family = "Times New Roman"),
             plotCaption = elementText(face = "italic"),
             legendTitle = elementText(face = "bold_italic"),
             tooltipText = elementText(color = "#b3deff", face = "italic"),

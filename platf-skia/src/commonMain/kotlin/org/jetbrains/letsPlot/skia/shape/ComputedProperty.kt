@@ -5,7 +5,6 @@
 
 package org.jetbrains.letsPlot.skia.shape
 
-import org.jetbrains.skia.impl.Native
 import kotlin.properties.ReadOnlyProperty
 import kotlin.reflect.KProperty
 

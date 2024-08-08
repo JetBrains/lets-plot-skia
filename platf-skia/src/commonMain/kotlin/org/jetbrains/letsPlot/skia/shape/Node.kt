@@ -5,7 +5,6 @@
 
 package org.jetbrains.letsPlot.skia.shape
 
-import org.jetbrains.letsPlot.skia.mapping.svg.DebugOptions.VALIDATE_MANAGED_PROPERTIES
 import org.jetbrains.skia.impl.Managed
 import kotlin.properties.PropertyDelegateProvider
 import kotlin.properties.ReadOnlyProperty
@@ -14,26 +13,28 @@ import kotlin.reflect.KProperty
 
 internal abstract class Node {
     var id: String? = null
+    private val visualPropInstances = mutableMapOf<KProperty<*>, VisualProperty<*>>()
+    private val computedPropInstances = mutableMapOf<KProperty<*>, ComputedProperty<*>>()
+    private val computedPropDependencies = mutableMapOf<KProperty<*>, Set<KProperty<*>>>() // direct and transitive dependencies
+    private val propFinalizers = mutableMapOf<KProperty<*>, () -> Managed?>()
+
     var isVisible: Boolean by visualProp(true)
 
-    // visual prop -> list of dependent dependency properties updaters
-    private val dependentComputedProperties = mutableMapOf<KProperty<*>, List<ComputedProperty<*>>>()
-    private val computedProperties = mutableMapOf<KProperty<*>, ComputedProperty<*>>()
-    private val managedProperties = mutableMapOf<KProperty<*>, () -> Managed?>()
-
     internal fun invalidateComputedProp(prop: KProperty<*>) {
-        computedProperties[prop]?.invalidate()
-            ?: error { "Class `${this::class.simpleName}` doesn't have computedProperty `${prop.name}`" }
+        val computedPropInstance = computedPropInstances[prop]  ?: error { "Class `${this::class.simpleName}` doesn't have computedProperty `${prop.name}`" }
+        computedPropInstance.invalidate()
     }
 
     private fun handlePropertyChange(property: KProperty<*>, oldValue: Any?, newValue: Any?) {
-        if (property in managedProperties && oldValue is Managed) {
+        if (property in propFinalizers && oldValue is Managed) {
             oldValue.close()
         }
 
         onPropertyChanged(property)
 
-        dependentComputedProperties[property]?.forEach(ComputedProperty<*>::invalidate)
+        computedPropDependencies
+            .filter { (_, deps) -> property in deps }
+            .forEach { (dependedProperty, _) -> invalidateComputedProp(dependedProperty) }
     }
 
     fun <T> computedProp(
@@ -50,16 +51,21 @@ internal abstract class Node {
     ): PropertyDelegateProvider<Node, ReadOnlyProperty<Node, T>> {
         return PropertyDelegateProvider<Node, ReadOnlyProperty<Node, T>> { thisRef, property ->
             val computedProperty = ComputedProperty(valueProvider, thisRef::handlePropertyChange)
+            computedPropInstances[property] = computedProperty
+
+            val fullDeps = dependencies.map { directDep ->
+                when (directDep) {
+                    in computedPropDependencies -> computedPropDependencies[directDep]!!
+                    in visualPropInstances -> setOf(directDep)
+                    else -> error("Missing dependency: ${directDep.name}. All dependencies must be defines before")
+                }
+            }.flatten()
+
+            computedPropDependencies[property] = fullDeps.toSet()
 
             if (managed) {
-                thisRef.managedProperties[property] = { computedProperty.getValue(thisRef, property) as Managed? }
+                propFinalizers[property] = { computedProperty.getValue(thisRef, property) as Managed? }
             }
-
-            dependencies.forEach {
-                dependentComputedProperties[it] = (dependentComputedProperties[it] ?: emptyList()) + computedProperty
-            }
-
-            computedProperties[property] = computedProperty
 
             return@PropertyDelegateProvider computedProperty
         }
@@ -71,9 +77,10 @@ internal abstract class Node {
     ): PropertyDelegateProvider<Node, ReadWriteProperty<Node, T>> {
         return PropertyDelegateProvider<Node, ReadWriteProperty<Node, T>> { thisRef, property ->
             val visualProperty = VisualProperty(initialValue, thisRef::handlePropertyChange)
+            visualPropInstances[property] = visualProperty
 
             if (managed) {
-                thisRef.managedProperties[property] = { visualProperty.getValue(thisRef, property) as Managed? }
+                propFinalizers[property] = { visualProperty.getValue(thisRef, property) as Managed? }
             }
 
             return@PropertyDelegateProvider visualProperty
@@ -81,7 +88,7 @@ internal abstract class Node {
     }
 
     fun release() {
-        managedProperties
+        propFinalizers
             .values
             .mapNotNull { it() }
             .filterNot(Managed::isClosed)
