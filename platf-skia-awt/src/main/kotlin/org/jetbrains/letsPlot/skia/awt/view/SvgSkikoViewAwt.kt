@@ -18,7 +18,7 @@ internal class SvgSkikoViewAwt : SvgSkikoView() {
         return SkiaLayer().also {
             // https://github.com/JetBrains/skiko/issues/614
             //skiaLayer.skikoView = skikoView
-            it.addView(view)
+            it.renderDelegate = view
         }
     }
 }

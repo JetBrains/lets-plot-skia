@@ -5,12 +5,7 @@
 
 package org.jetbrains.letsPlot.skia.view
 
-import org.jetbrains.letsPlot.commons.event.Button
-import org.jetbrains.letsPlot.commons.event.KeyModifiers
-import org.jetbrains.letsPlot.commons.event.MouseEvent
-import org.jetbrains.letsPlot.commons.event.MouseEventSpec
-import org.jetbrains.skiko.*
-
+/*
 internal fun SkikoGestureEvent.translate(): Pair<MouseEventSpec, MouseEvent>? {
     return when (this.kind) {
         SkikoGestureEventKind.LONGPRESS -> MouseEventSpec.MOUSE_LEFT
@@ -71,3 +66,4 @@ private fun SkikoPointerEvent.toMouseEvent(): MouseEvent {
         )
     )
 }
+*/

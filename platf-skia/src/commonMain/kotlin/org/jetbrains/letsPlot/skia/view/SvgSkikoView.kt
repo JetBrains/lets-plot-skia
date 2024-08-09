@@ -22,12 +22,10 @@ import org.jetbrains.skia.Matrix33
 import org.jetbrains.skia.Matrix33.Companion.IDENTITY
 import org.jetbrains.skia.Matrix33.Companion.makeScale
 import org.jetbrains.skiko.SkiaLayer
-import org.jetbrains.skiko.SkikoGestureEvent
-import org.jetbrains.skiko.SkikoPointerEvent
-import org.jetbrains.skiko.SkikoView
+import org.jetbrains.skiko.SkikoRenderDelegate
 import kotlin.math.ceil
 
-abstract class SvgSkikoView() : SkikoView, Disposable {
+abstract class SvgSkikoView() : SkikoRenderDelegate, Disposable {
     var eventDispatcher: SkikoViewEventDispatcher? = null
     private val fontManager = FontManager()
 
@@ -100,21 +98,21 @@ abstract class SvgSkikoView() : SkikoView, Disposable {
         }
     }
 
-    override fun onGestureEvent(event: SkikoGestureEvent) {
-        val dispatcher = eventDispatcher ?: return
-        val (kind, e) = event.translate() ?: return
+//    override fun onGestureEvent(event: SkikoGestureEvent) {
+//        val dispatcher = eventDispatcher ?: return
+//        val (kind, e) = event.translate() ?: return
+//
+//        dispatcher.dispatchMouseEvent(kind, e)
+//    }
 
-        dispatcher.dispatchMouseEvent(kind, e)
-    }
-
-    override fun onPointerEvent(event: SkikoPointerEvent) {
-        val dispatcher = eventDispatcher ?: return
-        val events = event.translate()
-
-        events.forEach { (kind, e) ->
-            dispatcher.dispatchMouseEvent(kind, e)
-        }
-    }
+//    override fun onPointerEvent(event: SkikoPointerEvent) {
+//        val dispatcher = eventDispatcher ?: return
+//        val events = event.translate()
+//
+//        events.forEach { (kind, e) ->
+//            dispatcher.dispatchMouseEvent(kind, e)
+//        }
+//    }
 
     override fun dispose() {
         if (disposed) {

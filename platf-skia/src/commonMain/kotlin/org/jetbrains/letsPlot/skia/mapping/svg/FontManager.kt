@@ -13,7 +13,7 @@ import org.jetbrains.skia.Typeface
 class FontManager {
     fun matchFamiliesStyle(fontFamily: List<String>, fontStyle: FontStyle): Typeface {
         return typefaces.getOrPut(fontFamily to fontStyle) {
-            FontMgr.default.matchFamiliesStyle(fontFamily.toTypedArray(), fontStyle) ?: Typeface.makeDefault()
+            FontMgr.default.matchFamiliesStyle(fontFamily.toTypedArray(), fontStyle) ?: Typeface.makeEmpty()
         }
     }
 

@@ -7,7 +7,6 @@ package org.jetbrains.letsPlot.skia.android.view
 
 import org.jetbrains.letsPlot.skia.view.SvgSkikoView
 import org.jetbrains.skiko.SkiaLayer
-import org.jetbrains.skiko.SkikoGestureEventKind
 
 class SvgSkikoViewAndroid : SvgSkikoView() {
     override fun updateSkiaLayerSize(width: Int, height: Int) {
@@ -16,13 +15,13 @@ class SvgSkikoViewAndroid : SvgSkikoView() {
 
     override fun createSkiaLayer(view: SvgSkikoView): SkiaLayer {
         return SkiaLayer().also {
-            it.gesturesToListen = arrayOf(
-                SkikoGestureEventKind.PAN,
-                SkikoGestureEventKind.DOUBLETAP,
-                SkikoGestureEventKind.TAP,
-                SkikoGestureEventKind.LONGPRESS
-            )
-            it.skikoView = view
+            //it.gesturesToListen = arrayOf(
+            //    SkikoGestureEventKind.PAN,
+            //    SkikoGestureEventKind.DOUBLETAP,
+            //    SkikoGestureEventKind.TAP,
+            //    SkikoGestureEventKind.LONGPRESS
+            //)
+            it.renderDelegate = view
         }
     }
 }
