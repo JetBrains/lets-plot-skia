@@ -9,6 +9,7 @@ plugins {
     // this is necessary to avoid the plugins to be loaded multiple times
     // in each subproject's classloader
     kotlin("multiplatform").apply(false)
+    kotlin("plugin.compose").apply(false)
     kotlin("jvm").apply(false)
     kotlin("android").apply(false)
     id("com.android.application").apply(false)
