@@ -84,15 +84,18 @@ subprojects {
     }
 
     afterEvaluate {
+        // Disabled due to the error:
+        // > Cannot change hierarchy of dependency configuration ':lets-plot-compose:desktopCompilationApi' after it has been included in dependency resolution.
+
         // Add LICENSE file to the META-INF folder inside published JAR files
-        tasks.filterIsInstance(org.gradle.jvm.tasks.Jar::class.java)
-            .forEach {
-                it.metaInf {
-                    from("$rootDir") {
-                        include("LICENSE")
-                    }
-                }
-            }
+        //tasks.filterIsInstance(org.gradle.jvm.tasks.Jar::class.java)
+        //    .forEach {
+        //        it.metaInf {
+        //            from("$rootDir") {
+        //                include("LICENSE")
+        //            }
+        //        }
+        //    }
 
         // Configure publications
         if (name in listOf(

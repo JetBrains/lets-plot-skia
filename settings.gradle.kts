@@ -33,9 +33,9 @@ include("platf-skia-awt")
 include("lets-plot-compose")
 include("lets-plot-swing-skia")
 
-//include("demo-svg-shared")
+include("demo-svg-shared")
 //include("demo-svg-android")
-//include("demo-svg-compose-desktop")
+include("demo-svg-compose-desktop")
 //include("demo-svg-swing")
 
 include("demo-plot-shared")
@@ -45,9 +45,9 @@ include("demo-plot-shared")
 //include("demo-plot-compose-desktop")
 include("demo-plot-swing")
 
-//project(":demo-svg-shared").projectDir = File("./demo/svg/shared")
+project(":demo-svg-shared").projectDir = File("./demo/svg/shared")
 //project(":demo-svg-android").projectDir = File("./demo/svg/android")
-//project(":demo-svg-compose-desktop").projectDir = File("./demo/svg/compose-desktop")
+project(":demo-svg-compose-desktop").projectDir = File("./demo/svg/compose-desktop")
 //project(":demo-svg-swing").projectDir = File("./demo/svg/swing")
 
 project(":demo-plot-shared").projectDir = File("./demo/plot/shared")
