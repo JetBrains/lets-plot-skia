@@ -69,18 +69,17 @@ project(":demo-plot-swing").projectDir = File("./demo/plot/swing")
 include("demo-svg-android")
 project(":demo-svg-android").projectDir = File("./demo/svg/android")
 
-// TODO: fix the following error:
-// e: This version (1.3.2) of the Compose Compiler requires Kotlin version 1.7.20 but you appear to be using Kotlin version 2.0.10 which is not known to be compatible.  Please fix your configuration (or `suppressKotlinVersionCompatibilityCheck` but don't say I didn't warn you!).
+
 // Android Plot Min
-//include("demo-plot-compose-android-min")
-//project(":demo-plot-compose-android-min").projectDir = File("./demo/plot/compose-android-min")
+include("demo-plot-compose-android-min")
+project(":demo-plot-compose-android-min").projectDir = File("./demo/plot/compose-android-min")
 
 
 // Android Plot Median
-//include("demo-plot-compose-android-median")
-//project(":demo-plot-compose-android-median").projectDir = File("./demo/plot/compose-android-median")
+include("demo-plot-compose-android-median")
+project(":demo-plot-compose-android-median").projectDir = File("./demo/plot/compose-android-median")
 
 
 // Android Plot Redraw
-//include("demo-plot-compose-android-redraw")
-//project(":demo-plot-compose-android-redraw").projectDir = File("./demo/plot/compose-android-redraw")
+include("demo-plot-compose-android-redraw")
+project(":demo-plot-compose-android-redraw").projectDir = File("./demo/plot/compose-android-redraw")

@@ -7,7 +7,11 @@ package org.jetbrains.letsPlot.skia.android.view
 
 import android.annotation.SuppressLint
 import android.content.Context
+import android.view.MotionEvent
 import android.view.ViewGroup
+import org.jetbrains.letsPlot.commons.event.MouseEvent
+import org.jetbrains.letsPlot.commons.event.MouseEventSpec
+import org.jetbrains.letsPlot.commons.geometry.Vector
 import org.jetbrains.letsPlot.commons.registration.CompositeRegistration
 import org.jetbrains.letsPlot.commons.registration.Disposable
 import org.jetbrains.letsPlot.commons.registration.DisposableRegistration
@@ -112,5 +116,36 @@ class SvgPanel(
             registrations.dispose()
             skikoView.dispose()
         //}
+    }
+
+    override fun onTouchEvent(event: MotionEvent): Boolean {
+        println("onTouchEvent: $event")
+        val v = Vector(event.x.toInt(), event.y.toInt())
+        val evt = when (event.action) {
+            MotionEvent.ACTION_BUTTON_PRESS, MotionEvent.ACTION_BUTTON_RELEASE -> {
+                when (event.actionButton) {
+                    MotionEvent.BUTTON_PRIMARY -> MouseEvent.leftButton(v)
+                    MotionEvent.BUTTON_SECONDARY -> MouseEvent.rightButton(v)
+                    MotionEvent.BUTTON_TERTIARY -> MouseEvent.middleButton(v)
+                    else -> MouseEvent.noButton(v)
+                }
+            }
+            else -> MouseEvent.noButton(v)
+
+        }
+        val spec = when (event.action) {
+            MotionEvent.ACTION_DOWN -> MouseEventSpec.MOUSE_PRESSED
+            MotionEvent.ACTION_MOVE -> MouseEventSpec.MOUSE_MOVED
+            MotionEvent.ACTION_UP -> MouseEventSpec.MOUSE_RELEASED
+            else -> null
+        }
+
+        if (spec != null) {
+            println("dispatchMouseEvent: $spec, $evt")
+            eventDispatcher?.dispatchMouseEvent(spec, evt)
+            return true
+        } else {
+            return false
+        }
     }
 }

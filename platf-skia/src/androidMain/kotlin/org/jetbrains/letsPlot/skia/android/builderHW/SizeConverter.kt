@@ -6,9 +6,11 @@
 package org.jetbrains.letsPlot.skia.android.builderHW
 
 import android.content.Context
+import android.content.res.Resources
 import android.util.TypedValue
 import org.jetbrains.letsPlot.commons.geometry.DoubleRectangle
 import org.jetbrains.letsPlot.commons.geometry.Rectangle
+
 
 internal object SizeConverter {
 
@@ -20,11 +22,19 @@ internal object SizeConverter {
         return Rectangle(x, y, w, h)
     }
 
-    private fun pxToDp(v: Double, ctx: Context): Float {
+    fun pxToDp(v: Number, ctx: Context): Float {
         return TypedValue.applyDimension(
             TypedValue.COMPLEX_UNIT_DIP, // unit
             v.toFloat(),  // value
             ctx.resources.displayMetrics // metrics
+        )
+    }
+
+    fun dpToPx(dipValue: Float): Float {
+        return TypedValue.applyDimension(
+            TypedValue.COMPLEX_UNIT_DIP,
+            dipValue,
+            Resources.getSystem().displayMetrics
         )
     }
 }
