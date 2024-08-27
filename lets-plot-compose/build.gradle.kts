@@ -32,8 +32,8 @@ kotlin {
     sourceSets {
         named("commonMain") {
             dependencies {
-                //implementation(compose.runtime)
-                //implementation(compose.ui)
+                implementation(compose.runtime)
+                implementation(compose.ui)
 
                 compileOnly("org.jetbrains.skiko:skiko:$skikoVersion")
                 compileOnly("org.jetbrains.lets-plot:lets-plot-kotlin-kernel:$letsPlotKotlinVersion")

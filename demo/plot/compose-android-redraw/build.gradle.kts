@@ -54,6 +54,10 @@ android {
     compileSdk = (findProperty("android.compileSdk") as String).toInt()
     namespace = "demo.letsPlot"
 
+    buildFeatures {
+        compose = true
+    }
+
     defaultConfig {
         applicationId = "demo.letsPlot.composeMinDemo"
 

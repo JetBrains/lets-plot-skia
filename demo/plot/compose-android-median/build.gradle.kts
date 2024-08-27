@@ -54,6 +54,10 @@ android {
     compileSdk = (findProperty("android.compileSdk") as String).toInt()
     namespace = "demo.plot.SkiaDemo"
 
+    buildFeatures {
+        compose = true
+    }
+
     defaultConfig {
         applicationId = "demo.plot.SkiaDemo"
 
