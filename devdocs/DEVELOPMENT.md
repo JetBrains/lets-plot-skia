@@ -1,3 +1,22 @@
+### Skiko and Compose Multiplatform versions
+Changing the version of `Skiko` or `Compose Multiplatform` may lead to compatibility issues and runtime errors like `MethodNotFound` or `ClassNotFound`. The safest way to avoid these issues is to use the version of `Skiko` that was used to build your version of `Compose Multiplatform`. To find the correct `Skiko` version:
+
+1. Open the `.pom` file corresponding to your `Compose Multiplatform` version.
+2. Search within the `.pom` file for the `Skiko` version.
+
+For example, if you're using `ui-desktop-1.6.10.pom` the link will be: 
+>https://repo1.maven.org/maven2/org/jetbrains/compose/ui/ui-desktop/1.6.10/ui-desktop-1.6.10.pom  
+
+At the bottom of the file, you will find the `skiko` version used to build the library.  
+```xml
+<dependency>
+<groupId>org.jetbrains.skiko</groupId>
+<artifactId>skiko-awt</artifactId>
+<version>0.8.4</version>
+<scope>compile</scope>
+</dependency>
+```
+
 ### Configuring IntelliJ IDEA for Android development
 
 - #### Android Plugin
@@ -32,6 +51,19 @@ Make sure the Java 11 toolchain is installed. Otherwise, the following error may
   > No locally installed toolchains match and toolchain download repositories have not been configured.
 ```
 
+### Building Skiko for Android 
+
+To workaround for the [#761](https://github.com/JetBrains/skiko/issues/761) and use latest version of skiko library, we need to build the library manually. The process may be a bit tricky, but in general it works as follows:
+- Install `NDK` and `CMake` using `Tools -> Android -> Android SDK Manager`, `SDK Tools` tab.
+- Clone the [Skiko](git@github.com:JetBrains/skiko.git) repository
+- Checkout compatible version (read the **Skiko and Compose Multiplatform versions** section above). 
+- In the Skiko repository, run the following command: ```./gradlew publishToBuildRepo -Pskiko.android.enabled=true```
+- Tricky part: build may fail due to the missing headers and libraries. In this case, you need to install the missing dependencies manually. Google may help you with that. After that, try to build the library again.
+- After the build is successful, find the JARs. The path is something like this:    
+ `/home/user/Projects/skiko/skiko/build/repo/org/jetbrains/skiko/skiko-android-runtime-arm64/0.0.0-SNAPSHOT/skiko-android-runtime-arm64-0.0.0-20240827.190357-1.jar`  
+ `/home/user/Projects/skiko/skiko/build/repo/org/jetbrains/skiko/skiko-android-runtime-x64/0.0.0-SNAPSHOT/skiko-android-runtime-x64-0.0.0-20240827.190357-1.jar`
+- Unzip the JARs and copy the libraries to the `jniLibs` directory in the Android project.
+
 
 ### Running Android demos
 
@@ -48,6 +80,7 @@ In `Run configurations`
 ### Problems with updating tools and dependencies:
 
 #### Android:
+
 Can't upgrade Skiko version 0.7.80 --> 0.7.81 :
 > java.lang.UnsatisfiedLinkError: dlopen failed: cannot locate symbol "_ZN4sksg4NodeD2Ev"
 

@@ -3,13 +3,11 @@
  * Use of this source code is governed by the MIT license that can be found in the LICENSE file.
  */
 
-import com.android.build.gradle.tasks.MergeSourceSetFolders
-import org.jetbrains.kotlin.gradle.tasks.KotlinJvmCompile
-
 plugins {
     kotlin("android")
     id("org.jetbrains.compose")
     id("com.android.application")
+    kotlin("plugin.compose")
 }
 
 //////////////////////////////////////////////////////////////////////////////////////////
@@ -21,38 +19,15 @@ plugins {
 val skikoNativeX64: Configuration by configurations.creating
 val skikoNativeArm64: Configuration by configurations.creating
 
-val jniDir = "${projectDir.absolutePath}/src/main/jniLibs"
-
-val unzipTaskX64 = tasks.register("unzipNativeX64", Copy::class) {
-    destinationDir = file("$jniDir/x86_64")
-    from(skikoNativeX64.map { zipTree(it) }) {
-        include("*.so")
-    }
-    includeEmptyDirs = false
-}
-
-val unzipTaskArm64 = tasks.register("unzipNativeArm64", Copy::class) {
-    destinationDir = file("$jniDir/arm64-v8a")
-    from(skikoNativeArm64.map { zipTree(it) }) {
-        include("*.so")
-    }
-    includeEmptyDirs = false
-}
-
-tasks.withType<MergeSourceSetFolders>().configureEach {
-    dependsOn(unzipTaskX64)
-    dependsOn(unzipTaskArm64)
-}
-
-tasks.withType<KotlinJvmCompile>().configureEach {
-    dependsOn(unzipTaskX64)
-    dependsOn(unzipTaskArm64)
-}
 //////////////////////////////////////////////////////////////////////////////////////////
 
 android {
     compileSdk = (findProperty("android.compileSdk") as String).toInt()
     namespace = "demo.letsPlot"
+
+    buildFeatures {
+        compose = true
+    }
 
     defaultConfig {
         applicationId = "demo.letsPlot.composeMinDemo"

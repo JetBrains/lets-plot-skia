@@ -3,6 +3,7 @@
 plugins {
 //    kotlin("multiplatform") // kotlin("jvm") doesn't work well in IDEA/AndroidStudio (https://github.com/JetBrains/compose-jb/issues/22)
     kotlin("jvm")
+    kotlin("plugin.compose")
     id("org.jetbrains.compose")
 }
 

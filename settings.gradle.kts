@@ -16,6 +16,7 @@ pluginManagement {
         kotlin("jvm").version(kotlinVersion)
         kotlin("multiplatform").version(kotlinVersion)
         kotlin("android").version(kotlinVersion)
+        kotlin("plugin.compose").version(kotlinVersion)
 
         id("org.jetbrains.compose").version(composeVersion)
 
@@ -32,26 +33,53 @@ include("platf-skia-awt")
 include("lets-plot-compose")
 include("lets-plot-swing-skia")
 
+//----- Demos -----
+
+// SVG Shared
 include("demo-svg-shared")
-include("demo-svg-android")
-include("demo-svg-compose-desktop")
-include("demo-svg-swing")
-
-include("demo-plot-shared")
-include("demo-plot-compose-android-min")
-include("demo-plot-compose-android-median")
-include("demo-plot-compose-android-redraw")
-include("demo-plot-compose-desktop")
-include("demo-plot-swing")
-
 project(":demo-svg-shared").projectDir = File("./demo/svg/shared")
-project(":demo-svg-android").projectDir = File("./demo/svg/android")
+
+
+// Plot Shared
+include("demo-plot-shared")
+project(":demo-plot-shared").projectDir = File("./demo/plot/shared")
+
+
+// Compose SVG
+include("demo-svg-compose-desktop")
 project(":demo-svg-compose-desktop").projectDir = File("./demo/svg/compose-desktop")
+
+
+// Compose Plot
+include("demo-plot-compose-desktop")
+project(":demo-plot-compose-desktop").projectDir = File("./demo/plot/compose-desktop")
+
+
+// SWING SVG
+include("demo-svg-swing")
 project(":demo-svg-swing").projectDir = File("./demo/svg/swing")
 
-project(":demo-plot-shared").projectDir = File("./demo/plot/shared")
-project(":demo-plot-compose-android-min").projectDir = File("./demo/plot/compose-android-min")
-project(":demo-plot-compose-android-median").projectDir = File("./demo/plot/compose-android-median")
-project(":demo-plot-compose-android-redraw").projectDir = File("./demo/plot/compose-android-redraw")
-project(":demo-plot-compose-desktop").projectDir = File("./demo/plot/compose-desktop")
+
+// SWING Plot
+include("demo-plot-swing")
 project(":demo-plot-swing").projectDir = File("./demo/plot/swing")
+
+
+// Android SVG
+include("demo-svg-android")
+project(":demo-svg-android").projectDir = File("./demo/svg/android")
+
+
+// Android Plot Min
+include("demo-plot-compose-android-min")
+project(":demo-plot-compose-android-min").projectDir = File("./demo/plot/compose-android-min")
+
+
+// Android Plot Median
+include("demo-plot-compose-android-median")
+project(":demo-plot-compose-android-median").projectDir = File("./demo/plot/compose-android-median")
+
+
+// Android Plot Redraw
+include("demo-plot-compose-android-redraw")
+project(":demo-plot-compose-android-redraw").projectDir = File("./demo/plot/compose-android-redraw")

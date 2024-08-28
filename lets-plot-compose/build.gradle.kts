@@ -5,6 +5,7 @@
 
 plugins {
     kotlin("multiplatform")
+    kotlin("plugin.compose")
     id("com.android.library")
     id("org.jetbrains.compose")
     `maven-publish`
@@ -31,8 +32,8 @@ kotlin {
     sourceSets {
         named("commonMain") {
             dependencies {
-                compileOnly(compose.runtime)
-                compileOnly(compose.ui)
+                implementation(compose.runtime)
+                implementation(compose.ui)
 
                 compileOnly("org.jetbrains.skiko:skiko:$skikoVersion")
                 compileOnly("org.jetbrains.lets-plot:lets-plot-kotlin-kernel:$letsPlotKotlinVersion")
@@ -43,7 +44,7 @@ kotlin {
 
         named("desktopMain") {
             dependencies {
-                compileOnly(compose.desktop.currentOs)
+                //implementation(compose.desktop.currentOs)
 
                 api(project(":platf-skia"))
                 api(project(":platf-skia-awt"))

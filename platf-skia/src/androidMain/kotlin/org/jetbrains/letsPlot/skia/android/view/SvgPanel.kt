@@ -7,6 +7,7 @@ package org.jetbrains.letsPlot.skia.android.view
 
 import android.annotation.SuppressLint
 import android.content.Context
+import android.view.MotionEvent
 import android.view.ViewGroup
 import org.jetbrains.letsPlot.commons.registration.CompositeRegistration
 import org.jetbrains.letsPlot.commons.registration.Disposable
@@ -17,6 +18,7 @@ import org.jetbrains.letsPlot.datamodel.svg.dom.SvgElementListener
 import org.jetbrains.letsPlot.datamodel.svg.dom.SvgSvgElement
 import org.jetbrains.letsPlot.datamodel.svg.event.SvgAttributeEvent
 import org.jetbrains.letsPlot.skia.view.SkikoViewEventDispatcher
+
 
 @SuppressLint("ViewConstructor")
 class SvgPanel(
@@ -38,6 +40,7 @@ class SvgPanel(
 
     private val skikoView = SvgSkikoViewAndroid()
     private val registrations = CompositeRegistration()
+    private val plotGestureDetector: PlotGestureDetector
 
     init {
         this.svg = svg
@@ -56,6 +59,7 @@ class SvgPanel(
                 }
             })
         )
+        plotGestureDetector = PlotGestureDetector(context, this)
     }
 
     override fun onMeasure(widthMeasureSpec: Int, heightMeasureSpec: Int) {
@@ -112,5 +116,10 @@ class SvgPanel(
             registrations.dispose()
             skikoView.dispose()
         //}
+    }
+
+    override fun onTouchEvent(event: MotionEvent): Boolean {
+        plotGestureDetector.onTouchEvent(event)
+        return true
     }
 }
