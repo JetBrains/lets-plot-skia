@@ -9,9 +9,6 @@ import android.annotation.SuppressLint
 import android.content.Context
 import android.view.MotionEvent
 import android.view.ViewGroup
-import org.jetbrains.letsPlot.commons.event.MouseEvent
-import org.jetbrains.letsPlot.commons.event.MouseEventSpec
-import org.jetbrains.letsPlot.commons.geometry.Vector
 import org.jetbrains.letsPlot.commons.registration.CompositeRegistration
 import org.jetbrains.letsPlot.commons.registration.Disposable
 import org.jetbrains.letsPlot.commons.registration.DisposableRegistration
@@ -21,6 +18,7 @@ import org.jetbrains.letsPlot.datamodel.svg.dom.SvgElementListener
 import org.jetbrains.letsPlot.datamodel.svg.dom.SvgSvgElement
 import org.jetbrains.letsPlot.datamodel.svg.event.SvgAttributeEvent
 import org.jetbrains.letsPlot.skia.view.SkikoViewEventDispatcher
+
 
 @SuppressLint("ViewConstructor")
 class SvgPanel(
@@ -42,6 +40,7 @@ class SvgPanel(
 
     private val skikoView = SvgSkikoViewAndroid()
     private val registrations = CompositeRegistration()
+    private val plotGestureDetector: PlotGestureDetector
 
     init {
         this.svg = svg
@@ -60,6 +59,7 @@ class SvgPanel(
                 }
             })
         )
+        plotGestureDetector = PlotGestureDetector(context, this)
     }
 
     override fun onMeasure(widthMeasureSpec: Int, heightMeasureSpec: Int) {
@@ -119,33 +119,7 @@ class SvgPanel(
     }
 
     override fun onTouchEvent(event: MotionEvent): Boolean {
-        println("onTouchEvent: $event")
-        val v = Vector(event.x.toInt(), event.y.toInt())
-        val evt = when (event.action) {
-            MotionEvent.ACTION_BUTTON_PRESS, MotionEvent.ACTION_BUTTON_RELEASE -> {
-                when (event.actionButton) {
-                    MotionEvent.BUTTON_PRIMARY -> MouseEvent.leftButton(v)
-                    MotionEvent.BUTTON_SECONDARY -> MouseEvent.rightButton(v)
-                    MotionEvent.BUTTON_TERTIARY -> MouseEvent.middleButton(v)
-                    else -> MouseEvent.noButton(v)
-                }
-            }
-            else -> MouseEvent.noButton(v)
-
-        }
-        val spec = when (event.action) {
-            MotionEvent.ACTION_DOWN -> MouseEventSpec.MOUSE_PRESSED
-            MotionEvent.ACTION_MOVE -> MouseEventSpec.MOUSE_MOVED
-            MotionEvent.ACTION_UP -> MouseEventSpec.MOUSE_RELEASED
-            else -> null
-        }
-
-        if (spec != null) {
-            println("dispatchMouseEvent: $spec, $evt")
-            eventDispatcher?.dispatchMouseEvent(spec, evt)
-            return true
-        } else {
-            return false
-        }
+        plotGestureDetector.onTouchEvent(event)
+        return true
     }
 }

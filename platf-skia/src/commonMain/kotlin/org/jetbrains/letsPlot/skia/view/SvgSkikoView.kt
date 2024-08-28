@@ -98,22 +98,6 @@ abstract class SvgSkikoView() : SkikoRenderDelegate, Disposable {
         }
     }
 
-//    override fun onGestureEvent(event: SkikoGestureEvent) {
-//        val dispatcher = eventDispatcher ?: return
-//        val (kind, e) = event.translate() ?: return
-//
-//        dispatcher.dispatchMouseEvent(kind, e)
-//    }
-
-//    override fun onPointerEvent(event: SkikoPointerEvent) {
-//        val dispatcher = eventDispatcher ?: return
-//        val events = event.translate()
-//
-//        events.forEach { (kind, e) ->
-//            dispatcher.dispatchMouseEvent(kind, e)
-//        }
-//    }
-
     override fun dispose() {
         if (disposed) {
             return
@@ -129,7 +113,6 @@ abstract class SvgSkikoView() : SkikoRenderDelegate, Disposable {
         if (this::_nativeLayer.isInitialized) {
             _nativeLayer.detach()
         }
-
     }
 
     private fun needRedraw() {
