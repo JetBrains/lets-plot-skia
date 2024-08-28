@@ -24,6 +24,15 @@ From menu `Tools -> Android -> Device Manager` setup Android device.
 
 For example, Nexus 10 with Android 12 works well.
 
+- #### Java 11 Toolchain
+
+Make sure the Java 11 toolchain is installed. Otherwise, the following error may occur:
+```
+> Cannot find a Java installation on your machine matching this tasks requirements: {languageVersion=11, vendor=any, implementation=vendor-specific} ...
+  > No locally installed toolchains match and toolchain download repositories have not been configured.
+```
+
+
 ### Running Android demos
 
 In `Run configurations`

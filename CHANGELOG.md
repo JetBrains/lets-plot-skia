@@ -5,6 +5,23 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/), and this project adheres
 to [Semantic Versioning](https://semver.org/spec/v2.0.0.html). All scales should have the 'format' parameter.
 
+## [1.0.4] - 2024-08-26
+
+### Changed
+
+Dev settings were updated:
+- Lets-Plot Multiplatform: v4.4.1
+- Lets-Plot Kotlin API: v4.8.0
+
+> Note: 
+>  This build is NOT compatible with Lets-Plot v4.3.3 and earlier.
+
+### Fixed
+- Sluggish UI on Ubuntu 24.04 [[#13](https://github.com/JetBrains/lets-plot-skia/issues/13)].
+- When setting the title to Chinese, Chinese garbled characters appear [[#14](https://github.com/JetBrains/lets-plot-skia/issues/14)].
+- fontfamily aes is not supported [[#15](https://github.com/JetBrains/lets-plot-skia/issues/15)].
+- theme(exponent="pow") doesn't align text properly [[#19](https://github.com/JetBrains/lets-plot-skia/issues/19)].
+
 
 ## [1.0.3] - 2024-03-21
 
