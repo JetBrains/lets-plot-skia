@@ -32,8 +32,8 @@ kotlin {
     sourceSets {
         named("commonMain") {
             dependencies {
-                implementation(compose.runtime)
-                implementation(compose.ui)
+                compileOnly(compose.runtime)
+                compileOnly(compose.ui)
 
                 compileOnly("org.jetbrains.skiko:skiko:$skikoVersion")
                 compileOnly("org.jetbrains.lets-plot:lets-plot-kotlin-kernel:$letsPlotKotlinVersion")
@@ -44,7 +44,7 @@ kotlin {
 
         named("desktopMain") {
             dependencies {
-                //implementation(compose.desktop.currentOs)
+                compileOnly(compose.desktop.currentOs)
 
                 api(project(":platf-skia"))
                 api(project(":platf-skia-awt"))
