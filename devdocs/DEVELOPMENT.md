@@ -53,6 +53,8 @@ Make sure the Java 11 toolchain is installed. Otherwise, the following error may
 
 ### Building Skiko for Android 
 
+*This step is required when the current version of the Skiko library is not compatible with the new Compose Multiplatform version.*  
+
 To workaround for the [#761](https://github.com/JetBrains/skiko/issues/761) and use latest version of skiko library, we need to build the library manually. The process may be a bit tricky, but in general it works as follows:
 - Install `NDK` and `CMake` using `Tools -> Android -> Android SDK Manager`, `SDK Tools` tab.
 - Clone the [Skiko](git@github.com:JetBrains/skiko.git) repository
@@ -62,7 +64,10 @@ To workaround for the [#761](https://github.com/JetBrains/skiko/issues/761) and 
 - After the build is successful, find the JARs. The path is something like this:    
  `/home/user/Projects/skiko/skiko/build/repo/org/jetbrains/skiko/skiko-android-runtime-arm64/0.0.0-SNAPSHOT/skiko-android-runtime-arm64-0.0.0-20240827.190357-1.jar`  
  `/home/user/Projects/skiko/skiko/build/repo/org/jetbrains/skiko/skiko-android-runtime-x64/0.0.0-SNAPSHOT/skiko-android-runtime-x64-0.0.0-20240827.190357-1.jar`
-- Unzip the JARs and copy the libraries to the `jniLibs` directory in the Android project.
+- Unzip `skiko-android-runtime-arm64-*.jar` and copy the `libskiko-android-arm64.so` to the `<PROJECT_ROOT>/skiko-jni-libs/arm64-v8a` directory ([link](https://github.com/JetBrains/lets-plot-skia/tree/main/jniLibs/arm64-v8a)).
+- Unzip `skiko-android-runtime-x64-*.jar` and copy the `libskiko-android-x64.so` to the `<PROJECT_ROOT>/skiko-jni-libs/x86_64` directory ([link](https://github.com/JetBrains/lets-plot-skia/tree/main/skiko-jni-libs/x86_64)).
+
+Build scripts of demos will automatically copy the native libraries to the correct location.
 
 
 ### Running Android demos
