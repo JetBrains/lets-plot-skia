@@ -1,3 +1,6 @@
+import com.android.build.gradle.tasks.MergeSourceSetFolders
+import org.jetbrains.kotlin.gradle.tasks.KotlinJvmCompile
+
 /*
  * Copyright (c) 2023. JetBrains s.r.o.
  * Use of this source code is governed by the MIT license that can be found in the LICENSE file.
@@ -20,6 +23,22 @@ val skikoNativeX64: Configuration by configurations.creating
 val skikoNativeArm64: Configuration by configurations.creating
 
 //////////////////////////////////////////////////////////////////////////////////////////
+val copyJniLibs = tasks.register("copyJniLibs", Copy::class) {
+    val srcJniLibsDir = "${project.rootProject.projectDir}/skiko-jni-libs/"
+    val dstJniLibsDir = "${project.projectDir}/src/main/jniLibs/"
+
+    from(srcJniLibsDir)
+    into(dstJniLibsDir)
+    include("**/*")
+}
+
+tasks.withType<MergeSourceSetFolders>().configureEach {
+    dependsOn(copyJniLibs)
+}
+
+tasks.withType<KotlinJvmCompile>().configureEach {
+    dependsOn(copyJniLibs)
+}
 
 android {
     compileSdk = (findProperty("android.compileSdk") as String).toInt()

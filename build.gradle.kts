@@ -45,6 +45,12 @@ allprojects {
     }
 }
 
+tasks.register<Zip>("packageSkikoJniLibs") {
+    archiveFileName = "skiko-jni-libs.zip"
+    from(layout.projectDirectory.dir("skiko-jni-libs"))
+    destinationDirectory = layout.projectDirectory
+}
+
 subprojects {
     repositories {
         mavenCentral()
