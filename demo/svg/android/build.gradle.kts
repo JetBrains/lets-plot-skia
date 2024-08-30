@@ -3,21 +3,35 @@
  * Use of this source code is governed by the MIT license that can be found in the LICENSE file.
  */
 
+import com.android.build.gradle.tasks.MergeSourceSetFolders
+import org.jetbrains.kotlin.gradle.tasks.KotlinJvmCompile
+
 plugins {
     kotlin("android")
     id("com.android.application")
 }
 
-//////////////////////////////////////////////////////////////////////////////////////////
-// Android + Skiko boilerplate
-// from Skia Android Sample:
-// https://github.com/JetBrains/skiko/blob/master/samples/SkiaAndroidSample/build.gradle.kts
-//////////////////////////////////////////////////////////////////////////////////////////
-
 val skikoNativeX64: Configuration by configurations.creating
 val skikoNativeArm64: Configuration by configurations.creating
 
 //////////////////////////////////////////////////////////////////////////////////////////
+
+val copyJniLibs = tasks.register("copyJniLibs", Copy::class) {
+    val srcJniLibsDir = "${project.rootProject.projectDir}/skiko-jni-libs/"
+    val dstJniLibsDir = "${project.projectDir}/src/main/jniLibs/"
+
+    from(srcJniLibsDir)
+    into(dstJniLibsDir)
+    include("**/*")
+}
+
+tasks.withType<MergeSourceSetFolders>().configureEach {
+    dependsOn(copyJniLibs)
+}
+
+tasks.withType<KotlinJvmCompile>().configureEach {
+    dependsOn(copyJniLibs)
+}
 
 android {
     compileSdk = (findProperty("android.compileSdk") as String).toInt()

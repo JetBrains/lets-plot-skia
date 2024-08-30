@@ -14,14 +14,8 @@ class SvgSkikoViewAndroid : SvgSkikoView() {
     }
 
     override fun createSkiaLayer(view: SvgSkikoView): SkiaLayer {
-        return SkiaLayer().also {
-            //it.gesturesToListen = arrayOf(
-            //    SkikoGestureEventKind.PAN,
-            //    SkikoGestureEventKind.DOUBLETAP,
-            //    SkikoGestureEventKind.TAP,
-            //    SkikoGestureEventKind.LONGPRESS
-            //)
-            it.renderDelegate = view
+        return SkiaLayer().apply {
+            renderDelegate = view
         }
     }
 }

@@ -10,7 +10,7 @@
 
 ### Supported Targets
 - **Compose Desktop** (macOS, Windows, Linux)\
-  For more information see [Compose multiplatform compatibility and versioning overview](https://github.com/JetBrains/compose-multiplatform/blob/master/VERSIONING.md). 
+  For more information see [Compose multiplatform compatibility and versioning overview](https://www.jetbrains.com/help/kotlin-multiplatform-dev/compose-compatibility-and-versioning.html). 
 - **Android**
 - **Java Swing**
 
@@ -56,9 +56,10 @@ dependencies {
     implementation("org.jetbrains.lets-plot:lets-plot-compose:1.0.4")
 }
 ```
-Please note that due to issue [#761](https://github.com/JetBrains/skiko/issues/761) in the Skiko library and the workaround we are using, any Android project should:
-- Remove the `unzipTaskX64` and `unzipTaskArm64` tasks from `build.gradle.kts`.
-- Add the `jniLibs` directory to `src/main` and the native libraries that we built. Refer to our demos for guidance.
+Please note that due to issue [#761](https://github.com/JetBrains/skiko/issues/761) in the `Skiko` library users should use JNI libraries provided by `lets-plot-skia`. To do this:
+- Remove tasks `unzipTaskX64` and `unzipTaskArm64` from `build.gradle.kts` if they are present. They extract broken JNI libs from `Skiko` artifacts.
+- Create the `jniLibs` directory in `src/main`
+- Download `skiko-jni-libs.zip` from [releases](https://github.com/JetBrains/lets-plot-skia/releases) page and unzip it into the `src/main/jniLibs` directory.
 
 ### Java Swing
 
