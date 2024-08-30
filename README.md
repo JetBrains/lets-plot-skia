@@ -75,8 +75,8 @@ dependencies {
     implementation("org.jetbrains.lets-plot:lets-plot-kotlin-kernel:4.8.0")
 
     // Lets-Plot Multiplatform 
-    implementation("org.jetbrains.lets-plot:lets-plot-common:4.4.0")
-    implementation("org.jetbrains.lets-plot:platf-awt:4.4.0")
+    implementation("org.jetbrains.lets-plot:lets-plot-common:4.4.1")
+    implementation("org.jetbrains.lets-plot:platf-awt:4.4.1")
 
     // Lets-Plot Skia Frontend
     implementation("org.jetbrains.lets-plot:lets-plot-swing-skia:1.0.4")
