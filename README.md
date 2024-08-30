@@ -37,6 +37,7 @@ dependencies {
     implementation("org.jetbrains.lets-plot:lets-plot-compose:1.0.4")
 }
 ```
+See example: [Compose desktop](https://github.com/JetBrains/lets-plot-compose-demos/blob/main/compose-desktop/build.gradle.kts) demo.
 
 ### Compose Android
 
