@@ -1,4 +1,5 @@
-### Skiko and Compose Multiplatform versions
+### Skiko and Compose Multiplatform Versions
+
 Changing the version of `Skiko` or `Compose Multiplatform` may lead to compatibility issues and runtime errors like `MethodNotFound` or `ClassNotFound`. 
 
 The safest way to avoid these issues is to use the version of `Skiko` that was used to build your version of `Compose Multiplatform`. 
@@ -8,20 +9,26 @@ To find the correct `Skiko` version:
 1. Open the `.pom` file corresponding to your `Compose Multiplatform` version.
 2. Search within the `.pom` file for the `Skiko` version.
 
-For example, if you're using `ui-desktop-1.6.10.pom` the link will be: 
+For example, if you're using `ui-desktop-1.6.10.pom`, the link will be: 
 >https://repo1.maven.org/maven2/org/jetbrains/compose/ui/ui-desktop/1.6.10/ui-desktop-1.6.10.pom  
 
 At the bottom of the file, you will find the `skiko` version used to build the library.  
 ```xml
 <dependency>
-<groupId>org.jetbrains.skiko</groupId>
-<artifactId>skiko-awt</artifactId>
-<version>0.8.4</version>
-<scope>compile</scope>
+    <groupId>org.jetbrains.skiko</groupId>
+    <artifactId>skiko-awt</artifactId>
+    <version>0.8.4</version>
+    <scope>compile</scope>
 </dependency>
 ```
 
-### Configuring IntelliJ IDEA for Android development
+> [!IMPORTANT]
+> 
+> When updating the `Skiko` version, make sure to build and commit corresponding Skiko binaries.
+> See the [Building Skiko for Android](#building-skiko-for-android) section for details.
+
+
+### Configuring IntelliJ IDEA for Android Development
 
 - #### Android Plugin
 
@@ -50,14 +57,17 @@ For example, Nexus 10 with Android 12 works well.
 - #### Java 11 Toolchain
 
 Make sure the Java 11 toolchain is installed. Otherwise, the following error may occur:
-```
-> Cannot find a Java installation on your machine matching this tasks requirements: {languageVersion=11, vendor=any, implementation=vendor-specific} ...
-  > No locally installed toolchains match and toolchain download repositories have not been configured.
-```
+>Cannot find a Java installation on your machine matching this tasks requirements: {languageVersion=11, vendor=any, implementation=vendor-specific}
+> 
+>No locally installed toolchains match and toolchain download repositories have not been configured.
 
+<a id="building-skiko-for-android"></a>
 ### Building Skiko for Android 
 
-*This step is required when the current version of the Skiko library is not compatible with the new Compose Multiplatform version.*  
+> [!TIP]
+> 
+> Rebuild `Skiko` whenever you update the `Skiko` version.
+
 
 To workaround for the [#761](https://github.com/JetBrains/skiko/issues/761) and use latest version of skiko library, we need to build the library manually. The process may be a bit tricky, but in general it works as follows:
 - Install `NDK` and `CMake` using `Tools -> Android -> Android SDK Manager`, `SDK Tools` tab.
@@ -91,8 +101,9 @@ In `Run configurations`
 #### Android:
 
 Can't upgrade Skiko version 0.7.80 --> 0.7.81 :
-> java.lang.UnsatisfiedLinkError: dlopen failed: cannot locate symbol "_ZN4sksg4NodeD2Ev"
 
+> java.lang.UnsatisfiedLinkError: dlopen failed: cannot locate symbol "_ZN4sksg4NodeD2Ev"
+>
 > org.jetbrains.skia.Paint.<clinit>(Paint.kt:10)
 
 #### Compose Desktop:

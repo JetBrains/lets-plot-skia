@@ -56,10 +56,8 @@ dependencies {
     implementation("org.jetbrains.lets-plot:lets-plot-compose:1.0.4")
 }
 ```
-Please note that due to issue [#761](https://github.com/JetBrains/skiko/issues/761) in the `Skiko` library users should use JNI libraries provided by `lets-plot-skia`. To do this:
-- Remove tasks `unzipTaskX64` and `unzipTaskArm64` from `build.gradle.kts` if they are present. They extract broken JNI libs from `Skiko` artifacts.
-- Create the `jniLibs` directory in `src/main`
-- Download `skiko-jni-libs.zip` from [releases](https://github.com/JetBrains/lets-plot-skia/releases) page and unzip it into the `src/main/jniLibs` directory.
+
+See example: [Android minimal](https://github.com/JetBrains/lets-plot-compose-demos/blob/main/compose-android-min/build.gradle.kts) demo.
 
 ### Java Swing
 

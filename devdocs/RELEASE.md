@@ -35,7 +35,7 @@ Make sure that JNI libraries in the `skiko-jni-libs` directory are up-to-date an
  * Open the link: https://github.com/JetBrains/lets-plot-skia/releases/new
  * Fill `Tag version` and `Release title` with the released version: "vX.X.X"
  * Fill the description field - copy from the CHANGELOG.md
- * Attach the artifacts:
+ * **Attach the artifacts:**
    - `skiko-jni-libs.zip` from the project root
 
 

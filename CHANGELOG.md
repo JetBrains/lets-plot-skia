@@ -15,7 +15,7 @@ to [Semantic Versioning](https://semver.org/spec/v2.0.0.html). All scales should
 - [Lets-Plot Multiplatform](https://github.com/JetBrains/lets-plot) 4.4.1 (and up)
 
 > [!IMPORTANT]
-> In order to migrate to this version, you need to update your project build script. 
+> To migrate to this version, you need to update your project build script. 
 > 
 > See examples in the [lets-plot-compose-demos](https://github.com/JetBrains/lets-plot-compose-demos) repository:
 > - [Android minimal](https://github.com/JetBrains/lets-plot-compose-demos/blob/main/compose-android-min/build.gradle.kts) demo.
