@@ -5,13 +5,35 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/), and this project adheres
 to [Semantic Versioning](https://semver.org/spec/v2.0.0.html). All scales should have the 'format' parameter.
 
-## [1.0.4] - 2024-08-26
+## [2.0.0] - 2024-08-30
+
+### Dependencies
+
+- [Compose Multiplatform](https://github.com/JetBrains/compose-multiplatform) 1.6.10
+- [Skiko](https://github.com/JetBrains/skiko) 0.8.4
+- [Lets-Plot Kotlin API](https://github.com/JetBrains/lets-plot-kotlin) 4.8.0 (and up)
+- [Lets-Plot Multiplatform](https://github.com/JetBrains/lets-plot) 4.4.1 (and up)
+
+> [!IMPORTANT]
+> In order to migrate to this version, you need to update your project build script. 
+> 
+> See examples in the [lets-plot-compose-demos](https://github.com/JetBrains/lets-plot-compose-demos) repository:
+> - [Android minimal](https://github.com/JetBrains/lets-plot-compose-demos/blob/main/compose-android-min/build.gradle.kts) demo.
+> - [Android median](https://github.com/JetBrains/lets-plot-compose-demos/blob/main/compose-android-median/build.gradle.kts) demo.
+> - [Android animation](https://github.com/JetBrains/lets-plot-compose-demos/blob/main/compose-android-redraw/build.gradle.kts) demo.
+
 
 ### Changed
+- Kotlin 2.0.0 and Compose 1.6.10 support [[#11](https://github.com/JetBrains/lets-plot-skia/issues/11)].
 
-Dev settings were updated:
-- Lets-Plot Multiplatform: v4.4.1
-- Lets-Plot Kotlin API: v4.8.0
+## [1.0.4] - 2024-08-26
+
+### Dependencies
+
+- [Compose Multiplatform](https://github.com/JetBrains/compose-multiplatform) 1.6.2
+- [Skiko](https://github.com/JetBrains/skiko) 0.7.92
+- [Lets-Plot Kotlin API](https://github.com/JetBrains/lets-plot-kotlin) 4.8.0 (and up)
+- [Lets-Plot Multiplatform](https://github.com/JetBrains/lets-plot) 4.4.1 (and up)
 
 > Note: 
 >  This build is NOT compatible with Lets-Plot v4.3.3 and earlier.

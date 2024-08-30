@@ -1,5 +1,9 @@
 ### Skiko and Compose Multiplatform versions
-Changing the version of `Skiko` or `Compose Multiplatform` may lead to compatibility issues and runtime errors like `MethodNotFound` or `ClassNotFound`. The safest way to avoid these issues is to use the version of `Skiko` that was used to build your version of `Compose Multiplatform`. To find the correct `Skiko` version:
+Changing the version of `Skiko` or `Compose Multiplatform` may lead to compatibility issues and runtime errors like `MethodNotFound` or `ClassNotFound`. 
+
+The safest way to avoid these issues is to use the version of `Skiko` that was used to build your version of `Compose Multiplatform`. 
+
+To find the correct `Skiko` version:
 
 1. Open the `.pom` file corresponding to your `Compose Multiplatform` version.
 2. Search within the `.pom` file for the `Skiko` version.

@@ -2,7 +2,10 @@
 
 ### Make Version
 
-##### 1. Update CHANGELOG.md file
+##### 1. Update Documentation
+
+- Update CHANGELOG.md
+- Update the "Dependencies" section in README.md
 
 ##### 2. Set release version
 
