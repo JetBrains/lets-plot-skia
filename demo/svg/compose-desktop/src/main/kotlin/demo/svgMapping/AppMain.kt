@@ -19,6 +19,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.Window
 import androidx.compose.ui.window.application
 import demo.svgModel.ClipPathSvgModel
+import demo.svgModel.OpacityDemoModel
 import demo.svgModel.ReferenceSvgModel
 import demo.svgModel.SvgImageElementModel
 import org.jetbrains.letsPlot.datamodel.svg.dom.SvgSvgElement
@@ -28,7 +29,8 @@ fun main() = application {
     val items = listOf(
         "Reference SVG" to ReferenceSvgModel::createModel,
         "SvgImageElement" to SvgImageElementModel::createModel,
-        "clip-path" to ClipPathSvgModel::createModel
+        "clip-path" to ClipPathSvgModel::createModel,
+        "Opacity Demo" to OpacityDemoModel::createModel,
     )
 
     val selectedIndex = remember { mutableStateOf(0) }
@@ -41,7 +43,7 @@ fun main() = application {
                     Button(modifier = Modifier.align(Alignment.CenterVertically),
                         onClick = {
                             selectedIndex.value++
-                            if (selectedIndex.value == 3) {
+                            if (selectedIndex.value == items.size) {
                                 selectedIndex.value = 0
                             }
                         }) {
@@ -49,9 +51,12 @@ fun main() = application {
                     }
                 }
 
+                val svgRoot = items[selectedIndex.value].second()
+                val width = svgRoot.width().get()?.dp ?: 800.dp
+                val height = svgRoot.height().get()?.dp ?: 600.dp
                 svg(
-                    items[selectedIndex.value].second(),
-                    modifier = Modifier.size(600.dp, 400.dp)
+                    svgRoot,
+                    modifier = Modifier.size(width, height)
                 )
             }
         }

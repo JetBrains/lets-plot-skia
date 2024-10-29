@@ -7,29 +7,38 @@ package demo.svgModel
 
 import org.jetbrains.letsPlot.commons.geometry.DoubleVector
 import org.jetbrains.letsPlot.commons.values.Color
+import org.jetbrains.letsPlot.commons.values.Color.Companion.LIGHT_GREEN
 import org.jetbrains.letsPlot.commons.values.FontFace
 import org.jetbrains.letsPlot.commons.values.FontFamily
 import org.jetbrains.letsPlot.datamodel.svg.dom.*
-import org.jetbrains.letsPlot.datamodel.svg.dom.slim.SvgSlimElements
-import org.jetbrains.letsPlot.datamodel.svg.style.StyleSheet
+import org.jetbrains.letsPlot.datamodel.svg.dom.SvgColors.Companion.create
 import org.jetbrains.letsPlot.datamodel.svg.style.TextStyle
 
 object ReferenceSvgModel {
-    fun createModel(): SvgSvgElement {
-        val svgRoot = SvgGElement()
+    fun createModel(): SvgSvgElement = SvgSvgElement(500.0, 500.0).apply {
+        g {
+            slimG(16) {
+                var i = 20.0
+                while (i < 400) {
+                    slimLine(i, 0.0, i, 200.0, LIGHT_GREEN, 20.0)
+                    i += 40
+                }
 
-        svgRoot.children().add(createSlimGroup())
+                slimCircle(300.0, 60.0, 50.0, Color.DARK_BLUE, Color.LIGHT_YELLOW, 3.0)
+                slimPath(createClosedPathFrom(150.0, 175.0), Color.DARK_GREEN, Color.CYAN, 2.0)
+                slimRect(160.0, 50.0, 80.0, 50.0, Color.DARK_MAGENTA, Color.LIGHT_MAGENTA, 1.0)
+            }
 
-        val textStyles: Map<String, TextStyle> = mapOf(
-            "TEXT1" to TextStyle(FontFamily.SERIF.name, face = FontFace.ITALIC, size = 15.0, color = Color.BLUE),
-            "TEXT2" to TextStyle(FontFamily.SERIF.name, face = FontFace.BOLD, size = 20.0, color = Color.RED),
-            "EMC2" to TextStyle(FontFamily.HELVETICA.name, face = FontFace.BOLD, size = 22.0, color = Color.BLUE),
-        )
-        svgRoot.children().add(createStyleElement(textStyles))
+            style(
+                mapOf(
+                    "TEXT1" to TextStyle(FontFamily.SERIF.name, FontFace.ITALIC, 15.0, Color.BLUE),
+                    "TEXT2" to TextStyle(FontFamily.SERIF.name, FontFace.BOLD, 20.0, Color.RED),
+                    "EMC2" to TextStyle(FontFamily.HELVETICA.name, FontFace.BOLD, 22.0, Color.BLUE),
+                )
+            )
 
-        svgRoot.children().add(
-            SvgTextElement().apply {
-                addClass("EMC2")
+            // Superscript with baseline-shift
+            text(styleClass = "EMC2") {
                 transform().set(SvgTransformBuilder().translate(300.0, 150.0).build())
                 addTSpan(SvgTSpanElement("E=mc"))
                 addTSpan(SvgTSpanElement("2").apply {
@@ -40,11 +49,9 @@ object ReferenceSvgModel {
                     setAttribute("font-size", "50%")
                 })
             }
-        )
 
-        svgRoot.children().add(
-            SvgTextElement().apply {
-                addClass("EMC2")
+            // Subscript with dy
+            text(styleClass = "EMC2") {
                 transform().set(SvgTransformBuilder().translate(300.0, 180.0).build())
                 addTSpan(SvgTSpanElement("E=mc"))
                 addTSpan(SvgTSpanElement("2").apply {
@@ -55,147 +62,50 @@ object ReferenceSvgModel {
                     setAttribute("font-size", "50%")
                 })
             }
-        )
 
-        var text = SvgTextElement(30.0, 85.0, "Slim elements")
-        text.addClass("TEXT1")
-        SvgUtils.transformRotate(text, -45.0, 20.0, 100.0)
-        svgRoot.children().add(text)
+            text("Slim elements", x = 30.0, y = 85.0, styleClass = "TEXT1") {
+                transform().set(SvgTransformBuilder().rotate(-45.0, 20.0, 100.0).build())
+            }
 
-        svgRoot.children().add(createHLineGroup())
+            g {
+                var i = 220.0
+                while (i < 400) {
+                    line(0.0, i, 400.0, i, create(LIGHT_GREEN), 20.0)
+                    i += 40
+                }
+            }
 
-        text = SvgTextElement(20.0, 225.0, "Svg elements")
-        text.addClass("TEXT2")
-        text.stroke().set(SvgColors.CORAL)
-        text.strokeWidth().set(1.0)
-        svgRoot.children().add(text)
+            text("Svg elements", x = 20.0, y = 225.0, styleClass = "TEXT2") {
+                stroke().set(SvgColors.CORAL)
+                strokeWidth().set(1.0)
+            }
 
-        val circle = SvgCircleElement(300.0, 260.0, 50.0)
-        circle.fillColor().set(Color.LIGHT_PINK)
-        svgRoot.children().add(circle)
+            circle(300.0, 260.0, 50.0, fill = SvgColors.LIGHT_PINK)
+            rect(160.0, 250.0, 80.0, 50.0, SvgColors.GRAY, SvgColors.LIGHT_YELLOW) {
+                getAttribute(SvgConstants.SVG_STROKE_DASHARRAY_ATTRIBUTE).set(getDashes(4.3, 4.3, 1.0))
+            }
 
-        val rect = SvgRectElement(160.0, 250.0, 80.0, 50.0)
-        rect.fillColor().set(Color.VERY_LIGHT_YELLOW)
-        rect.strokeColor().set(Color.GRAY)
-        rect.getAttribute(SvgConstants.SVG_STROKE_DASHARRAY_ATTRIBUTE).set(
-            getDashes(
-                4.3,
-                4.3,
-                1.0
-            )
-        )
-        svgRoot.children().add(rect)
+            path(SvgColors.ORANGE, SvgColors.NONE, createClosedPathFrom(150.0, 375.0), 2.0) {
+                transform().set(SvgTransformBuilder().translate(0.0, -30.0).skewY(20.0).build())
+            }
 
-        var path = SvgPathElement(createClosedPathFrom(150.0, 375.0))
-        path.fillColor().set(Color.TRANSPARENT)
-        path.strokeColor().set(Color.ORANGE)
-        path.strokeWidth().set(2.0)
-        path.transform().set(SvgTransformBuilder().translate(0.0, -30.0).skewY(20.0).build())
-        svgRoot.children().add(path)
+            path(SvgColors.ORANGE, SvgColors.NONE, createUnclosedPathFrom(0.0, 200.0), 1.5)
+            path(fill = SvgColors.LIGHT_BLUE, pathData = createHoledPathFrom(350.0, 350.0))
 
-        path = SvgPathElement(createUnclosedPathFrom(0.0, 200.0))
-        path.fillColor().set(Color.TRANSPARENT)
-        path.strokeColor().set(Color.ORANGE)
-        path.strokeWidth().set(1.5)
-        svgRoot.children().add(path)
-
-        path = SvgPathElement(createHoledPathFrom(350.0, 350.0))
-        path.fillColor().set(Color.LIGHT_BLUE)
-        svgRoot.children().add(path)
-
-        svgRoot.children().add(
-            SvgGElement().apply {
+            g {
                 transform().set(
                     SvgTransformBuilder()
                         .translate(100.0, 400.0)
                         .rotate(90.0)
                         .build()
                 )
-                children().add(
-                    SvgTextElement(20.0, 25.0, "Nested rotated").apply {
-                        addClass("TEXT2")
-                        stroke().set(SvgColors.CORAL)
-                        strokeWidth().set(1.0)
-                    }
-                )
+                text("Nested rotated", 20.0, 25.0, styleClass = "TEXT2") {
+                    stroke().set(SvgColors.CORAL)
+                    strokeWidth().set(1.0)
+                }
             }
-        )
 
-        return SvgSvgElement(500.0, 500.0).apply {
-            children().add(svgRoot)
         }
-    }
-
-    private fun createStyleElement(textStyles: Map<String, TextStyle>): SvgStyleElement {
-        return SvgStyleElement(object : SvgCssResource {
-            override fun css(): String {
-                return StyleSheet(textStyles, defaultFamily = FontFamily.SERIF.toString()).toCSS()
-            }
-        })
-    }
-
-    private fun createElementGroup(element: SvgNode, className: String): SvgGElement {
-        val g = SvgGElement()
-        g.addClass(className)
-        g.children().add(element)
-        return g
-    }
-
-    private fun createSlimGroup(): SvgNode {
-        val slimGroup = SvgSlimElements.g(14)
-//                SvgTransformBuilder().rotate(180.0, 400.0, 200.0).build())      // this breaks demos
-
-        var i = 20.0
-        while (i < 400) {
-            val line = SvgSlimElements.line(i, 0.0, i, 200.0)
-            line.setStroke(Color.LIGHT_GREEN, 1.0)
-            line.setStrokeWidth(20.0)
-            line.appendTo(slimGroup)
-            i += 40
-        }
-
-        val ellipse = SvgSlimElements.circle(300.0, 60.0, 50.0)
-        ellipse.setFill(Color.LIGHT_YELLOW, 1.0)
-        ellipse.setStroke(Color.DARK_BLUE, 1.0)
-        ellipse.setStrokeWidth(3.0)
-        ellipse.appendTo(slimGroup)
-
-        val path = SvgSlimElements.path(
-            createClosedPathFrom(
-                150.0,
-                175.0
-            )
-        )
-        path.setFill(Color.CYAN, 1.0)
-        path.setStroke(Color.DARK_GREEN, 1.0)
-        path.setStrokeWidth(2.0)
-        path.appendTo(slimGroup)
-
-        val rect = SvgSlimElements.rect(160.0, 50.0, 80.0, 50.0)
-        rect.setFill(Color.LIGHT_MAGENTA, 1.0)
-        rect.setStroke(Color.DARK_MAGENTA, 1.0)
-        rect.setStrokeWidth(1.0)
-        rect.appendTo(slimGroup)
-
-
-        // must be wrapped in `normal` SvgGroup
-        val g = SvgGElement()
-        g.isPrebuiltSubtree = true
-        g.children().add(slimGroup.asDummySvgNode())
-        return g
-    }
-
-    private fun createHLineGroup(): SvgNode {
-        val g = SvgGElement()
-        var i = 220.0
-        while (i < 400) {
-            val line = SvgLineElement(0.0, i, 400.0, i)
-            line.strokeColor().set(Color.LIGHT_GREEN)
-            line.strokeWidth().set(20.0)
-            g.children().add(line)
-            i += 40
-        }
-        return g
     }
 
     private fun createClosedPathFrom(x: Double, y: Double): SvgPathData {
