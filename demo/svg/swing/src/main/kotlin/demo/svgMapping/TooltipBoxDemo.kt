@@ -59,7 +59,7 @@ private class TooltipBoxDemo : DemoBase(DEMO_BOX_SIZE) {
 
     private fun tooltip(spec: MyTooltipSpec): Pair<GroupComponent, () -> Unit> {
         val groupComponent = GroupComponent()
-        val tooltipBox = TooltipBox()
+        val tooltipBox = TooltipBox(Style.default())
         groupComponent.add(tooltipBox.rootGroup)
         return groupComponent to with(tooltipBox, spec)
     }

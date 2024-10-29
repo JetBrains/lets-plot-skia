@@ -19,6 +19,7 @@ internal abstract class Node {
     private val propFinalizers = mutableMapOf<KProperty<*>, () -> Managed?>()
 
     var isVisible: Boolean by visualProp(true)
+    var opacity: Float? by visualProp(null)
 
     internal fun invalidateComputedProp(prop: KProperty<*>) {
         val computedPropInstance = computedPropInstances[prop]  ?: error { "Class `${this::class.simpleName}` doesn't have computedProperty `${prop.name}`" }

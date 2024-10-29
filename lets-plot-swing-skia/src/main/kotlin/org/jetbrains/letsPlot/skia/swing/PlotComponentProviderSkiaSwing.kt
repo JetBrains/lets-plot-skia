@@ -24,7 +24,7 @@ internal class PlotComponentProviderSkiaSwing(
         return getPreferredSize(processedSpec, preserveAspectRatio, containerSize)
     }
 
-    override fun createComponent(containerSize: Dimension?, specOverride: Map<String, Any>?): JComponent {
+    override fun createComponent(containerSize: Dimension?, specOverrideList: List<Map<String, Any>>): JComponent {
         val plotSize = containerSize?.let {
             val preferredSize = getPreferredSize(containerSize)
             DoubleVector(preferredSize.width.toDouble(), preferredSize.height.toDouble())
