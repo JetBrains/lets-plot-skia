@@ -54,9 +54,13 @@ object ClipPathSvgModel {
                         ).apply {
                             fill().set(SvgColors.DARK_RED)
                         },
-                        SvgTextElement(100.0, 140.0, "Invisible text").apply {
+                        SvgTextElement(100.0, 120.0, "If you read this").apply {
                             textAnchor().set(SVG_TEXT_ANCHOR_MIDDLE)
-                            fillColor().set(Color.WHITE)
+                            fillColor().set(Color.DARK_GREEN)
+                        },
+                        SvgTextElement(100.0, 140.0, "then clip doesnt work(").apply {
+                            textAnchor().set(SVG_TEXT_ANCHOR_MIDDLE)
+                            fillColor().set(Color.DARK_GREEN)
                         },
                         SvgTextElement(100.0, 165.0, "Visible text").apply {
                             textAnchor().set(SVG_TEXT_ANCHOR_MIDDLE)

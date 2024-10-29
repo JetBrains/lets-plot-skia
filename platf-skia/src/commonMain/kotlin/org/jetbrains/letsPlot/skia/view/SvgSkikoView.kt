@@ -21,6 +21,7 @@ import org.jetbrains.skia.Canvas
 import org.jetbrains.skia.Matrix33
 import org.jetbrains.skia.Matrix33.Companion.IDENTITY
 import org.jetbrains.skia.Matrix33.Companion.makeScale
+import org.jetbrains.skia.Paint
 import org.jetbrains.skiko.SkiaLayer
 import org.jetbrains.skiko.SkikoRenderDelegate
 import kotlin.math.ceil
@@ -132,11 +133,20 @@ abstract class SvgSkikoView() : SkikoRenderDelegate, Disposable {
             canvas.save()
             canvas.setMatrix(scaleMatrix.makeConcat(element.ctm))
             element.clipPath?.let(canvas::clipPath)
+            val globalAlphaSet = element.opacity?.let {
+                val paint = Paint().apply {
+                    setAlphaf(it)
+                }
+                canvas.saveLayer(null, paint)
+            }
 
             if (element is Container) {
                 render(element.children, canvas, scaleMatrix)
             }
+
             element.render(canvas)
+
+            globalAlphaSet?.let { canvas.restore() }
 
             canvas.restore()
         }
