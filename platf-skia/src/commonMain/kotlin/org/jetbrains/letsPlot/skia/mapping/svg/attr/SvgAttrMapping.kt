@@ -17,7 +17,7 @@ internal abstract class SvgAttrMapping<in TargetT : Element> {
     open fun setAttribute(target: TargetT, name: String, value: Any?) {
         when (name) {
             SvgGraphicsElement.VISIBILITY.name -> target.isVisible = visibilityAsBoolean(value)
-            SvgGraphicsElement.OPACITY.name -> TODO() //target.opacity = asDouble(value)
+            SvgGraphicsElement.OPACITY.name -> target.opacity = value?.asFloat
             SvgGraphicsElement.CLIP_BOUNDS_JFX.name -> target.clipPath = (value as DoubleRectangle).let {
                 SkPath().addRect(
                     Rect.makeLTRB(
