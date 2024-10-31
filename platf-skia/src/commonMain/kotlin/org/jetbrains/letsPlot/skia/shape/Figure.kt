@@ -21,11 +21,7 @@ internal abstract class Figure : Element() {
     var fillOpacity: Float by visualProp(1f)
 
     val fillPaint: Paint? by computedProp(Figure::fill, Figure::fillOpacity, managed = true) {
-        val fill = fill ?: return@computedProp null
-
-        return@computedProp Paint().also { paint ->
-            paint.color4f = fill.withA(fillOpacity)
-        }
+        return@computedProp fillPaint(fill, fillOpacity)
     }
 
     val strokePaint: Paint? by computedProp(
@@ -36,22 +32,39 @@ internal abstract class Figure : Element() {
         Figure::strokeMiter,
         managed = true
     ) {
-        val stroke = stroke ?: return@computedProp null
+        return@computedProp strokePaint(stroke, strokeWidth, strokeOpacity, strokeDashArray, strokeMiter)
+    }
 
-        if (strokeOpacity == 0f) return@computedProp null
+    protected fun strokePaint(
+        stroke: Color4f? = null,
+        strokeWidth: Float = 1f,
+        strokeOpacity: Float = 1f,
+        strokeDashArray: List<Float>? = null,
+        strokeMiter: Float? = null // not mandatory, default works fine
+    ) : Paint? {
+        if (stroke == null) return null
+        if (strokeOpacity == 0f) return null
 
         if (strokeWidth == 0f) {
             // Handle zero width manually, because Skia threatens 0 as "hairline" width, i.e. 1 pixel.
             // Source: https://api.skia.org/classSkPaint.html#af08c5bc138e981a4e39ad1f9b165c32c
-            return@computedProp null
+            return null
         }
 
-        return@computedProp Paint().also { paint ->
-            paint.setStroke(true)
-            paint.color4f = stroke.withA(strokeOpacity)
-            paint.strokeWidth = strokeWidth
-            strokeMiter?.let { paint.strokeMiter = it }
-            strokeDashArray?.let { paint.pathEffect = makeDash(it.toFloatArray(), 0.0f) }
+        val paint = Paint()
+        paint.setStroke(true)
+        paint.color4f = stroke.withA(strokeOpacity)
+        paint.strokeWidth = strokeWidth
+        strokeMiter?.let { paint.strokeMiter = it }
+        strokeDashArray?.let { paint.pathEffect = makeDash(it.toFloatArray(), 0.0f) }
+        return paint
+    }
+
+    protected fun fillPaint(fill: Color4f? = null, fillOpacity: Float = 1f): Paint? {
+        if (fill == null) return null
+
+        return Paint().also { paint ->
+            paint.color4f = fill.withA(fillOpacity)
         }
     }
 }

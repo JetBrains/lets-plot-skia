@@ -35,16 +35,27 @@ internal class Text(
         font.metrics.descent - font.metrics.ascent
     }
 
-    private val renderData: RenderData by computedProp(Text::content, Text::font, Text::lineHeight) {
-        if (content.isEmpty()) return@computedProp RenderData.EMPTY
-        if (content.all { it.text.isEmpty() }) return@computedProp RenderData.EMPTY
+    private val styleData: List<StyleData> by computedProp(Text::content, Figure::fill, Figure::stroke, Figure::strokeWidth) {
+        content.map { textRun ->
+            StyleData(
+                fillPaint = fillPaint(textRun.fill ?: fill),
+                strokePaint = strokePaint(
+                    stroke = textRun.stroke ?: stroke,
+                    strokeWidth = textRun.strokeWidth ?: strokeWidth
+                )
+            )
+        }
+    }
 
-        val blobBuilder = TextBlobBuilder()
+    private val textData: List<TextData> by computedProp(Text::content, Text::font, Text::lineHeight) {
+        if (content.isEmpty()) return@computedProp emptyList()
+        if (content.all { it.text.isEmpty() }) return@computedProp emptyList()
+
         val bboxes = mutableListOf<Rect>()
         var currentPosX = 0f
 
-        content.forEach { textRun ->
-
+        content.map { textRun ->
+            val blobBuilder = TextBlobBuilder()
             val glyphs = font.getStringGlyphs(textRun.text)
             val glyphXPos = font.getXPositions(glyphs, currentPosX)
             val xPosRange = (glyphXPos.firstOrNull() ?: 0f)..(glyphXPos.lastOrNull() ?: 0f)
@@ -75,22 +86,19 @@ internal class Text(
             bboxes.add(bbox)
 
             currentPosX += bbox.width
+
+            TextData(
+                blob = blobBuilder.build() ?: error("content is not empty, but textBlob is null"),
+                left = bbox.left,
+                top = bbox.top,
+                width = bbox.width,
+                height = bbox.height,
+            )
         }
-
-        val textBlob = blobBuilder.build() ?: error("content is not empty, but textBlob is null")
-        val overallBbox = union(bboxes) ?: error("content is not empty, but overallBbox is null")
-
-        return@computedProp RenderData(
-            textBlob = textBlob,
-            left = overallBbox.left,
-            top = overallBbox.top,
-            width = overallBbox.width,
-            height = overallBbox.height,
-        )
     }
 
-    private val cx by computedProp(Text::renderData, Text::textAlignment) {
-        val width = renderData.width
+    private val cx by computedProp(Text::textData, Text::textAlignment) {
+        val width = textData.fold(0f) { acc, v -> acc + v.width }
 
         when (textAlignment) {
             HorizontalAlignment.LEFT -> 0.0f
@@ -110,19 +118,27 @@ internal class Text(
     }
 
     override fun render(canvas: Canvas) {
-        val textBlob = renderData.textBlob ?: return
+        textData.zip(styleData).forEach { (text, style) ->
+            val textBlob = text.blob
 
-        fillPaint?.let { canvas.drawTextBlob(textBlob, x + cx, y + cy, it) }
-        strokePaint?.let { canvas.drawTextBlob(textBlob, x + cx, y + cy, it) }
+            style.fillPaint?.let { canvas.drawTextBlob(textBlob, x + cx, y + cy, it) }
+            style.strokePaint?.let { canvas.drawTextBlob(textBlob, x + cx, y + cy, it) }
+        }
     }
 
     override val localBounds: Rect
-        get() = Rect.makeLTRB(
-            x + cx + renderData.left,
-            y + cy + renderData.top,
-            x + cx + renderData.right,
-            y + cy + renderData.bottom
-        )
+        get() {
+            val left = textData.minOf { it.left }
+            val top = textData.minOf { it.top }
+            val right = textData.maxOf { it.right }
+            val bottom = textData.maxOf { it.bottom }
+            return Rect.makeLTRB(
+                x + cx + left,
+                y + cy + top,
+                x + cx + right,
+                y + cy + bottom
+            )
+        }
 
     enum class VerticalAlignment {
         TOP,
@@ -135,11 +151,14 @@ internal class Text(
         RIGHT
     }
 
-    data class TextRun(
-        val text: String,
-        val baselineShift: BaselineShift = BaselineShift.NONE,
-        val dy: Float = 0f,
-        val fontScale: Float = 1f,
+    class TextRun(
+        var text: String = "",
+        var baselineShift: BaselineShift = BaselineShift.NONE,
+        var dy: Float = 0f,
+        var fontScale: Float = 1f,
+        var fill: Color4f? = null,
+        var stroke: Color4f? = null,
+        var strokeWidth: Float? = null,
     )
 
     enum class BaselineShift(
@@ -150,8 +169,8 @@ internal class Text(
         NONE(0f)
     }
 
-    private class RenderData(
-        val textBlob: TextBlob?,
+    private class TextData(
+        val blob: TextBlob,
         val left: Float,
         val top: Float,
         val width: Float,
@@ -159,11 +178,12 @@ internal class Text(
     ) {
         val right = left + width
         val bottom = top + height
-
-        companion object {
-            val EMPTY = RenderData(null, 0f, 0f, 0f, 0f)
-        }
     }
+
+    private class StyleData(
+        val fillPaint: Paint?,
+        val strokePaint: Paint?,
+    )
 
     private val widthCorrectionCoef = 0f
 

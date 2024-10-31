@@ -5,14 +5,10 @@
 
 package org.jetbrains.letsPlot.skia.mapping.svg.attr
 
-import org.jetbrains.letsPlot.commons.values.Color
-import org.jetbrains.letsPlot.datamodel.svg.dom.SvgColors
 import org.jetbrains.letsPlot.datamodel.svg.dom.SvgConstants
 import org.jetbrains.letsPlot.datamodel.svg.dom.SvgShape
+import org.jetbrains.letsPlot.skia.mapping.svg.SvgUtils.toColor
 import org.jetbrains.letsPlot.skia.shape.Figure
-import org.jetbrains.letsPlot.skia.shape.asSkiaColor
-import org.jetbrains.letsPlot.skia.shape.namedColors
-import org.jetbrains.skia.Color4f
 
 internal abstract class SvgShapeMapping<TargetT : Figure> : SvgAttrMapping<TargetT>() {
     override fun setAttribute(target: TargetT, name: String, value: Any?) {
@@ -28,26 +24,6 @@ internal abstract class SvgShapeMapping<TargetT : Figure> : SvgAttrMapping<Targe
             }
 
             else -> super.setAttribute(target, name, value)
-        }
-    }
-
-    companion object {
-
-        /**
-         * value : the color name (string) or SvgColor (jetbrains.datalore.vis.svg)
-         */
-        private fun toColor(value: Any?): Color4f? {
-            require(value != SvgColors.CURRENT_COLOR) { "currentColor is not supported" }
-
-            return when (value) {
-                null, SvgColors.NONE -> null
-                else -> {
-                    val colorString = value.toString().lowercase()
-                    namedColors[colorString]
-                        ?: Color.parseOrNull(colorString)
-                        ?: error("Unsupported color value: $colorString")
-                }
-            }?.asSkiaColor
         }
     }
 }

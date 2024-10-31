@@ -10,7 +10,6 @@ import org.jetbrains.skia.*
 
 internal object DebugOptions {
     const val DEBUG_DRAWING_ENABLED: Boolean = false
-    const val VALIDATE_MANAGED_PROPERTIES = false
 
     fun drawBoundingBoxes(rootElement: Pane, canvas: Canvas, scaleMatrix: Matrix33) {
         val strokePaint = Paint().setStroke(true)

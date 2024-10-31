@@ -12,6 +12,7 @@ import org.jetbrains.letsPlot.commons.intern.observable.property.WritablePropert
 import org.jetbrains.letsPlot.datamodel.mapping.framework.Synchronizers
 import org.jetbrains.letsPlot.datamodel.svg.dom.*
 import org.jetbrains.letsPlot.datamodel.svg.style.StyleSheet
+import org.jetbrains.letsPlot.skia.mapping.svg.attr.SvgTSpanElementAttrMapping
 import org.jetbrains.letsPlot.skia.mapping.svg.attr.SvgTextElementAttrMapping
 import org.jetbrains.letsPlot.skia.shape.Text
 import org.jetbrains.letsPlot.skia.shape.asSkiaColor
@@ -75,41 +76,8 @@ internal class SvgTextElementMapper(
                 return nodes.flatMap { node ->
                     val nodeTextRuns = when (node) {
                         is SvgTextNode -> listOf(Text.TextRun(node.textContent().get()))
-                        is SvgTSpanElement -> node.children().map { child ->
-                            require(child is SvgTextNode)
-                            val fontScale = node.getAttribute("font-size").get()?.let {
-                                require(it is String) { "font-size: only string value is supported" }
-                                when {
-                                    "em" in it -> it.removeSuffix("em").toFloat()
-                                    "%" in it -> it.removeSuffix("%").toFloat() / 100.0f
-                                    else -> null
-                                }
-                            }
-                            // TODO: replace with Specs from LP
-                            val baselineShift = node.getAttribute("baseline-shift").get()?.let {
-                                when (it) {
-                                    "sub" -> Text.BaselineShift.SUB
-                                    "super" -> Text.BaselineShift.SUPER
-                                    else -> error("Unexpected baseline-shift value: $it")
-                                }
-                            }
-
-                            val dy = node.getAttribute("dy").get()?.let {
-                                require(it is String) { "dy: only string value is supported" }
-                                when {
-                                    "em" in it -> it.removeSuffix("em").toFloat()
-                                    "%" in it -> it.removeSuffix("%").toFloat() / 100.0f
-                                    else -> null
-                                }
-                            }
-
-                            Text.TextRun(
-                                text = child.textContent().get(),
-                                baselineShift = baselineShift ?: Text.BaselineShift.NONE,
-                                dy = dy ?: 0f,
-                                fontScale = fontScale ?: 1f,
-                            )
-                        }
+                        is SvgTSpanElement -> handleTSpanElement(node)
+                        is SvgAElement -> handleAElement()
 
                         else -> error("Unexpected node type: ${node::class.simpleName}")
                     }
@@ -131,6 +99,16 @@ internal class SvgTextElementMapper(
                 }
             }
         }
+
+        private fun handleTSpanElement(node: SvgTSpanElement): List<Text.TextRun> =
+            node.children().map { child ->
+                require(child is SvgTextNode)
+                val textRun = Text.TextRun(child.textContent().get())
+                SvgTSpanElementAttrMapping.setAttributes(textRun, node)
+                textRun
+            }
+
+        private fun handleAElement(): List<Text.TextRun> = emptyList()
 
         private class TextAttributesSupport(val target: Text) {
             private var mySvgTextAnchor: String? = null

@@ -164,16 +164,47 @@ internal fun SvgNode.text(
     text: String? = null,
     x: Number? = null,
     y: Number? = null,
+    fill: SvgColor? = null,
     styleClass: String? = null,
     id: String? = null,
     config: SvgTextElement.() -> Unit = {},
 ): SvgTextElement {
     val el = SvgTextElement()
-    id?.let { el.id().set(it) }
+    text?.let { el.setTextNode(it) }
     x?.let { el.x().set(it.toDouble()) }
     y?.let { el.y().set(it.toDouble()) }
-    text?.let { el.setTextNode(it) }
+    fill?.let { el.fill().set(it) }
     styleClass?.let { el.addClass(it) }
+    id?.let { el.id().set(it) }
+
+    el.apply(config)
+    children().add(el)
+    return el
+}
+
+internal fun SvgTextElement.tspan(
+    text: String,
+    x: Number? = null,
+    y: Number? = null,
+    dy: String? = null, // only em is supported
+    fontSize: String? = null, // only percent is supported
+    baselineShift: String? = null, // only percent is supported
+    fill: SvgColor? = null,
+    stroke: SvgColor? = null,
+    strokeWidth: Number? = null,
+    styleClass: String? = null,
+    config: SvgTSpanElement.() -> Unit = {},
+): SvgTSpanElement {
+    val el = SvgTSpanElement(text)
+    x?.let { el.x().set(it.toDouble()) }
+    y?.let { el.y().set(it.toDouble()) }
+    dy?.let { el.setAttribute("dy", it) }
+    baselineShift?.let { el.setAttribute("baseline-shift", it) }
+    fontSize?.let { el.setAttribute("font-size", it) }
+    fill?.let { el.fill().set(it) }
+    stroke?.let { el.stroke().set(it) }
+    strokeWidth?.let { el.strokeWidth().set(it.toDouble()) }
+    styleClass?.let { el.addClass(styleClass) }
 
     el.apply(config)
     children().add(el)

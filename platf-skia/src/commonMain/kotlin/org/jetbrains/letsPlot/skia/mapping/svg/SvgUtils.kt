@@ -6,9 +6,11 @@
 package org.jetbrains.letsPlot.skia.mapping.svg
 
 
+import org.jetbrains.letsPlot.commons.values.Color
 import org.jetbrains.letsPlot.datamodel.svg.dom.*
 import org.jetbrains.letsPlot.skia.mapping.svg.attr.*
 import org.jetbrains.letsPlot.skia.shape.*
+import org.jetbrains.skia.Color4f
 import kotlin.reflect.KClass
 
 
@@ -98,5 +100,23 @@ internal object SvgUtils {
             target.setAttribute(spec, source.getAttribute(attributeSpec).get())
         }
     }
+
+    /**
+     * value : the color name (string) or SvgColor (jetbrains.datalore.vis.svg)
+     */
+    fun toColor(value: Any?): Color4f? {
+        require(value != SvgColors.CURRENT_COLOR) { "currentColor is not supported" }
+
+        return when (value) {
+            null, SvgColors.NONE -> null
+            else -> {
+                val colorString = value.toString().lowercase()
+                namedColors[colorString]
+                    ?: Color.parseOrNull(colorString)
+                    ?: error("Unsupported color value: $colorString")
+            }
+        }?.asSkiaColor
+    }
+
 }
 

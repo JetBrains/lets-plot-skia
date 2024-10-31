@@ -38,29 +38,25 @@ object ReferenceSvgModel {
             )
 
             // Superscript with baseline-shift
-            text(styleClass = "EMC2") {
-                transform().set(SvgTransformBuilder().translate(300.0, 150.0).build())
-                addTSpan(SvgTSpanElement("E=mc"))
-                addTSpan(SvgTSpanElement("2").apply {
-                    setAttribute("baseline-shift", "super")
-                    setAttribute("font-size", "75%")
-                })
-                addTSpan(SvgTSpanElement("with baseline-shift").apply {
-                    setAttribute("font-size", "50%")
-                })
+            text(x = 300.0, y = 150.0, styleClass = "EMC2") {
+                tspan("E=mc")
+                tspan("2", baselineShift = "super", fontSize = "75%")
+                tspan("with baseline-shift", fontSize = "50%")
             }
 
             // Subscript with dy
-            text(styleClass = "EMC2") {
-                transform().set(SvgTransformBuilder().translate(300.0, 180.0).build())
-                addTSpan(SvgTSpanElement("E=mc"))
-                addTSpan(SvgTSpanElement("2").apply {
-                    setAttribute("dy", "-0.4em")
-                    setAttribute("font-size", "75%")
-                })
-                addTSpan(SvgTSpanElement("with dy").apply {
-                    setAttribute("font-size", "50%")
-                })
+            text(x = 300.0, y = 180.0, styleClass = "EMC2") {
+                tspan("E=mc")
+                tspan("2", dy = "-0.4em", fontSize = "75%")
+                tspan("with dy", fontSize = "50%")
+            }
+
+            // Multi-style text
+            text(x = 300.0, y = 210.0, fill = SvgColors.ORANGE) {
+                tspan("Red", fill = SvgColors.RED)
+                tspan("-")
+                tspan("green", fill = SvgColors.GREEN)
+                tspan(" text")
             }
 
             text("Slim elements", x = 30.0, y = 85.0, styleClass = "TEXT1") {
