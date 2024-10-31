@@ -15,13 +15,12 @@ pluginManagement {
 
         kotlin("jvm").version(kotlinVersion)
         kotlin("multiplatform").version(kotlinVersion)
-        kotlin("android").version(kotlinVersion)
         kotlin("plugin.compose").version(kotlinVersion)
-
         id("org.jetbrains.compose").version(composeVersion)
 
-        id("com.android.application").version(agpVersion)
-        id("com.android.library").version(agpVersion)
+        //kotlin("android").version(kotlinVersion)
+        //id("com.android.application").version(agpVersion)
+        //id("com.android.library").version(agpVersion)
 
         id("io.codearte.nexus-staging") version nexusStagingVersion
         id("io.github.gradle-nexus.publish-plugin") version nexusPublishVersion
@@ -64,7 +63,7 @@ project(":demo-svg-swing").projectDir = File("./demo/svg/swing")
 include("demo-plot-swing")
 project(":demo-plot-swing").projectDir = File("./demo/plot/swing")
 
-
+/*
 // Android SVG
 include("demo-svg-android")
 project(":demo-svg-android").projectDir = File("./demo/svg/android")
@@ -83,3 +82,4 @@ project(":demo-plot-compose-android-median").projectDir = File("./demo/plot/comp
 // Android Plot Redraw
 include("demo-plot-compose-android-redraw")
 project(":demo-plot-compose-android-redraw").projectDir = File("./demo/plot/compose-android-redraw")
+*/

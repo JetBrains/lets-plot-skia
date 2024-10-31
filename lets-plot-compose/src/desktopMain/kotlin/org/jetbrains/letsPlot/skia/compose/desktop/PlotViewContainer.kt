@@ -29,7 +29,7 @@ class PlotViewContainer(
 
     private var needUpdate = false
     private var dispatchComputationMessages = true
-    private lateinit var processedSpec: Map<String, Any>
+    private var processedSpec: Map<String, Any>? = null
 
     var figure: Figure? = null
         set(fig) {
@@ -84,6 +84,7 @@ class PlotViewContainer(
 
     fun updatePlotView() {
         LOG.print("updatePlotView() - needUpdate: $needUpdate, preserveAspectRatio: $preserveAspectRatio size: $size")
+        val processedSpec = processedSpec ?: return
 
         if (!needUpdate) {
             return

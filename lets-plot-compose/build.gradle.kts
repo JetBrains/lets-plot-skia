@@ -6,7 +6,7 @@
 plugins {
     kotlin("multiplatform")
     kotlin("plugin.compose")
-    id("com.android.library")
+    //id("com.android.library")
     id("org.jetbrains.compose")
     `maven-publish`
     signing
@@ -25,9 +25,9 @@ kotlin {
         }
     }
 
-    androidTarget {
-        publishLibraryVariants("release")
-    }
+    //androidTarget {
+    //    publishLibraryVariants("release")
+    //}
 
     sourceSets {
         named("commonMain") {
@@ -53,43 +53,42 @@ kotlin {
             }
         }
 
-        named("androidMain") {
-            dependencies {
-                compileOnly("org.jetbrains.skiko:skiko-android:$skikoVersion")
-
-                api(project(":platf-skia"))
-            }
-        }
+        //named("androidMain") {
+        //    dependencies {
+        //        compileOnly("org.jetbrains.skiko:skiko-android:$skikoVersion")
+        //        api(project(":platf-skia"))
+        //    }
+        //}
     }
 }
 
-android {
-    namespace = "org.jetbrains.letsPlot.skia.compose"
-
-    compileSdk = (findProperty("android.compileSdk") as String).toInt()
-
-    sourceSets["main"].manifest.srcFile("src/androidMain/AndroidManifest.xml")
-
-    defaultConfig {
-        minSdk = (findProperty("android.minSdk") as String).toInt()
-    }
-
-    buildTypes {
-        getByName("release") {
-            isMinifyEnabled = false // true - error: when compiling demo cant resolve classes
-//            proguardFiles(getDefaultProguardFile("proguard-android.txt"), "proguard-rules.pro")
-        }
-    }
-
-    compileOptions {
-        sourceCompatibility = JavaVersion.VERSION_11
-        targetCompatibility = JavaVersion.VERSION_11
-    }
-
-    kotlin {
-        jvmToolchain(11)
-    }
-}
+//android {
+//    namespace = "org.jetbrains.letsPlot.skia.compose"
+//
+//    compileSdk = (findProperty("android.compileSdk") as String).toInt()
+//
+//    sourceSets["main"].manifest.srcFile("src/androidMain/AndroidManifest.xml")
+//
+//    defaultConfig {
+//        minSdk = (findProperty("android.minSdk") as String).toInt()
+//    }
+//
+//    buildTypes {
+//        getByName("release") {
+//            isMinifyEnabled = false // true - error: when compiling demo cant resolve classes
+////            proguardFiles(getDefaultProguardFile("proguard-android.txt"), "proguard-rules.pro")
+//        }
+//    }
+//
+//    compileOptions {
+//        sourceCompatibility = JavaVersion.VERSION_11
+//        targetCompatibility = JavaVersion.VERSION_11
+//    }
+//
+//    kotlin {
+//        jvmToolchain(11)
+//    }
+//}
 
 
 ///////////////////////////////////////////////

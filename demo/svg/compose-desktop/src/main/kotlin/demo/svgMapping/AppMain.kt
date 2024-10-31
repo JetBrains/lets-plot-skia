@@ -67,6 +67,9 @@ private fun svg(
         modifier = modifier,
         factory = {
             SvgPanel(svg)
+        },
+        update = {
+            it.svg = svg
         }
     )
 }

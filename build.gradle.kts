@@ -11,13 +11,13 @@ plugins {
     kotlin("multiplatform").apply(false)
     kotlin("plugin.compose").apply(false)
     kotlin("jvm").apply(false)
-    kotlin("android").apply(false)
-    id("com.android.application").apply(false)
-    id("com.android.library").apply(false)
     id("org.jetbrains.compose").apply(false)
 
-    id("io.codearte.nexus-staging").apply(false)
+    //kotlin("android").apply(false)
+    //id("com.android.application").apply(false)
+    //id("com.android.library").apply(false)
 
+    id("io.codearte.nexus-staging").apply(false)
     id("io.github.gradle-nexus.publish-plugin")
 }
 
