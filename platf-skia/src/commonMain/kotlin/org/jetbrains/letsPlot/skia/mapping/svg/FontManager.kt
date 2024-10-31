@@ -12,24 +12,42 @@ import org.jetbrains.skia.Typeface
 
 class FontManager {
     fun matchFamiliesStyle(fontFamily: List<String>, fontStyle: FontStyle): Typeface {
-        return typefaces.getOrPut(fontFamily to fontStyle) {
-            FontMgr.default.matchFamiliesStyle(fontFamily.toTypedArray(), fontStyle) ?: Typeface.makeEmpty()
+        val fontConfig = fontFamily to fontStyle
+
+        if (fontConfig in typefaceCache) {
+            return typefaceCache.getValue(fontConfig)
         }
+
+        var typeface = FontMgr.default.matchFamiliesStyle(fontFamily.toTypedArray(), fontStyle)
+        if (typeface == null || typeface.familyName == "") {
+            typeface = FontMgr.default.matchFamilyStyle("sans-serif", fontStyle)
+        }
+
+        if (typeface == null || typeface.familyName == "") {
+            println("Font not found: [${fontFamily.joinToString()}]")
+            typeface = Typeface.makeEmpty()
+        }
+
+        typefaceCache[fontConfig] = typeface
+        return typeface
     }
 
     fun font(typeface: Typeface, fontSize: Float): Font {
-        return fonts.getOrPut(typeface to fontSize) {
-            Font(typeface, fontSize).apply { isSubpixel = true }
-        }
+        return fontCache
+            .getOrPut(typeface to fontSize) {
+                Font(typeface, fontSize).apply {
+                    isSubpixel = true
+                }
+            }
     }
 
     fun dispose() {
-        typefaces.values.forEach(Typeface::close)
-        typefaces.clear()
-        fonts.values.forEach(Font::close)
-        fonts.clear()
+        typefaceCache.values.forEach(Typeface::close)
+        typefaceCache.clear()
+        fontCache.values.forEach(Font::close)
+        fontCache.clear()
     }
 
-    private val typefaces = mutableMapOf<Pair<List<String>, FontStyle>, Typeface>()
-    private val fonts = mutableMapOf<Pair<Typeface, Float>, Font>()
+    private val typefaceCache = mutableMapOf<Pair<List<String>, FontStyle>, Typeface>()
+    private val fontCache = mutableMapOf<Pair<Typeface, Float>, Font>()
 }
