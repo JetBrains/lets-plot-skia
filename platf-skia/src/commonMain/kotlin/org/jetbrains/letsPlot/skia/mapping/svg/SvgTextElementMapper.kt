@@ -9,7 +9,6 @@ import org.jetbrains.letsPlot.commons.intern.observable.collections.ObservableCo
 import org.jetbrains.letsPlot.commons.intern.observable.property.ReadableProperty
 import org.jetbrains.letsPlot.commons.intern.observable.property.SimpleCollectionProperty
 import org.jetbrains.letsPlot.commons.intern.observable.property.WritableProperty
-import org.jetbrains.letsPlot.commons.values.Color
 import org.jetbrains.letsPlot.datamodel.mapping.framework.Synchronizers
 import org.jetbrains.letsPlot.datamodel.svg.dom.*
 import org.jetbrains.letsPlot.datamodel.svg.style.StyleSheet
@@ -39,7 +38,7 @@ internal class SvgTextElementMapper(
         super.registerSynchronizers(conf)
 
         // Sync TextNodes, TextSpans
-        val sourceTextRunProperty = sourceTextRunProperty(source.children())
+        val sourceTextRunProperty = sourceTextRunProperty(source.children(), peer.styleSheet)
         val targetTextRunProperty = targetTextRunProperty(target)
         conf.add(
             Synchronizers.forPropsOneWay(
@@ -72,13 +71,16 @@ internal class SvgTextElementMapper(
     }
 
     companion object {
-        private fun sourceTextRunProperty(nodes: ObservableCollection<SvgNode>): ReadableProperty<List<Text.TextRun>> {
+        private fun sourceTextRunProperty(
+            nodes: ObservableCollection<SvgNode>,
+            styleSheet: StyleSheet?
+        ): ReadableProperty<List<Text.TextRun>> {
             fun textRuns(nodes: ObservableCollection<SvgNode>): List<Text.TextRun> {
                 return nodes.flatMap { node ->
                     val nodeTextRuns = when (node) {
                         is SvgTextNode -> listOf(Text.TextRun(node.textContent().get()))
-                        is SvgTSpanElement -> handleTSpanElement(node)
-                        is SvgAElement -> handleAElement(node)
+                        is SvgTSpanElement -> handleTSpanElement(node, styleSheet)
+                        is SvgAElement -> handleAElement(node, styleSheet)
 
                         else -> error("Unexpected node type: ${node::class.simpleName}")
                     }
@@ -101,26 +103,29 @@ internal class SvgTextElementMapper(
             }
         }
 
-        private fun handleTSpanElement(node: SvgTSpanElement): List<Text.TextRun> =
+        private fun handleTSpanElement(node: SvgTSpanElement, styleSheet: StyleSheet?): List<Text.TextRun> =
             node.children().map { child ->
                 require(child is SvgTextNode)
                 val textRun = Text.TextRun(child.textContent().get())
                 SvgTSpanElementAttrMapping.setAttributes(textRun, node)
+
+                val style = styleSheet?.getTextStyle(node.fullClass())
+
+                if (style?.isNoneColor == false) {
+                    textRun.fill = style.color.asSkiaColor
+                }
                 textRun
             }
 
-        private fun handleAElement(node: SvgAElement): List<Text.TextRun> {
+        private fun handleAElement(node: SvgAElement, styleSheet: StyleSheet?): List<Text.TextRun> {
             val href = node.getAttribute("href").get() as String
-            return node.children().map { child ->
+            return node.children().flatMap { child ->
                 require(child is SvgTSpanElement)
-                handleTSpanElement(child)
+                handleTSpanElement(child, styleSheet)
             }
-                .flatten()
-                .onEach { it.fill = Color.DARK_BLUE.asSkiaColor }
-
         }
 
-                private class TextAttributesSupport(val target: Text) {
+        private class TextAttributesSupport(val target: Text) {
             private var mySvgTextAnchor: String? = null
 
             fun setAttribute(name: String, value: Any?) {
