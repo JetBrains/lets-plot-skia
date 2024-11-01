@@ -8,6 +8,7 @@ package org.jetbrains.letsPlot.skia.builderLW
 import org.jetbrains.letsPlot.commons.event.MouseEvent
 import org.jetbrains.letsPlot.commons.event.MouseEventSpec
 import org.jetbrains.letsPlot.commons.geometry.Rectangle
+import org.jetbrains.letsPlot.commons.intern.observable.event.EventHandler
 import org.jetbrains.letsPlot.commons.registration.Disposable
 import org.jetbrains.letsPlot.commons.registration.Registration
 import org.jetbrains.letsPlot.datamodel.svg.dom.SvgSvgElement
@@ -29,6 +30,9 @@ internal class SimpleModel(
 ) : ViewModel(svg,
     eventDispatcher = object : SkikoViewEventDispatcher {
         override fun dispatchMouseEvent(kind: MouseEventSpec, e: MouseEvent) {} // ignore events
+        override fun addEventHandler(eventSpec: MouseEventSpec, eventHandler: EventHandler<MouseEvent>): Registration {
+            return Registration.EMPTY
+        }
     }
 ) {
     override val bounds: Rectangle

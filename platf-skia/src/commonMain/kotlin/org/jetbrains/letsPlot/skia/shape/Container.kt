@@ -32,11 +32,11 @@ internal abstract class Container : Element() {
 
     override fun onPropertyChanged(prop: KProperty<*>) {
         if (prop == Element::transform) {
-            childrenDeepTraversal(this).forEach { it.invalidateComputedProp(Element::ctm) }
+            breadthFirstTraversal(this).forEach { it.invalidateComputedProp(Element::ctm) }
         }
 
         if (prop == Element::ctm) {
-            childrenDeepTraversal(this).forEach { it.invalidateComputedProp(Element::ctm) }
+            breadthFirstTraversal(this).forEach { it.invalidateComputedProp(Element::ctm) }
         }
 
         if (prop == Element::parent) {
@@ -64,7 +64,7 @@ internal abstract class Container : Element() {
     private fun invalidateHierarchy(e: Element) {
         e.invalidateComputedProp(Element::parents)
         e.invalidateComputedProp(Element::ctm)
-        childrenDeepTraversal(e).forEach {
+        breadthFirstTraversal(e).forEach {
             it.invalidateComputedProp(Element::parents)
             it.invalidateComputedProp(Element::ctm)
         }

@@ -9,6 +9,8 @@ import org.jetbrains.letsPlot.commons.event.MouseEvent
 import org.jetbrains.letsPlot.commons.event.MouseEventSpec
 import org.jetbrains.letsPlot.commons.geometry.Rectangle
 import org.jetbrains.letsPlot.commons.geometry.Vector
+import org.jetbrains.letsPlot.commons.intern.observable.event.EventHandler
+import org.jetbrains.letsPlot.commons.registration.Registration
 import org.jetbrains.letsPlot.skia.view.SkikoViewEventDispatcher
 
 class CompositeFigureEventDispatcher() : SkikoViewEventDispatcher {
@@ -32,5 +34,10 @@ class CompositeFigureEventDispatcher() : SkikoViewEventDispatcher {
                 )
             )
         }
+    }
+
+    override fun addEventHandler(eventSpec: MouseEventSpec, eventHandler: EventHandler<MouseEvent>): Registration {
+        println("NOT IMPLEMENTED: CompositeFigureEventDispatcher.addEventHandler()")
+        return Registration.EMPTY
     }
 }

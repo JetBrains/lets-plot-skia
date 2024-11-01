@@ -76,31 +76,51 @@ internal fun union(rects: List<Rect>): Rect? =
         }
     }
 
-internal fun childrenDeepTraversal(element: Element): Sequence<Element> {
-    return when (element) {
-        is Container -> element.children.asSequence() + element.children.flatMap(::childrenDeepTraversal)
-        else -> emptySequence()
-    }
-}
-
-internal fun depthFirstTraversal(element: Element, visit: (Element) -> Unit) {
-    visit(element)
-    if (element is Container) {
-        depthFirstTraversal(element.children, visit)
-    }
-}
-
-internal fun depthFirstTraversal(elements: List<Element>, visit: (Element) -> Unit) {
-    elements.forEach {
-        when (it) {
-            is Container -> {
-                visit(it)
-                depthFirstTraversal(it.children, visit)
-            }
-
-            else -> visit(it)
+internal fun breadthFirstTraversal(element: Element): Sequence<Element> {
+    fun enumerate(element: Element): Sequence<Element> {
+        return when (element) {
+            is Container -> element.children.asSequence() + element.children.asSequence().flatMap(::enumerate)
+            else -> emptySequence()
         }
     }
+
+    return sequenceOf(element) + enumerate(element)
+}
+
+internal fun reversedBreadthFirstTraversal(element: Element): Sequence<Element> {
+    fun enumerate(element: Element): Sequence<Element> {
+        return when (element) {
+            is Container -> {
+                val reversed = element.children.asReversed().asSequence()
+                reversed.flatMap(::enumerate) + reversed
+            }
+            else -> emptySequence()
+        }
+    }
+
+    return enumerate(element) + sequenceOf(element)
+}
+
+internal fun depthFirstTraversal(element: Element): Sequence<Element> {
+    fun enumerate(el: Element): Sequence<Element> {
+        return when (el) {
+            is Container -> sequenceOf(el) + el.children.asSequence().flatMap(::enumerate)
+            else -> sequenceOf(el)
+        }
+    }
+
+    return enumerate(element)
+}
+
+internal fun reversedDepthFirstTraversal(element: Element): Sequence<Element> {
+    fun enumerate(el: Element): Sequence<Element> {
+        return when (el) {
+            is Container -> el.children.asReversed().asSequence().flatMap(::enumerate) + sequenceOf(el)
+            else -> sequenceOf(el)
+        }
+    }
+
+    return enumerate(element)
 }
 
 fun Matrix33.repr(): String {
@@ -120,6 +140,14 @@ fun Matrix33.repr(): String {
     if (elements.isEmpty()) {
         return "identity"
     }
-        
+
     return elements.joinToString(separator = " ")
+}
+
+fun Rect.contains(x: Float, y: Float): Boolean {
+    return x in left..right && y in top..bottom
+}
+
+fun Rect.contains(x: Int, y: Int): Boolean {
+    return x.toFloat() in left..right && y.toFloat() in top..bottom
 }

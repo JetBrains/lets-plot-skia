@@ -5,8 +5,11 @@
 
 package org.jetbrains.letsPlot.skia.mapping.svg
 
+import org.jetbrains.letsPlot.commons.values.Color
 import org.jetbrains.letsPlot.skia.shape.*
-import org.jetbrains.skia.*
+import org.jetbrains.skia.Canvas
+import org.jetbrains.skia.Matrix33
+import org.jetbrains.skia.Paint
 
 internal object DebugOptions {
     const val DEBUG_DRAWING_ENABLED: Boolean = false
@@ -17,7 +20,7 @@ internal object DebugOptions {
 
         canvas.save()
         canvas.setMatrix(scaleMatrix)
-        depthFirstTraversal(rootElement) {
+        depthFirstTraversal(rootElement).forEach {
             val bounds = it.screenBounds
 
             val color = when (it) {
@@ -27,16 +30,16 @@ internal object DebugOptions {
                 is Rectangle -> Color.BLUE
                 is Circle -> Color.RED
                 is Line -> Color.RED
-                else -> Color.MAGENTA
-            }.let(::Color4f)
+                else -> Color.LIGHT_GRAY
+            }.asSkiaColor
 
             val strokeWidth = when (it) {
                 is Pane, is Group -> 3f
                 else -> 1f
             }
 
-            fillPaint.color = color.withA(0.1f).toColor()
-            strokePaint.color = color.toColor()
+            fillPaint.color = color.withA(0.02f).toColor()
+            strokePaint.color = color.withA(0.7f).toColor()
             strokePaint.strokeWidth = strokeWidth
             canvas.drawRect(bounds, fillPaint)
             canvas.drawRect(bounds, strokePaint)

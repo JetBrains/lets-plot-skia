@@ -150,5 +150,5 @@ internal inline fun <reified T> Container.element(id: String): T {
 }
 
 internal fun Container.element(id: String): Element {
-    return childrenDeepTraversal(this).first { it.id == id }
+    return breadthFirstTraversal(this).first { it.id == id }
 }

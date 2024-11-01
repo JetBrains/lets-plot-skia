@@ -183,10 +183,87 @@ class SvgComplianceTest {
             }
         }
 
-        val elements = mutableListOf<Element>()
-        depthFirstTraversal(listOf(doc), elements::add)
+        val elements = depthFirstTraversal(doc).toList()
 
         assertThat(elements.map(Element::id)).isEqualTo(listOf(null, "0", "1", "2", "3", "4", "5", "6", "7", "8", "9"))
+    }
+
+    @Test
+    fun `reversed depth first traversal`() {
+        val doc = mapSvg {
+            svgDocument(width = 400, height = 300) {
+                g(id = "0") {
+                    g(id = "1") {
+                        rect(id = "2")
+                        rect(id = "3")
+                        rect(id = "4")
+                    }
+                    g(id = "5") {
+                        g(id = "6") {
+                            rect(id = "7")
+                            rect(id = "8")
+                        }
+                    }
+                }
+                rect(id = "9")
+            }
+        }
+
+        val elements = reversedDepthFirstTraversal(doc).toList()
+
+        assertThat(elements.map(Element::id)).isEqualTo(listOf("9", "8", "7", "6", "5", "4", "3", "2", "1", "0", null))
+    }
+
+    @Test
+    fun `breadth first traversal`() {
+        val doc = mapSvg {
+            svgDocument(width = 400, height = 300) {
+                g(id = "0") {
+                    g(id = "1") {
+                        rect(id = "2")
+                        rect(id = "3")
+                        rect(id = "4")
+                    }
+                    g(id = "5") {
+                        g(id = "6") {
+                            rect(id = "7")
+                            rect(id = "8")
+                        }
+                    }
+                }
+                rect(id = "9")
+            }
+        }
+
+        val elements = breadthFirstTraversal(doc).toList()
+
+        assertThat(elements.map(Element::id)).isEqualTo(listOf(null, "0", "9", "1", "5", "2", "3", "4", "6", "7", "8"))
+    }
+
+    @Test
+    fun `reversed breadth first traversal`() {
+        val doc = mapSvg {
+            svgDocument(width = 400, height = 300) {
+                g(id = "0") {
+                    g(id = "1") {
+                        rect(id = "2")
+                        rect(id = "3")
+                        rect(id = "4")
+                    }
+                    g(id = "5") {
+                        g(id = "6") {
+                            rect(id = "7")
+                            rect(id = "8")
+                        }
+                    }
+                }
+                rect(id = "9")
+            }
+        }
+
+        val elements = reversedBreadthFirstTraversal(doc).toList()
+
+        assertThat(elements.map(Element::id)).isEqualTo(listOf("8", "7", "6", "4", "3", "2", "5", "1", "9", "0", null))
     }
 
 }

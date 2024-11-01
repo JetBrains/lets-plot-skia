@@ -10,6 +10,7 @@ import org.jetbrains.letsPlot.commons.event.MouseEventSpec
 import org.jetbrains.letsPlot.commons.geometry.DoubleRectangle
 import org.jetbrains.letsPlot.commons.geometry.DoubleVector
 import org.jetbrains.letsPlot.commons.geometry.Rectangle
+import org.jetbrains.letsPlot.commons.intern.observable.event.EventHandler
 import org.jetbrains.letsPlot.commons.registration.Registration
 import org.jetbrains.letsPlot.core.plot.builder.FigureBuildInfo
 import org.jetbrains.letsPlot.core.plot.builder.PlotContainer
@@ -94,6 +95,13 @@ internal object FigureToViewModel {
         val panelDispatcher = object : SkikoViewEventDispatcher {
             override fun dispatchMouseEvent(kind: MouseEventSpec, e: MouseEvent) {
                 plotContainer.mouseEventPeer.dispatch(kind, e)
+            }
+
+            override fun addEventHandler(
+                eventSpec: MouseEventSpec,
+                eventHandler: EventHandler<MouseEvent>
+            ): Registration {
+                return plotContainer.mouseEventPeer.addEventHandler(eventSpec, eventHandler)
             }
         }
 

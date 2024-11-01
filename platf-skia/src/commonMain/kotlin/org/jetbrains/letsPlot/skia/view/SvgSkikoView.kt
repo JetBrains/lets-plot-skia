@@ -5,7 +5,11 @@
 
 package org.jetbrains.letsPlot.skia.view
 
+import org.jetbrains.letsPlot.commons.event.MouseEvent
+import org.jetbrains.letsPlot.commons.event.MouseEventSpec
+import org.jetbrains.letsPlot.commons.intern.observable.event.EventHandler
 import org.jetbrains.letsPlot.commons.registration.Disposable
+import org.jetbrains.letsPlot.commons.registration.Registration
 import org.jetbrains.letsPlot.datamodel.mapping.framework.MappingContext
 import org.jetbrains.letsPlot.datamodel.svg.dom.*
 import org.jetbrains.letsPlot.datamodel.svg.event.SvgAttributeEvent
@@ -14,21 +18,50 @@ import org.jetbrains.letsPlot.skia.mapping.svg.DebugOptions.drawBoundingBoxes
 import org.jetbrains.letsPlot.skia.mapping.svg.FontManager
 import org.jetbrains.letsPlot.skia.mapping.svg.SvgSkiaPeer
 import org.jetbrains.letsPlot.skia.mapping.svg.SvgSvgElementMapper
-import org.jetbrains.letsPlot.skia.shape.Container
-import org.jetbrains.letsPlot.skia.shape.Element
-import org.jetbrains.letsPlot.skia.shape.Pane
+import org.jetbrains.letsPlot.skia.shape.*
 import org.jetbrains.skia.Canvas
+import org.jetbrains.skia.Color
 import org.jetbrains.skia.Matrix33
 import org.jetbrains.skia.Matrix33.Companion.IDENTITY
 import org.jetbrains.skia.Matrix33.Companion.makeScale
 import org.jetbrains.skia.Paint
+import org.jetbrains.skia.PathEffect.Companion.makeDash
 import org.jetbrains.skiko.SkiaLayer
 import org.jetbrains.skiko.SkikoRenderDelegate
 import kotlin.math.ceil
 
 abstract class SvgSkikoView() : SkikoRenderDelegate, Disposable {
+    private var eventReg: Registration = Registration.EMPTY
+    private var clickedElement: Element? = null
+
     var eventDispatcher: SkikoViewEventDispatcher? = null
+        set(value) {
+            eventReg.remove()
+            if (value != null) {
+                eventReg = value.addEventHandler(MouseEventSpec.MOUSE_CLICKED, object : EventHandler<MouseEvent> {
+                    override fun onEvent(event: MouseEvent) {
+                        onMouseClicked(event)
+                    }
+                })
+            }
+            field = value
+        }
+
     private val fontManager = FontManager()
+
+    fun onMouseClicked(e: MouseEvent) {
+        //eventDispatcher?.dispatchMouseEvent(MouseEventSpec.MOUSE_CLICKED, e)
+        println("Clicked at ${e.x}, ${e.y}")
+        reversedDepthFirstTraversal(rootElement)
+            .filter { it !is Path }
+            .filter { it !is Group }
+            .firstOrNull() { it.screenBounds.contains(e.x, e.y) }
+            ?.let {
+                clickedElement = if (clickedElement == it) null else it
+                println("Clicked on ${it::class.simpleName}")
+                needRedraw()
+            }
+    }
 
     var svg: SvgSvgElement = SvgSvgElement()
         set(value) {
@@ -93,6 +126,17 @@ abstract class SvgSkikoView() : SkikoRenderDelegate, Disposable {
         val scaleMatrix = IDENTITY.takeIf { skiaLayer.contentScale == 1f } ?: makeScale(skiaLayer.contentScale)
 
         render(rootElement, canvas, scaleMatrix)
+
+        clickedElement?.let {
+            val bounds = it.screenBounds
+            val paint = Paint().apply {
+                strokeWidth = 3f
+                pathEffect = makeDash(floatArrayOf(5f, 5f), 0.0f)
+                color = Color.RED
+                setStroke(true)
+            }
+            canvas.drawRect(bounds, paint)
+        }
 
         if (DebugOptions.DEBUG_DRAWING_ENABLED) {
             drawBoundingBoxes(rootElement, canvas, scaleMatrix)
