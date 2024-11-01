@@ -9,6 +9,7 @@ import org.jetbrains.letsPlot.commons.intern.observable.collections.ObservableCo
 import org.jetbrains.letsPlot.commons.intern.observable.property.ReadableProperty
 import org.jetbrains.letsPlot.commons.intern.observable.property.SimpleCollectionProperty
 import org.jetbrains.letsPlot.commons.intern.observable.property.WritableProperty
+import org.jetbrains.letsPlot.commons.values.Color
 import org.jetbrains.letsPlot.datamodel.mapping.framework.Synchronizers
 import org.jetbrains.letsPlot.datamodel.svg.dom.*
 import org.jetbrains.letsPlot.datamodel.svg.style.StyleSheet
@@ -77,7 +78,7 @@ internal class SvgTextElementMapper(
                     val nodeTextRuns = when (node) {
                         is SvgTextNode -> listOf(Text.TextRun(node.textContent().get()))
                         is SvgTSpanElement -> handleTSpanElement(node)
-                        is SvgAElement -> handleAElement()
+                        is SvgAElement -> handleAElement(node)
 
                         else -> error("Unexpected node type: ${node::class.simpleName}")
                     }
@@ -108,9 +109,18 @@ internal class SvgTextElementMapper(
                 textRun
             }
 
-        private fun handleAElement(): List<Text.TextRun> = emptyList()
+        private fun handleAElement(node: SvgAElement): List<Text.TextRun> {
+            val href = node.getAttribute("href").get() as String
+            return node.children().map { child ->
+                require(child is SvgTSpanElement)
+                handleTSpanElement(child)
+            }
+                .flatten()
+                .onEach { it.fill = Color.DARK_BLUE.asSkiaColor }
 
-        private class TextAttributesSupport(val target: Text) {
+        }
+
+                private class TextAttributesSupport(val target: Text) {
             private var mySvgTextAnchor: String? = null
 
             fun setAttribute(name: String, value: Any?) {

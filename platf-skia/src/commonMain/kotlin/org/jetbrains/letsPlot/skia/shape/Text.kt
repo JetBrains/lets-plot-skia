@@ -35,7 +35,12 @@ internal class Text(
         font.metrics.descent - font.metrics.ascent
     }
 
-    private val styleData: List<StyleData> by computedProp(Text::content, Figure::fill, Figure::stroke, Figure::strokeWidth) {
+    private val styleData: List<StyleData> by computedProp(
+        Text::content,
+        Figure::fill,
+        Figure::stroke,
+        Figure::strokeWidth
+    ) {
         content.map { textRun ->
             StyleData(
                 fillPaint = fillPaint(textRun.fill ?: fill),
@@ -74,12 +79,15 @@ internal class Text(
 
             blobBuilder.appendRunRSXform(font, glyphs, rsxTransforms.toTypedArray())
 
+            // font.measureText ignores trailing spaces, so we need to use measureTextWidth
+            val measuredTextWidth = font.measureTextWidth(textRun.text)
+
             // Adjust bbox from skia (to not calculate it manually)
             val bbox = font.measureText(textRun.text).let {
                 Rect.makeXYWH(
                     l = it.left + currentPosX,
                     t = it.top - textRun.baselineShift.percent * lineHeight,
-                    w = it.width * textRun.fontScale + widthCorrectionCoef,
+                    w = measuredTextWidth * textRun.fontScale,
                     h = it.height * textRun.fontScale
                 )
             }
@@ -128,10 +136,10 @@ internal class Text(
 
     override val localBounds: Rect
         get() {
-            val left = textData.minOf { it.left }
-            val top = textData.minOf { it.top }
-            val right = textData.maxOf { it.right }
-            val bottom = textData.maxOf { it.bottom }
+            val left = textData.minOfOrNull { it.left } ?: 0f
+            val top = textData.minOfOrNull { it.top } ?: 0f
+            val right = textData.maxOfOrNull { it.right } ?: 0f
+            val bottom = textData.maxOfOrNull { it.bottom } ?: 0f
             return Rect.makeLTRB(
                 x + cx + left,
                 y + cy + top,
@@ -159,7 +167,11 @@ internal class Text(
         var fill: Color4f? = null,
         var stroke: Color4f? = null,
         var strokeWidth: Float? = null,
-    )
+    ) {
+        override fun toString(): String {
+            return "TextRun(text='$text', baselineShift=$baselineShift, dy=$dy, fontScale=$fontScale, fill=$fill, stroke=$stroke, strokeWidth=$strokeWidth)"
+        }
+    }
 
     enum class BaselineShift(
         val percent: Float
@@ -184,8 +196,6 @@ internal class Text(
         val fillPaint: Paint?,
         val strokePaint: Paint?,
     )
-
-    private val widthCorrectionCoef = 0f
 
     companion object {
         const val DEFAULT_FONT_SIZE: Float = 16f

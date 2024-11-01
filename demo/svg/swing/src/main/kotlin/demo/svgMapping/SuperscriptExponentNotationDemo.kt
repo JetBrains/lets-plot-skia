@@ -29,43 +29,43 @@ private class SuperscriptExponentNotationDemo: DemoBase(DoubleVector(800.0, 1200
                 font-style:normal;
                 font-weight:normal;
                 font-size:18.0px;
-                font-family:Arial; 
+                font-family:sans; 
             }
             .LBL_2 { 
                 font-style:normal;
                 font-weight:normal;
                 font-size:18.0px;
-                font-family:Arial; 
+                font-family:sans; 
             }
             .LBL_3 { 
                 font-style:normal;
                 font-weight:normal;
                 font-size:18.0px;
-                font-family:Arial; 
+                font-family:sans; 
             }
             .LBL_4 { 
                 font-style:normal;
                 font-weight:normal;
                 font-size:18.0px;
-                font-family:Arial; 
+                font-family:sans; 
             }
             .LBL_5 { 
                 font-style:normal;
                 font-weight:normal;
                 font-size:18.0px;
-                font-family:Arial; 
+                font-family:sans; 
             }
             .LBL_6 { 
                 font-style:normal;
                 font-weight:normal;
                 font-size:18.0px;
-                font-family:Arial; 
+                font-family:sans; 
             }
             .LBL_7 { 
                 font-style:normal;
                 font-weight:normal;
                 font-size:18.0px;
-                font-family:Times; 
+                font-family:serif; 
             }
             .LBL_8 { 
                 font-style:normal;
@@ -77,25 +77,25 @@ private class SuperscriptExponentNotationDemo: DemoBase(DoubleVector(800.0, 1200
                 font-style:normal;
                 font-weight:normal;
                 font-size:10.0px;
-                font-family:Arial; 
+                font-family:sans; 
             }
             .LBL_10 { 
                 font-style:normal;
                 font-weight:normal;
                 font-size:24.0px;
-                font-family:Arial; 
+                font-family:sans; 
             }
             .LBL_11 { 
                 font-style:italic;
                 font-weight:normal;
                 font-size:18.0px;
-                font-family:Arial; 
+                font-family:sans; 
             }
             .LBL_12 { 
                 font-style:normal;
                 font-weight:bold;
                 font-size:18.0px;
-                font-family:Arial; 
+                font-family:sans; 
             }
             """.trimIndent()
 

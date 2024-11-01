@@ -5,6 +5,7 @@
 
 package org.jetbrains.letsPlot.skia.mapping.svg.attr
 
+import org.jetbrains.letsPlot.datamodel.svg.dom.SvgAElement
 import org.jetbrains.letsPlot.datamodel.svg.dom.SvgShape
 import org.jetbrains.letsPlot.datamodel.svg.dom.SvgTSpanElement
 import org.jetbrains.letsPlot.skia.mapping.svg.SvgUtils.toColor
@@ -13,6 +14,12 @@ import org.jetbrains.letsPlot.skia.shape.Text
 
 internal object SvgTSpanElementAttrMapping {
     fun setAttributes(target: Text.TextRun, tspan: SvgTSpanElement) {
+        tspan.attributeKeys.forEach { key ->
+            setAttribute(target, key.name, tspan.getAttribute(key).get())
+        }
+    }
+
+    fun setAttributes(target: Text.TextRun, tspan: SvgAElement) {
         tspan.attributeKeys.forEach { key ->
             setAttribute(target, key.name, tspan.getAttribute(key).get())
         }

@@ -39,7 +39,7 @@ internal abstract class SvgAttrMapping<in TargetT : Element> {
             SvgGraphicsElement.CLIP_PATH.name -> Unit // Not supported.
             SvgConstants.SVG_STYLE_ATTRIBUTE -> setStyle(value as? String ?: "", target)
             SvgStylableElement.CLASS.name -> target.styleClass = (value as String?)?.split(" ")
-            SvgTransformable.TRANSFORM.name -> setTransform((value as SvgTransform).toString(), target)
+            SvgTransformable.TRANSFORM.name -> setTransform(value.toString(), target)
             SvgElement.ID.name -> target.id = value as String?
 
             else -> println("Unsupported attribute `$name` in ${target::class.simpleName}")
