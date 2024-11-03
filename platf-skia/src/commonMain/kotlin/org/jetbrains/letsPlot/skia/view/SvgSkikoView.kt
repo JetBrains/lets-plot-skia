@@ -21,8 +21,6 @@ import org.jetbrains.letsPlot.skia.mapping.svg.SvgSvgElementMapper
 import org.jetbrains.letsPlot.skia.shape.*
 import org.jetbrains.skia.Canvas
 import org.jetbrains.skia.Color
-import org.jetbrains.skia.Matrix33
-import org.jetbrains.skia.Matrix33.Companion.IDENTITY
 import org.jetbrains.skia.Matrix33.Companion.makeScale
 import org.jetbrains.skia.Paint
 import org.jetbrains.skia.PathEffect.Companion.makeDash
@@ -51,14 +49,12 @@ abstract class SvgSkikoView() : SkikoRenderDelegate, Disposable {
 
     fun onMouseClicked(e: MouseEvent) {
         //eventDispatcher?.dispatchMouseEvent(MouseEventSpec.MOUSE_CLICKED, e)
-        println("Clicked at ${e.x}, ${e.y}")
         reversedDepthFirstTraversal(rootElement)
             .filter { it !is Path }
             .filter { it !is Group }
             .firstOrNull() { it.screenBounds.contains(e.x, e.y) }
             ?.let {
                 clickedElement = if (clickedElement == it) null else it
-                println("Clicked on ${it::class.simpleName}")
                 needRedraw()
             }
     }
@@ -123,23 +119,14 @@ abstract class SvgSkikoView() : SkikoRenderDelegate, Disposable {
             return
         }
 
-        val scaleMatrix = IDENTITY.takeIf { skiaLayer.contentScale == 1f } ?: makeScale(skiaLayer.contentScale)
+        canvas.concat(makeScale(skiaLayer.contentScale))
 
-        render(rootElement, canvas, scaleMatrix)
+        render(rootElement, canvas)
 
-        clickedElement?.let {
-            val bounds = it.screenBounds
-            val paint = Paint().apply {
-                strokeWidth = 3f
-                pathEffect = makeDash(floatArrayOf(5f, 5f), 0.0f)
-                color = Color.RED
-                setStroke(true)
-            }
-            canvas.drawRect(bounds, paint)
-        }
+        highlightElement(clickedElement, canvas)
 
         if (DebugOptions.DEBUG_DRAWING_ENABLED) {
-            drawBoundingBoxes(rootElement, canvas, scaleMatrix)
+            drawBoundingBoxes(rootElement, canvas)
         }
     }
 
@@ -167,15 +154,16 @@ abstract class SvgSkikoView() : SkikoRenderDelegate, Disposable {
     }
 
     companion object {
-        private fun render(elements: List<Element>, canvas: Canvas, scaleMatrix: Matrix33) {
+        private fun render(elements: List<Element>, canvas: Canvas) {
             elements.forEach { element ->
-                render(element, canvas, scaleMatrix)
+                render(element, canvas)
             }
         }
 
-        private fun render(element: Element, canvas: Canvas, scaleMatrix: Matrix33) {
+        private fun render(element: Element, canvas: Canvas) {
             canvas.save()
-            canvas.setMatrix(scaleMatrix.makeConcat(element.ctm))
+            canvas.concat(element.transform)
+
             element.clipPath?.let(canvas::clipPath)
             val globalAlphaSet = element.opacity?.let {
                 val paint = Paint().apply {
@@ -185,7 +173,7 @@ abstract class SvgSkikoView() : SkikoRenderDelegate, Disposable {
             }
 
             if (element is Container) {
-                render(element.children, canvas, scaleMatrix)
+                render(element.children, canvas)
             }
 
             element.render(canvas)
@@ -193,6 +181,19 @@ abstract class SvgSkikoView() : SkikoRenderDelegate, Disposable {
             globalAlphaSet?.let { canvas.restore() }
 
             canvas.restore()
+        }
+
+        private fun highlightElement(element: Element?, canvas: Canvas) {
+            element?.let {
+                val paint = Paint().apply {
+                    setStroke(true)
+                    strokeWidth = 3f
+                    pathEffect = makeDash(floatArrayOf(5f, 5f), 0.0f)
+                    color = Color.RED
+                }
+                canvas.drawRect(it.screenBounds, paint)
+                paint.close()
+            }
         }
     }
 }

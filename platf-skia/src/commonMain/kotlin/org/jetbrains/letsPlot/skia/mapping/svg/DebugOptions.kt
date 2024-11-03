@@ -8,22 +8,18 @@ package org.jetbrains.letsPlot.skia.mapping.svg
 import org.jetbrains.letsPlot.commons.values.Color
 import org.jetbrains.letsPlot.skia.shape.*
 import org.jetbrains.skia.Canvas
-import org.jetbrains.skia.Matrix33
 import org.jetbrains.skia.Paint
+import org.jetbrains.skia.PathEffect
 
 internal object DebugOptions {
-    const val DEBUG_DRAWING_ENABLED: Boolean = false
+    const val DEBUG_DRAWING_ENABLED: Boolean = true
 
-    fun drawBoundingBoxes(rootElement: Pane, canvas: Canvas, scaleMatrix: Matrix33) {
+    fun drawBoundingBoxes(rootElement: Pane, canvas: Canvas) {
         val strokePaint = Paint().setStroke(true)
         val fillPaint = Paint().setStroke(false)
 
-        canvas.save()
-        canvas.setMatrix(scaleMatrix)
-        depthFirstTraversal(rootElement).forEach {
-            val bounds = it.screenBounds
-
-            val color = when (it) {
+        depthFirstTraversal(rootElement).forEach { el ->
+            val color = when (el) {
                 is Pane -> Color.CYAN
                 is Group -> Color.YELLOW
                 is Text -> Color.GREEN
@@ -33,19 +29,14 @@ internal object DebugOptions {
                 else -> Color.LIGHT_GRAY
             }.asSkiaColor
 
-            val strokeWidth = when (it) {
-                is Pane, is Group -> 3f
-                else -> 1f
-            }
-
             fillPaint.color = color.withA(0.02f).toColor()
-            strokePaint.color = color.withA(0.7f).toColor()
-            strokePaint.strokeWidth = strokeWidth
-            canvas.drawRect(bounds, fillPaint)
-            canvas.drawRect(bounds, strokePaint)
+            canvas.drawRect(el.screenBounds, fillPaint)
 
+            strokePaint.color = color.withA(0.7f).toColor()
+            strokePaint.strokeWidth = if(el is Container) 3f else 1f
+            strokePaint.pathEffect = if (el is Container) PathEffect.makeDash(floatArrayOf(3f, 8f), 0f) else null
+            canvas.drawRect(el.screenBounds, strokePaint)
         }
-        canvas.restore()
 
         strokePaint.close()
         fillPaint.close()
