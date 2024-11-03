@@ -12,7 +12,7 @@ import org.jetbrains.skia.Paint
 import org.jetbrains.skia.PathEffect
 
 internal object DebugOptions {
-    const val DEBUG_DRAWING_ENABLED: Boolean = true
+    const val DEBUG_DRAWING_ENABLED: Boolean = false
 
     fun drawBoundingBoxes(rootElement: Pane, canvas: Canvas) {
         val strokePaint = Paint().setStroke(true)
