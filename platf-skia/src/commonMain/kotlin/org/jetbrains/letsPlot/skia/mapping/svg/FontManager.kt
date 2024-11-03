@@ -18,9 +18,18 @@ class FontManager {
             return typefaceCache.getValue(fontConfig)
         }
 
-        var typeface = FontMgr.default.matchFamiliesStyle(fontFamily.toTypedArray(), fontStyle)
+        var typeface = fontFamily.firstNotNullOfOrNull {
+            FontMgr.default.matchFamilyStyle(it, fontStyle)
+        }
+
         if (typeface == null || typeface.familyName == "") {
-            typeface = FontMgr.default.matchFamilyStyle("sans-serif", fontStyle)
+            typeface = fontFamily.firstNotNullOfOrNull {
+                FontMgr.default.legacyMakeTypeface(it, fontStyle)
+            }
+        }
+
+        if (typeface == null || typeface.familyName == "") {
+            typeface = FontMgr.default.legacyMakeTypeface("sans-serif", fontStyle)
         }
 
         if (typeface == null || typeface.familyName == "") {
