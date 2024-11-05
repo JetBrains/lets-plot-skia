@@ -8,11 +8,13 @@ package org.jetbrains.letsPlot.skia.mapping.svg.attr
 import org.jetbrains.letsPlot.datamodel.svg.dom.SvgConstants
 import org.jetbrains.letsPlot.datamodel.svg.dom.SvgConstants.SVG_TEXT_DY_CENTER
 import org.jetbrains.letsPlot.datamodel.svg.dom.SvgConstants.SVG_TEXT_DY_TOP
+import org.jetbrains.letsPlot.datamodel.svg.dom.SvgShape
 import org.jetbrains.letsPlot.datamodel.svg.dom.SvgTextContent
 import org.jetbrains.letsPlot.datamodel.svg.dom.SvgTextElement
+import org.jetbrains.letsPlot.skia.mapping.svg.SvgUtils.toColor
 import org.jetbrains.letsPlot.skia.shape.Text
 
-internal object SvgTextElementAttrMapping : SvgShapeMapping<Text>() {
+internal object SvgTextElementAttrMapping : SvgAttrMapping<Text>() {
     override fun setAttribute(target: Text, name: String, value: Any?) {
         when (name) {
             "font-size" -> target.fontSize = value?.asPxSize ?: Text.DEFAULT_FONT_SIZE
@@ -37,12 +39,15 @@ internal object SvgTextElementAttrMapping : SvgShapeMapping<Text>() {
                 }
             }
 
-            SvgTextContent.FILL.name,
-            SvgTextContent.FILL_OPACITY.name,
-            SvgTextContent.STROKE.name,
-            SvgTextContent.STROKE_OPACITY.name,
-            SvgTextContent.STROKE_WIDTH.name -> super.setAttribute(target, name, value)
-
+            SvgShape.FILL.name -> target.fill = toColor(value)
+            SvgShape.FILL_OPACITY.name -> target.fillOpacity = value!!.asFloat
+            SvgShape.STROKE.name -> target.stroke = toColor(value)
+            SvgShape.STROKE_OPACITY.name -> target.strokeOpacity = value!!.asFloat
+            SvgShape.STROKE_WIDTH.name -> target.strokeWidth = value!!.asFloat
+            SvgConstants.SVG_STROKE_DASHARRAY_ATTRIBUTE -> {
+                val strokeDashArray = (value as String).split(",").map(String::toFloat)
+                target.strokeDashArray = strokeDashArray
+            }
             else -> super.setAttribute(target, name, value)
         }
     }

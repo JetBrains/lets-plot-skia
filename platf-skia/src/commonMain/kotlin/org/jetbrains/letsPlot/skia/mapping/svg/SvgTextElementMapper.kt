@@ -14,6 +14,7 @@ import org.jetbrains.letsPlot.datamodel.svg.dom.*
 import org.jetbrains.letsPlot.datamodel.svg.style.StyleSheet
 import org.jetbrains.letsPlot.skia.mapping.svg.attr.SvgTSpanElementAttrMapping
 import org.jetbrains.letsPlot.skia.mapping.svg.attr.SvgTextElementAttrMapping
+import org.jetbrains.letsPlot.skia.shape.TSpan
 import org.jetbrains.letsPlot.skia.shape.Text
 import org.jetbrains.letsPlot.skia.shape.asSkiaColor
 import org.jetbrains.skia.FontStyle
@@ -39,7 +40,7 @@ internal class SvgTextElementMapper(
 
         // Sync TextNodes, TextSpans
         val sourceTextRunProperty = sourceTextRunProperty(source.children(), peer.styleSheet)
-        val targetTextRunProperty = targetTextRunProperty(target)
+        val targetTextRunProperty = targetTextRunProperty(target, peer.fontManager)
         conf.add(
             Synchronizers.forPropsOneWay(
                 sourceTextRunProperty,
@@ -70,6 +71,29 @@ internal class SvgTextElementMapper(
         }
     }
 
+
+    private fun targetTextRunProperty(target: Text, fontManager: FontManager): WritableProperty<List<Text.TextRun>?> {
+        return object : WritableProperty<List<Text.TextRun>?> {
+            override fun set(value: List<Text.TextRun>?) {
+                target.content = value ?: emptyList()
+                target.children.clear()
+                value?.forEach { textRun ->
+
+                    target.children.add(TSpan(fontManager).also { tSpan ->
+                        tSpan.text = textRun.text
+                        tSpan.fill = textRun.fill
+                        tSpan.stroke = textRun.stroke
+                        tSpan.strokeWidth = textRun.strokeWidth ?: 1f
+                        tSpan.baselineShift = textRun.baselineShift
+                        tSpan.fontScale = textRun.fontScale
+
+                    })
+                }
+            }
+        }
+    }
+
+
     companion object {
         private fun sourceTextRunProperty(
             nodes: ObservableCollection<SvgNode>,
@@ -95,13 +119,6 @@ internal class SvgTextElementMapper(
             }
         }
 
-        private fun targetTextRunProperty(target: Text): WritableProperty<List<Text.TextRun>?> {
-            return object : WritableProperty<List<Text.TextRun>?> {
-                override fun set(value: List<Text.TextRun>?) {
-                    target.content = value ?: emptyList()
-                }
-            }
-        }
 
         private fun handleTSpanElement(node: SvgTSpanElement, styleSheet: StyleSheet?): List<Text.TextRun> =
             node.children().map { child ->

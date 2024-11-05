@@ -5,9 +5,8 @@
 
 package org.jetbrains.letsPlot.skia.shape
 
-import org.jetbrains.skia.Matrix33
-import org.jetbrains.skia.Point
-import org.jetbrains.skia.Rect
+import org.jetbrains.skia.*
+import org.jetbrains.skia.PathEffect.Companion.makeDash
 import kotlin.math.max
 import kotlin.math.min
 
@@ -150,4 +149,37 @@ fun Rect.contains(x: Float, y: Float): Boolean {
 
 fun Rect.contains(x: Int, y: Int): Boolean {
     return x.toFloat() in left..right && y.toFloat() in top..bottom
+}
+
+fun strokePaint(
+    stroke: Color4f? = null,
+    strokeWidth: Float = 1f,
+    strokeOpacity: Float = 1f,
+    strokeDashArray: List<Float>? = null,
+    strokeMiter: Float? = null // not mandatory, default works fine
+) : Paint? {
+    if (stroke == null) return null
+    if (strokeOpacity == 0f) return null
+
+    if (strokeWidth == 0f) {
+        // Handle zero width manually, because Skia threatens 0 as "hairline" width, i.e. 1 pixel.
+        // Source: https://api.skia.org/classSkPaint.html#af08c5bc138e981a4e39ad1f9b165c32c
+        return null
+    }
+
+    val paint = Paint()
+    paint.setStroke(true)
+    paint.color4f = stroke.withA(strokeOpacity)
+    paint.strokeWidth = strokeWidth
+    strokeMiter?.let { paint.strokeMiter = it }
+    strokeDashArray?.let { paint.pathEffect = makeDash(it.toFloatArray(), 0.0f) }
+    return paint
+}
+
+fun fillPaint(fill: Color4f? = null, fillOpacity: Float = 1f): Paint? {
+    if (fill == null) return null
+
+    return Paint().also { paint ->
+        paint.color4f = fill.withA(fillOpacity)
+    }
 }
