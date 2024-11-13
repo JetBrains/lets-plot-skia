@@ -15,6 +15,8 @@ import kotlin.reflect.KClass
 
 
 internal object SvgUtils {
+    const val USE_TEXT_BLOCK = true
+
     @Suppress("UNCHECKED_CAST")
     private val ATTR_MAPPINGS: Map<KClass<out Element>, SvgAttrMapping<Element>> = mapOf(
         Pane::class to (SvgSvgAttrMapping as SvgAttrMapping<Element>),
@@ -26,7 +28,8 @@ internal object SvgUtils {
         Circle::class to (SvgCircleAttrMapping as SvgAttrMapping<Element>),
         //Text::class to (SvgTextElementAttrMapping as SvgAttrMapping<Element>),
         Path::class to (SvgPathAttrMapping as SvgAttrMapping<Element>),
-        Image::class to (SvgImageAttrMapping as SvgAttrMapping<Element>)
+        Image::class to (SvgImageAttrMapping as SvgAttrMapping<Element>),
+        TSpan::class to (SvgTSpanElementAttrMapping as SvgAttrMapping<Element>),
     )
 
     fun elementChildren(e: Element): MutableList<Element> {
@@ -62,11 +65,21 @@ internal object SvgUtils {
         return when (parent) {
             is Group -> parent.children
             is Pane -> parent.children
+            is TextBlock -> parent.children
             else -> throw IllegalArgumentException("Unsupported parent type: ${parent::class.simpleName}")
         }
     }
 
     fun newElement(source: SvgNode, peer: SvgSkiaPeer): Element {
+        if (USE_TEXT_BLOCK) {
+            when (source) {
+                is SvgTextElement -> return TextBlock(peer.fontManager)
+                //is SvgTSpanElement -> return TSpan(peer.fontManager)
+                //is SvgTextNode -> return TSpan(peer.fontManager)
+                //is SvgAElement -> return TextBlock(peer.fontManager)
+            }
+        }
+
         return when (source) {
             is SvgEllipseElement -> Ellipse()
             is SvgCircleElement -> Circle()
@@ -77,6 +90,7 @@ internal object SvgUtils {
             is SvgSvgElement -> Pane()
             is SvgGElement -> Group()
             is SvgStyleElement -> Group()
+            is SvgAElement -> Group()
 //            is SvgTextNode -> myDoc.createTextNode(null)
 //            is SvgTSpanElement -> SVGOMTSpanElement(null, myDoc)
             is SvgDefsElement -> Group()

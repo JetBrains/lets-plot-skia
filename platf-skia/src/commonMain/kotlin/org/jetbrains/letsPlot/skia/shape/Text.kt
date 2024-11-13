@@ -12,7 +12,7 @@ import org.jetbrains.skia.*
 // Single line text
 internal class Text(
     private val fontManager: FontManager
-) : Container() {
+) : Figure() {
 
     var textOrigin: VerticalAlignment? by visualProp(null)
     var textAlignment: HorizontalAlignment? by visualProp(null)
@@ -22,14 +22,6 @@ internal class Text(
     var fontFamily: List<String> by visualProp(emptyList())
     var fontStyle: FontStyle by visualProp(FontStyle.NORMAL)
     var fontSize by visualProp(DEFAULT_FONT_SIZE)
-
-    var fill: Color4f? by visualProp(Color4f(Color.BLACK))
-    var fillOpacity: Float by visualProp(1f)
-
-    var stroke: Color4f? by visualProp(null)
-    var strokeWidth: Float by visualProp(1f)
-    var strokeOpacity: Float by visualProp(1f)
-    var strokeDashArray: List<Float>? by visualProp(null)
 
     private val typeface by computedProp(Text::fontFamily, Text::fontStyle) {
         fontManager.matchFamiliesStyle(fontFamily, fontStyle)
@@ -45,9 +37,9 @@ internal class Text(
 
     private val styleData: List<StyleData> by computedProp(
         Text::content,
-        Text::fill,
-        Text::stroke,
-        Text::strokeWidth
+        Figure::fill,
+        Figure::stroke,
+        Figure::strokeWidth
     ) {
         content.map { textRun ->
             StyleData(

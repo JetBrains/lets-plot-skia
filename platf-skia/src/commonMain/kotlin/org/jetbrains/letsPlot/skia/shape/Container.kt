@@ -19,11 +19,18 @@ internal abstract class Container : Element() {
         children.addHandler(object : EventHandler<CollectionItemEvent<out Element>> {
             override fun onEvent(event: CollectionItemEvent<out Element>) {
                 when (event.type) {
-                    CollectionItemEvent.EventType.ADD -> event.newItem?.let { it.parent = this@Container }
-                    CollectionItemEvent.EventType.REMOVE -> event.oldItem?.let { it.parent = null }
+                    CollectionItemEvent.EventType.ADD -> {
+                        event.newItem?.let { it.parent = this@Container }
+                        onChildAdded(event)
+                    }
+                    CollectionItemEvent.EventType.REMOVE -> {
+                        event.oldItem?.let { it.parent = null }
+                        onChildRemoved(event)
+                    }
                     CollectionItemEvent.EventType.SET -> {
                         event.oldItem?.let { it.parent = null }
                         event.newItem?.let { it.parent = this@Container }
+                        onChildSet(event)
                     }
                 }
             }
@@ -69,4 +76,8 @@ internal abstract class Container : Element() {
             it.invalidateComputedProp(Element::ctm)
         }
     }
+
+    protected open fun onChildSet(event: CollectionItemEvent<out Element>) { }
+    protected open fun onChildAdded(event: CollectionItemEvent<out Element>) { }
+    protected open fun onChildRemoved(event: CollectionItemEvent<out Element>) { }
 }

@@ -9,10 +9,50 @@ import org.jetbrains.letsPlot.datamodel.svg.dom.SvgAElement
 import org.jetbrains.letsPlot.datamodel.svg.dom.SvgShape
 import org.jetbrains.letsPlot.datamodel.svg.dom.SvgTSpanElement
 import org.jetbrains.letsPlot.skia.mapping.svg.SvgUtils.toColor
-import org.jetbrains.letsPlot.skia.mapping.svg.attr.SvgAttrMapping.Companion.asFloat
+import org.jetbrains.letsPlot.skia.shape.TSpan
 import org.jetbrains.letsPlot.skia.shape.Text
 
-internal object SvgTSpanElementAttrMapping {
+internal object SvgTSpanElementAttrMapping : SvgShapeMapping<TSpan>() {
+    override fun setAttribute(target: TSpan, name: String, value: Any?) {
+        when (name) {
+            //"font-size" -> target.fontSize = value?.asPxSize ?: Text.DEFAULT_FONT_SIZE
+            //"font-family" -> target.fontFamily = value?.asFontFamily ?: Text.DEFAULT_FONT_FAMILY
+            //SvgTextElement.X.name -> target.x = value?.asFloat ?: 0.0f
+            //SvgTextElement.Y.name -> target.y = value?.asFloat ?: 0.0f
+            //SvgTextContent.TEXT_ANCHOR.name -> {
+            //    val svgTextAnchor = value as String?
+            //    when (svgTextAnchor) {
+            //        SvgConstants.SVG_TEXT_ANCHOR_END -> target.textAlignment = Text.HorizontalAlignment.RIGHT
+            //        SvgConstants.SVG_TEXT_ANCHOR_MIDDLE -> target.textAlignment = Text.HorizontalAlignment.CENTER
+            //        SvgConstants.SVG_TEXT_ANCHOR_START -> target.textAlignment = Text.HorizontalAlignment.LEFT
+            //        else -> println("Unknown alignment")
+            //    }
+            //}
+
+            //SvgTextContent.TEXT_DY.name -> {
+            //    when (value) {
+            //        SVG_TEXT_DY_TOP -> target.textOrigin = Text.VerticalAlignment.TOP
+            //        SVG_TEXT_DY_CENTER -> target.textOrigin = Text.VerticalAlignment.CENTER
+            //        else -> throw IllegalStateException("Unexpected text 'dy' value: $value")
+            //    }
+            //}
+            else -> super.setAttribute(target, name, value)
+        }
+    }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
     fun setAttributes(target: Text.TextRun, tspan: SvgTSpanElement) {
         tspan.attributeKeys.forEach { key ->
             setAttribute(target, key.name, tspan.getAttribute(key).get())

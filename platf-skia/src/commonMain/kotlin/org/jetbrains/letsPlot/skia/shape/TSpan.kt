@@ -15,21 +15,21 @@ internal class TSpan(
 ) : Figure() {
     var text: String by visualProp("")
 
-    var baselineShift: BaselineShift by visualProp( BaselineShift.NONE)
+    var baselineShift: BaselineShift by visualProp(BaselineShift.NONE)
     var dy: Float by visualProp(0f)
     var fontScale: Float by visualProp(1f)
 
     var fontFamily: List<String> by visualProp(emptyList())
     var fontStyle: FontStyle by visualProp(FontStyle.NORMAL)
     var fontSize by visualProp(DEFAULT_FONT_SIZE)
-    
+
     var layoutX: Float by visualProp(0.0f)
     var layoutY: Float by visualProp(0.0f)
 
     private val typeface by computedProp(TSpan::fontFamily, TSpan::fontStyle) {
         fontManager.matchFamiliesStyle(fontFamily, fontStyle)
     }
-    
+
     private val font by computedProp(TSpan::typeface, TSpan::fontSize) {
         fontManager.font(typeface, fontSize)
     }
@@ -37,8 +37,30 @@ internal class TSpan(
     private val lineHeight by computedProp(TSpan::font) {
         font.metrics.descent - font.metrics.ascent
     }
-    
-    private val textData by computedProp(TSpan::text, TSpan::baselineShift, TSpan::dy, TSpan::fontScale) {
+
+    private val styleData: StyleData by computedProp(
+        Figure::fill,
+        Figure::stroke,
+        Figure::strokeWidth
+    ) {
+        val container = parent as? TextBlock
+        StyleData(
+            fillPaint = fillPaint(fill ?: container?.fill),
+            strokePaint = strokePaint(
+                stroke = stroke ?: container?.stroke,
+                strokeWidth = strokeWidth ?: container?.strokeWidth ?: 1f
+            )
+        )
+    }
+
+    private val textData by computedProp(
+        TSpan::text,
+        TSpan::baselineShift,
+        TSpan::dy,
+        TSpan::fontScale,
+        TSpan::font,
+        TSpan::lineHeight
+    ) {
         val blobBuilder = TextBlobBuilder()
         val glyphs = font.getStringGlyphs(text)
         val glyphXPos = font.getXPositions(glyphs)
@@ -84,9 +106,15 @@ internal class TSpan(
     override fun render(canvas: Canvas) {
         val blob = textData?.blob ?: return
 
-        fillPaint?.let { canvas.drawTextBlob(blob, layoutX, layoutY, it) }
-        strokePaint?.let { canvas.drawTextBlob(blob, layoutX, layoutY, it) }
+        styleData.fillPaint?.let { canvas.drawTextBlob(blob, layoutX, layoutY, it) }
+        styleData.strokePaint?.let { canvas.drawTextBlob(blob, layoutX, layoutY, it) }
+    }
 
+    fun dim(): Pair<Float, Float> {
+        if (textData == null) {
+            return 0f to 0f
+        }
+        return textData!!.width to textData!!.height
     }
 
     private class TextData(
@@ -98,10 +126,18 @@ internal class TSpan(
     ) {
         val right = left + width
         val bottom = top + height
+        val dim = Pair(width, height)
     }
 
     private class StyleData(
         val fillPaint: Paint?,
         val strokePaint: Paint?,
     )
+
+    override val localBounds: Rect
+        get() {
+            val (w, h) = textData?.dim ?: return Rect.makeWH(0.0f, 0.0f)
+            return Rect.makeXYWH(layoutX, layoutY, w, h)
+        }
+
 }

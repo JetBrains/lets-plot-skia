@@ -12,18 +12,17 @@ import org.jetbrains.letsPlot.commons.intern.observable.property.WritablePropert
 import org.jetbrains.letsPlot.datamodel.mapping.framework.Synchronizers
 import org.jetbrains.letsPlot.datamodel.svg.dom.*
 import org.jetbrains.letsPlot.datamodel.svg.style.StyleSheet
+import org.jetbrains.letsPlot.skia.mapping.svg.attr.SvgTSpanElementAttrMapping
 import org.jetbrains.letsPlot.skia.mapping.svg.attr.SvgTextElementAttrMapping
-import org.jetbrains.letsPlot.skia.shape.Element
-import org.jetbrains.letsPlot.skia.shape.TSpan
-import org.jetbrains.letsPlot.skia.shape.TextBlock
+import org.jetbrains.letsPlot.skia.shape.Text
 import org.jetbrains.letsPlot.skia.shape.asSkiaColor
 import org.jetbrains.skia.FontStyle
 
-internal class SvgTextElementMapper(
+internal class SvgTextElementInlineMapper(
     source: SvgTextElement,
-    target: TextBlock,
+    target: Text,
     peer: SvgSkiaPeer
-) : SvgElementMapper<SvgTextElement, TextBlock>(source, target, peer) {
+) : SvgElementMapper<SvgTextElement, Text>(source, target, peer) {
 
     private val myTextAttrSupport = TextAttributesSupport(target)
 
@@ -39,7 +38,7 @@ internal class SvgTextElementMapper(
         super.registerSynchronizers(conf)
 
         // Sync TextNodes, TextSpans
-        val sourceTextRunProperty = sourceTextRunProperty(source.children(), peer.styleSheet, peer.fontManager)
+        val sourceTextRunProperty = sourceTextRunProperty(source.children(), peer.styleSheet)
         val targetTextRunProperty = targetTextRunProperty(target, peer.fontManager)
         conf.add(
             Synchronizers.forPropsOneWay(
@@ -49,7 +48,7 @@ internal class SvgTextElementMapper(
         )
     }
 
-    private fun setFontProperties(target: TextBlock, styleSheet: StyleSheet?) {
+    private fun setFontProperties(target: Text, styleSheet: StyleSheet?) {
         if (styleSheet == null) {
             return
         }
@@ -72,12 +71,10 @@ internal class SvgTextElementMapper(
     }
 
 
-    private fun targetTextRunProperty(textBlock: TextBlock, fontManager: FontManager): WritableProperty<List<Element>?> {
-        return object : WritableProperty<List<Element>?> {
-            override fun set(value: List<Element>?) {
-                textBlock.children.clear()
-                value?.forEach { textBlock.children.add(it) }
-                textBlock.invalidateLayout()
+    private fun targetTextRunProperty(target: Text, fontManager: FontManager): WritableProperty<List<Text.TextRun>?> {
+        return object : WritableProperty<List<Text.TextRun>?> {
+            override fun set(value: List<Text.TextRun>?) {
+                target.content = value ?: emptyList()
             }
         }
     }
@@ -86,15 +83,14 @@ internal class SvgTextElementMapper(
     companion object {
         private fun sourceTextRunProperty(
             nodes: ObservableCollection<SvgNode>,
-            styleSheet: StyleSheet?,
-            fontManager: FontManager
-        ): ReadableProperty<List<TSpan>> {
-            fun toTSpans(nodes: ObservableCollection<SvgNode>): List<TSpan> {
+            styleSheet: StyleSheet?
+        ): ReadableProperty<List<Text.TextRun>> {
+            fun textRuns(nodes: ObservableCollection<SvgNode>): List<Text.TextRun> {
                 return nodes.flatMap { node ->
                     val nodeTextRuns = when (node) {
-                        is SvgTextNode -> listOf(TSpan(fontManager).apply { text = node.textContent().get() })
-                        is SvgTSpanElement -> handleTSpanElement(node, styleSheet, fontManager)
-                        is SvgAElement -> handleAElement(node, styleSheet, fontManager)
+                        is SvgTextNode -> listOf(Text.TextRun(node.textContent().get()))
+                        is SvgTSpanElement -> handleTSpanElement(node, styleSheet)
+                        is SvgAElement -> handleAElement(node, styleSheet)
 
                         else -> error("Unexpected node type: ${node::class.simpleName}")
                     }
@@ -103,35 +99,36 @@ internal class SvgTextElementMapper(
                 }
             }
 
-            return object : SimpleCollectionProperty<SvgNode, List<TSpan>>(nodes, toTSpans(nodes)) {
+            return object : SimpleCollectionProperty<SvgNode, List<Text.TextRun>>(nodes, textRuns(nodes)) {
                 override val propExpr = "textRuns($collection)"
-                override fun doGet() = toTSpans(collection)
+                override fun doGet() = textRuns(collection)
             }
         }
 
 
-        private fun handleTSpanElement(node: SvgTSpanElement, styleSheet: StyleSheet?, fontManager: FontManager): List<TSpan> =
+        private fun handleTSpanElement(node: SvgTSpanElement, styleSheet: StyleSheet?): List<Text.TextRun> =
             node.children().map { child ->
                 require(child is SvgTextNode)
+                val textRun = Text.TextRun(child.textContent().get())
+                SvgTSpanElementAttrMapping.setAttributes(textRun, node)
+
                 val style = styleSheet?.getTextStyle(node.fullClass())
 
-                TSpan(fontManager).apply {
-                    text = child.textContent().get()
-                    if (style?.isNoneColor == false) {
-                        fill = style.color.asSkiaColor
-                    }
+                if (style?.isNoneColor == false) {
+                    textRun.fill = style.color.asSkiaColor
                 }
+                textRun
             }
 
-        private fun handleAElement(node: SvgAElement, styleSheet: StyleSheet?, fontManager: FontManager): List<TSpan> {
+        private fun handleAElement(node: SvgAElement, styleSheet: StyleSheet?): List<Text.TextRun> {
             val href = node.getAttribute("href").get() as String
             return node.children().flatMap { child ->
                 require(child is SvgTSpanElement)
-                handleTSpanElement(child, styleSheet, fontManager)
+                handleTSpanElement(child, styleSheet)
             }
         }
 
-        private class TextAttributesSupport(val target: TextBlock) {
+        private class TextAttributesSupport(val target: Text) {
             private var mySvgTextAnchor: String? = null
 
             fun setAttribute(name: String, value: Any?) {
