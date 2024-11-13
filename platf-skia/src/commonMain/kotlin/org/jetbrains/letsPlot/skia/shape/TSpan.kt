@@ -86,8 +86,8 @@ internal class TSpan(
         // Adjust bbox from skia (to not calculate it manually)
         val bbox = font.measureText(text).let {
             Rect.makeXYWH(
-                l = 200f,
-                t = 200f,
+                l = it.left,
+                t = it.top - baselineShift.percent * lineHeight,
                 w = measuredTextWidth * fontScale,
                 h = it.height * fontScale
             )
@@ -136,8 +136,19 @@ internal class TSpan(
 
     override val localBounds: Rect
         get() {
-            val (w, h) = textData?.dim ?: return Rect.makeWH(0.0f, 0.0f)
-            return Rect.makeXYWH(layoutX, layoutY, w, h)
+            val textData = textData ?: return Rect.makeWH(0.0f, 0.0f)
+
+            val left = textData.left
+            val top = textData.top
+            val right = textData.right
+            val bottom = textData.bottom
+
+            return Rect.makeLTRB(
+                layoutX + left,
+                layoutY + top,
+                layoutX + right,
+                layoutY + bottom
+            )
         }
 
 }

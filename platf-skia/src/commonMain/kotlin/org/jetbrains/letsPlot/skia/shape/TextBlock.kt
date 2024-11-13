@@ -105,16 +105,6 @@ internal class TextBlock(
 
         }
 
-
-        val width = children.fold(0f) { acc, v -> acc + (v as TSpan).dim().first }
-
-        val cx = when (textAlignment) {
-            HorizontalAlignment.LEFT -> 0.0f
-            HorizontalAlignment.CENTER -> -width / 2.0f
-            HorizontalAlignment.RIGHT -> -width
-            null -> 0.0f
-        }
-
         var curX = 0f
         children.forEach {
             it as TSpan
