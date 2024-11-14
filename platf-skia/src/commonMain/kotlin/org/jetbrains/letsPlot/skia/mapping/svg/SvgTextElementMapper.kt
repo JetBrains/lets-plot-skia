@@ -12,6 +12,7 @@ import org.jetbrains.letsPlot.commons.intern.observable.property.WritablePropert
 import org.jetbrains.letsPlot.datamodel.mapping.framework.Synchronizers
 import org.jetbrains.letsPlot.datamodel.svg.dom.*
 import org.jetbrains.letsPlot.datamodel.svg.style.StyleSheet
+import org.jetbrains.letsPlot.skia.mapping.svg.attr.SvgTSpanElementAttrMapping
 import org.jetbrains.letsPlot.skia.mapping.svg.attr.SvgTextElementAttrMapping
 import org.jetbrains.letsPlot.skia.shape.Element
 import org.jetbrains.letsPlot.skia.shape.TSpan
@@ -71,13 +72,35 @@ internal class SvgTextElementMapper(
         }
     }
 
+    private fun setFontProperties(target: TSpan, styleSheet: StyleSheet?) {
+        if (styleSheet == null) {
+            return
+        }
+        val className = source.fullClass()
+        if (className.isNotEmpty()) {
+            val style = styleSheet.getTextStyle(className)
+            target.fill = style.color.asSkiaColor
+            target.fontFamily = style.family.split(",").map { it.trim(' ', '"') }
+            target.fontSize = style.size.toFloat()
+            target.fontStyle = when {
+                style.face.bold && !style.face.italic -> FontStyle.BOLD
+                style.face.bold && style.face.italic -> FontStyle.BOLD_ITALIC
+                !style.face.bold && style.face.italic -> FontStyle.ITALIC
+                !style.face.bold && !style.face.italic -> FontStyle.NORMAL
+                else -> error("Unknown fontStyle: `${style.face}`")
+            }
+
+            myTextAttrSupport.setAttribute(SvgConstants.SVG_STYLE_ATTRIBUTE, "fill:${style.color.toHexColor()};")
+        }
+    }
+
 
     private fun targetTextRunProperty(textBlock: TextBlock, fontManager: FontManager): WritableProperty<List<Element>?> {
         return object : WritableProperty<List<Element>?> {
             override fun set(value: List<Element>?) {
                 textBlock.children.clear()
                 value?.forEach { textBlock.children.add(it) }
-                textBlock.invalidateLayout()
+                textBlock.layoutChildren()
             }
         }
     }
@@ -115,12 +138,35 @@ internal class SvgTextElementMapper(
                 require(child is SvgTextNode)
                 val style = styleSheet?.getTextStyle(node.fullClass())
 
-                TSpan(fontManager).apply {
+                val tspan = TSpan(fontManager).apply {
                     text = child.textContent().get()
                     if (style?.isNoneColor == false) {
                         fill = style.color.asSkiaColor
                     }
+
+                    SvgTSpanElementAttrMapping.setAttributes(this, node)
                 }
+
+                if (styleSheet == null) {
+                    return@map tspan
+                }
+                val className = node.fullClass()
+                if (className.isNotEmpty()) {
+                    val style = styleSheet.getTextStyle(className)
+                    tspan.fill = style.color.asSkiaColor
+                    tspan.fontFamily = style.family.split(",").map { it.trim(' ', '"') }
+                    tspan.fontSize = style.size.toFloat()
+                    tspan.fontStyle = when {
+                        style.face.bold && !style.face.italic -> FontStyle.BOLD
+                        style.face.bold && style.face.italic -> FontStyle.BOLD_ITALIC
+                        !style.face.bold && style.face.italic -> FontStyle.ITALIC
+                        !style.face.bold && !style.face.italic -> FontStyle.NORMAL
+                        else -> error("Unknown fontStyle: `${style.face}`")
+                    }
+
+                }
+
+                return@map tspan
             }
 
         private fun handleAElement(node: SvgAElement, styleSheet: StyleSheet?, fontManager: FontManager): List<TSpan> {

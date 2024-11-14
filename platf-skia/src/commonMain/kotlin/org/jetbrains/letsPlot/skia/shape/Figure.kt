@@ -5,7 +5,6 @@
 
 package org.jetbrains.letsPlot.skia.shape
 
-import org.jetbrains.skia.Color
 import org.jetbrains.skia.Color4f
 import org.jetbrains.skia.Paint
 import org.jetbrains.skia.PathEffect.Companion.makeDash
@@ -17,7 +16,7 @@ internal abstract class Figure : Element() {
     var strokeDashArray: List<Float>? by visualProp(null)
     var strokeMiter: Float? by visualProp(null) // not mandatory, default works fine
 
-    var fill: Color4f? by visualProp(Color4f(Color.BLACK))
+    var fill: Color4f? by visualProp(null)
     var fillOpacity: Float by visualProp(1f)
 
     val fillPaint: Paint? by computedProp(Figure::fill, Figure::fillOpacity, managed = true) {

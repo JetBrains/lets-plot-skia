@@ -5,13 +5,16 @@
 
 package org.jetbrains.letsPlot.skia.shape
 
+import org.jetbrains.letsPlot.commons.intern.observable.collections.CollectionItemEvent
 import org.jetbrains.letsPlot.skia.mapping.svg.FontManager
 import org.jetbrains.letsPlot.skia.shape.Text.Companion.DEFAULT_FONT_SIZE
 import org.jetbrains.letsPlot.skia.shape.Text.HorizontalAlignment
 import org.jetbrains.letsPlot.skia.shape.Text.VerticalAlignment
+import org.jetbrains.skia.Canvas
 import org.jetbrains.skia.Color
 import org.jetbrains.skia.Color4f
 import org.jetbrains.skia.FontStyle
+import kotlin.reflect.KProperty
 
 internal class TextBlock(
     private val fontManager: FontManager
@@ -21,7 +24,6 @@ internal class TextBlock(
     var x: Float by visualProp(0f)
     var y: Float by visualProp(0f)
 
-    //var content: List<TextRun> by visualProp(emptyList())
     var stroke: Color4f? by visualProp(null)
     var strokeWidth: Float by visualProp(1f)
     var strokeOpacity: Float by visualProp(1f)
@@ -34,6 +36,8 @@ internal class TextBlock(
     var fontFamily: List<String> by visualProp(emptyList())
     var fontStyle: FontStyle by visualProp(FontStyle.NORMAL)
     var fontSize by visualProp(DEFAULT_FONT_SIZE)
+
+    var needLayout = true
 
     private val typeface by computedProp(TextBlock::fontFamily, TextBlock::fontStyle) {
         fontManager.matchFamiliesStyle(fontFamily, fontStyle)
@@ -67,50 +71,60 @@ internal class TextBlock(
         }
     }
 
-    fun invalidateLayout() {
-        children.forEach {
-            it as TSpan
-            if (it.fontFamily.isEmpty()) {
-                it.fontFamily = fontFamily
-            }
-
-            if (it.fontStyle == FontStyle.NORMAL) {
-                it.fontStyle = fontStyle
-            }
-
-            if (it.fontSize == DEFAULT_FONT_SIZE) {
-                it.fontSize = fontSize
-            }
-
-            it.fill = org.jetbrains.letsPlot.commons.values.Color.RED.asSkiaColor
-            //if (it.fill == null) {
-            //    it.fill = fill
-            //}
-
-            if (it.stroke == null) {
-                it.stroke = stroke
-            }
-
-            if (it.strokeWidth == 1f) {
-                it.strokeWidth = strokeWidth
-            }
-
-            if (it.strokeOpacity == 1f) {
-                it.strokeOpacity = strokeOpacity
-            }
-
-            if (it.strokeDashArray == null) {
-                it.strokeDashArray = strokeDashArray
-            }
-
+    override fun render(canvas: Canvas) {
+        if (needLayout) {
+            layoutChildren()
         }
+    }
 
+    fun layoutChildren() {
         var curX = 0f
+
         children.forEach {
             it as TSpan
+
             it.layoutX = x + cx + curX
             it.layoutY = y + cy
+
             curX += it.dim().first
         }
+
+        needLayout = false
+    }
+
+    override fun onPropertyChanged(prop: KProperty<*>) {
+        if (prop == TextBlock::x
+            || prop == TextBlock::y
+            || prop == TextBlock::textAlignment
+            || prop == TextBlock::textOrigin)
+        {
+            needLayout = true
+        }
+
+        children.forEach { el ->
+            el as TSpan
+            when (prop) {
+                TextBlock::fill -> el.fill = el.fill ?: fill
+                TextBlock::stroke -> el.stroke =el.stroke ?: stroke
+                TextBlock::strokeDashArray -> el.strokeDashArray = el.strokeDashArray ?: strokeDashArray
+                TextBlock::fontFamily -> fontFamily.takeIf { el.fontFamily.isEmpty() }?.let { el.fontFamily = it }
+                TextBlock::fontStyle -> el.fontStyle = fontStyle
+                TextBlock::fontSize -> el.fontSize = fontSize
+                TextBlock::strokeWidth -> el.strokeWidth = strokeWidth
+                TextBlock::strokeOpacity -> el.strokeOpacity = strokeOpacity
+            }
+        }
+    }
+
+    override fun onChildAdded(event: CollectionItemEvent<out Element>) {
+        val el = event.newItem as TSpan
+        el.fill = el.fill ?: fill
+        el.stroke = el.stroke ?: stroke
+        el.strokeWidth = strokeWidth
+        el.strokeOpacity = strokeOpacity
+        el.strokeDashArray = el.strokeDashArray ?: strokeDashArray
+        el.fontFamily = el.fontFamily.takeIf { it.isNotEmpty()  } ?: fontFamily
+        el.fontStyle = fontStyle
+        el.fontSize = fontSize
     }
 }

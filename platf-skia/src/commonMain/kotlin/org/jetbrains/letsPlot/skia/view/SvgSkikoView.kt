@@ -172,11 +172,10 @@ abstract class SvgSkikoView() : SkikoRenderDelegate, Disposable {
                 canvas.saveLayer(null, paint)
             }
 
+            element.render(canvas)
             if (element is Container) {
                 render(element.children, canvas)
             }
-
-            element.render(canvas)
 
             globalAlphaSet?.let { canvas.restore() }
 

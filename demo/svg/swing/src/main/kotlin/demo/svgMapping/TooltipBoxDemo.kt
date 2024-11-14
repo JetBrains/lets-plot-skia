@@ -28,6 +28,7 @@ fun main() {
     // TODO: Fix hack. Wait for attach - TooltipBox uses SvgPeer not available before.
     invokeLater {
         models.forEach { it.second() }
+        svgRoots
     }
 }
 
@@ -54,7 +55,9 @@ private class TooltipBoxDemo : DemoBase(DEMO_BOX_SIZE) {
 
     // TooltipBox uses SvgPeer - split creation and update so update can be called after attach
     fun createModels(): List<Pair<GroupComponent, () -> Unit>> {
-        return myTooltipList.map(::tooltip)
+        return myTooltipList
+            .let { listOf(it.first())}
+            .map(::tooltip)
     }
 
     private fun tooltip(spec: MyTooltipSpec): Pair<GroupComponent, () -> Unit> {

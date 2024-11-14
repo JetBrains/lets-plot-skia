@@ -15,6 +15,7 @@ import org.jetbrains.letsPlot.geom.geomText
 import org.jetbrains.letsPlot.ggplot
 import org.jetbrains.letsPlot.ggsize
 import org.jetbrains.letsPlot.intern.Plot
+import org.jetbrains.letsPlot.label.ggtitle
 import org.jetbrains.letsPlot.label.labs
 import org.jetbrains.letsPlot.letsPlot
 import org.jetbrains.letsPlot.scale.scaleShapeIdentity
@@ -29,8 +30,8 @@ import kotlin.random.Random
 class HyperlinkSpec : PlotDemoSpec {
     override fun createFigureList(): List<Figure> {
         return listOf(
-            //ggplot() + geomPoint() + ggtitle("Visit <a href=\"https://lets-plot.org\">lets-plot.org</a> for more information") + themeVoid(),
-            //lpverse(),
+            ggplot() + geomPoint() + ggtitle("Visit <a href=\"https://lets-plot.org\">lets-plot.org</a> for more information") + themeVoid(),
+            lpverse(),
             ggplot() +
                     geomPoint(
                         x = 0,

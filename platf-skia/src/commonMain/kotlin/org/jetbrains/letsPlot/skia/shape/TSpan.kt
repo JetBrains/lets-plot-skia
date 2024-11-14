@@ -9,6 +9,7 @@ import org.jetbrains.letsPlot.skia.mapping.svg.FontManager
 import org.jetbrains.letsPlot.skia.shape.Text.BaselineShift
 import org.jetbrains.letsPlot.skia.shape.Text.Companion.DEFAULT_FONT_SIZE
 import org.jetbrains.skia.*
+import kotlin.reflect.KProperty
 
 internal class TSpan(
     private val fontManager: FontManager
@@ -43,12 +44,11 @@ internal class TSpan(
         Figure::stroke,
         Figure::strokeWidth
     ) {
-        val container = parent as? TextBlock
         StyleData(
-            fillPaint = fillPaint(fill ?: container?.fill),
+            fillPaint = fillPaint(fill),
             strokePaint = strokePaint(
-                stroke = stroke ?: container?.stroke,
-                strokeWidth = strokeWidth ?: container?.strokeWidth ?: 1f
+                stroke = stroke,
+                strokeWidth = strokeWidth
             )
         )
     }
@@ -61,6 +61,8 @@ internal class TSpan(
         TSpan::font,
         TSpan::lineHeight
     ) {
+        if (text.isEmpty()) return@computedProp null
+
         val blobBuilder = TextBlobBuilder()
         val glyphs = font.getStringGlyphs(text)
         val glyphXPos = font.getXPositions(glyphs)
@@ -79,6 +81,7 @@ internal class TSpan(
         }
 
         blobBuilder.appendRunRSXform(font, glyphs, rsxTransforms.toTypedArray())
+        val blob = blobBuilder.build() ?: return@computedProp null
 
         // font.measureText ignores trailing spaces, so we need to use measureTextWidth
         val measuredTextWidth = font.measureTextWidth(text)
@@ -93,7 +96,6 @@ internal class TSpan(
             )
         }
 
-        val blob = blobBuilder.build() ?: return@computedProp null
         TextData(
             blob,
             left = bbox.left,
@@ -151,4 +153,9 @@ internal class TSpan(
             )
         }
 
+    override fun onPropertyChanged(prop: KProperty<*>) {
+        if (prop == TSpan::textData) {
+            (parent as? TextBlock)?.needLayout = true
+        }
+    }
 }
