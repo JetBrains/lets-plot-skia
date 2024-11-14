@@ -23,6 +23,7 @@ internal object DebugOptions {
                 is Pane -> Color.CYAN
                 is Group -> Color.YELLOW
                 is Text -> Color.GREEN
+                is TSpan -> Color.GREEN
                 is Rectangle -> Color.BLUE
                 is Circle -> Color.RED
                 is Line -> Color.RED

@@ -7,7 +7,6 @@ package org.jetbrains.letsPlot.skia.shape
 
 import org.jetbrains.letsPlot.skia.mapping.svg.FontManager
 import org.jetbrains.letsPlot.skia.shape.Text.BaselineShift
-import org.jetbrains.letsPlot.skia.shape.Text.Companion.DEFAULT_FONT_SIZE
 import org.jetbrains.skia.*
 import kotlin.reflect.KProperty
 
@@ -22,7 +21,7 @@ internal class TSpan(
 
     var fontFamily: List<String> by visualProp(emptyList())
     var fontStyle: FontStyle by visualProp(FontStyle.NORMAL)
-    var fontSize by visualProp(DEFAULT_FONT_SIZE)
+    var fontSize by visualProp(Text.DEFAULT_FONT_SIZE)
 
     var layoutX: Float by visualProp(0.0f)
     var layoutY: Float by visualProp(0.0f)
@@ -155,7 +154,14 @@ internal class TSpan(
 
     override fun onPropertyChanged(prop: KProperty<*>) {
         if (prop == TSpan::textData) {
-            (parent as? TextBlock)?.needLayout = true
+            (parent as? Text)?.needLayout = true
         }
+
+        if (prop == TSpan::layoutX) println("$text: layoutX: $layoutX")
+        if (prop == TSpan::layoutY) println("$text: layoutY: $layoutY")
+    }
+
+    override fun repr(): String? {
+        return ", text: \"$text\"" + super.repr()
     }
 }

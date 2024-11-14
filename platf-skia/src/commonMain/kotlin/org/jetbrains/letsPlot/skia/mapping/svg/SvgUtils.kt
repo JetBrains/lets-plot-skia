@@ -15,8 +15,6 @@ import kotlin.reflect.KClass
 
 
 internal object SvgUtils {
-    const val USE_TEXT_BLOCK = true
-
     @Suppress("UNCHECKED_CAST")
     private val ATTR_MAPPINGS: Map<KClass<out Element>, SvgAttrMapping<Element>> = mapOf(
         Pane::class to (SvgSvgAttrMapping as SvgAttrMapping<Element>),
@@ -65,26 +63,17 @@ internal object SvgUtils {
         return when (parent) {
             is Group -> parent.children
             is Pane -> parent.children
-            is TextBlock -> parent.children
+            is Text -> parent.children
             else -> throw IllegalArgumentException("Unsupported parent type: ${parent::class.simpleName}")
         }
     }
 
     fun newElement(source: SvgNode, peer: SvgSkiaPeer): Element {
-        if (USE_TEXT_BLOCK) {
-            when (source) {
-                is SvgTextElement -> return TextBlock(peer.fontManager)
-                //is SvgTSpanElement -> return TSpan(peer.fontManager)
-                //is SvgTextNode -> return TSpan(peer.fontManager)
-                //is SvgAElement -> return TextBlock(peer.fontManager)
-            }
-        }
-
         return when (source) {
             is SvgEllipseElement -> Ellipse()
             is SvgCircleElement -> Circle()
             is SvgRectElement -> Rectangle()
-            is SvgTextElement -> Text(peer.fontManager)
+            is SvgTextElement -> return Text(peer.fontManager)
             is SvgPathElement -> Path()
             is SvgLineElement -> Line()
             is SvgSvgElement -> Pane()

@@ -13,7 +13,10 @@ import org.jetbrains.letsPlot.datamodel.svg.dom.SvgNode
 import org.jetbrains.letsPlot.datamodel.svg.dom.SvgPlatformPeer
 import org.jetbrains.letsPlot.datamodel.svg.dom.SvgTextContent
 import org.jetbrains.letsPlot.datamodel.svg.style.StyleSheet
+import org.jetbrains.letsPlot.skia.shape.Container
 import org.jetbrains.letsPlot.skia.shape.Element
+import org.jetbrains.letsPlot.skia.shape.Text
+import org.jetbrains.letsPlot.skia.shape.breadthFirstTraversal
 
 internal class SvgSkiaPeer(
     val fontManager: FontManager
@@ -91,7 +94,17 @@ internal class SvgSkiaPeer(
         ensureSourceRegistered(element as SvgNode)
         val target = myMappingMap[element]!!.target
 
-        return target.localBounds.let {
+        if (target is Container) {
+            breadthFirstTraversal(target).forEach {
+                if (it is Text) {
+                    it.layoutChildren()
+                }
+            }
+        }
+        val localBounds = target.localBounds
+
+        println("localBounds: $localBounds")
+        return localBounds.let {
             DoubleRectangle(
                 it.left.toDouble(),
                 it.top.toDouble(),

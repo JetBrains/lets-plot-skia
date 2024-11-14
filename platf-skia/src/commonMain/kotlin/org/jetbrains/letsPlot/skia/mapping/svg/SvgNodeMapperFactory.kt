@@ -11,7 +11,6 @@ import org.jetbrains.letsPlot.commons.logging.PortableLogging
 import org.jetbrains.letsPlot.datamodel.mapping.framework.Mapper
 import org.jetbrains.letsPlot.datamodel.mapping.framework.MapperFactory
 import org.jetbrains.letsPlot.datamodel.svg.dom.*
-import org.jetbrains.letsPlot.skia.mapping.svg.SvgUtils.USE_TEXT_BLOCK
 import org.jetbrains.letsPlot.skia.shape.*
 import org.jetbrains.skia.ColorAlphaType
 import org.jetbrains.skia.EncodedImageFormat
@@ -34,7 +33,7 @@ internal class SvgNodeMapperFactory(private val peer: SvgSkiaPeer) : MapperFacto
             is SvgStyleElement -> SvgStyleElementMapper(src, target as Group, peer)
             is SvgGElement -> SvgGElementMapper(src, target as Group, peer)
             is SvgSvgElement -> SvgSvgElementMapper(src, peer)
-            is SvgTextElement -> if (USE_TEXT_BLOCK) SvgTextElementMapper(src, target as TextBlock, peer) else SvgTextElementInlineMapper(src, target as Text, peer)
+            is SvgTextElement -> SvgTextElementMapper(src, target as Text, peer)
             is SvgImageElement -> SvgImageElementMapper(src, target as Image, peer)
             is SvgElement -> SvgElementMapper(src, target, peer)
             else -> throw IllegalArgumentException("Unsupported SvgElement: " + src::class.simpleName)

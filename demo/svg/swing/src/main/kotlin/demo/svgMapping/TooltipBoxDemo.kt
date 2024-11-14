@@ -56,7 +56,7 @@ private class TooltipBoxDemo : DemoBase(DEMO_BOX_SIZE) {
     // TooltipBox uses SvgPeer - split creation and update so update can be called after attach
     fun createModels(): List<Pair<GroupComponent, () -> Unit>> {
         return myTooltipList
-            .let { listOf(it.first())}
+            //.let { listOf(it[3])}
             .map(::tooltip)
     }
 
@@ -186,6 +186,12 @@ private class TooltipBoxDemo : DemoBase(DEMO_BOX_SIZE) {
                 lines = listOf(SPLITTED_TEXT),
                 rotate = true,
                 pointerCoord = DoubleVector(30.0, 80.0)
+            ),
+
+            // With hyperlink
+            MyTooltipSpec(
+                lines = listOf(TooltipSpec.Line.withLabelAndValue("Click me", "<a href=\"https://www.jetbrains.com/\">JetBrains</a>")),
+                pointerCoord = DoubleVector(100.0, 120.0)
             ),
         )
     }
