@@ -111,11 +111,10 @@ internal class TSpan(
         styleData.strokePaint?.let { canvas.drawTextBlob(blob, layoutX, layoutY, it) }
     }
 
-    fun dim(): Pair<Float, Float> {
-        if (textData == null) {
-            return 0f to 0f
-        }
-        return textData!!.width to textData!!.height
+    fun measure(): Pair<Float, Float> {
+        val width = textData?.width ?: 0f
+        val height = textData?.height ?: 0f
+        return width to height
     }
 
     private class TextData(
@@ -154,11 +153,8 @@ internal class TSpan(
 
     override fun onPropertyChanged(prop: KProperty<*>) {
         if (prop == TSpan::textData) {
-            (parent as? Text)?.needLayout = true
+            (parent as? Text)?.invalidateLayout()
         }
-
-        if (prop == TSpan::layoutX) println("$text: layoutX: $layoutX")
-        if (prop == TSpan::layoutY) println("$text: layoutY: $layoutY")
     }
 
     override fun repr(): String? {

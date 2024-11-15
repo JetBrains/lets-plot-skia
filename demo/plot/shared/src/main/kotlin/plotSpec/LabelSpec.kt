@@ -8,19 +8,30 @@ package plotSpec
 import org.jetbrains.letsPlot.Figure
 import org.jetbrains.letsPlot.geom.geomLabel
 import org.jetbrains.letsPlot.letsPlot
-import org.jetbrains.letsPlot.themes.themeVoid
 
 class LabelSpec : PlotDemoSpec {
     override fun createFigureList(): List<Figure> {
         val fonts = run {
             val families = listOf(
+                "Arial",
+                "Calibri",
+                "Garamond",
+                "Geneva",
+                "Georgia",
+                "Helvetica",
+                "Lucida Grande",
+                "Rockwell",
+                "Times New Roman",
+                "Verdana",
+                "sans-serif",
+                "serif",
                 "monospace"
             )
             letsPlot() + geomLabel {
                 y = families.indices
                 label = families
                 family = families
-            } + themeVoid()
+            }
         }
 
         return listOf(fonts)

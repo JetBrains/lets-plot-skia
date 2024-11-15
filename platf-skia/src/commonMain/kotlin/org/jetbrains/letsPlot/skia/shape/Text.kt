@@ -34,7 +34,7 @@ internal class Text(
     var fontStyle: FontStyle by visualProp(FontStyle.NORMAL)
     var fontSize by visualProp(DEFAULT_FONT_SIZE)
 
-    internal var needLayout = true
+    private var needLayout = true
 
     private val typeface by computedProp(Text::fontFamily, Text::fontStyle) {
         fontManager.matchFamiliesStyle(fontFamily, fontStyle)
@@ -49,12 +49,15 @@ internal class Text(
     }
 
     private val cx by computedProp(Text::textAlignment) {
-        val width = children.fold(0f) { acc, v -> acc + (v as TSpan).dim().first }
+        fun contentWidth(): Float =
+            children
+                .map { (it as TSpan).measure() }
+                .fold(0f) { overallWidth, (w, _) -> overallWidth + w }
 
         when (textAlignment) {
             HorizontalAlignment.LEFT -> 0.0f
-            HorizontalAlignment.CENTER -> -width / 2.0f
-            HorizontalAlignment.RIGHT -> -width
+            HorizontalAlignment.CENTER -> -contentWidth() / 2.0f
+            HorizontalAlignment.RIGHT -> -contentWidth()
             null -> 0.0f
         }
     }
@@ -83,26 +86,30 @@ internal class Text(
             it.layoutX = x + cx + curX
             it.layoutY = y + cy
 
-            curX += it.dim().first
+            curX += it.measure().first
         }
 
         needLayout = false
+    }
+
+    internal fun invalidateLayout() {
+        needLayout = true
     }
 
     override fun onPropertyChanged(prop: KProperty<*>) {
         if (prop == Text::x
             || prop == Text::y
             || prop == Text::textAlignment
-            || prop == Text::textOrigin)
-        {
-            needLayout = true
+            || prop == Text::textOrigin
+        ) {
+            invalidateLayout()
         }
 
         children.forEach { el ->
             el as TSpan
             when (prop) {
                 Text::fill -> el.fill = el.fill ?: fill
-                Text::stroke -> el.stroke =el.stroke ?: stroke
+                Text::stroke -> el.stroke = el.stroke ?: stroke
                 Text::strokeDashArray -> el.strokeDashArray = el.strokeDashArray ?: strokeDashArray
                 Text::fontFamily -> fontFamily.takeIf { el.fontFamily.isEmpty() }?.let { el.fontFamily = it }
                 Text::fontStyle -> el.fontStyle = fontStyle
@@ -120,7 +127,7 @@ internal class Text(
         el.strokeWidth = strokeWidth
         el.strokeOpacity = strokeOpacity
         el.strokeDashArray = el.strokeDashArray ?: strokeDashArray
-        el.fontFamily = el.fontFamily.takeIf { it.isNotEmpty()  } ?: fontFamily
+        el.fontFamily = el.fontFamily.takeIf { it.isNotEmpty() } ?: fontFamily
         el.fontStyle = fontStyle
         el.fontSize = fontSize
         //needLayout = true

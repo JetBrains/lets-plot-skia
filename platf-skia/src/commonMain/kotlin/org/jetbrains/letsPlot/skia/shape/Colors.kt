@@ -8,6 +8,7 @@ package org.jetbrains.letsPlot.skia.shape
 import org.jetbrains.letsPlot.commons.values.Color
 import org.jetbrains.skia.Color4f
 
+
 internal val Color.asSkiaColor
     get() = Color4f(
         r = (red / 255.0).toFloat(),

@@ -79,7 +79,7 @@ internal object SvgUtils {
             is SvgSvgElement -> Pane()
             is SvgGElement -> Group()
             is SvgStyleElement -> Group()
-            is SvgAElement -> Group()
+//            is SvgAElement -> Group()
 //            is SvgTextNode -> myDoc.createTextNode(null)
 //            is SvgTSpanElement -> SVGOMTSpanElement(null, myDoc)
             is SvgDefsElement -> Group()

@@ -103,7 +103,6 @@ internal class SvgSkiaPeer(
         }
         val localBounds = target.localBounds
 
-        println("localBounds: $localBounds")
         return localBounds.let {
             DoubleRectangle(
                 it.left.toDouble(),
