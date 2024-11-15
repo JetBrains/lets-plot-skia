@@ -108,29 +108,30 @@ internal class Text(
         children.forEach { el ->
             el as TSpan
             when (prop) {
-                Text::fill -> el.fill = el.fill ?: fill
-                Text::stroke -> el.stroke = el.stroke ?: stroke
-                Text::strokeDashArray -> el.strokeDashArray = el.strokeDashArray ?: strokeDashArray
-                Text::fontFamily -> fontFamily.takeIf { el.fontFamily.isEmpty() }?.let { el.fontFamily = it }
-                Text::fontStyle -> el.fontStyle = fontStyle
-                Text::fontSize -> el.fontSize = fontSize
-                Text::strokeWidth -> el.strokeWidth = strokeWidth
-                Text::strokeOpacity -> el.strokeOpacity = strokeOpacity
+                Text::fill -> el.inheritValue(TSpan::fill, fill)
+                Text::stroke -> el.inheritValue(TSpan::stroke, stroke)
+                Text::strokeDashArray -> el.inheritValue(TSpan::strokeDashArray, strokeDashArray)
+                Text::fontFamily -> el.inheritValue(TSpan::fontFamily, fontFamily)
+                Text::fontStyle -> el.inheritValue(TSpan::fontStyle, fontStyle)
+                Text::fontSize -> el.inheritValue(TSpan::fontSize, fontSize)
+                Text::strokeWidth -> el.inheritValue(TSpan::strokeWidth, strokeWidth)
+                Text::strokeOpacity -> el.inheritValue(TSpan::strokeOpacity, strokeOpacity)
             }
         }
     }
 
     override fun onChildAdded(event: CollectionItemEvent<out Element>) {
         val el = event.newItem as TSpan
-        el.fill = el.fill ?: fill
-        el.stroke = el.stroke ?: stroke
-        el.strokeWidth = strokeWidth
-        el.strokeOpacity = strokeOpacity
-        el.strokeDashArray = el.strokeDashArray ?: strokeDashArray
-        el.fontFamily = el.fontFamily.takeIf { it.isNotEmpty() } ?: fontFamily
-        el.fontStyle = fontStyle
-        el.fontSize = fontSize
-        //needLayout = true
+        el.inheritValue(TSpan::fill, fill)
+        el.inheritValue(TSpan::stroke, stroke)
+        el.inheritValue(TSpan::strokeWidth, strokeWidth)
+        el.inheritValue(TSpan::strokeOpacity, strokeOpacity)
+        el.inheritValue(TSpan::strokeDashArray, strokeDashArray)
+        el.inheritValue(TSpan::fontFamily, fontFamily)
+        el.inheritValue(TSpan::fontStyle, fontStyle)
+        el.inheritValue(TSpan::fontSize, fontSize)
+
+        invalidateLayout()
     }
 
     enum class VerticalAlignment {

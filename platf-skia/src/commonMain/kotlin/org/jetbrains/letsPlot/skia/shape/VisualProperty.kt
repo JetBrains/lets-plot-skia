@@ -12,9 +12,13 @@ internal class VisualProperty<T>(
     initialValue: T,
     private val onPropertyChanged: (KProperty<*>, T, T) -> Unit
 ) : ReadWriteProperty<Any, T> {
-    var value = initialValue
+    private var value = initialValue
+    var isDefault = true
+        private set
+
     override fun getValue(thisRef: Any, property: KProperty<*>): T = value
     override fun setValue(thisRef: Any, property: KProperty<*>, value: T) = run {
+        isDefault = false
         val oldValue = this.value
         this.value = value
 

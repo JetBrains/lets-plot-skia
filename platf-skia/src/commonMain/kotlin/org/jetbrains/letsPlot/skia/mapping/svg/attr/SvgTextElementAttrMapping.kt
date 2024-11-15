@@ -52,16 +52,15 @@ internal object SvgTextElementAttrMapping : SvgAttrMapping<Text>() {
                 val strokeDashArray = (value as String).split(",").map(String::toFloat)
                 target.strokeDashArray = strokeDashArray
             }
-            SvgConstants.SVG_STYLE_ATTRIBUTE -> setStyle(value as? String ?: "", target)
+
+            SvgConstants.SVG_STYLE_ATTRIBUTE -> {
+                splitStyle(value as? String)
+                    .forEach { (attr, value) ->
+                        setAttribute(target, attr, value)
+                }
+            }
+
             else -> super.setAttribute(target, name, value)
         }
-    }
-
-    private fun setStyle(style: String, target: Text) {
-        style
-            .split(";")
-            .flatMap { it.split(":") }
-            .windowed(2, 2)
-            .forEach { (attr, value) -> setAttribute(target, attr, value) }
     }
 }

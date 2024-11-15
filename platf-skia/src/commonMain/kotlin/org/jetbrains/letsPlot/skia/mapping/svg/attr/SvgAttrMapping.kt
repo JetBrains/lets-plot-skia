@@ -15,7 +15,51 @@ import org.jetbrains.skia.Rect
 
 internal abstract class SvgAttrMapping<in TargetT : Element> {
     open fun setAttribute(target: TargetT, name: String, value: Any?) {
-        Companion.setAttribute(target, name, value)
+        when (name) {
+            SvgGraphicsElement.VISIBILITY.name -> target.isVisible = visibilityAsBoolean(value)
+            SvgGraphicsElement.OPACITY.name -> target.opacity = value?.asFloat
+            SvgGraphicsElement.CLIP_BOUNDS_JFX.name -> target.clipPath = (value as DoubleRectangle).let {
+                SkPath().addRect(
+                    Rect.makeLTRB(
+                        it.left.toFloat(),
+                        it.top.toFloat(),
+                        it.right.toFloat(),
+                        it.bottom.toFloat()
+                    )
+                )
+            }
+
+            SvgGraphicsElement.CLIP_CIRCLE_JFX.name -> target.clipPath = (value as DoubleRectangle).let {
+                SkPath().addCircle(
+                    it.center.x.toFloat(),
+                    it.center.y.toFloat(),
+                    it.width.toFloat() / 2
+                )
+            }
+
+            SvgGraphicsElement.CLIP_PATH.name -> Unit // Not supported.
+            SvgConstants.SVG_STYLE_ATTRIBUTE -> {
+                splitStyle(value as? String)
+                    .forEach { (attr, value) ->
+                        setAttribute(target, attr, value)
+                    }
+            }
+
+            SvgStylableElement.CLASS.name -> target.styleClass = (value as String?)?.split(" ")
+            SvgTransformable.TRANSFORM.name -> setTransform(value.toString(), target)
+            SvgElement.ID.name -> target.id = value as String?
+
+            else -> println("Unsupported attribute `$name` in ${target::class.simpleName}")
+        }
+    }
+
+    private fun visibilityAsBoolean(value: Any?): Boolean {
+        return when (value) {
+            is Boolean -> value
+            is SvgGraphicsElement.Visibility -> value == SvgGraphicsElement.Visibility.VISIBLE
+            is String -> value == SvgGraphicsElement.Visibility.VISIBLE.toString() || asBoolean(value)
+            else -> false
+        }
     }
 
     companion object {
@@ -43,58 +87,17 @@ internal abstract class SvgAttrMapping<in TargetT : Element> {
                 ?.map(String::trim)
                 ?: emptyList()
 
+        fun splitStyle(style: String?): List<Pair<String, String>> {
+            val style = style ?: return emptyList()
+                return style
+                    .split(";")
+                    .flatMap { it.split(":") }
+                    .windowed(2, 2)
+                    .map { (attr, value) -> attr to value }
+        }
+
         internal fun asBoolean(value: Any?): Boolean {
             return (value as? String)?.toBoolean() ?: false
         }
-
-        fun setAttribute(target: Element, name: String, value: Any?) {
-            when (name) {
-                SvgGraphicsElement.VISIBILITY.name -> target.isVisible = visibilityAsBoolean(value)
-                SvgGraphicsElement.OPACITY.name -> target.opacity = value?.asFloat
-                SvgGraphicsElement.CLIP_BOUNDS_JFX.name -> target.clipPath = (value as DoubleRectangle).let {
-                    SkPath().addRect(
-                        Rect.makeLTRB(
-                            it.left.toFloat(),
-                            it.top.toFloat(),
-                            it.right.toFloat(),
-                            it.bottom.toFloat()
-                        )
-                    )
-                }
-                SvgGraphicsElement.CLIP_CIRCLE_JFX.name -> target.clipPath = (value as DoubleRectangle).let {
-                    SkPath().addCircle(
-                        it.center.x.toFloat(),
-                        it.center.y.toFloat(),
-                        it.width.toFloat() / 2
-                    )
-                }
-
-                SvgGraphicsElement.CLIP_PATH.name -> Unit // Not supported.
-                SvgConstants.SVG_STYLE_ATTRIBUTE -> setStyle(value as? String ?: "", target)
-                SvgStylableElement.CLASS.name -> target.styleClass = (value as String?)?.split(" ")
-                SvgTransformable.TRANSFORM.name -> setTransform(value.toString(), target)
-                SvgElement.ID.name -> target.id = value as String?
-
-                else -> println("Unsupported attribute `$name` in ${target::class.simpleName}")
-            }
-        }
-
-        private fun visibilityAsBoolean(value: Any?): Boolean {
-            return when (value) {
-                is Boolean -> value
-                is SvgGraphicsElement.Visibility -> value == SvgGraphicsElement.Visibility.VISIBLE
-                is String -> value == SvgGraphicsElement.Visibility.VISIBLE.toString() || asBoolean(value)
-                else -> false
-            }
-        }
-
-        private fun setStyle(style: String, target: Element) {
-            style
-                .split(";")
-                .flatMap { it.split(":") }
-                .windowed(2, 2)
-                .forEach { (attr, value) -> setAttribute(target, attr, value) }
-        }
-
-    }
+   }
 }
