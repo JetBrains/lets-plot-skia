@@ -187,7 +187,7 @@ private class TooltipBoxDemo : DemoBase(DEMO_BOX_SIZE) {
 
             // With hyperlink
             MyTooltipSpec(
-                lines = listOf(TooltipSpec.Line.withLabelAndValue("Click me", "<a href=\"https://www.jetbrains.com/\">JetBrains</a>")),
+                lines = listOf(TooltipSpec.Line.withLabelAndValue("Click me", "Here is a <a href=\"https://www.jetbrains.com/\">link</a>!")),
                 pointerCoord = DoubleVector(100.0, 120.0)
             ),
         )
