@@ -131,9 +131,18 @@ internal class SvgTextElementMapper(
                 val className = node.fullClass()
                 if (className.isNotEmpty()) {
                     val style = styleSheet.getTextStyle(className)
-                    tspan.fill = style.color.asSkiaColor
-                    tspan.fontFamily = style.family.split(",").map { it.trim(' ', '"') }
-                    tspan.fontSize = style.size.toFloat()
+                    if (!style.isNoneColor) {
+                        tspan.fill = style.color.asSkiaColor
+                    }
+
+                    if (!style.isNoneSize) {
+                        tspan.fontSize = style.size.toFloat()
+                    }
+
+                    if (!style.isNoneFamily) {
+                        tspan.fontFamily = style.family.split(",").map { it.trim(' ', '"') }
+                    }
+
                     tspan.fontStyle = when {
                         style.face.bold && !style.face.italic -> FontStyle.BOLD
                         style.face.bold && style.face.italic -> FontStyle.BOLD_ITALIC

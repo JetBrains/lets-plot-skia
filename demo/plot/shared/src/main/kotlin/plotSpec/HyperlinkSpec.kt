@@ -7,15 +7,11 @@ package plotSpec
 
 import org.jetbrains.letsPlot.Figure
 import org.jetbrains.letsPlot.coord.coordPolar
+import org.jetbrains.letsPlot.geom.*
 import org.jetbrains.letsPlot.geom.extras.arrow
-import org.jetbrains.letsPlot.geom.geomPoint
-import org.jetbrains.letsPlot.geom.geomSegment
-import org.jetbrains.letsPlot.geom.geomSpoke
-import org.jetbrains.letsPlot.geom.geomText
 import org.jetbrains.letsPlot.ggplot
 import org.jetbrains.letsPlot.ggsize
 import org.jetbrains.letsPlot.intern.Plot
-import org.jetbrains.letsPlot.label.ggtitle
 import org.jetbrains.letsPlot.label.labs
 import org.jetbrains.letsPlot.letsPlot
 import org.jetbrains.letsPlot.scale.scaleShapeIdentity
@@ -30,7 +26,7 @@ import kotlin.random.Random
 class HyperlinkSpec : PlotDemoSpec {
     override fun createFigureList(): List<Figure> {
         return listOf(
-            ggplot() + geomPoint() + ggtitle("Visit <a href=\"https://lets-plot.org\">lets-plot.org</a> for more information") + themeVoid(),
+            ggplot() + geomLabel(x=0, y=0, label = "Visit <a href=\"https://lets-plot.org\">lets-plot.org</a> !", size = 10) + themeVoid(),
             lpverse(),
             ggplot() +
                     geomPoint(

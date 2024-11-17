@@ -7,6 +7,8 @@ package org.jetbrains.letsPlot.skia.mapping.svg
 
 import org.jetbrains.letsPlot.datamodel.svg.dom.SvgStyleElement
 import org.jetbrains.letsPlot.datamodel.svg.style.StyleSheet
+import org.jetbrains.letsPlot.datamodel.svg.style.TextStyle.Companion.NONE_FAMILY
+import org.jetbrains.letsPlot.datamodel.svg.style.TextStyle.Companion.NONE_SIZE
 import org.jetbrains.letsPlot.skia.shape.Group
 
 internal class SvgStyleElementMapper(
@@ -18,8 +20,8 @@ internal class SvgStyleElementMapper(
     override fun registerSynchronizers(conf: SynchronizersConfiguration) {
         val styleSheet = StyleSheet.fromCSS(
             css = source.resource.css(),
-            defaultFamily = "Helvetica",
-            defaultSize = 15.0
+            defaultFamily = NONE_FAMILY,
+            defaultSize = NONE_SIZE
         )
         peer.applyStyleSheet(styleSheet)
     }
