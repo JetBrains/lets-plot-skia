@@ -7,6 +7,7 @@ package org.jetbrains.letsPlot.skia.mapping.svg.attr
 
 import org.jetbrains.letsPlot.commons.geometry.DoubleRectangle
 import org.jetbrains.letsPlot.datamodel.svg.dom.*
+import org.jetbrains.letsPlot.datamodel.svg.dom.SvgGraphicsElement.PointerEvents
 import org.jetbrains.letsPlot.skia.mapping.svg.SvgTransformParser.parseSvgTransform
 import org.jetbrains.letsPlot.skia.shape.Element
 import org.jetbrains.letsPlot.skia.shape.SkPath
@@ -48,6 +49,7 @@ internal abstract class SvgAttrMapping<in TargetT : Element> {
             SvgStylableElement.CLASS.name -> target.styleClass = (value as String?)?.split(" ")
             SvgTransformable.TRANSFORM.name -> setTransform(value.toString(), target)
             SvgElement.ID.name -> target.id = value as String?
+            SvgGraphicsElement.POINTER_EVENTS.name -> target.isMouseTransparent = value == PointerEvents.NONE
 
             else -> println("Unsupported attribute `$name` in ${target::class.simpleName}")
         }

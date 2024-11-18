@@ -39,8 +39,7 @@ abstract class SvgSkikoView() : SkikoRenderDelegate, Disposable {
                 eventReg = value.addEventHandler(MouseEventSpec.MOUSE_CLICKED, object : EventHandler<MouseEvent> {
                     override fun onEvent(event: MouseEvent) {
                         reversedDepthFirstTraversal(rootElement)
-                            .filter { it !is Path } // todo: pointer-events: none
-                            .filter { it !is Group } // todo: pointer-events: none
+                            .filterNot { it.isMouseTransparent }
                             .firstOrNull() { it.screenBounds.contains(event.x, event.y) }
                             ?.let {
                                 clickedElement = if (clickedElement == it) null else it
@@ -194,8 +193,7 @@ abstract class SvgSkikoView() : SkikoRenderDelegate, Disposable {
     protected fun onMouseEvent(spec: MouseEventSpec, event: MouseEvent) {
         if (spec == MouseEventSpec.MOUSE_CLICKED) {
             reversedDepthFirstTraversal(rootElement)
-                .filter { it !is Path } // todo: pointer-events: none
-                .filter { it !is Group } // todo: pointer-events: none
+                .filterNot { it.isMouseTransparent }
                 .firstOrNull() { it.screenBounds.contains(event.x, event.y) }
                 ?.let { it.href?.let(::onHrefClick) }
         }

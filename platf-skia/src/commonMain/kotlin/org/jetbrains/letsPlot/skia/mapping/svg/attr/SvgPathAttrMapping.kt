@@ -5,7 +5,6 @@
 
 package org.jetbrains.letsPlot.skia.mapping.svg.attr
 
-import org.jetbrains.letsPlot.datamodel.svg.dom.SvgGraphicsElement.Companion.POINTER_EVENTS
 import org.jetbrains.letsPlot.datamodel.svg.dom.SvgPathData
 import org.jetbrains.letsPlot.datamodel.svg.dom.SvgPathElement
 import org.jetbrains.letsPlot.skia.shape.Path
@@ -38,7 +37,6 @@ internal object SvgPathAttrMapping : SvgShapeMapping<Path>() {
 
                 target.skiaPath = makeFromSVGString(pathStr)
             }
-            POINTER_EVENTS.name -> {} // target.pointerEvents = value as String
             else -> super.setAttribute(target, name, value)
         }
     }

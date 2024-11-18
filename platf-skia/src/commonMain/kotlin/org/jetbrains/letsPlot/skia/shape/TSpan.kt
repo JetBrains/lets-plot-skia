@@ -13,6 +13,9 @@ import kotlin.reflect.KProperty
 internal class TSpan(
     private val fontManager: FontManager
 ) : Figure() {
+    init {
+        isMouseTransparent = false // see Element::isMouseTransparent for details
+    }
     var text: String by visualProp("")
 
     var baselineShift: BaselineShift by visualProp(BaselineShift.NONE)
