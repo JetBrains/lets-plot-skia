@@ -5,6 +5,7 @@
 
 package org.jetbrains.letsPlot.skia.shape
 
+import org.jetbrains.letsPlot.commons.values.FontFace
 import org.jetbrains.skia.*
 import org.jetbrains.skia.PathEffect.Companion.makeDash
 import kotlin.math.max
@@ -182,4 +183,12 @@ fun fillPaint(fill: Color4f? = null, fillOpacity: Float = 1f): Paint? {
     return Paint().also { paint ->
         paint.color4f = fill.withA(fillOpacity)
     }
+}
+
+fun toFontStyle(face: FontFace): FontStyle = when {
+    face.bold && !face.italic -> FontStyle.BOLD
+    face.bold && face.italic -> FontStyle.BOLD_ITALIC
+    !face.bold && face.italic -> FontStyle.ITALIC
+    !face.bold && !face.italic -> FontStyle.NORMAL
+    else -> error("Unknown fontStyle: `$face`")
 }

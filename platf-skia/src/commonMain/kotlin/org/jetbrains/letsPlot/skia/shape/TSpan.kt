@@ -45,10 +45,7 @@ internal class TSpan(
     ) {
         StyleData(
             fillPaint = fillPaint(fill),
-            strokePaint = strokePaint(
-                stroke = stroke,
-                strokeWidth = strokeWidth
-            )
+            strokePaint = strokePaint(stroke = stroke, strokeWidth = strokeWidth)
         )
     }
 

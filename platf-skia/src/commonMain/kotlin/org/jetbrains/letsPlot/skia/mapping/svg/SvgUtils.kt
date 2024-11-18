@@ -8,6 +8,7 @@ package org.jetbrains.letsPlot.skia.mapping.svg
 
 import org.jetbrains.letsPlot.commons.values.Color
 import org.jetbrains.letsPlot.datamodel.svg.dom.*
+import org.jetbrains.letsPlot.datamodel.svg.style.TextStyle
 import org.jetbrains.letsPlot.skia.mapping.svg.attr.*
 import org.jetbrains.letsPlot.skia.shape.*
 import org.jetbrains.skia.Color4f
@@ -123,3 +124,6 @@ internal object SvgUtils {
 
 }
 
+val TextStyle.safeColor: Color? get() = if (isNoneColor) null else color
+val TextStyle.safeSize: Double? get() = if (isNoneSize) null else size
+val TextStyle.safeFamily: List<String>? get() = if (isNoneFamily) null else family.split(",").map { it.trim(' ', '"') }

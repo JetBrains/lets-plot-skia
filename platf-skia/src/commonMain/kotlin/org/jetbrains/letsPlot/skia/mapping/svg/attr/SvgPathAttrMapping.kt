@@ -38,9 +38,7 @@ internal object SvgPathAttrMapping : SvgShapeMapping<Path>() {
 
                 target.skiaPath = makeFromSVGString(pathStr)
             }
-
             POINTER_EVENTS.name -> {} // target.pointerEvents = value as String
-
             else -> super.setAttribute(target, name, value)
         }
     }

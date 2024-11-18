@@ -14,11 +14,7 @@ import org.jetbrains.letsPlot.datamodel.svg.dom.*
 import org.jetbrains.letsPlot.datamodel.svg.style.StyleSheet
 import org.jetbrains.letsPlot.skia.mapping.svg.attr.SvgTSpanElementAttrMapping
 import org.jetbrains.letsPlot.skia.mapping.svg.attr.SvgTextElementAttrMapping
-import org.jetbrains.letsPlot.skia.shape.Element
-import org.jetbrains.letsPlot.skia.shape.TSpan
-import org.jetbrains.letsPlot.skia.shape.Text
-import org.jetbrains.letsPlot.skia.shape.asSkiaColor
-import org.jetbrains.skia.FontStyle
+import org.jetbrains.letsPlot.skia.shape.*
 
 internal class SvgTextElementMapper(
     source: SvgTextElement,
@@ -41,7 +37,7 @@ internal class SvgTextElementMapper(
 
         // Sync TextNodes, TextSpans
         val sourceTextRunProperty = sourceTextRunProperty(source.children(), peer.styleSheet, peer.fontManager)
-        val targetTextRunProperty = targetTextRunProperty(target, peer.fontManager)
+        val targetTextRunProperty = targetTextRunProperty(target)
         conf.add(
             Synchronizers.forPropsOneWay(
                 sourceTextRunProperty,
@@ -60,19 +56,13 @@ internal class SvgTextElementMapper(
             target.fill = style.color.asSkiaColor
             target.fontFamily = style.family.split(",").map { it.trim(' ', '"') }
             target.fontSize = style.size.toFloat()
-            target.fontStyle = when {
-                style.face.bold && !style.face.italic -> FontStyle.BOLD
-                style.face.bold && style.face.italic -> FontStyle.BOLD_ITALIC
-                !style.face.bold && style.face.italic -> FontStyle.ITALIC
-                !style.face.bold && !style.face.italic -> FontStyle.NORMAL
-                else -> error("Unknown fontStyle: `${style.face}`")
-            }
+            target.fontStyle = toFontStyle(style.face)
 
             myTextAttrSupport.setAttribute(SvgConstants.SVG_STYLE_ATTRIBUTE, "fill:${style.color.toHexColor()};")
         }
     }
 
-    private fun targetTextRunProperty(text: Text, fontManager: FontManager): WritableProperty<List<Element>?> {
+    private fun targetTextRunProperty(text: Text): WritableProperty<List<Element>?> {
         return object : WritableProperty<List<Element>?> {
             override fun set(value: List<Element>?) {
                 text.children.clear()
@@ -118,8 +108,8 @@ internal class SvgTextElementMapper(
 
                 val tspan = TSpan(fontManager).apply {
                     text = child.textContent().get()
-                    if (style?.isNoneColor == false) {
-                        fill = style.color.asSkiaColor
+                    style?.safeColor?.asSkiaColor?.let {
+                        fill = it
                     }
 
                     SvgTSpanElementAttrMapping.setAttributes(this, node)
@@ -130,27 +120,20 @@ internal class SvgTextElementMapper(
                 }
                 val className = node.fullClass()
                 if (className.isNotEmpty()) {
-                    val style = styleSheet.getTextStyle(className)
-                    if (!style.isNoneColor) {
-                        tspan.fill = style.color.asSkiaColor
+                    val classStyle = styleSheet.getTextStyle(className)
+                    classStyle.safeColor?.let {
+                        tspan.fill = it.asSkiaColor
                     }
 
-                    if (!style.isNoneSize) {
-                        tspan.fontSize = style.size.toFloat()
+                    classStyle.safeSize?.let {
+                        tspan.fontSize = it.toFloat()
                     }
 
-                    if (!style.isNoneFamily) {
-                        tspan.fontFamily = style.family.split(",").map { it.trim(' ', '"') }
+                    classStyle.safeFamily?.let {
+                        tspan.fontFamily = it
                     }
 
-                    tspan.fontStyle = when {
-                        style.face.bold && !style.face.italic -> FontStyle.BOLD
-                        style.face.bold && style.face.italic -> FontStyle.BOLD_ITALIC
-                        !style.face.bold && style.face.italic -> FontStyle.ITALIC
-                        !style.face.bold && !style.face.italic -> FontStyle.NORMAL
-                        else -> error("Unknown fontStyle: `${style.face}`")
-                    }
-
+                    tspan.fontStyle = toFontStyle(classStyle.face)
                 }
 
                 return@map tspan
@@ -160,7 +143,9 @@ internal class SvgTextElementMapper(
             val href = node.getAttribute("href").get() as String
             return node.children().flatMap { child ->
                 require(child is SvgTSpanElement)
-                handleTSpanElement(child, styleSheet, fontManager)
+                handleTSpanElement(child, styleSheet, fontManager).onEach() {
+                    it.href = href
+                }
             }
         }
 

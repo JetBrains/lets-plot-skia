@@ -18,6 +18,8 @@ internal abstract class Node {
     private val computedPropDependencies = mutableMapOf<KProperty<*>, Set<KProperty<*>>>() // direct and transitive dependencies
     private val propFinalizers = mutableMapOf<KProperty<*>, () -> Managed?>()
 
+    var href: String? = null
+
     var isVisible: Boolean by visualProp(true)
     var opacity: Float? by visualProp(null)
 
