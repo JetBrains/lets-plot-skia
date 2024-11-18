@@ -38,7 +38,13 @@ abstract class SvgSkikoView() : SkikoRenderDelegate, Disposable {
             if (value != null) {
                 eventReg = value.addEventHandler(MouseEventSpec.MOUSE_CLICKED, object : EventHandler<MouseEvent> {
                     override fun onEvent(event: MouseEvent) {
-                        onMouseClicked(event)
+                        reversedDepthFirstTraversal(rootElement)
+                            .filterNot { it.isMouseTransparent }
+                            .firstOrNull() { it.screenBounds.contains(event.x, event.y) }
+                            ?.let {
+                                clickedElement = if (clickedElement == it) null else it
+                                needRedraw()
+                            }
                     }
                 })
             }
@@ -46,18 +52,6 @@ abstract class SvgSkikoView() : SkikoRenderDelegate, Disposable {
         }
 
     private val fontManager = FontManager()
-
-    fun onMouseClicked(e: MouseEvent) {
-        //eventDispatcher?.dispatchMouseEvent(MouseEventSpec.MOUSE_CLICKED, e)
-        reversedDepthFirstTraversal(rootElement)
-            .filter { it !is Path }
-            .filter { it !is Group }
-            .firstOrNull() { it.screenBounds.contains(e.x, e.y) }
-            ?.let {
-                clickedElement = if (clickedElement == it) null else it
-                needRedraw()
-            }
-    }
 
     var svg: SvgSvgElement = SvgSvgElement()
         set(value) {
@@ -123,9 +117,9 @@ abstract class SvgSkikoView() : SkikoRenderDelegate, Disposable {
 
         render(rootElement, canvas)
 
-        highlightElement(clickedElement, canvas)
 
         if (DebugOptions.DEBUG_DRAWING_ENABLED) {
+            highlightElement(clickedElement, canvas)
             drawBoundingBoxes(rootElement, canvas)
         }
     }
@@ -172,11 +166,10 @@ abstract class SvgSkikoView() : SkikoRenderDelegate, Disposable {
                 canvas.saveLayer(null, paint)
             }
 
+            element.render(canvas)
             if (element is Container) {
                 render(element.children, canvas)
             }
-
-            element.render(canvas)
 
             globalAlphaSet?.let { canvas.restore() }
 
@@ -196,4 +189,16 @@ abstract class SvgSkikoView() : SkikoRenderDelegate, Disposable {
             }
         }
     }
+
+    protected fun onMouseEvent(spec: MouseEventSpec, event: MouseEvent) {
+        if (spec == MouseEventSpec.MOUSE_CLICKED) {
+            reversedDepthFirstTraversal(rootElement)
+                .filterNot { it.isMouseTransparent }
+                .firstOrNull() { it.screenBounds.contains(event.x, event.y) }
+                ?.let { it.href?.let(::onHrefClick) }
+        }
+        eventDispatcher?.dispatchMouseEvent(spec, event)
+    }
+
+    abstract fun onHrefClick(href: String)
 }

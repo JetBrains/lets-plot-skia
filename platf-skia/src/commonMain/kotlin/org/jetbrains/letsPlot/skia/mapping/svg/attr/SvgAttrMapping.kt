@@ -7,6 +7,7 @@ package org.jetbrains.letsPlot.skia.mapping.svg.attr
 
 import org.jetbrains.letsPlot.commons.geometry.DoubleRectangle
 import org.jetbrains.letsPlot.datamodel.svg.dom.*
+import org.jetbrains.letsPlot.datamodel.svg.dom.SvgGraphicsElement.PointerEvents
 import org.jetbrains.letsPlot.skia.mapping.svg.SvgTransformParser.parseSvgTransform
 import org.jetbrains.letsPlot.skia.shape.Element
 import org.jetbrains.letsPlot.skia.shape.SkPath
@@ -28,6 +29,7 @@ internal abstract class SvgAttrMapping<in TargetT : Element> {
                     )
                 )
             }
+
             SvgGraphicsElement.CLIP_CIRCLE_JFX.name -> target.clipPath = (value as DoubleRectangle).let {
                 SkPath().addCircle(
                     it.center.x.toFloat(),
@@ -37,10 +39,17 @@ internal abstract class SvgAttrMapping<in TargetT : Element> {
             }
 
             SvgGraphicsElement.CLIP_PATH.name -> Unit // Not supported.
-            SvgConstants.SVG_STYLE_ATTRIBUTE -> setStyle(value as? String ?: "", target)
+            SvgConstants.SVG_STYLE_ATTRIBUTE -> {
+                splitStyle(value as? String)
+                    .forEach { (attr, value) ->
+                        setAttribute(target, attr, value)
+                    }
+            }
+
             SvgStylableElement.CLASS.name -> target.styleClass = (value as String?)?.split(" ")
             SvgTransformable.TRANSFORM.name -> setTransform(value.toString(), target)
             SvgElement.ID.name -> target.id = value as String?
+            SvgGraphicsElement.POINTER_EVENTS.name -> target.isMouseTransparent = value == PointerEvents.NONE
 
             else -> println("Unsupported attribute `$name` in ${target::class.simpleName}")
         }
@@ -55,16 +64,7 @@ internal abstract class SvgAttrMapping<in TargetT : Element> {
         }
     }
 
-    private fun setStyle(style: String, target: TargetT) {
-        style
-            .split(";")
-            .flatMap { it.split(":") }
-            .windowed(2, 2)
-            .forEach { (attr, value) -> setAttribute(target, attr, value) }
-    }
-
     companion object {
-
         private fun setTransform(value: String, target: Element) {
             target.transform = parseSvgTransform(value).fold(Matrix33.IDENTITY, Matrix33::makeConcat)
         }
@@ -89,8 +89,17 @@ internal abstract class SvgAttrMapping<in TargetT : Element> {
                 ?.map(String::trim)
                 ?: emptyList()
 
+        fun splitStyle(style: String?): List<Pair<String, String>> {
+            val style = style ?: return emptyList()
+                return style
+                    .split(";")
+                    .flatMap { it.split(":") }
+                    .windowed(2, 2)
+                    .map { (attr, value) -> attr to value }
+        }
+
         internal fun asBoolean(value: Any?): Boolean {
             return (value as? String)?.toBoolean() ?: false
         }
-    }
+   }
 }

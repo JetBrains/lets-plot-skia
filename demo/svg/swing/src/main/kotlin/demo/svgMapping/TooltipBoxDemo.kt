@@ -184,6 +184,12 @@ private class TooltipBoxDemo : DemoBase(DEMO_BOX_SIZE) {
                 rotate = true,
                 pointerCoord = DoubleVector(30.0, 80.0)
             ),
+
+            // With hyperlink
+            MyTooltipSpec(
+                lines = listOf(TooltipSpec.Line.withLabelAndValue("Click me", "Here is a <a href=\"https://www.jetbrains.com/\">link</a>!")),
+                pointerCoord = DoubleVector(100.0, 120.0)
+            ),
         )
     }
 }

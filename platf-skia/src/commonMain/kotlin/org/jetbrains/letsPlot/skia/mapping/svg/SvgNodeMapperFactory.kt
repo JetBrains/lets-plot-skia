@@ -30,22 +30,11 @@ internal class SvgNodeMapperFactory(private val peer: SvgSkiaPeer) : MapperFacto
         }
 
         return when (src) {
-            is SvgStyleElement -> SvgStyleElementMapper(
-                src,
-                target as Group,
-                peer
-            )
-
+            is SvgStyleElement -> SvgStyleElementMapper(src, target as Group, peer)
             is SvgGElement -> SvgGElementMapper(src, target as Group, peer)
             is SvgSvgElement -> SvgSvgElementMapper(src, peer)
             is SvgTextElement -> SvgTextElementMapper(src, target as Text, peer)
-//            is SvgTextNode -> result = SvgTextNodeMapper(src, target as Text, myDoc, peer)
-            is SvgImageElement -> SvgImageElementMapper(
-                src,
-                target as Image,
-                peer
-            )
-
+            is SvgImageElement -> SvgImageElementMapper(src, target as Image, peer)
             is SvgElement -> SvgElementMapper(src, target, peer)
             else -> throw IllegalArgumentException("Unsupported SvgElement: " + src::class.simpleName)
         }

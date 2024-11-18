@@ -16,10 +16,10 @@ import org.jetbrains.letsPlot.datamodel.svg.style.TextStyle
 
 
 internal fun svgDocument(
+    width: Number?,
+    height: Number?,
     x: Number? = null,
     y: Number? = null,
-    width: Number? = null,
-    height: Number? = null,
     config: SvgSvgElement.() -> Unit = {},
 ): SvgSvgElement {
     val el = SvgSvgElement()
@@ -33,14 +33,14 @@ internal fun svgDocument(
 }
 
 internal fun SvgNode.svg(
+    width: Number?,
+    height: Number?,
     x: Number? = null,
     y: Number? = null,
-    width: Number? = null,
-    height: Number? = null,
     id: String? = null,
     config: SvgSvgElement.() -> Unit = {},
 ): SvgSvgElement {
-    val el = svgDocument(x, y, width, height, config)
+    val el = svgDocument(width, height, x, y, config)
 
     id?.let { el.id().set(it) }
 

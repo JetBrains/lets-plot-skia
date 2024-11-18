@@ -5,27 +5,15 @@
 
 package org.jetbrains.letsPlot.skia.mapping.svg.attr
 
-import org.jetbrains.letsPlot.datamodel.svg.dom.SvgAElement
 import org.jetbrains.letsPlot.datamodel.svg.dom.SvgShape
 import org.jetbrains.letsPlot.datamodel.svg.dom.SvgTSpanElement
 import org.jetbrains.letsPlot.skia.mapping.svg.SvgUtils.toColor
-import org.jetbrains.letsPlot.skia.mapping.svg.attr.SvgAttrMapping.Companion.asFloat
-import org.jetbrains.letsPlot.skia.shape.Text
+import org.jetbrains.letsPlot.skia.shape.TSpan
+import org.jetbrains.letsPlot.skia.shape.Text.BaselineShift
+import org.jetbrains.letsPlot.skia.shape.Text.Companion.DEFAULT_FONT_FAMILY
 
-internal object SvgTSpanElementAttrMapping {
-    fun setAttributes(target: Text.TextRun, tspan: SvgTSpanElement) {
-        tspan.attributeKeys.forEach { key ->
-            setAttribute(target, key.name, tspan.getAttribute(key).get())
-        }
-    }
-
-    fun setAttributes(target: Text.TextRun, tspan: SvgAElement) {
-        tspan.attributeKeys.forEach { key ->
-            setAttribute(target, key.name, tspan.getAttribute(key).get())
-        }
-    }
-
-    fun setAttribute(target: Text.TextRun, name: String, value: Any?) {
+internal object SvgTSpanElementAttrMapping : SvgShapeMapping<TSpan>() {
+    override fun setAttribute(target: TSpan, name: String, value: Any?) {
         when (name) {
             SvgShape.FILL.name -> target.fill = toColor(value)
             //SvgShape.FILL_OPACITY.name -> target.fillOpacity = value!!.asFloat
@@ -40,10 +28,11 @@ internal object SvgTSpanElementAttrMapping {
                     else -> 1f
                 }
             }
+            "font-family" -> target.fontFamily = value?.asFontFamily ?: DEFAULT_FONT_FAMILY
 
             "baseline-shift" -> target.baselineShift = when (value) {
-                "sub" -> Text.BaselineShift.SUB
-                "super" -> Text.BaselineShift.SUPER
+                "sub" -> BaselineShift.SUB
+                "super" -> BaselineShift.SUPER
                 else -> error("Unexpected baseline-shift value: $value")
             }
 
@@ -55,6 +44,14 @@ internal object SvgTSpanElementAttrMapping {
                     else -> 0f
                 }
             }
+            else -> super.setAttribute(target, name, value)
         }
     }
+
+    fun setAttributes(target: TSpan, tspan: SvgTSpanElement) {
+        tspan.attributeKeys.forEach { key ->
+            setAttribute(target, key.name, tspan.getAttribute(key).get())
+        }
+    }
+
 }

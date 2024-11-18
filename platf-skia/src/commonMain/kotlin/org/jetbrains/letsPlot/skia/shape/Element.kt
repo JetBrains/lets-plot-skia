@@ -16,6 +16,7 @@ internal abstract class Element() : Node() {
     var styleClass: List<String>? by visualProp(null)
     var clipPath: SkPath? by visualProp(null, managed = true)
     var parent: Container? by visualProp(null)
+    var isMouseTransparent: Boolean = true // need proper hitTest for non-rectangular shapes for correct default "false"
 
     val parents: List<Container> by computedProp(Element::parent) {
         val parents = parent?.parents ?: emptyList()

@@ -8,6 +8,7 @@ package org.jetbrains.letsPlot.skia.mapping.svg
 
 import org.jetbrains.letsPlot.commons.values.Color
 import org.jetbrains.letsPlot.datamodel.svg.dom.*
+import org.jetbrains.letsPlot.datamodel.svg.style.TextStyle
 import org.jetbrains.letsPlot.skia.mapping.svg.attr.*
 import org.jetbrains.letsPlot.skia.shape.*
 import org.jetbrains.skia.Color4f
@@ -26,7 +27,8 @@ internal object SvgUtils {
         Circle::class to (SvgCircleAttrMapping as SvgAttrMapping<Element>),
         //Text::class to (SvgTextElementAttrMapping as SvgAttrMapping<Element>),
         Path::class to (SvgPathAttrMapping as SvgAttrMapping<Element>),
-        Image::class to (SvgImageAttrMapping as SvgAttrMapping<Element>)
+        Image::class to (SvgImageAttrMapping as SvgAttrMapping<Element>),
+        TSpan::class to (SvgTSpanElementAttrMapping as SvgAttrMapping<Element>),
     )
 
     fun elementChildren(e: Element): MutableList<Element> {
@@ -62,6 +64,7 @@ internal object SvgUtils {
         return when (parent) {
             is Group -> parent.children
             is Pane -> parent.children
+            is Text -> parent.children
             else -> throw IllegalArgumentException("Unsupported parent type: ${parent::class.simpleName}")
         }
     }
@@ -71,12 +74,13 @@ internal object SvgUtils {
             is SvgEllipseElement -> Ellipse()
             is SvgCircleElement -> Circle()
             is SvgRectElement -> Rectangle()
-            is SvgTextElement -> Text(peer.fontManager)
+            is SvgTextElement -> return Text(peer.fontManager)
             is SvgPathElement -> Path()
             is SvgLineElement -> Line()
             is SvgSvgElement -> Pane()
             is SvgGElement -> Group()
             is SvgStyleElement -> Group()
+//            is SvgAElement -> Group()
 //            is SvgTextNode -> myDoc.createTextNode(null)
 //            is SvgTSpanElement -> SVGOMTSpanElement(null, myDoc)
             is SvgDefsElement -> Group()
@@ -120,3 +124,6 @@ internal object SvgUtils {
 
 }
 
+val TextStyle.safeColor: Color? get() = if (isNoneColor) null else color
+val TextStyle.safeSize: Double? get() = if (isNoneSize) null else size
+val TextStyle.safeFamily: List<String>? get() = if (isNoneFamily) null else family.split(",").map { it.trim(' ', '"') }

@@ -18,8 +18,22 @@ internal abstract class Node {
     private val computedPropDependencies = mutableMapOf<KProperty<*>, Set<KProperty<*>>>() // direct and transitive dependencies
     private val propFinalizers = mutableMapOf<KProperty<*>, () -> Managed?>()
 
+    var href: String? = null
+
     var isVisible: Boolean by visualProp(true)
     var opacity: Float? by visualProp(null)
+
+    // Set value from parent if not set explicitly
+    internal fun <TValue> inheritValue(prop: KProperty<*>, value: TValue) {
+        val (kProp, visProp) = visualPropInstances.entries.firstOrNull { it.key.name == prop.name } ?: return
+
+        @Suppress("UNCHECKED_CAST")
+        val theProp: VisualProperty<TValue> = (visProp as? VisualProperty<TValue>) ?: return
+        if (theProp.isDefault) {
+            theProp.setValue(this, kProp, value)
+        }
+    }
+
 
     internal fun invalidateComputedProp(prop: KProperty<*>) {
         val computedPropInstance = computedPropInstances[prop]  ?: error { "Class `${this::class.simpleName}` doesn't have computedProperty `${prop.name}`" }

@@ -5,19 +5,12 @@
 
 package plotSpec
 
-import org.jetbrains.letsPlot.Figure
+import org.jetbrains.letsPlot.*
 import org.jetbrains.letsPlot.coord.coordPolar
+import org.jetbrains.letsPlot.geom.*
 import org.jetbrains.letsPlot.geom.extras.arrow
-import org.jetbrains.letsPlot.geom.geomPoint
-import org.jetbrains.letsPlot.geom.geomSegment
-import org.jetbrains.letsPlot.geom.geomSpoke
-import org.jetbrains.letsPlot.geom.geomText
-import org.jetbrains.letsPlot.ggplot
-import org.jetbrains.letsPlot.ggsize
 import org.jetbrains.letsPlot.intern.Plot
-import org.jetbrains.letsPlot.label.ggtitle
 import org.jetbrains.letsPlot.label.labs
-import org.jetbrains.letsPlot.letsPlot
 import org.jetbrains.letsPlot.scale.scaleShapeIdentity
 import org.jetbrains.letsPlot.scale.scaleSizeIdentity
 import org.jetbrains.letsPlot.scale.scaleYContinuous
@@ -30,9 +23,25 @@ import kotlin.random.Random
 class HyperlinkSpec : PlotDemoSpec {
     override fun createFigureList(): List<Figure> {
         return listOf(
-            ggplot() + geomPoint() + ggtitle("Visit <a href=\"https://lets-plot.org\">lets-plot.org</a> for more information") + themeVoid(),
-            lpverse()
+            ggplot() + geomLabel(x=0, y=0, label = "Visit <a href=\"https://lets-plot.org\">lets-plot.org</a> !", size = 10) + themeVoid(),
+            lpverse(),
+            ggplot() +
+                    geomPoint(
+                        x = 0,
+                        y = 0,
+                        size = 20,
+                        tooltips = layerTooltips()
+                            .title("Lets-Plot\nMultiplatform")
+                            .line("Links: <a href=\"https://lets-plot.org\">docs</a>, <a href=\"https://github.com/JetBrains/lets-plot\">sources</a>")
+                    )
+                    + themeVoid(),
+            gggrid(listOf(
+                ggplot() + geomLabel(x=0, y=0, label = "Visit <a href=\"https://lets-plot.org\">lets-plot.org</a> !", size = 10) + themeVoid(),
+                ggplot() + geomLabel(x=0, y=0, label = "Visit <a href=\"https://lets-plot.org/python/pages/gallery.html\">lets-plot gallery</a> !", size = 10) + themeVoid(),
+                ggplot() + geomLabel(x=0, y=0, label = "Visit <a href=\"https://github.com/JetBrains/lets-plot\">lets-plot github</a> !", size = 10) + themeVoid(),
+            ))
         )
+
     }
 
     fun lpverse(): Plot {
@@ -107,7 +116,8 @@ class HyperlinkSpec : PlotDemoSpec {
         )
 
         return letsPlot(itemsData) + backdrop +
-                geomPoint(showLegend = false,
+                geomPoint(
+                    showLegend = false,
                     tooltips = layerTooltips()
                         .title("@name")
                         .line("Links: <a href=\"@{documentationUrl}\">docs</a>, <a href=\"@{sourcesUrl}\">sources</a>")
@@ -115,20 +125,33 @@ class HyperlinkSpec : PlotDemoSpec {
                 // Kandy orbit
                 geomPoint(x = 200, y = 200, size = 37, shape = 1, stroke = 0.07) +
                 // Kandy stick
-                geomSpoke(x = 195, y = 150, angle=-3.14/2/1.05, radius=30, size = 1, color = "rgb(255,255,97)") +
+                geomSpoke(
+                    x = 195,
+                    y = 150,
+                    angle = -3.14 / 2 / 1.05,
+                    radius = 30,
+                    size = 1,
+                    color = "rgb(255,255,97)"
+                ) +
                 // Guide
-                geomText(x = 50, y = 250, size = 12,
-                    label = "Hover, then click\nto <a href=\"https://www.merriam-webster.com/dictionary/freeze\">freeze</a> the tooltip.\nClick links\nto navigate.") +
-                geomSegment(x = 70, y = 250, xend = 0, yend = 0,
+                geomText(
+                    x = 50, y = 250, size = 12,
+                    label = "Hover, then click\nto <a href=\"https://www.merriam-webster.com/dictionary/freeze\">freeze</a> the tooltip.\nClick links\nto navigate."
+                ) +
+                geomSegment(
+                    x = 70, y = 250, xend = 0, yend = 0,
                     sizeStart = 150, sizeEnd = 20,
-                    arrow = arrow(type = "open", angle = 40)) +
+                    arrow = arrow(type = "open", angle = 40)
+                ) +
                 scaleYContinuous(breaks = listOf(150, 200, 250, 320)) +
                 scaleShapeIdentity() + scaleSizeIdentity() +
                 coordPolar() +
                 ylim(listOf(0, 400)) +
-                labs(title = "The <a href=\"https://lets-plot.org/python/pages/gallery.html\">Observable</a> LP-verse",
+                labs(
+                    title = "The <a href=\"https://lets-plot.org/python/pages/gallery.html\">Observable</a> LP-verse",
                     subtitle = "Latest <a href=\"https://github.com/JetBrains/lets-plot/releases/latest\">news</a>.",
-                    caption = "User <a href=\"https://github.com/JetBrains/lets-plot/issues\">stories</a>.") +
+                    caption = "User <a href=\"https://github.com/JetBrains/lets-plot/issues\">stories</a>."
+                ) +
                 ggsize(800, 800) +
                 theme(
                     plotTitle = elementText(size = 25, face = "bold", hjust = 0.5),
