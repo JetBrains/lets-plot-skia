@@ -155,6 +155,10 @@ abstract class SvgSkikoView() : SkikoRenderDelegate, Disposable {
         }
 
         private fun render(element: Element, canvas: Canvas) {
+            if (!element.isVisible) {
+                return
+            }
+
             canvas.save()
             canvas.concat(element.transform)
 
