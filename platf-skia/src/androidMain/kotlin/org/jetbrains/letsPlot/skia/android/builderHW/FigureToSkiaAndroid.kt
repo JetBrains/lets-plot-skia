@@ -12,7 +12,9 @@ import android.widget.RelativeLayout
 import org.jetbrains.letsPlot.commons.event.MouseEvent
 import org.jetbrains.letsPlot.commons.event.MouseEventSpec
 import org.jetbrains.letsPlot.commons.geometry.DoubleRectangle
+import org.jetbrains.letsPlot.commons.intern.observable.event.EventHandler
 import org.jetbrains.letsPlot.commons.registration.Disposable
+import org.jetbrains.letsPlot.commons.registration.Registration
 import org.jetbrains.letsPlot.core.plot.builder.FigureBuildInfo
 import org.jetbrains.letsPlot.core.plot.builder.PlotContainer
 import org.jetbrains.letsPlot.core.plot.builder.PlotSvgRoot
@@ -52,6 +54,13 @@ internal class FigureToSkiaAndroid(
                 eventDispatcher = object : SkikoViewEventDispatcher {
                     override fun dispatchMouseEvent(kind: MouseEventSpec, e: MouseEvent) {
                         plotContainer.mouseEventPeer.dispatch(kind, e)
+                    }
+
+                    override fun addEventHandler(
+                        eventSpec: MouseEventSpec,
+                        eventHandler: EventHandler<MouseEvent>
+                    ): Registration {
+                        TODO("Not yet implemented")
                     }
                 }
             }

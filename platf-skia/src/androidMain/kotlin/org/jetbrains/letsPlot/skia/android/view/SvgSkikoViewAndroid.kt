@@ -13,6 +13,10 @@ class SvgSkikoViewAndroid : SvgSkikoView() {
 
     }
 
+    override fun onHrefClick(href: String) {
+        TODO("Not yet implemented")
+    }
+
     override fun createSkiaLayer(view: SvgSkikoView): SkiaLayer {
         return SkiaLayer().apply {
             renderDelegate = view

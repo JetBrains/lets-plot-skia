@@ -18,9 +18,9 @@ pluginManagement {
         kotlin("plugin.compose").version(kotlinVersion)
         id("org.jetbrains.compose").version(composeVersion)
 
-        //kotlin("android").version(kotlinVersion)
-        //id("com.android.application").version(agpVersion)
-        //id("com.android.library").version(agpVersion)
+        kotlin("android").version(kotlinVersion)
+        id("com.android.application").version(agpVersion)
+        id("com.android.library").version(agpVersion)
 
         id("io.codearte.nexus-staging") version nexusStagingVersion
         id("io.github.gradle-nexus.publish-plugin") version nexusPublishVersion

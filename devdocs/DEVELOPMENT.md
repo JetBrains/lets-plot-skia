@@ -1,4 +1,10 @@
-### Skiko and Compose Multiplatform Versions
+### Skiko and Compose Multiplatform Versions  
+
+| Compose Multiplatform | Skiko |
+| --- | --- |
+|1.7.0 | 0.8.15 |
+| 1.7.1 | 0.8.18 |
+
 
 Changing the version of `Skiko` or `Compose Multiplatform` may lead to compatibility issues and runtime errors like `MethodNotFound` or `ClassNotFound`. 
 
