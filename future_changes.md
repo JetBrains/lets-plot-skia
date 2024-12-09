@@ -9,7 +9,7 @@
 
 
 ### Added
-- Interactive **links** in tooltips/labels/texts [[#1091](https://github.com/JetBrains/lets-plot/issues/1091)].
+- Interactive **links** in tooltips/labels/texts [[LP-1091](https://github.com/JetBrains/lets-plot/issues/1091)].
 
   See [example notebook](https://nbviewer.org/github/JetBrains/lets-plot-kotlin/blob/master/docs/examples/jupyter-notebooks/f-4.9.0/lp_verse.ipynb).
 
