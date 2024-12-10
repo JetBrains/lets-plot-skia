@@ -11,7 +11,7 @@
 ### Supported Targets
 - **Compose Desktop** (macOS, Windows, Linux)\
   For more information see [Compose multiplatform compatibility and versioning overview](https://www.jetbrains.com/help/kotlin-multiplatform-dev/compose-compatibility-and-versioning.html). 
-- **Android**
+- **Android** (`lets-plot-skia` <= v2.0.0. New versions temporarily don't support Android due to [SKIKO-761](https://youtrack.jetbrains.com/issue/SKIKO-761))  
 - **Java Swing**
 
 ![Splash](img-2.png)
@@ -40,6 +40,8 @@ dependencies {
 See example: [Compose desktop](https://github.com/JetBrains/lets-plot-compose-demos/blob/main/compose-desktop/build.gradle.kts) demo.
 
 ### Compose Android
+
+#### Note: the latest supported version is `lets-plot-skia` v2.0.0. The new versions temporarily don't support Android due to [SKIKO-761](https://youtrack.jetbrains.com/issue/SKIKO-761).
 
 ```kotlin
 dependencies {
