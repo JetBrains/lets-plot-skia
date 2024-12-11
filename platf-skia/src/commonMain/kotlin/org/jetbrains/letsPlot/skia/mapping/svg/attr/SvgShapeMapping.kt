@@ -18,6 +18,7 @@ internal abstract class SvgShapeMapping<TargetT : Figure> : SvgAttrMapping<Targe
             SvgShape.STROKE.name -> target.stroke = toColor(value)
             SvgShape.STROKE_OPACITY.name -> target.strokeOpacity = value!!.asFloat
             SvgShape.STROKE_WIDTH.name -> target.strokeWidth = value!!.asFloat
+            SvgShape.STROKE_DASHOFFSET.name -> target.strokeDashOffset = value?.asFloat ?: 0f
             SvgConstants.SVG_STROKE_DASHARRAY_ATTRIBUTE -> {
                 val strokeDashArray = (value as String).split(",").map(String::toFloat)
                 target.strokeDashArray = strokeDashArray

@@ -157,7 +157,8 @@ fun strokePaint(
     strokeWidth: Float = 1f,
     strokeOpacity: Float = 1f,
     strokeDashArray: List<Float>? = null,
-    strokeMiter: Float? = null // not mandatory, default works fine
+    strokeDashOffset: Float = 0f, // not mandatory, default works fine
+    strokeMiter: Float? = null
 ) : Paint? {
     if (stroke == null) return null
     if (strokeOpacity == 0f) return null
@@ -173,7 +174,7 @@ fun strokePaint(
     paint.color4f = stroke.withA(strokeOpacity)
     paint.strokeWidth = strokeWidth
     strokeMiter?.let { paint.strokeMiter = it }
-    strokeDashArray?.let { paint.pathEffect = makeDash(it.toFloatArray(), 0.0f) }
+    strokeDashArray?.let { paint.pathEffect = makeDash(it.toFloatArray(), strokeDashOffset) }
     return paint
 }
 

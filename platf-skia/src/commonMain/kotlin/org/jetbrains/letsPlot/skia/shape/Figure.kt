@@ -13,6 +13,7 @@ internal abstract class Figure : Element() {
     var strokeWidth: Float by visualProp(1f)
     var strokeOpacity: Float by visualProp(1f)
     var strokeDashArray: List<Float>? by visualProp(null)
+    var strokeDashOffset: Float by visualProp(0f)
     var strokeMiter: Float? by visualProp(null) // not mandatory, default works fine
 
     var fill: Color4f? by visualProp(null)
@@ -30,6 +31,13 @@ internal abstract class Figure : Element() {
         Figure::strokeMiter,
         managed = true
     ) {
-        return@computedProp strokePaint(stroke, strokeWidth, strokeOpacity, strokeDashArray, strokeMiter)
+        return@computedProp strokePaint(
+            stroke = stroke,
+            strokeWidth = strokeWidth,
+            strokeOpacity = strokeOpacity,
+            strokeDashArray = strokeDashArray,
+            strokeDashOffset = strokeDashOffset,
+            strokeMiter = strokeMiter
+        )
     }
 }
