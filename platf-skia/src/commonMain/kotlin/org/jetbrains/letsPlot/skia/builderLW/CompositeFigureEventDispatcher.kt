@@ -37,7 +37,8 @@ class CompositeFigureEventDispatcher() : SkikoViewEventDispatcher {
     }
 
     override fun addEventHandler(eventSpec: MouseEventSpec, eventHandler: EventHandler<MouseEvent>): Registration {
-        println("NOT IMPLEMENTED: CompositeFigureEventDispatcher.addEventHandler()")
+        // Looks like composite figures in Compose don't need this method because they are all placed in the same
+        // container and this container is a dispatcher for all of them.
         return Registration.EMPTY
     }
 }
