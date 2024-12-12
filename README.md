@@ -18,7 +18,7 @@
 
 ## Dependencies
 
-See release notes for the latest version of the dependencies: [v2.0.0](https://github.com/JetBrains/lets-plot-skia/releases/tag/v2.0.0)
+See release notes for the latest version of the dependencies: [v2.1.0](https://github.com/JetBrains/lets-plot-skia/releases/tag/v2.1.0)
 
 ### Compose Desktop
 
@@ -34,7 +34,7 @@ dependencies {
     implementation("org.jetbrains.lets-plot:platf-awt:4.5.1")
 
     // Lets-Plot Skia Frontend
-    implementation("org.jetbrains.lets-plot:lets-plot-compose:2.1.0-alpha1")
+    implementation("org.jetbrains.lets-plot:lets-plot-compose:2.1.0")
 }
 ```
 See example: [Compose desktop](https://github.com/JetBrains/lets-plot-compose-demos/blob/main/compose-desktop/build.gradle.kts) demo.
@@ -80,7 +80,7 @@ dependencies {
     implementation("org.jetbrains.lets-plot:platf-awt:4.5.1")
 
     // Lets-Plot Skia Frontend
-    implementation("org.jetbrains.lets-plot:lets-plot-swing-skia:2.1.0-alpha1")
+    implementation("org.jetbrains.lets-plot:lets-plot-swing-skia:2.1.0")
 }
 ```
 
