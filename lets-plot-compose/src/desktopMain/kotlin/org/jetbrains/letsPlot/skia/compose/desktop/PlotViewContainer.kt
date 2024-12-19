@@ -56,7 +56,8 @@ class PlotViewContainer(
 
             // TODO: investigate and report the bug, most likely in Skiko.
             // Switching the aspect ratio causes flickering - extended plot area is rendered with black background.
-            rebuildSvgPanel()
+            // [UPD]: looks like with skiko 0.8.18 this is not needed anymore
+            // rebuildSvgPanel()
             field = v
             needUpdate = true
         }
@@ -69,7 +70,8 @@ class PlotViewContainer(
 
             // TODO: investigate and report the bug, most likely in Skiko.
             // With fixed aspect ratio the horizontal resize causes the plot to be rendered at wrong position, even outside the panel.
-            rebuildSvgPanel()
+            // [UPD]: looks like with skiko 0.8.18 this is not needed anymore
+            //rebuildSvgPanel()
             field = v
             needUpdate = true
         }
