@@ -125,6 +125,9 @@ internal class FigureToSkiaAwt(
         }
 
         val plotContainer = PlotContainer(svgRoot)
+        plotContainer.toolEventDispatcher.initToolEventCallback { event ->
+            println("Tool event: $event")
+        }
         return buildSinglePlotComponent(plotContainer, bounds, parentEventDispatcher)
     }
 

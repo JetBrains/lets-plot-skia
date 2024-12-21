@@ -11,14 +11,67 @@ import org.jetbrains.letsPlot.commons.geometry.Rectangle
 import org.jetbrains.letsPlot.commons.intern.observable.event.EventHandler
 import org.jetbrains.letsPlot.commons.registration.Disposable
 import org.jetbrains.letsPlot.commons.registration.Registration
+import org.jetbrains.letsPlot.core.interact.event.ToolEventDispatcher
+import org.jetbrains.letsPlot.core.plot.builder.interact.tools.FigureModelHelper
 import org.jetbrains.letsPlot.datamodel.svg.dom.SvgSvgElement
 import org.jetbrains.letsPlot.skia.view.SkikoViewEventDispatcher
 
 sealed class ViewModel(
     val svg: SvgSvgElement,
-    val eventDispatcher: SkikoViewEventDispatcher
+    val toolEventDispatcher: ToolEventDispatcher,
+    val eventDispatcher: SkikoViewEventDispatcher,
 ) : Disposable {
     internal abstract val bounds: Rectangle
+    private var toolEventCallback: (Map<String, Any>) -> Unit = { _ -> }
+    private var currSpecOverrideList: List<Map<String, Any>> = emptyList()
+
+    fun activateInteractions(origin: String, interactionSpecList: List<Map<String, Any>>) {
+        toolEventDispatcher.activateInteractions(origin, interactionSpecList)
+    }
+
+    fun deactivateInteractions(origin: String) {
+        toolEventDispatcher.deactivateInteractions(origin)
+    }
+
+    private fun handleToolEvent(event: Map<String, Any>) {
+        toolEventCallback.invoke(event)
+    }
+
+    fun updateView(specOverride: Map<String, Any>? = null, options: Map<String, Any>? = null) {
+
+        currSpecOverrideList = FigureModelHelper.updateSpecOverrideList(
+            specOverrideList = currSpecOverrideList,
+            newSpecOverride = specOverride
+        )
+
+        val currentInteractions = toolEventDispatcher.deactivateAllSilently()
+
+        //figureRegistration?.dispose()
+        //figureRegistration = null
+
+        //val plotSpec = SpecOverrideUtil.applySpecOverride(processedPlotSpec, currSpecOverrideList)
+
+//        LOG.info { "New sizing policy: $sizingPolicy" }
+        //val newFigureModel = buildPlotFromProcessedSpecsIntern(
+        //    plotSpec,
+        //    monolithicParameters.wrapperElement,
+        //    sizingPolicy,
+        //    monolithicParameters.datalorePreferredWidth,
+        //    monolithicParameters.messageHandler,
+        //)
+
+        //if (newFigureModel == null) return  // something went wrong.
+
+        // Grab properties and discard just created another figure model
+        //figureRegistration = newFigureModel.figureRegistration
+        //toolEventDispatcher = newFigureModel.toolEventDispatcher
+        //toolEventDispatcher.initToolEventCallback { event -> handleToolEvent(event) }
+
+        // Re-activate interactions
+        //currentInteractions.forEach { (origin, interactionSpec) ->
+        //    toolEventDispatcher.activateInteractions(origin, interactionSpec)
+        //}
+    }
 
     internal open fun collect(dest: SvgSvgElement) {
         dest.children().add(svg)
@@ -26,8 +79,11 @@ sealed class ViewModel(
 }
 
 internal class SimpleModel(
-    svg: SvgSvgElement
-) : ViewModel(svg,
+    svg: SvgSvgElement,
+    toolEventDispatcher: ToolEventDispatcher,
+) : ViewModel(
+    svg,
+    toolEventDispatcher,
     eventDispatcher = object : SkikoViewEventDispatcher {
         override fun dispatchMouseEvent(kind: MouseEventSpec, e: MouseEvent) {} // ignore events
         override fun addEventHandler(eventSpec: MouseEventSpec, eventHandler: EventHandler<MouseEvent>): Registration {
@@ -44,9 +100,10 @@ internal class SimpleModel(
 internal class SinglePlotModel(
     svg: SvgSvgElement,
     eventDispatcher: SkikoViewEventDispatcher,
+    toolEventDispatcher: ToolEventDispatcher,
     override val bounds: Rectangle,
     private val registration: Registration
-) : ViewModel(svg, eventDispatcher) {
+) : ViewModel(svg, toolEventDispatcher, eventDispatcher) {
 
     override fun dispose() {
         registration.dispose()
@@ -55,8 +112,9 @@ internal class SinglePlotModel(
 
 internal class CompositeFigureModel(
     svg: SvgSvgElement,
+    toolEventDispatcher: ToolEventDispatcher,
     override val bounds: Rectangle,
-) : ViewModel(svg, CompositeFigureEventDispatcher()) {
+) : ViewModel(svg, toolEventDispatcher, CompositeFigureEventDispatcher()) {
     private val children = ArrayList<ViewModel>()
 
     fun addChildFigure(childModel: ViewModel) {
