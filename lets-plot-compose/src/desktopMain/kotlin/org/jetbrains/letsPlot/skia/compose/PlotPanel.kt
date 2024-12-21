@@ -5,6 +5,10 @@
 
 package org.jetbrains.letsPlot.skia.compose
 
+import androidx.compose.foundation.background
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.awt.SwingPanel
@@ -13,8 +17,13 @@ import androidx.compose.ui.layout.onSizeChanged
 import androidx.compose.ui.platform.LocalDensity
 import org.jetbrains.letsPlot.Figure
 import org.jetbrains.letsPlot.commons.geometry.DoubleVector
-import org.jetbrains.letsPlot.skia.compose.desktop.PlotComponentProvider
-import org.jetbrains.letsPlot.skia.compose.desktop.PlotViewContainer
+import org.jetbrains.letsPlot.core.plot.builder.interact.tools.FigureModelHelper
+import org.jetbrains.letsPlot.core.spec.front.SpecOverrideUtil
+import org.jetbrains.letsPlot.core.util.MonolithicCommon.processRawSpecs
+import org.jetbrains.letsPlot.core.util.PlotSizeUtil
+import org.jetbrains.letsPlot.intern.toSpec
+import org.jetbrains.letsPlot.skia.builderLW.MonolithicSkiaLW
+import org.jetbrains.letsPlot.skia.compose.desktop.PlotContainer
 import org.jetbrains.letsPlot.skia.compose.util.NaiveLogger
 
 private val LOG = NaiveLogger("PlotPanel")
@@ -27,49 +36,78 @@ actual fun PlotPanel(
     modifier: Modifier,
     computationMessagesHandler: (List<String>) -> Unit
 ) {
-    LOG.print("Recompose PlotPanel() preserveAspectRatio: $preserveAspectRatio ")
-
     // Update density on each recomposition to handle monitor DPI changes (e.g. drag between HIDPI/regular monitor)
     val density = LocalDensity.current.density.toDouble()
 
-    val provider by remember {
-        mutableStateOf(
-            PlotComponentProvider(
-                repaintDelay = 0, // Should be zero to work in Compose 1.4.1
-                computationMessagesHandler
-            )
-        )
-    }
+    // Should be stored because of the spec_id change on each processRawSpecs() call.
+    // Pass figure as remember() argument or SwingPanel update will not be triggered.
+    val processedPlotSpec by remember(figure) { mutableStateOf(processRawSpecs(figure.toSpec(), frontendOnly = false)) }
+    var panelSize by remember { mutableStateOf(DoubleVector.ZERO) }
+    var dispatchComputationMessages by remember { mutableStateOf(true) }
+    var specOverrideList by remember { mutableStateOf(emptyList<Map<String, Any>>()) }
+    val plotContainer by remember { mutableStateOf(PlotContainer()) }
+    var figureModel by remember { mutableStateOf<FigureModel?>(null) }
 
-    DisposableEffect(provider) {
+    DisposableEffect(plotContainer) {
         onDispose {
-            LOG.print("DisposableEffect preserveAspectRatio: ${provider.plotViewContainer?.preserveAspectRatio} ")
-            //provider.dispose()
-            provider.plotViewContainer?.disposePlotView()
+            plotContainer.dispose()
         }
     }
 
-    SwingPanel(
-        background = Color.White,
-        factory = provider.factory,
-        modifier = modifier.onSizeChanged {
-            // TODO: move resize logic to PlotViewContainer with ComponentAdapter
-            // TODO: investigate, why size change should be handled within onSizeChanged.
-            // Not calling `rebuildPlotView()` here and calling `rebuildPlotView(size)` in `update()` instead
-            // leads to an empty plot view until next recomposition.
-            // Same happens with `ComponentAdapter` in PlotViewContainer, coroutine delay, debounce.
-
-            LOG.print("modifier.onSizeChanged() - $it")
-            provider.plotViewContainer?.size = DoubleVector(it.width / density, it.height / density)
-            provider.plotViewContainer?.updatePlotView()
-        },
-        update = { plotViewContainer ->
-            plotViewContainer as PlotViewContainer
-            LOG.print("UPDATE PlotViewContainer preserveAspectRatio ${plotViewContainer.preserveAspectRatio} ->  $preserveAspectRatio")
-
-            plotViewContainer.figure = figure
-            plotViewContainer.preserveAspectRatio = preserveAspectRatio
-            plotViewContainer.updatePlotView()
+    Column {
+        if (figureModel != null) {
+            PlotToolbar(figureModel!!)
         }
-    )
+
+        Box(
+            modifier = Modifier
+                .fillMaxSize()
+                .onSizeChanged { newSize ->
+                    panelSize = DoubleVector(newSize.width / density, newSize.height / density)
+                }
+                .background(Color.Gray)
+        ) {
+            SwingPanel(
+                background = Color.White,
+                modifier = modifier,
+                factory = { plotContainer },
+                update = { plotViewContainer ->
+                    LOG.print("SwingPanel.update()")
+
+                    val plotSpec = SpecOverrideUtil.applySpecOverride(processedPlotSpec, specOverrideList).toMutableMap()
+
+                    // Calculate size here, not outside the SwingPanel.update()
+                    // Otherwise on resizing the plot size will lag behind the panel size, causing rendering issues.
+                    val plotSize = PlotSizeUtil.preferredFigureSize(plotSpec, preserveAspectRatio, panelSize)
+                    val position = DoubleVector(
+                        maxOf(0.0, (panelSize.x - plotSize.x) / 2.0),
+                        maxOf(0.0, (panelSize.y - plotSize.y) / 2.0)
+                    )
+
+                    val viewModel = MonolithicSkiaLW.buildPlotFromProcessedSpecs(plotSpec, plotSize) { messages ->
+                        if (dispatchComputationMessages) {
+                            // do once
+                            dispatchComputationMessages = false
+                            computationMessagesHandler(messages)
+                        }
+                    }
+
+                    if (figureModel == null) {
+                        figureModel = FigureModel(
+                            onUpdateView = { specOverride ->
+                                specOverrideList = FigureModelHelper.updateSpecOverrideList(
+                                    specOverrideList = specOverrideList,
+                                    newSpecOverride = specOverride
+                                )
+                            }
+                        )
+                    }
+
+                    figureModel!!.toolEventDispatcher = viewModel.toolEventDispatcher
+
+                    plotViewContainer.updatePlotView(viewModel, plotSize, position)
+                }
+            )
+        }
+    }
 }
