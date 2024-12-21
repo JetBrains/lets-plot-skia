@@ -6,6 +6,7 @@
 package org.jetbrains.letsPlot.skia.builderLW
 
 import org.jetbrains.letsPlot.commons.geometry.DoubleVector
+import org.jetbrains.letsPlot.core.interact.event.UnsupportedToolEventDispatcher
 import org.jetbrains.letsPlot.core.plot.builder.FigureBuildInfo
 import org.jetbrains.letsPlot.core.util.MonolithicCommon
 import org.jetbrains.letsPlot.datamodel.svg.dom.SvgSvgElement
@@ -22,7 +23,7 @@ object MonolithicSkiaLW {
     ): ViewModel {
         val buildResult = MonolithicCommon.buildPlotsFromProcessedSpecs(plotSpec, plotSize)
         if (buildResult is MonolithicCommon.PlotsBuildResult.Error) {
-            return SimpleModel(createErrorSvgText(buildResult.error))
+            return SimpleModel(createErrorSvgText(buildResult.error), UnsupportedToolEventDispatcher())
         }
 
         val success = buildResult as MonolithicCommon.PlotsBuildResult.Success

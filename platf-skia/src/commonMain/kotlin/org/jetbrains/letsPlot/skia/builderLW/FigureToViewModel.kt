@@ -12,6 +12,7 @@ import org.jetbrains.letsPlot.commons.geometry.DoubleVector
 import org.jetbrains.letsPlot.commons.geometry.Rectangle
 import org.jetbrains.letsPlot.commons.intern.observable.event.EventHandler
 import org.jetbrains.letsPlot.commons.registration.Registration
+import org.jetbrains.letsPlot.core.interact.event.UnsupportedToolEventDispatcher
 import org.jetbrains.letsPlot.core.plot.builder.FigureBuildInfo
 import org.jetbrains.letsPlot.core.plot.builder.PlotContainer
 import org.jetbrains.letsPlot.core.plot.builder.PlotSvgRoot
@@ -53,6 +54,7 @@ internal object FigureToViewModel {
         val compositeFigureModel = CompositeFigureModel(
             svg = figureSvgSvg,
             bounds = toModelBounds(svgRoot.bounds),
+            toolEventDispatcher = UnsupportedToolEventDispatcher(),
         )
 
         // Sub-figures
@@ -107,8 +109,9 @@ internal object FigureToViewModel {
 
         return SinglePlotModel(
             svg = figureSvgSvg,
-            bounds = toModelBounds(svgRoot.bounds),
             eventDispatcher = panelDispatcher,
+            toolEventDispatcher = plotContainer.toolEventDispatcher,
+            bounds = toModelBounds(svgRoot.bounds),
             registration = Registration.from(plotContainer)
         )
     }

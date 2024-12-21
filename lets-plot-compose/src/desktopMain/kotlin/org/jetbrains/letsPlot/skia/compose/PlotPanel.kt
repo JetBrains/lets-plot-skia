@@ -5,6 +5,9 @@
 
 package org.jetbrains.letsPlot.skia.compose
 
+import androidx.compose.foundation.layout.Row
+import androidx.compose.material.Button
+import androidx.compose.material.Text
 import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.awt.SwingPanel
@@ -13,6 +16,7 @@ import androidx.compose.ui.layout.onSizeChanged
 import androidx.compose.ui.platform.LocalDensity
 import org.jetbrains.letsPlot.Figure
 import org.jetbrains.letsPlot.commons.geometry.DoubleVector
+import org.jetbrains.letsPlot.core.plot.builder.interact.tools.ToggleToolView
 import org.jetbrains.letsPlot.skia.compose.desktop.PlotComponentProvider
 import org.jetbrains.letsPlot.skia.compose.desktop.PlotViewContainer
 import org.jetbrains.letsPlot.skia.compose.util.NaiveLogger
@@ -28,7 +32,6 @@ actual fun PlotPanel(
     computationMessagesHandler: (List<String>) -> Unit
 ) {
     LOG.print("Recompose PlotPanel() preserveAspectRatio: $preserveAspectRatio ")
-
     // Update density on each recomposition to handle monitor DPI changes (e.g. drag between HIDPI/regular monitor)
     val density = LocalDensity.current.density.toDouble()
 
@@ -41,6 +44,14 @@ actual fun PlotPanel(
         )
     }
 
+    var panToolEnabled by remember { mutableStateOf(false) }
+    var bboxZoomToolEnabled by remember { mutableStateOf(false) }
+    var cboxZoomToolEnabled by remember { mutableStateOf(false) }
+
+    val panToolView = ToggleComposeButton()
+    val bboxZoomToolView = ToggleComposeButton()
+    val cboxZoomToolView = ToggleComposeButton()
+
     DisposableEffect(provider) {
         onDispose {
             LOG.print("DisposableEffect preserveAspectRatio: ${provider.plotViewContainer?.preserveAspectRatio} ")
@@ -49,6 +60,19 @@ actual fun PlotPanel(
         }
     }
 
+    if (true){// || figure.toSpec().containsKey(Option.Meta.Kind.GG_TOOLBAR)) {
+        Row {
+            Button(onClick = { panToolEnabled = !panToolEnabled }) {
+                Text("PAN ${if (panToolEnabled) "on" else "off"}")
+            }
+            Button(onClick = { bboxZoomToolEnabled = !bboxZoomToolEnabled }) {
+                Text("BBOX ZOOM ${if (bboxZoomToolEnabled) "on" else "off"}")
+            }
+            Button(onClick = { cboxZoomToolEnabled = !cboxZoomToolEnabled }) {
+                Text("CBOX ZOOM ${if (cboxZoomToolEnabled) "on" else "off"}")
+            }
+        }
+    }
     SwingPanel(
         background = Color.White,
         factory = provider.factory,
@@ -69,7 +93,28 @@ actual fun PlotPanel(
 
             plotViewContainer.figure = figure
             plotViewContainer.preserveAspectRatio = preserveAspectRatio
+            plotViewContainer.panToolEnabled = panToolEnabled
+            plotViewContainer.bboxZoomToolEnabled = bboxZoomToolEnabled
+            plotViewContainer.cboxZoomToolEnabled = cboxZoomToolEnabled
             plotViewContainer.updatePlotView()
         }
     )
+
+}
+
+private class ToggleComposeButton: ToggleToolView {
+    private var selected: Boolean by mutableStateOf(false)
+    private var actionHandler: (() -> Unit)? = null
+
+    override fun setState(selected: Boolean) {
+        this.selected = selected
+    }
+
+    override fun onAction(handler: () -> Unit) {
+        actionHandler = handler
+    }
+
+    fun onClick() {
+        actionHandler?.invoke()
+    }
 }
