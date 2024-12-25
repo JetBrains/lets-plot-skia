@@ -11,9 +11,7 @@ import org.jetbrains.letsPlot.skia.view.SvgSkikoView
 import org.jetbrains.skiko.SkiaLayer
 import java.awt.Desktop
 import java.awt.Dimension
-import java.awt.event.MouseEvent
-import java.awt.event.MouseListener
-import java.awt.event.MouseMotionListener
+import java.awt.event.*
 
 
 internal class SvgSkikoViewAwt : SvgSkikoView() {
@@ -34,6 +32,9 @@ internal class SvgSkikoViewAwt : SvgSkikoView() {
             it.addMouseMotionListener(object : MouseMotionListener {
                 override fun mouseDragged(e: MouseEvent) { onMouseEvent(MOUSE_DRAGGED, translate(e)) }
                 override fun mouseMoved(e: MouseEvent) { onMouseEvent(MOUSE_MOVED, translate(e)) }
+            })
+            it.addMouseWheelListener(object : MouseWheelListener {
+                override fun mouseWheelMoved(e: MouseWheelEvent) {  onMouseEvent(MOUSE_WHEEL_ROTATED, translate(e)) }
             })
         }
     }
