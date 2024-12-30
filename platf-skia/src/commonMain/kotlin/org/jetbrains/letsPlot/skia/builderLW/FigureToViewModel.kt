@@ -12,9 +12,11 @@ import org.jetbrains.letsPlot.commons.geometry.DoubleVector
 import org.jetbrains.letsPlot.commons.geometry.Rectangle
 import org.jetbrains.letsPlot.commons.intern.observable.event.EventHandler
 import org.jetbrains.letsPlot.commons.registration.Registration
+import org.jetbrains.letsPlot.core.interact.event.ToolEventDispatcher
 import org.jetbrains.letsPlot.core.plot.builder.FigureBuildInfo
 import org.jetbrains.letsPlot.core.plot.builder.PlotContainer
 import org.jetbrains.letsPlot.core.plot.builder.PlotSvgRoot
+import org.jetbrains.letsPlot.core.plot.builder.interact.CompositeToolEventDispatcher
 import org.jetbrains.letsPlot.core.plot.builder.subPlots.CompositeFigureSvgRoot
 import org.jetbrains.letsPlot.skia.view.SkikoViewEventDispatcher
 
@@ -50,12 +52,10 @@ internal object FigureToViewModel {
             figureSvgSvg.y().set(origin.y)
         }
 
-        val compositeFigureModel = CompositeFigureModel(
-            svg = figureSvgSvg,
-            bounds = toModelBounds(svgRoot.bounds),
-        )
 
         // Sub-figures
+        val subFigures = mutableListOf<ViewModel>()
+        val subFiguresToolEventDispatchers = mutableListOf<ToolEventDispatcher>()
 
         for (element in svgRoot.elements) {
             val elementOrigin = element.bounds.origin.add(origin)
@@ -73,9 +73,17 @@ internal object FigureToViewModel {
                 else -> error("Unsupported figure: ${svgRoot::class.simpleName}")
             }
 
-            compositeFigureModel.addChildFigure(elementModel)
+            subFigures += elementModel
+            subFiguresToolEventDispatchers.add(elementModel.toolEventDispatcher)
         }
 
+        val compositeFigureModel = CompositeFigureModel(
+            svg = figureSvgSvg,
+            bounds = toModelBounds(svgRoot.bounds),
+            toolEventDispatcher = CompositeToolEventDispatcher(subFiguresToolEventDispatchers),
+        )
+
+        subFigures.forEach(compositeFigureModel::addChildFigure)
         return compositeFigureModel
     }
 
@@ -107,8 +115,9 @@ internal object FigureToViewModel {
 
         return SinglePlotModel(
             svg = figureSvgSvg,
-            bounds = toModelBounds(svgRoot.bounds),
             eventDispatcher = panelDispatcher,
+            toolEventDispatcher = plotContainer.toolEventDispatcher,
+            bounds = toModelBounds(svgRoot.bounds),
             registration = Registration.from(plotContainer)
         )
     }

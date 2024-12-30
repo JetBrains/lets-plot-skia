@@ -47,6 +47,7 @@ kotlin {
 
                 compileOnly("org.jetbrains.lets-plot:commons:$letsPlotVersion")
                 compileOnly("org.jetbrains.lets-plot:datamodel:$letsPlotVersion")
+                compileOnly("org.jetbrains.lets-plot:plot-base:$letsPlotVersion")
                 compileOnly("org.jetbrains.lets-plot:plot-stem:$letsPlotVersion")
                 compileOnly("org.jetbrains.lets-plot:plot-builder:$letsPlotVersion")
             }

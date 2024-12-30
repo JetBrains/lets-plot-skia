@@ -7,6 +7,7 @@ package org.jetbrains.letsPlot.skia.builderLW
 
 import org.jetbrains.letsPlot.commons.event.MouseEvent
 import org.jetbrains.letsPlot.commons.event.MouseEventSpec
+import org.jetbrains.letsPlot.commons.event.MouseWheelEvent
 import org.jetbrains.letsPlot.commons.geometry.Rectangle
 import org.jetbrains.letsPlot.commons.geometry.Vector
 import org.jetbrains.letsPlot.commons.intern.observable.event.EventHandler
@@ -22,18 +23,16 @@ class CompositeFigureEventDispatcher() : SkikoViewEventDispatcher {
 
     override fun dispatchMouseEvent(kind: MouseEventSpec, e: MouseEvent) {
         val loc = Vector(e.x, e.y)
-        val target = dispatchers.keys.find { it.contains(loc) }
-        if (target != null) {
-            val dispatcher = dispatchers.getValue(target)
-            dispatcher.dispatchMouseEvent(
-                kind,
-                MouseEvent(
-                    v = Vector(loc.x - target.origin.x, loc.y - target.origin.y),
-                    button = e.button,
-                    modifiers = e.modifiers
-                )
-            )
+        val (figureBounds, dispatcher) = dispatchers.entries.firstOrNull { (bounds, _) -> loc in bounds } ?: return
+        val xInFigure = loc.x - figureBounds.origin.x
+        val yInFigure = loc.y - figureBounds.origin.y
+
+        val eventInFigure = when (e) {
+            is MouseWheelEvent -> MouseWheelEvent(xInFigure, yInFigure, e.button, e.modifiers, e.scrollAmount)
+            else -> MouseEvent(xInFigure, yInFigure, e.button, e.modifiers)
         }
+
+        dispatcher.dispatchMouseEvent(kind, eventInFigure)
     }
 
     override fun addEventHandler(eventSpec: MouseEventSpec, eventHandler: EventHandler<MouseEvent>): Registration {
