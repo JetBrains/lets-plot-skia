@@ -101,7 +101,7 @@ fun PlotToolbar(figureModel: FigureModel) {
         IconButton(
             icon = base64ToImageBitmap(RESET_ICON),
             modifier = Modifier.padding(3.dp).size(24.dp),
-            onClick = { controller.resetFigure(deactiveTools = false) }
+            onClick = { controller.resetFigure(deactiveTools = true) }
         )
     }
 }

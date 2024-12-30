@@ -23,7 +23,15 @@ internal class SvgSkikoViewAwt : SvgSkikoView() {
         return SkiaLayer().also {
             it.renderDelegate = view
             it.addMouseListener(object : MouseListener {
-                override fun mouseClicked(e: MouseEvent) { onMouseEvent(MOUSE_CLICKED, translate(e)) }
+                override fun mouseClicked(e: MouseEvent) {
+                    val event = when (e.clickCount) {
+                        1 -> MOUSE_CLICKED
+                        2 -> MOUSE_DOUBLE_CLICKED
+                        else -> return
+                    }
+
+                    onMouseEvent(event, translate(e))
+                }
                 override fun mousePressed(e: MouseEvent) { onMouseEvent(MOUSE_PRESSED, translate(e)) }
                 override fun mouseReleased(e: MouseEvent) { onMouseEvent(MOUSE_RELEASED, translate(e)) }
                 override fun mouseEntered(e: MouseEvent) { onMouseEvent(MOUSE_ENTERED, translate(e)) }
