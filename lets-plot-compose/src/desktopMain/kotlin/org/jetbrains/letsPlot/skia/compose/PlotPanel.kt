@@ -18,6 +18,7 @@ import androidx.compose.ui.platform.LocalDensity
 import org.jetbrains.letsPlot.Figure
 import org.jetbrains.letsPlot.commons.geometry.DoubleVector
 import org.jetbrains.letsPlot.core.plot.builder.interact.tools.FigureModelHelper
+import org.jetbrains.letsPlot.core.spec.Option.Meta.Kind.GG_TOOLBAR
 import org.jetbrains.letsPlot.core.spec.front.SpecOverrideUtil
 import org.jetbrains.letsPlot.core.util.MonolithicCommon.processRawSpecs
 import org.jetbrains.letsPlot.core.util.PlotSizeUtil
@@ -55,7 +56,7 @@ actual fun PlotPanel(
     }
 
     Column {
-        if (figureModel != null) {
+        if (figureModel != null && GG_TOOLBAR in processedPlotSpec) {
             PlotToolbar(figureModel!!)
         }
 
