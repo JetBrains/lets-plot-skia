@@ -18,7 +18,7 @@ dependencies {
     compileOnly(project(":platf-skia"))
 
     compileOnly("org.jetbrains.lets-plot:lets-plot-common:$letsPlotVersion")
-    compileOnly("org.jetbrains.lets-plot:platf-awt:$letsPlotVersion")
+    compileOnly("org.jetbrains.lets-plot:platf-awt-jvm:$letsPlotVersion")
 
     testImplementation(kotlin("test"))
 }

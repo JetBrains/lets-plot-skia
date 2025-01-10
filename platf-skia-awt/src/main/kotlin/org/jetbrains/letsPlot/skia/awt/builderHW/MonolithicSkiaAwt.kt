@@ -35,12 +35,7 @@ object MonolithicSkiaAwt {
         plotSize: DoubleVector?,
         computationMessagesHandler: (List<String>) -> Unit
     ): JComponent {
-        val buildResult = MonolithicCommon.buildPlotsFromProcessedSpecs(
-            plotSpec,
-            plotSize,
-            plotMaxWidth = null,
-            plotPreferredWidth = null
-        )
+        val buildResult = MonolithicCommon.buildPlotsFromProcessedSpecs(plotSpec, sizingPolicy = null)
 
         if (buildResult.isError) {
             val errorMessage =

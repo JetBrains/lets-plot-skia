@@ -29,6 +29,7 @@ pluginManagement {
 
 include("platf-skia")
 include("platf-skia-awt")
+include("lets-plot-raster")
 include("lets-plot-compose")
 include("lets-plot-swing-skia")
 
@@ -57,6 +58,10 @@ project(":demo-plot-compose-desktop").projectDir = File("./demo/plot/compose-des
 // SWING SVG
 include("demo-svg-swing")
 project(":demo-svg-swing").projectDir = File("./demo/svg/swing")
+
+// SVG SWING CANVAS
+include("demo-svg-swing-canvas")
+project(":demo-svg-swing-canvas").projectDir = File("./demo/svg/swing-canvas")
 
 
 // SWING Plot

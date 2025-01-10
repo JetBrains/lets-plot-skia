@@ -45,6 +45,7 @@ kotlin {
             dependencies {
                 compileOnly("org.jetbrains.skiko:skiko:$skikoVersion")
 
+                compileOnly("org.jetbrains.lets-plot:canvas:$letsPlotVersion")
                 compileOnly("org.jetbrains.lets-plot:commons:$letsPlotVersion")
                 compileOnly("org.jetbrains.lets-plot:datamodel:$letsPlotVersion")
                 compileOnly("org.jetbrains.lets-plot:plot-base:$letsPlotVersion")
@@ -68,7 +69,7 @@ kotlin {
                 implementation("org.jetbrains.skiko:skiko-awt-runtime-$hostOs-$hostArch:$skikoVersion")
                 implementation("org.jetbrains.lets-plot:commons:$letsPlotVersion")
                 implementation("org.jetbrains.lets-plot:datamodel:$letsPlotVersion")
-                implementation("io.github.microutils:kotlin-logging:$kotlinLoggingVersion")
+                implementation("io.github.microutils:kotlin-logging-jvm:$kotlinLoggingVersion")
             }
         }
 

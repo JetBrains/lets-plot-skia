@@ -57,7 +57,7 @@ actual fun PlotPanel(
 
     Column {
         if (figureModel != null && GG_TOOLBAR in processedPlotSpec) {
-            PlotToolbar(figureModel!!)
+            //PlotToolbar(figureModel!!)
         }
 
         Box(

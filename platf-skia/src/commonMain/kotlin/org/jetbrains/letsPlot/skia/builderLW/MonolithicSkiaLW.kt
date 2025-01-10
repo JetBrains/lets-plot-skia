@@ -21,7 +21,7 @@ object MonolithicSkiaLW {
         plotSize: DoubleVector?,
         computationMessagesHandler: (List<String>) -> Unit
     ): ViewModel {
-        val buildResult = MonolithicCommon.buildPlotsFromProcessedSpecs(plotSpec, plotSize)
+        val buildResult = MonolithicCommon.buildPlotsFromProcessedSpecs(plotSpec, null)
         if (buildResult is MonolithicCommon.PlotsBuildResult.Error) {
             return SimpleModel(createErrorSvgText(buildResult.error), UnsupportedToolEventDispatcher())
         }
