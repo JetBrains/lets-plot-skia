@@ -19,6 +19,7 @@ var hostArch = when (val osArch = System.getProperty("os.arch")) {
 val skikoVersion = extra["skiko.version"] as String
 val letsPlotVersion = extra["letsPlot.version"] as String
 val letsPlotKotlinVersion = extra["letsPlotKotlin.version"] as String
+val kotlinLoggingVersion = extra["kotlinLogging.version"] as String
 
 dependencies {
     implementation("org.jetbrains.skiko:skiko:$skikoVersion")
@@ -32,4 +33,5 @@ dependencies {
     implementation(project(":demo-plot-shared"))
 
     implementation("org.slf4j:slf4j-simple:2.0.9")  // Enable logging to console
+    implementation("io.github.microutils:kotlin-logging-jvm:$kotlinLoggingVersion")
 }

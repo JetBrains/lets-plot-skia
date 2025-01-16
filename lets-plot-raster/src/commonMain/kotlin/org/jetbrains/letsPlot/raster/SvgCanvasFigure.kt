@@ -27,16 +27,17 @@ class SvgCanvasFigure(
     val svgSvgElement: SvgSvgElement
 ) : CanvasFigure {
     private val canvasPeer: SvgCanvasPeer = SvgCanvasPeer()
-    private val rootElement: Pane
-    val width = svgSvgElement.width().get()?.let { ceil(it).toInt() } ?: 0
-    val height = svgSvgElement.height().get()?.let { ceil(it).toInt() } ?: 0
+    internal val rootMapper = SvgSvgElementMapper(svgSvgElement, canvasPeer)
 
     init {
         val nodeContainer = SvgNodeContainer(svgSvgElement)  // attach root
-        val rootMapper = SvgSvgElementMapper(svgSvgElement, canvasPeer)
         rootMapper.attachRoot(MappingContext())
-        rootElement = rootMapper.target
     }
+
+    private val rootElement: Pane get() = rootMapper.target
+
+    val width = svgSvgElement.width().get()?.let { ceil(it).toInt() } ?: 0
+    val height = svgSvgElement.height().get()?.let { ceil(it).toInt() } ?: 0
 
     override fun bounds(): ReadableProperty<Rectangle> {
         TODO("Not yet implemented")
@@ -48,14 +49,14 @@ class SvgCanvasFigure(
             override fun onEvent(millisTime: Long): Boolean {
                 canvas.context2d.clearRect(DoubleRectangle(0.0, 0.0, width.toDouble(), height.toDouble()))
                 render(rootElement, canvas)
-                return false
+                return true
             }
         })
 
         canvasControl.addChild(canvas)
         render(rootElement, canvas)
 
-        //anim.start()
+        anim.start()
 
         return Registration.EMPTY
     }

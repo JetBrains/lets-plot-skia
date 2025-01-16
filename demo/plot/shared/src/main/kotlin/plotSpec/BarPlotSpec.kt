@@ -8,15 +8,21 @@ package plotSpec
 import org.jetbrains.letsPlot.Figure
 import org.jetbrains.letsPlot.asDiscrete
 import org.jetbrains.letsPlot.geom.geomBar
+import org.jetbrains.letsPlot.geom.geomPoint
 import org.jetbrains.letsPlot.letsPlot
 import org.jetbrains.letsPlot.scale.scaleFillDiscrete
 import org.jetbrains.letsPlot.scale.scaleFillHue
+import org.jetbrains.letsPlot.tooltips.layerTooltips
 
 class BarPlotSpec : PlotDemoSpec {
 
     override fun createFigureList(): List<Figure> {
         val basic = letsPlot(DATA) +
-                geomBar(alpha = 0.5) {
+                geomPoint(
+                    alpha = 0.5,
+                    showLegend = false,
+                    tooltips = layerTooltips().line("(^x, ^y)").anchor("top_center")
+                ) {
                     x = "time"
                     color = "time"
                     fill = "time"
@@ -31,9 +37,9 @@ class BarPlotSpec : PlotDemoSpec {
 
         return listOf(
             basic,
-            fancy,
-            fancyWithWidth(0.5),
-            fancyWithWidth(5.0),
+            //fancy,
+            //fancyWithWidth(0.5),
+            //fancyWithWidth(5.0),
         )
     }
 

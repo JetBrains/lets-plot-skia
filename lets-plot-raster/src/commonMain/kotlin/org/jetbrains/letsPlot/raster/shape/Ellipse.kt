@@ -24,17 +24,16 @@ internal class Ellipse : Figure() {
     }
 
     override fun render(canvas: Canvas) {
-        fillPaint?.let {
-            applyPaint(it, canvas)
-            canvas.context2d.ellipse(centerX.toDouble(), centerY.toDouble(), radiusX.toDouble(), radiusY.toDouble())
-            canvas.context2d.fill()
+        if (fillPaint == null && strokePaint == null) {
+            return
         }
 
-        strokePaint?.let {
-            applyPaint(it, canvas)
-            canvas.context2d.ellipse(centerX.toDouble(), centerY.toDouble(), radiusX.toDouble(), radiusY.toDouble())
-            canvas.context2d.stroke()
-        }
+        canvas.context2d.beginPath()
+        canvas.context2d.ellipse(centerX.toDouble(), centerY.toDouble(), radiusX.toDouble(), radiusY.toDouble())
+        canvas.context2d.closePath()
+
+        fillPaint?.let { canvas.context2d.fill(it) }
+        strokePaint?.let { canvas.context2d.stroke(it) }
     }
 
     override val localBounds: DoubleRectangle

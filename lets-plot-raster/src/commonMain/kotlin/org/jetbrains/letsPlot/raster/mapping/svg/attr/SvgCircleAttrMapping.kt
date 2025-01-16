@@ -3,11 +3,10 @@
  * Use of this source code is governed by the MIT license that can be found in the LICENSE file.
  */
 
-/*
-package org.jetbrains.letsPlot.rasterizer.mapping.svg.attr
+package org.jetbrains.letsPlot.raster.mapping.svg.attr
 
 import org.jetbrains.letsPlot.datamodel.svg.dom.SvgCircleElement
-import org.jetbrains.letsPlot.skia.shape.Circle
+import org.jetbrains.letsPlot.raster.shape.Circle
 
 internal object SvgCircleAttrMapping : SvgShapeMapping<Circle>() {
     override fun setAttribute(target: Circle, name: String, value: Any?) {
@@ -19,5 +18,3 @@ internal object SvgCircleAttrMapping : SvgShapeMapping<Circle>() {
         }
     }
 }
-
- */

@@ -12,7 +12,9 @@ import org.jetbrains.letsPlot.commons.geometry.Vector
 import org.jetbrains.letsPlot.datamodel.svg.dom.SvgSvgElement
 import org.jetbrains.letsPlot.raster.SvgCanvasFigure
 import java.awt.Color
+import java.awt.Dimension
 import java.awt.GridLayout
+import java.awt.Rectangle
 import javax.swing.*
 import kotlin.math.min
 
@@ -49,6 +51,7 @@ internal class CanvasDemoWindow(
             pack()
             setLocationRelativeTo(null)  // move to the screen center
             isVisible = true
+            size = Dimension(600, 600)
         }
     }
 
@@ -69,11 +72,11 @@ internal class CanvasDemoWindow(
             dim,
             animationTimerPeer = AwtAnimationTimerPeer(),
             mouseEventSource = AwtMouseEventMapper(panel)
-
         )
 
         val component = canvasControl.component()
         component.border = BorderFactory.createLineBorder(Color.ORANGE, 1)
+        component.bounds = Rectangle(0, 0, dim.x, dim.y)
 
         //val rootMapper = SvgSvgElementMapper(svgDocument, SvgSkiaPeer(fontManager))
         SvgCanvasFigure(svgRoot).mapToCanvas(canvasControl)

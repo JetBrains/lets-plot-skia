@@ -68,6 +68,10 @@ project(":demo-svg-swing-canvas").projectDir = File("./demo/svg/swing-canvas")
 include("demo-plot-swing")
 project(":demo-plot-swing").projectDir = File("./demo/plot/swing")
 
+// Plot SWING Canvas
+include("demo-plot-swing-canvas")
+project(":demo-plot-swing-canvas").projectDir = File("./demo/plot/swing-canvas")
+
 /*
 // Android SVG
 include("demo-svg-android")

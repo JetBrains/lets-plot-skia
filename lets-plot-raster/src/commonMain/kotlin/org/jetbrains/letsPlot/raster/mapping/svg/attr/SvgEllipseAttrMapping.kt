@@ -3,11 +3,10 @@
  * Use of this source code is governed by the MIT license that can be found in the LICENSE file.
  */
 
-/*
-package org.jetbrains.letsPlot.rasterizer.mapping.svg.attr
+package org.jetbrains.letsPlot.raster.mapping.svg.attr
 
 import org.jetbrains.letsPlot.datamodel.svg.dom.SvgEllipseElement
-import org.jetbrains.letsPlot.skia.shape.Ellipse
+import org.jetbrains.letsPlot.raster.shape.Ellipse
 
 internal object SvgEllipseAttrMapping : SvgShapeMapping<Ellipse>() {
     override fun setAttribute(target: Ellipse, name: String, value: Any?) {
@@ -20,5 +19,3 @@ internal object SvgEllipseAttrMapping : SvgShapeMapping<Ellipse>() {
         }
     }
 }
-
- */

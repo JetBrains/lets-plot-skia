@@ -22,10 +22,10 @@ internal object SvgUtils {
         Group::class to (SvgGAttrMapping as SvgAttrMapping<Element>),
         Rectangle::class to (SvgRectAttrMapping as SvgAttrMapping<Element>),
         Line::class to (SvgLineAttrMapping as SvgAttrMapping<Element>),
-        //Ellipse::class to (SvgEllipseAttrMapping as SvgAttrMapping<Element>),
-        //Circle::class to (SvgCircleAttrMapping as SvgAttrMapping<Element>),
+        Ellipse::class to (SvgEllipseAttrMapping as SvgAttrMapping<Element>),
+        Circle::class to (SvgCircleAttrMapping as SvgAttrMapping<Element>),
         //Text::class to (SvgTextElementAttrMapping as SvgAttrMapping<Element>),
-        //Path::class to (SvgPathAttrMapping as SvgAttrMapping<Element>),
+        Path::class to (SvgPathAttrMapping as SvgAttrMapping<Element>),
         //Image::class to (SvgImageAttrMapping as SvgAttrMapping<Element>),
         //TSpan::class to (SvgTSpanElementAttrMapping as SvgAttrMapping<Element>),
     )
@@ -70,8 +70,8 @@ internal object SvgUtils {
 
     fun newElement(source: SvgNode, peer: SvgCanvasPeer): Element {
         return when (source) {
-//            is SvgEllipseElement -> Ellipse()
-//            is SvgCircleElement -> Circle()
+            is SvgEllipseElement -> Ellipse()
+            is SvgCircleElement -> Circle()
             is SvgRectElement -> Rectangle()
 //            is SvgTextElement -> return Text(peer.fontManager)
 //            is SvgPathElement -> Path()

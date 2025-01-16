@@ -14,10 +14,7 @@ import org.jetbrains.letsPlot.datamodel.svg.dom.slim.SvgSlimNode
 import org.jetbrains.letsPlot.datamodel.svg.event.SvgEventSpec
 import org.jetbrains.letsPlot.raster.mapping.svg.SvgUtils.getChildren
 import org.jetbrains.letsPlot.raster.mapping.svg.SvgUtils.newElement
-import org.jetbrains.letsPlot.raster.shape.Element
-import org.jetbrains.letsPlot.raster.shape.Group
-import org.jetbrains.letsPlot.raster.shape.Line
-import org.jetbrains.letsPlot.raster.shape.Rectangle
+import org.jetbrains.letsPlot.raster.shape.*
 
 internal class SkiaTargetPeer(
     private val peer: SvgCanvasPeer
@@ -44,7 +41,7 @@ internal class SkiaTargetPeer(
         return when (source.elementName) {
             SvgSlimElements.GROUP -> Group()
             SvgSlimElements.LINE -> Line()
-            //SvgSlimElements.CIRCLE -> Circle()
+            SvgSlimElements.CIRCLE -> Circle()
             SvgSlimElements.RECT -> Rectangle()
             //SvgSlimElements.PATH -> Path()
             else -> Group()//throw IllegalStateException("Unsupported slim node " + source::class.simpleName + " '" + source.elementName + "'")

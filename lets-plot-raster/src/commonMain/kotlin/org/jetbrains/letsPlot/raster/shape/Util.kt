@@ -10,6 +10,7 @@ import org.jetbrains.letsPlot.commons.geometry.DoubleVector
 import org.jetbrains.letsPlot.commons.intern.math.toRadians
 import org.jetbrains.letsPlot.commons.values.Color
 import org.jetbrains.letsPlot.core.canvas.Canvas
+import org.jetbrains.letsPlot.core.canvas.Context2d
 import kotlin.math.*
 
 internal fun sdot(a: Number, b: Number, c: Number, d: Number): Double {
@@ -294,6 +295,25 @@ internal fun fillPaint(fill: Color? = null, fillOpacity: Float = 1f): Paint? {
     }
 }
 
+internal fun Context2d.stroke(paint: Paint) {
+    require(paint.isStroke) { "Paint must be a stroke paint" }
+
+    setLineWidth(paint.strokeWidth.toDouble())
+    setStrokeStyle(paint.color)
+    setStrokeMiterLimit(paint.strokeMiter.toDouble())
+    setLineDash(paint.strokeDashList)
+
+    stroke()
+}
+
+internal fun Context2d.fill(paint: Paint) {
+    require(!paint.isStroke) { "Paint must be a fill paint" }
+
+    setFillStyle(paint.color)
+
+    fill()
+}
+
 //fun toFontStyle(face: FontFace): FontStyle = when {
 //    face.bold && !face.italic -> FontStyle.BOLD
 //    face.bold && face.italic -> FontStyle.BOLD_ITALIC
@@ -302,4 +322,4 @@ internal fun fillPaint(fill: Color? = null, fillOpacity: Float = 1f): Paint? {
 //    else -> error("Unknown fontStyle: `$face`")
 //}
 
-fun Color.changeAlpha(a: Float) = changeAlpha((255 / a).roundToInt())
+fun Color.changeAlpha(a: Float) = changeAlpha((255 * a).roundToInt())
