@@ -9,8 +9,11 @@ import org.jetbrains.letsPlot.commons.geometry.DoubleRectangle
 import org.jetbrains.letsPlot.commons.geometry.DoubleVector
 import org.jetbrains.letsPlot.commons.intern.math.toRadians
 import org.jetbrains.letsPlot.commons.values.Color
+import org.jetbrains.letsPlot.commons.values.FontFace
 import org.jetbrains.letsPlot.core.canvas.Canvas
 import org.jetbrains.letsPlot.core.canvas.Context2d
+import org.jetbrains.letsPlot.core.canvas.FontStyle
+import org.jetbrains.letsPlot.core.canvas.FontWeight
 import kotlin.math.*
 
 internal fun sdot(a: Number, b: Number, c: Number, d: Number): Double {
@@ -187,6 +190,7 @@ internal fun reversedBreadthFirstTraversal(element: Element): Sequence<Element> 
                 val reversed = element.children.asReversed().asSequence()
                 reversed.flatMap(::enumerate) + reversed
             }
+
             else -> emptySequence()
         }
     }
@@ -267,7 +271,7 @@ internal fun strokePaint(
     strokeDashArray: List<Double> = emptyList(),
     strokeDashOffset: Float = 0f, // not mandatory, default works fine
     strokeMiter: Float? = null
-) : Paint? {
+): Paint? {
     if (stroke == null) return null
     if (strokeOpacity == 0f) return null
 
@@ -314,12 +318,27 @@ internal fun Context2d.fill(paint: Paint) {
     fill()
 }
 
-//fun toFontStyle(face: FontFace): FontStyle = when {
-//    face.bold && !face.italic -> FontStyle.BOLD
-//    face.bold && face.italic -> FontStyle.BOLD_ITALIC
-//    !face.bold && face.italic -> FontStyle.ITALIC
-//    !face.bold && !face.italic -> FontStyle.NORMAL
-//    else -> error("Unknown fontStyle: `$face`")
-//}
+fun Context2d.transform(m: Matrix33) {
+    transform(
+        m.scaleX.toDouble(),
+        m.skewX.toDouble(),
+        m.skewY.toDouble(),
+        m.scaleY.toDouble(),
+        m.translateX.toDouble(),
+        m.translateY.toDouble()
+    )
+}
+
+fun toFontStyle(face: FontFace): FontStyle =
+    when (face.italic) {
+        true -> FontStyle.ITALIC
+        false -> FontStyle.NORMAL
+    }
+
+fun toFontWeight(face: FontFace): FontWeight =
+    when (face.bold) {
+        true -> FontWeight.BOLD
+        false -> FontWeight.NORMAL
+    }
 
 fun Color.changeAlpha(a: Float) = changeAlpha((255 * a).roundToInt())

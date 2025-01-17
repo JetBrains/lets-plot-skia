@@ -6,19 +6,9 @@
 package demo.util
 
 import org.jetbrains.letsPlot.Figure
-import org.jetbrains.letsPlot.awt.canvas.AwtAnimationTimerPeer
-import org.jetbrains.letsPlot.awt.canvas.AwtCanvasControl
-import org.jetbrains.letsPlot.awt.canvas.AwtMouseEventMapper
-import org.jetbrains.letsPlot.awt.util.AwtEventUtil.translate
-import org.jetbrains.letsPlot.commons.event.MouseEventSpec.*
-import org.jetbrains.letsPlot.commons.geometry.Vector
-import org.jetbrains.letsPlot.core.canvas.CanvasControl
-import org.jetbrains.letsPlot.raster.view.SvgCanvasView
 import java.awt.Color
 import java.awt.Dimension
 import java.awt.GridLayout
-import java.awt.Rectangle
-import java.awt.event.*
 import javax.swing.*
 import kotlin.math.min
 
@@ -87,60 +77,3 @@ internal class PlotSpecsCanvasDemoWindow(
     }
 }
 
-class SwingSvgCanvasView : SvgCanvasView() {
-    val container = JPanel(null)
-    private var awtCanvasControl: AwtCanvasControl? = null
-
-    override fun createCanvasControl(view: SvgCanvasView): CanvasControl {
-        if (awtCanvasControl != null) return awtCanvasControl!!
-        val w = 600
-        val h = 400
-        val awtCanvasControl = AwtCanvasControl(
-            size = Vector(w, h),
-            animationTimerPeer = AwtAnimationTimerPeer(),
-            mouseEventSource = AwtMouseEventMapper(container)
-        )
-        val canvasComponent = awtCanvasControl.component()
-        canvasComponent.bounds = Rectangle(0, 0, w, h)
-        canvasComponent.background = Color.WHITE
-        canvasComponent.border = BorderFactory.createLineBorder(Color.RED, 5)
-        container.add(canvasComponent)
-        container.bounds = Rectangle(0, 0, w, h)
-        this.awtCanvasControl = awtCanvasControl
-
-        canvasComponent.addMouseListener(object : MouseListener {
-            override fun mouseClicked(e: MouseEvent) {
-                val event = when (e.clickCount) {
-                    1 -> MOUSE_CLICKED
-                    2 -> MOUSE_DOUBLE_CLICKED
-                    else -> return
-                }
-
-                onMouseEvent(event, translate(e))
-            }
-            override fun mousePressed(e: MouseEvent) { onMouseEvent(MOUSE_PRESSED, translate(e)) }
-            override fun mouseReleased(e: MouseEvent) { onMouseEvent(MOUSE_RELEASED, translate(e)) }
-            override fun mouseEntered(e: MouseEvent) { onMouseEvent(MOUSE_ENTERED, translate(e)) }
-            override fun mouseExited(e: MouseEvent) { onMouseEvent(MOUSE_LEFT, translate(e)) }
-        })
-        canvasComponent.addMouseMotionListener(object : MouseMotionListener {
-            override fun mouseDragged(e: MouseEvent) { onMouseEvent(MOUSE_DRAGGED, translate(e)) }
-            override fun mouseMoved(e: MouseEvent) { onMouseEvent(MOUSE_MOVED, translate(e)) }
-        })
-        canvasComponent.addMouseWheelListener(object : MouseWheelListener {
-            override fun mouseWheelMoved(e: MouseWheelEvent) {  onMouseEvent(MOUSE_WHEEL_ROTATED, translate(e)) }
-        })
-
-
-        return awtCanvasControl
-    }
-
-    override fun updateCanvasSize(width: Int, height: Int) {
-        println("updateCanvasSize: $width x $height")
-    }
-
-    override fun onHrefClick(href: String) {
-        TODO("Not yet implemented")
-    }
-
-}

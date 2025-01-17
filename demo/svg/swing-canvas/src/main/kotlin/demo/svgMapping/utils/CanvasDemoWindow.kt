@@ -10,7 +10,7 @@ import org.jetbrains.letsPlot.awt.canvas.AwtCanvasControl
 import org.jetbrains.letsPlot.awt.canvas.AwtMouseEventMapper
 import org.jetbrains.letsPlot.commons.geometry.Vector
 import org.jetbrains.letsPlot.datamodel.svg.dom.SvgSvgElement
-import org.jetbrains.letsPlot.raster.SvgCanvasFigure
+import org.jetbrains.letsPlot.raster.view.SvgCanvasFigure
 import java.awt.Color
 import java.awt.Dimension
 import java.awt.GridLayout

@@ -24,10 +24,10 @@ internal object SvgUtils {
         Line::class to (SvgLineAttrMapping as SvgAttrMapping<Element>),
         Ellipse::class to (SvgEllipseAttrMapping as SvgAttrMapping<Element>),
         Circle::class to (SvgCircleAttrMapping as SvgAttrMapping<Element>),
-        //Text::class to (SvgTextElementAttrMapping as SvgAttrMapping<Element>),
+        Text::class to (SvgTextElementAttrMapping as SvgAttrMapping<Element>),
         Path::class to (SvgPathAttrMapping as SvgAttrMapping<Element>),
         //Image::class to (SvgImageAttrMapping as SvgAttrMapping<Element>),
-        //TSpan::class to (SvgTSpanElementAttrMapping as SvgAttrMapping<Element>),
+        TSpan::class to (SvgTSpanElementAttrMapping as SvgAttrMapping<Element>),
     )
 
     fun elementChildren(e: Element): MutableList<Element> {
@@ -63,7 +63,7 @@ internal object SvgUtils {
         return when (parent) {
             is Group -> parent.children
             is Pane -> parent.children
-//            is Text -> parent.children
+            is Text -> parent.children
             else -> throw IllegalArgumentException("Unsupported parent type: ${parent::class.simpleName}")
         }
     }
@@ -73,7 +73,7 @@ internal object SvgUtils {
             is SvgEllipseElement -> Ellipse()
             is SvgCircleElement -> Circle()
             is SvgRectElement -> Rectangle()
-//            is SvgTextElement -> return Text(peer.fontManager)
+            is SvgTextElement -> Text()
 //            is SvgPathElement -> Path()
             is SvgLineElement -> Line()
             is SvgSvgElement -> Pane()

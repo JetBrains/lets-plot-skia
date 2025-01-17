@@ -14,7 +14,6 @@ import org.jetbrains.letsPlot.commons.registration.Registration
 import org.jetbrains.letsPlot.core.canvas.CanvasControl
 import org.jetbrains.letsPlot.datamodel.svg.dom.*
 import org.jetbrains.letsPlot.datamodel.svg.event.SvgAttributeEvent
-import org.jetbrains.letsPlot.raster.SvgCanvasFigure
 import org.jetbrains.letsPlot.raster.shape.Element
 import org.jetbrains.letsPlot.raster.shape.Pane
 import org.jetbrains.letsPlot.raster.shape.reversedDepthFirstTraversal
@@ -114,7 +113,7 @@ abstract class SvgCanvasView() : Disposable {
         }
     }
 
-    protected fun onMouseEvent(spec: MouseEventSpec, event: MouseEvent) {
+    protected fun dispatchEvent(spec: MouseEventSpec, event: MouseEvent) {
         if (spec == MouseEventSpec.MOUSE_CLICKED) {
             reversedDepthFirstTraversal(rootElement)
                 .filterNot { it.isMouseTransparent }

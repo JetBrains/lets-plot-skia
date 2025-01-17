@@ -3,24 +3,25 @@
  * Use of this source code is governed by the MIT license that can be found in the LICENSE file.
  */
 
-/*
-package org.jetbrains.letsPlot.rasterizer.mapping.svg
+
+package org.jetbrains.letsPlot.raster.mapping.svg
 
 import org.jetbrains.letsPlot.commons.intern.observable.collections.ObservableCollection
 import org.jetbrains.letsPlot.commons.intern.observable.property.ReadableProperty
 import org.jetbrains.letsPlot.commons.intern.observable.property.SimpleCollectionProperty
 import org.jetbrains.letsPlot.commons.intern.observable.property.WritableProperty
+import org.jetbrains.letsPlot.core.canvas.Font
 import org.jetbrains.letsPlot.datamodel.mapping.framework.Synchronizers
 import org.jetbrains.letsPlot.datamodel.svg.dom.*
 import org.jetbrains.letsPlot.datamodel.svg.style.StyleSheet
-import org.jetbrains.letsPlot.skia.mapping.svg.attr.SvgTSpanElementAttrMapping
-import org.jetbrains.letsPlot.skia.mapping.svg.attr.SvgTextElementAttrMapping
-import org.jetbrains.letsPlot.skia.shape.*
+import org.jetbrains.letsPlot.raster.mapping.svg.attr.SvgTSpanElementAttrMapping
+import org.jetbrains.letsPlot.raster.mapping.svg.attr.SvgTextElementAttrMapping
+import org.jetbrains.letsPlot.raster.shape.*
 
 internal class SvgTextElementMapper(
     source: SvgTextElement,
     target: Text,
-    peer: SvgSkiaPeer
+    peer: SvgCanvasPeer
 ) : SvgElementMapper<SvgTextElement, Text>(source, target, peer) {
 
     private val myTextAttrSupport = TextAttributesSupport(target)
@@ -37,7 +38,7 @@ internal class SvgTextElementMapper(
         super.registerSynchronizers(conf)
 
         // Sync TextNodes, TextSpans
-        val sourceTextRunProperty = sourceTextRunProperty(source.children(), peer.styleSheet, peer.fontManager)
+        val sourceTextRunProperty = sourceTextRunProperty(source.children(), peer.styleSheet, peer::measureTextWidth)
         val targetTextRunProperty = targetTextRunProperty(target)
         conf.add(
             Synchronizers.forPropsOneWay(
@@ -54,10 +55,11 @@ internal class SvgTextElementMapper(
         val className = source.fullClass()
         if (className.isNotEmpty()) {
             val style = styleSheet.getTextStyle(className)
-            target.fill = style.color.asSkiaColor
+            target.fill = style.color
             target.fontFamily = style.family.split(",").map { it.trim(' ', '"') }
             target.fontSize = style.size.toFloat()
             target.fontStyle = toFontStyle(style.face)
+            target.fontWeight = toFontWeight(style.face)
 
             myTextAttrSupport.setAttribute(SvgConstants.SVG_STYLE_ATTRIBUTE, "fill:${style.color.toHexColor()};")
         }
@@ -79,14 +81,18 @@ internal class SvgTextElementMapper(
         private fun sourceTextRunProperty(
             nodes: ObservableCollection<SvgNode>,
             styleSheet: StyleSheet?,
-            fontManager: FontManager
+            textMeasure: (String, Font) -> Float
+            //fontManager: FontManager
         ): ReadableProperty<List<TSpan>> {
             fun toTSpans(nodes: ObservableCollection<SvgNode>): List<TSpan> {
                 return nodes.flatMap { node ->
                     val nodeTextRuns = when (node) {
-                        is SvgTextNode -> listOf(TSpan(fontManager).apply { text = node.textContent().get() })
-                        is SvgTSpanElement -> handleTSpanElement(node, styleSheet, fontManager)
-                        is SvgAElement -> handleAElement(node, styleSheet, fontManager)
+                        //is SvgTextNode -> listOf(TSpan(fontManager).apply { text = node.textContent().get() })
+                        //is SvgTSpanElement -> handleTSpanElement(node, styleSheet, fontManager)
+                        //is SvgAElement -> handleAElement(node, styleSheet, fontManager)
+                        is SvgTextNode -> listOf(TSpan(textMeasure).apply { text = node.textContent().get() })
+                        is SvgTSpanElement -> handleTSpanElement(node, styleSheet, textMeasure)
+                        is SvgAElement -> handleAElement(node, styleSheet, textMeasure)
 
                         else -> error("Unexpected node type: ${node::class.simpleName}")
                     }
@@ -102,14 +108,18 @@ internal class SvgTextElementMapper(
         }
 
 
-        private fun handleTSpanElement(node: SvgTSpanElement, styleSheet: StyleSheet?, fontManager: FontManager): List<TSpan> =
+        private fun handleTSpanElement(
+            node: SvgTSpanElement,
+            styleSheet: StyleSheet?,
+            textMeasure: (String, Font) -> Float
+        ): List<TSpan> =
             node.children().map { child ->
                 require(child is SvgTextNode)
                 val style = styleSheet?.getTextStyle(node.fullClass())
 
-                val tspan = TSpan(fontManager).apply {
+                val tspan = TSpan(textMeasure).apply {
                     text = child.textContent().get()
-                    style?.safeColor?.asSkiaColor?.let {
+                    style?.safeColor?.let {
                         fill = it
                     }
 
@@ -123,7 +133,7 @@ internal class SvgTextElementMapper(
                 if (className.isNotEmpty()) {
                     val classStyle = styleSheet.getTextStyle(className)
                     classStyle.safeColor?.let {
-                        tspan.fill = it.asSkiaColor
+                        tspan.fill = it
                     }
 
                     classStyle.safeSize?.let {
@@ -135,16 +145,17 @@ internal class SvgTextElementMapper(
                     }
 
                     tspan.fontStyle = toFontStyle(classStyle.face)
+                    tspan.fontWeight = toFontWeight(classStyle.face)
                 }
 
                 return@map tspan
             }
 
-        private fun handleAElement(node: SvgAElement, styleSheet: StyleSheet?, fontManager: FontManager): List<TSpan> {
+        private fun handleAElement(node: SvgAElement, styleSheet: StyleSheet?, textMeasure: (String, Font) -> Float): List<TSpan> {
             val href = node.getAttribute("href").get() as String
             return node.children().flatMap { child ->
                 require(child is SvgTSpanElement)
-                handleTSpanElement(child, styleSheet, fontManager).onEach() {
+                handleTSpanElement(child, styleSheet, textMeasure).onEach() {
                     it.href = href
                 }
             }
@@ -162,4 +173,3 @@ internal class SvgTextElementMapper(
         }
     }
 }
-*/

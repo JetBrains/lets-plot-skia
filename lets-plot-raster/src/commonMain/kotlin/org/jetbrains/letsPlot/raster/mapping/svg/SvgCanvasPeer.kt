@@ -7,6 +7,8 @@ package org.jetbrains.letsPlot.raster.mapping.svg
 
 import org.jetbrains.letsPlot.commons.geometry.DoubleRectangle
 import org.jetbrains.letsPlot.commons.geometry.DoubleVector
+import org.jetbrains.letsPlot.core.canvas.Canvas
+import org.jetbrains.letsPlot.core.canvas.Font
 import org.jetbrains.letsPlot.datamodel.mapping.framework.Mapper
 import org.jetbrains.letsPlot.datamodel.svg.dom.SvgLocatable
 import org.jetbrains.letsPlot.datamodel.svg.dom.SvgNode
@@ -15,9 +17,11 @@ import org.jetbrains.letsPlot.datamodel.svg.dom.SvgTextContent
 import org.jetbrains.letsPlot.datamodel.svg.style.StyleSheet
 import org.jetbrains.letsPlot.raster.shape.Container
 import org.jetbrains.letsPlot.raster.shape.Element
+import org.jetbrains.letsPlot.raster.shape.Text
 import org.jetbrains.letsPlot.raster.shape.breadthFirstTraversal
 
 internal class SvgCanvasPeer(
+    private val textMeasureCanvas: Canvas
 //    val fontManager: FontManager
 ) : SvgPlatformPeer {
     private val myMappingMap = HashMap<SvgNode, Mapper<out SvgNode, out Element>>()
@@ -27,6 +31,17 @@ internal class SvgCanvasPeer(
     fun applyStyleSheet(styleSheet: StyleSheet) {
         this.styleSheet = styleSheet
     }
+
+    fun measureTextWidth(text: String, font: Font): Float {
+        with(textMeasureCanvas.context2d) {
+            save()
+            setFont(font)
+            val width = measureText(text)
+            restore()
+            return width.toFloat()
+        }
+    }
+
 //    private fun ensureElementConsistency(source: SvgNode, target: Node) {
 //        if (source is SvgElement && target !is SVGOMElement) {
 //            throw IllegalStateException("Target of SvgElement must be SVGOMElement")
@@ -95,9 +110,9 @@ internal class SvgCanvasPeer(
 
         if (target is Container) {
             breadthFirstTraversal(target).forEach {
-//                if (it is Text) {
-//                    it.layoutChildren()
-//                }
+                if (it is Text) {
+                    it.layoutChildren()
+                }
             }
         }
         val localBounds = target.localBounds

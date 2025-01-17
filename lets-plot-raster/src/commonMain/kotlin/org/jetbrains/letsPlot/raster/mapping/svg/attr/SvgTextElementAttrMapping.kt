@@ -5,19 +5,18 @@
 
 package org.jetbrains.letsPlot.raster.mapping.svg.attr
 
-/*
 import org.jetbrains.letsPlot.datamodel.svg.dom.SvgConstants
 import org.jetbrains.letsPlot.datamodel.svg.dom.SvgConstants.SVG_TEXT_DY_CENTER
 import org.jetbrains.letsPlot.datamodel.svg.dom.SvgConstants.SVG_TEXT_DY_TOP
 import org.jetbrains.letsPlot.datamodel.svg.dom.SvgShape
 import org.jetbrains.letsPlot.datamodel.svg.dom.SvgTextContent
 import org.jetbrains.letsPlot.datamodel.svg.dom.SvgTextElement
-import org.jetbrains.letsPlot.skia.mapping.svg.SvgUtils.toColor
-import org.jetbrains.letsPlot.skia.shape.Text
-import org.jetbrains.letsPlot.skia.shape.Text.Companion.DEFAULT_FONT_FAMILY
-import org.jetbrains.letsPlot.skia.shape.Text.Companion.DEFAULT_FONT_SIZE
-import org.jetbrains.letsPlot.skia.shape.Text.HorizontalAlignment
-import org.jetbrains.letsPlot.skia.shape.Text.VerticalAlignment
+import org.jetbrains.letsPlot.raster.mapping.svg.SvgUtils.toColor
+import org.jetbrains.letsPlot.raster.shape.Text
+import org.jetbrains.letsPlot.raster.shape.Text.Companion.DEFAULT_FONT_FAMILY
+import org.jetbrains.letsPlot.raster.shape.Text.Companion.DEFAULT_FONT_SIZE
+import org.jetbrains.letsPlot.raster.shape.Text.HorizontalAlignment
+import org.jetbrains.letsPlot.raster.shape.Text.VerticalAlignment
 
 internal object SvgTextElementAttrMapping : SvgAttrMapping<Text>() {
     override fun setAttribute(target: Text, name: String, value: Any?) {
@@ -65,4 +64,3 @@ internal object SvgTextElementAttrMapping : SvgAttrMapping<Text>() {
         }
     }
 }
-*/

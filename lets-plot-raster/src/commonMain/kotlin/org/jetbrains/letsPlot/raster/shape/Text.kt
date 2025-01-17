@@ -3,50 +3,47 @@
  * Use of this source code is governed by the MIT license that can be found in the LICENSE file.
  */
 
-/*
-package org.jetbrains.letsPlot.rasterizer.shape
+
+package org.jetbrains.letsPlot.raster.shape
 
 import org.jetbrains.letsPlot.commons.intern.observable.collections.CollectionItemEvent
-import org.jetbrains.letsPlot.skia.mapping.svg.FontManager
-import org.jetbrains.skia.Canvas
-import org.jetbrains.skia.Color
-import org.jetbrains.skia.Color4f
-import org.jetbrains.skia.FontStyle
+import org.jetbrains.letsPlot.commons.values.Color
+import org.jetbrains.letsPlot.core.canvas.Canvas
+import org.jetbrains.letsPlot.core.canvas.Font
+import org.jetbrains.letsPlot.core.canvas.FontStyle
+import org.jetbrains.letsPlot.core.canvas.FontWeight
 import kotlin.reflect.KProperty
 
 internal class Text(
-    private val fontManager: FontManager
+    //private val fontManager: FontManager
 ) : Container() {
     var textOrigin: VerticalAlignment? by visualProp(null)
     var textAlignment: HorizontalAlignment? by visualProp(null)
     var x: Float by visualProp(0f)
     var y: Float by visualProp(0f)
 
-    var stroke: Color4f? by visualProp(null)
+    var stroke: Color? by visualProp(null)
     var strokeWidth: Float by visualProp(1f)
     var strokeOpacity: Float by visualProp(1f)
     var strokeDashArray: List<Float>? by visualProp(null)
     var strokeMiter: Float? by visualProp(null) // not mandatory, default works fine
 
-    var fill: Color4f? by visualProp(Color4f(Color.BLACK))
+    var fill: Color? by visualProp(Color.BLACK)
     var fillOpacity: Float by visualProp(1f)
 
     var fontFamily: List<String> by visualProp(emptyList())
     var fontStyle: FontStyle by visualProp(FontStyle.NORMAL)
+    var fontWeight: FontWeight by visualProp(FontWeight.NORMAL)
     var fontSize by visualProp(DEFAULT_FONT_SIZE)
 
     private var needLayout = true
 
-    private val typeface by computedProp(Text::fontFamily, Text::fontStyle) {
-        fontManager.matchFamiliesStyle(fontFamily, fontStyle)
+    private val font by computedProp(Text::fontFamily, Text::fontWeight, Text::fontStyle, Text::fontSize) {
+        Font(fontStyle, fontWeight, fontSize.toDouble(), fontFamily.firstOrNull() ?: "serif")
     }
 
-    private val font by computedProp(Text::typeface, Text::fontSize) {
-        fontManager.font(typeface, fontSize)
-    }
-
-    private val lineHeight by computedProp(Text::font) {
-        font.metrics.descent - font.metrics.ascent
+    private val lineHeight by computedProp(Text::fontSize) {//(Text::font) {
+        fontSize//font.metrics.descent - font.metrics.ascent
     }
 
     private val cx by computedProp(Text::textAlignment) {
@@ -114,6 +111,7 @@ internal class Text(
                 Text::strokeDashArray -> el.inheritValue(TSpan::strokeDashArray, strokeDashArray)
                 Text::fontFamily -> el.inheritValue(TSpan::fontFamily, fontFamily)
                 Text::fontStyle -> el.inheritValue(TSpan::fontStyle, fontStyle)
+                Text::fontWeight -> el.inheritValue(TSpan::fontWeight, fontWeight)
                 Text::fontSize -> el.inheritValue(TSpan::fontSize, fontSize)
                 Text::strokeWidth -> el.inheritValue(TSpan::strokeWidth, strokeWidth)
                 Text::strokeOpacity -> el.inheritValue(TSpan::strokeOpacity, strokeOpacity)
@@ -130,6 +128,7 @@ internal class Text(
         el.inheritValue(TSpan::strokeDashArray, strokeDashArray)
         el.inheritValue(TSpan::fontFamily, fontFamily)
         el.inheritValue(TSpan::fontStyle, fontStyle)
+        el.inheritValue(TSpan::fontWeight, fontWeight)
         el.inheritValue(TSpan::fontSize, fontSize)
 
         invalidateLayout()
@@ -159,6 +158,3 @@ internal class Text(
         val DEFAULT_FONT_FAMILY: List<String> = emptyList()
     }
 }
-
-
- */
