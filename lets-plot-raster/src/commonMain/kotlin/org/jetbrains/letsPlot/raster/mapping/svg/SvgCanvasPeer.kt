@@ -7,7 +7,6 @@ package org.jetbrains.letsPlot.raster.mapping.svg
 
 import org.jetbrains.letsPlot.commons.geometry.DoubleRectangle
 import org.jetbrains.letsPlot.commons.geometry.DoubleVector
-import org.jetbrains.letsPlot.core.canvas.Canvas
 import org.jetbrains.letsPlot.core.canvas.Font
 import org.jetbrains.letsPlot.datamodel.mapping.framework.Mapper
 import org.jetbrains.letsPlot.datamodel.svg.dom.SvgLocatable
@@ -21,7 +20,7 @@ import org.jetbrains.letsPlot.raster.shape.Text
 import org.jetbrains.letsPlot.raster.shape.breadthFirstTraversal
 
 internal class SvgCanvasPeer(
-    private val textMeasureCanvas: Canvas
+    private val textMeasurer: TextMeasurer
 //    val fontManager: FontManager
 ) : SvgPlatformPeer {
     private val myMappingMap = HashMap<SvgNode, Mapper<out SvgNode, out Element>>()
@@ -33,13 +32,7 @@ internal class SvgCanvasPeer(
     }
 
     fun measureTextWidth(text: String, font: Font): Float {
-        with(textMeasureCanvas.context2d) {
-            save()
-            setFont(font)
-            val width = measureText(text)
-            restore()
-            return width.toFloat()
-        }
+        return textMeasurer.measureTextWidth(text, font)
     }
 
 //    private fun ensureElementConsistency(source: SvgNode, target: Node) {

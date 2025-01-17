@@ -52,6 +52,10 @@ internal class TSpan(
         )
     }
 
+    private val dimension by computedProp(TSpan::font, TSpan::fontScale) {
+
+    }
+
 //    private val textData by computedProp(
 //        TSpan::text,
 //        TSpan::baselineShift,

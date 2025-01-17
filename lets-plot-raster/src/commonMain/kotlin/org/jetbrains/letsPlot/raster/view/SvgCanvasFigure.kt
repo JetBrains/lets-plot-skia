@@ -19,6 +19,7 @@ import org.jetbrains.letsPlot.datamodel.svg.dom.SvgNodeContainer
 import org.jetbrains.letsPlot.datamodel.svg.dom.SvgSvgElement
 import org.jetbrains.letsPlot.raster.mapping.svg.SvgCanvasPeer
 import org.jetbrains.letsPlot.raster.mapping.svg.SvgSvgElementMapper
+import org.jetbrains.letsPlot.raster.mapping.svg.TextMeasurer
 import org.jetbrains.letsPlot.raster.shape.Container
 import org.jetbrains.letsPlot.raster.shape.Element
 import org.jetbrains.letsPlot.raster.shape.Pane
@@ -39,13 +40,15 @@ class SvgCanvasFigure(
     }
 
     override fun mapToCanvas(canvasControl: CanvasControl): Registration {
-        val canvas = canvasControl.createCanvas(Vector(width, height))
+        val canvasPeer = SvgCanvasPeer(
+            textMeasurer = TextMeasurer.create(canvasControl)
+        )
 
-        val canvasPeer = SvgCanvasPeer(canvasControl.createCanvas(Vector(0, 0)))
         rootMapper = SvgSvgElementMapper(svgSvgElement, canvasPeer)
         val nodeContainer = SvgNodeContainer(svgSvgElement)  // attach root
         rootMapper.attachRoot(MappingContext())
 
+        val canvas = canvasControl.createCanvas(Vector(width, height))
         val anim = canvasControl.createAnimationTimer(object : AnimationProvider.AnimationEventHandler {
             override fun onEvent(millisTime: Long): Boolean {
                 canvas.context2d.clearRect(DoubleRectangle(0.0, 0.0, width.toDouble(), height.toDouble()))
