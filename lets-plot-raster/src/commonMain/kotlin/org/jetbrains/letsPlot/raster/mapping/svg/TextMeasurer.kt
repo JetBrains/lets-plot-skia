@@ -9,19 +9,29 @@ import org.jetbrains.letsPlot.commons.geometry.Vector
 import org.jetbrains.letsPlot.core.canvas.Canvas
 import org.jetbrains.letsPlot.core.canvas.CanvasProvider
 import org.jetbrains.letsPlot.core.canvas.Font
+import org.jetbrains.letsPlot.core.canvas.TextMetrics
 
 class TextMeasurer private constructor(
     private val canvas: Canvas
 ) {
 
     fun measureTextWidth(text: String, font: Font): Float {
-        with(canvas.context2d) {
-            save()
-            setFont(font)
-            val width = measureText(text)
-            restore()
-            return width.toFloat()
-        }
+        val ctx = canvas.context2d
+        ctx.save()
+        ctx.setFont(font)
+        val width = ctx.measureTextWidth(text)
+        ctx.restore()
+        return width.toFloat()
+    }
+
+    fun measureText(text: String, font: Font): TextMetrics {
+        val ctx = canvas.context2d
+        ctx.save()
+        ctx.setFont(font)
+        val textMetrics = ctx.measureText(text)
+        ctx.restore()
+
+        return textMetrics
     }
 
     companion object {

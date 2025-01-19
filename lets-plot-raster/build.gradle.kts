@@ -49,7 +49,9 @@ kotlin {
                 implementation(kotlin("test"))
                 implementation("org.assertj:assertj-core:$assertjVersion")
                 implementation("org.jetbrains.lets-plot:commons:$letsPlotVersion")
+                implementation("org.jetbrains.lets-plot:canvas:$letsPlotVersion")
                 implementation("org.jetbrains.lets-plot:datamodel:$letsPlotVersion")
+                implementation("org.jetbrains.lets-plot:platf-awt:$letsPlotVersion")
                 implementation("io.github.microutils:kotlin-logging:$kotlinLoggingVersion")
                 implementation("io.github.microutils:kotlin-logging-jvm:$kotlinLoggingVersion")
             }

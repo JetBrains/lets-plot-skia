@@ -10,7 +10,6 @@ import org.jetbrains.letsPlot.commons.intern.observable.collections.ObservableCo
 import org.jetbrains.letsPlot.commons.intern.observable.property.ReadableProperty
 import org.jetbrains.letsPlot.commons.intern.observable.property.SimpleCollectionProperty
 import org.jetbrains.letsPlot.commons.intern.observable.property.WritableProperty
-import org.jetbrains.letsPlot.core.canvas.Font
 import org.jetbrains.letsPlot.datamodel.mapping.framework.Synchronizers
 import org.jetbrains.letsPlot.datamodel.svg.dom.*
 import org.jetbrains.letsPlot.datamodel.svg.style.StyleSheet
@@ -38,7 +37,7 @@ internal class SvgTextElementMapper(
         super.registerSynchronizers(conf)
 
         // Sync TextNodes, TextSpans
-        val sourceTextRunProperty = sourceTextRunProperty(source.children(), peer.styleSheet, peer::measureTextWidth)
+        val sourceTextRunProperty = sourceTextRunProperty(source.children(), peer.styleSheet, peer.textMeasurer)
         val targetTextRunProperty = targetTextRunProperty(target)
         conf.add(
             Synchronizers.forPropsOneWay(
@@ -81,7 +80,7 @@ internal class SvgTextElementMapper(
         private fun sourceTextRunProperty(
             nodes: ObservableCollection<SvgNode>,
             styleSheet: StyleSheet?,
-            textMeasure: (String, Font) -> Float
+            textMeasurer: TextMeasurer
             //fontManager: FontManager
         ): ReadableProperty<List<TSpan>> {
             fun toTSpans(nodes: ObservableCollection<SvgNode>): List<TSpan> {
@@ -90,9 +89,9 @@ internal class SvgTextElementMapper(
                         //is SvgTextNode -> listOf(TSpan(fontManager).apply { text = node.textContent().get() })
                         //is SvgTSpanElement -> handleTSpanElement(node, styleSheet, fontManager)
                         //is SvgAElement -> handleAElement(node, styleSheet, fontManager)
-                        is SvgTextNode -> listOf(TSpan(textMeasure).apply { text = node.textContent().get() })
-                        is SvgTSpanElement -> handleTSpanElement(node, styleSheet, textMeasure)
-                        is SvgAElement -> handleAElement(node, styleSheet, textMeasure)
+                        is SvgTextNode -> listOf(TSpan(textMeasurer).apply { text = node.textContent().get() })
+                        is SvgTSpanElement -> handleTSpanElement(node, styleSheet, textMeasurer)
+                        is SvgAElement -> handleAElement(node, styleSheet, textMeasurer)
 
                         else -> error("Unexpected node type: ${node::class.simpleName}")
                     }
@@ -111,13 +110,13 @@ internal class SvgTextElementMapper(
         private fun handleTSpanElement(
             node: SvgTSpanElement,
             styleSheet: StyleSheet?,
-            textMeasure: (String, Font) -> Float
+            textMeasurer: TextMeasurer
         ): List<TSpan> =
             node.children().map { child ->
                 require(child is SvgTextNode)
                 val style = styleSheet?.getTextStyle(node.fullClass())
 
-                val tspan = TSpan(textMeasure).apply {
+                val tspan = TSpan(textMeasurer).apply {
                     text = child.textContent().get()
                     style?.safeColor?.let {
                         fill = it
@@ -151,11 +150,11 @@ internal class SvgTextElementMapper(
                 return@map tspan
             }
 
-        private fun handleAElement(node: SvgAElement, styleSheet: StyleSheet?, textMeasure: (String, Font) -> Float): List<TSpan> {
+        private fun handleAElement(node: SvgAElement, styleSheet: StyleSheet?, textMeasurer: TextMeasurer): List<TSpan> {
             val href = node.getAttribute("href").get() as String
             return node.children().flatMap { child ->
                 require(child is SvgTSpanElement)
-                handleTSpanElement(child, styleSheet, textMeasure).onEach() {
+                handleTSpanElement(child, styleSheet, textMeasurer).onEach {
                     it.href = href
                 }
             }

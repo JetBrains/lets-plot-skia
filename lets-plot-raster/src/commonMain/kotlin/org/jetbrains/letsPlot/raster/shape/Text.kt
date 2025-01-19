@@ -49,8 +49,8 @@ internal class Text(
     private val cx by computedProp(Text::textAlignment) {
         fun contentWidth(): Float =
             children
-                .map { (it as TSpan).measure() }
-                .fold(0f) { overallWidth, (w, _) -> overallWidth + w }
+                .map { (it as TSpan).dimension }
+                .fold(0f) { overallWidth, (w, _) -> overallWidth + w.toFloat() }
 
         when (textAlignment) {
             HorizontalAlignment.LEFT -> 0.0f

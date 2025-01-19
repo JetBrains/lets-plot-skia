@@ -18,7 +18,7 @@ dependencies {
 
     compileOnly("org.jetbrains.lets-plot:lets-plot-kotlin-kernel:$letsPlotKotlinVersion")
     compileOnly("org.jetbrains.lets-plot:lets-plot-common:$letsPlotVersion")
-    compileOnly("org.jetbrains.lets-plot:platf-awt-jvm:$letsPlotVersion")
+    compileOnly("org.jetbrains.lets-plot:platf-awt:$letsPlotVersion")
 
     api(project(":platf-skia"))
     api(project(":platf-skia-awt"))

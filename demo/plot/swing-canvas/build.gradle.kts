@@ -12,7 +12,7 @@ dependencies {
 
     implementation("org.jetbrains.lets-plot:lets-plot-kotlin-kernel:$letsPlotKotlinVersion")
     implementation("org.jetbrains.lets-plot:lets-plot-common:$letsPlotVersion")
-    implementation("org.jetbrains.lets-plot:platf-awt-jvm:$letsPlotVersion")
+    implementation("org.jetbrains.lets-plot:platf-awt:$letsPlotVersion")
     implementation("org.jetbrains.lets-plot:canvas:$letsPlotVersion")
     implementation("io.github.microutils:kotlin-logging-jvm:$kotlinLoggingVersion")
 

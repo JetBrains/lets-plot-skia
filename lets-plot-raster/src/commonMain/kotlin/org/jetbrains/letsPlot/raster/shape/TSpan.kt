@@ -6,15 +6,17 @@
 package org.jetbrains.letsPlot.raster.shape
 
 import org.jetbrains.letsPlot.commons.geometry.DoubleRectangle
+import org.jetbrains.letsPlot.commons.geometry.DoubleVector
 import org.jetbrains.letsPlot.core.canvas.Canvas
 import org.jetbrains.letsPlot.core.canvas.Font
 import org.jetbrains.letsPlot.core.canvas.FontStyle
 import org.jetbrains.letsPlot.core.canvas.FontWeight
+import org.jetbrains.letsPlot.raster.mapping.svg.TextMeasurer
 import org.jetbrains.letsPlot.raster.shape.Text.BaselineShift
 import kotlin.reflect.KProperty
 
 internal class TSpan(
-    private val textMeasure: (String, Font) -> Float
+    private val textMeasurer: TextMeasurer
 ) : Figure() {
     init {
         isMouseTransparent = false // see Element::isMouseTransparent for details
@@ -52,8 +54,10 @@ internal class TSpan(
         )
     }
 
-    private val dimension by computedProp(TSpan::font, TSpan::fontScale) {
-
+    val dimension by computedProp(TSpan::text, TSpan::font, TSpan::fontScale) {
+        val width = textMeasurer.measureTextWidth(text, font)//textData?.width ?: 0.0
+        val height = fontSize * fontScale
+        DoubleVector(width, height)
     }
 
 //    private val textData by computedProp(
@@ -118,13 +122,14 @@ internal class TSpan(
         }
 
         styleData.strokePaint?.let {
+            applyPaint(it, canvas)
             canvas.context2d.setFont(font)
             canvas.context2d.strokeText(text, layoutX.toDouble(), layoutY.toDouble())
         }
     }
 
     fun measure(): Pair<Float, Float> {
-        val width = textMeasure(text, font)//textData?.width ?: 0.0
+        val width = textMeasurer.measureTextWidth(text, font)//textData?.width ?: 0.0
         val height = fontSize//textData?.height ?: 0.0
         return width to height
     }
@@ -148,7 +153,7 @@ internal class TSpan(
 
     override val localBounds: DoubleRectangle
         get() {
-            val (w, h) = measure()
+            val (w, h) = dimension
             val textData = return DoubleRectangle.XYWH(0, 0, w, h)//textData ?: return DoubleRectangle.XYWH(0, 0, 0, 0)
 
 //            val left = textData.left

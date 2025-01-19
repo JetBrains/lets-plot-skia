@@ -10,6 +10,6 @@ dependencies {
     implementation(project(":lets-plot-raster"))
 
     implementation("org.jetbrains.lets-plot:lets-plot-common:$letsPlotVersion")
-    implementation("org.jetbrains.lets-plot:platf-awt-jvm:$letsPlotVersion")
+    implementation("org.jetbrains.lets-plot:platf-awt:$letsPlotVersion")
     implementation("org.jetbrains.lets-plot:canvas:$letsPlotVersion")
 }
