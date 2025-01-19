@@ -11,6 +11,7 @@ val skikoVersion = extra["skiko.version"] as String
 val letsPlotVersion = extra["letsPlot.version"] as String
 
 kotlin {
+    jvm()
     //linuxX64 {
     //    binaries {
     //        executable {
@@ -20,17 +21,11 @@ kotlin {
     //    }
     //}
 
-    macosArm64 {
-        binaries {
-            executable()
-        }
-    }
-
-    macosX64() {
-        binaries {
-            executable()
-        }
-    }
+    //macosArm64 {
+    //    binaries {
+    //        executable()
+    //    }
+    //}
 
     sourceSets {
 
@@ -39,9 +34,9 @@ kotlin {
             dependencies {
                 implementation("com.squareup.okio:okio:3.9.0")
                 implementation("org.jetbrains.skiko:skiko:$skikoVersion")
-                //implementation("org.jetbrains.lets-plot:commons:$letsPlotVersion")
-                //implementation("org.jetbrains.lets-plot:datamodel:$letsPlotVersion")
-                //implementation(project(":platf-skia"))
+                implementation("org.jetbrains.lets-plot:commons:$letsPlotVersion")
+                implementation("org.jetbrains.lets-plot:datamodel:$letsPlotVersion")
+                implementation(project(":platf-skia"))
             }
         }
     }

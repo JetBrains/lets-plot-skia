@@ -48,9 +48,6 @@ project(":demo-plot-shared").projectDir = File("./demo/plot/shared")
 // Compose SVG
 include("demo-svg-compose-desktop")
 project(":demo-svg-compose-desktop").projectDir = File("./demo/svg/compose-desktop")
-include("demo-svg-swing")
-include("demo-svg-export-native")
-include("demo-svg-export-native")
 
 
 // Compose Plot
@@ -74,6 +71,10 @@ project(":demo-plot-swing").projectDir = File("./demo/plot/swing")
 // Plot SWING Canvas
 include("demo-plot-swing-canvas")
 project(":demo-plot-swing-canvas").projectDir = File("./demo/plot/swing-canvas")
+
+// Native export
+include("demo-svg-export-native")
+project(":demo-svg-export-native").projectDir = File("./demo/svg/export-native")
 
 /*
 // Android SVG
