@@ -31,7 +31,7 @@ internal class Text(
     var fill: Color? by visualProp(Color.BLACK)
     var fillOpacity: Float by visualProp(1f)
 
-    var fontFamily: List<String> by visualProp(emptyList())
+    var fontFamily: List<String> by visualProp(listOf())
     var fontStyle: FontStyle by visualProp(FontStyle.NORMAL)
     var fontWeight: FontWeight by visualProp(FontWeight.NORMAL)
     var fontSize by visualProp(DEFAULT_FONT_SIZE)
@@ -84,7 +84,7 @@ internal class Text(
             it.layoutX = x + cx + curX
             it.layoutY = y + cy
 
-            curX += it.measure().first
+            curX += it.bbox.width.toFloat()
         }
 
         needLayout = false
