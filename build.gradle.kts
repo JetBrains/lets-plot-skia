@@ -53,7 +53,6 @@ tasks.register<Zip>("packageSkikoJniLibs") {
 
 subprojects {
     repositories {
-        mavenLocal()
         mavenCentral()
         google()
         maven("https://maven.pkg.jetbrains.space/public/p/compose/dev")
@@ -70,6 +69,7 @@ subprojects {
         // SNAPSHOTS
         maven(url = "https://oss.sonatype.org/content/repositories/snapshots")
 
+        mavenLocal()
     }
 
     val jarJavaDocs by tasks.creating(Jar::class) {

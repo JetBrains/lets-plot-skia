@@ -48,6 +48,9 @@ project(":demo-plot-shared").projectDir = File("./demo/plot/shared")
 // Compose SVG
 include("demo-svg-compose-desktop")
 project(":demo-svg-compose-desktop").projectDir = File("./demo/svg/compose-desktop")
+include("demo-svg-swing")
+include("demo-svg-export-native")
+include("demo-svg-export-native")
 
 
 // Compose Plot
