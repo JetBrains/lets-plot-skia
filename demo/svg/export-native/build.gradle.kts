@@ -10,16 +10,23 @@ plugins {
 val skikoVersion = extra["skiko.version"] as String
 val letsPlotVersion = extra["letsPlot.version"] as String
 
+repositories {
+    google()
+    mavenCentral()
+    mavenLocal()
+}
+
 kotlin {
-    jvm()
-    //linuxX64 {
-    //    binaries {
-    //        executable {
-    //            // TODO: libskia.o is required on Linux, but not on MacOS.
-    //            //linkerOpts += listOf("-L/usr/lib/x86_64-linux-gnu/", "-lfontconfig", "-L"+"/home/ikupriyanov/Downloads/default/targets/linux_x64/included", "-lskia", "--allow-shlib-undefined")
-    //        }
-    //    }
-    //}
+    //jvm()
+    linuxX64 {
+        binaries {
+            executable {
+                // TODO: libskia.o is required on Linux, but not on MacOS.
+                //linkerOpts += listOf("-L/usr/lib/x86_64-linux-gnu/", "-lfontconfig", "-L"+"/home/ikupriyanov/Downloads/default/targets/linux_x64/included", "-lskia", "--allow-shlib-undefined")
+                linkerOpts += listOf("-L/usr/lib/x86_64-linux-gnu/", "-lfontconfig")
+            }
+        }
+    }
 
     //macosArm64 {
     //    binaries {
@@ -28,7 +35,6 @@ kotlin {
     //}
 
     sourceSets {
-
         all {
             languageSettings.optIn("kotlinx.cinterop.ExperimentalForeignApi")
             dependencies {
@@ -36,7 +42,12 @@ kotlin {
                 implementation("org.jetbrains.skiko:skiko:$skikoVersion")
                 implementation("org.jetbrains.lets-plot:commons:$letsPlotVersion")
                 implementation("org.jetbrains.lets-plot:datamodel:$letsPlotVersion")
-                implementation(project(":platf-skia"))
+                implementation("org.jetbrains.lets-plot:plot-base:$letsPlotVersion")
+                implementation("org.jetbrains.lets-plot:plot-builder:$letsPlotVersion")
+                implementation("org.jetbrains.lets-plot:plot-stem:$letsPlotVersion")
+                implementation("org.jetbrains.lets-plot:canvas:$letsPlotVersion")
+                implementation("io.github.microutils:kotlin-logging:2.0.6")
+                implementation(project(":lets-plot-raster"))
             }
         }
     }

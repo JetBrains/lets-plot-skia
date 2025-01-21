@@ -31,15 +31,18 @@ class SvgCanvasFigure(
 ) : CanvasFigure {
     internal lateinit var rootMapper: SvgSvgElementMapper // = SvgSvgElementMapper(svgSvgElement, canvasPeer)
     private val rootElement: Pane get() = rootMapper.target
+    private lateinit var canvasControl: CanvasControl
 
     val width = svgSvgElement.width().get()?.let { ceil(it).toInt() } ?: 0
     val height = svgSvgElement.height().get()?.let { ceil(it).toInt() } ?: 0
+
 
     override fun bounds(): ReadableProperty<Rectangle> {
         TODO("Not yet implemented")
     }
 
     override fun mapToCanvas(canvasControl: CanvasControl): Registration {
+        this.canvasControl = canvasControl
         val canvasPeer = SvgCanvasPeer(
             textMeasurer = TextMeasurer.create(canvasControl)
         )
@@ -97,17 +100,11 @@ class SvgCanvasFigure(
         canvas.context2d.restore()
     }
 
-//private fun highlightElement(element: Element?, canvas: Canvas) {
-//    element?.let {
-//        val paint = Paint().apply {
-//            setStroke(true)
-//            strokeWidth = 3f
-//            pathEffect = makeDash(floatArrayOf(5f, 5f), 0.0f)
-//            color = Color.RED
-//        }
-//        canvas.drawRect(it.screenBounds, paint)
-//        paint.close()
-//    }
-//}
+    fun makeSnapshot(): Canvas.Snapshot {
+        val canvas = canvasControl.createCanvas(Vector(width, height))
+        canvas.context2d.clearRect(DoubleRectangle(0.0, 0.0, width.toDouble(), height.toDouble()))
+        render(rootElement, canvas)
+        return canvas.immidiateSnapshot()
+    }
 
 }

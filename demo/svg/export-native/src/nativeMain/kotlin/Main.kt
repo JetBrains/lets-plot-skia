@@ -4,6 +4,10 @@
  */
 
 import okio.Path.Companion.toPath
+import org.jetbrains.letsPlot.commons.geometry.Vector
+import org.jetbrains.letsPlot.datamodel.svg.dom.*
+import org.jetbrains.letsPlot.datamodel.svg.dom.SvgConstants.SVG_TEXT_ANCHOR_MIDDLE
+import org.jetbrains.letsPlot.raster.view.SvgCanvasFigure
 import org.jetbrains.skia.*
 
 
@@ -34,37 +38,46 @@ fun main(args: Array<String>) {
         }
 
         // Stage 2
-        /*
-    val svgRoot = SvgSvgElement(
-        width = 200.0,
-        height = 400.0
-    ).apply {
-        children().addAll(listOf(
-            SvgRectElement(
-                x = 10.0,
-                y = 100.0,
-                width = 180.0,
-                height = 180.0
-            ).apply {
-                fill().set(SvgColors.ORANGE)
-            },
-            SvgEllipseElement(
-                cx = 100.0,
-                cy = 190.0,
-                rx = 50.0,
-                ry = 50.0
-            ).apply {
-                fill().set(SvgColors.DARK_RED)
-            },
-            SvgTextElement(100.0, 195.0, "Hello, World").apply {
-                textAnchor().set(SVG_TEXT_ANCHOR_MIDDLE)
-                fillColor().set(Color.WHITE)
-            },
-        )
-        )
-    }
-    */
+        val svgRoot = SvgSvgElement(
+            width = 200.0,
+            height = 400.0
+        ).apply {
+            children().addAll(
+                listOf(
+                    SvgRectElement(
+                        x = 10.0,
+                        y = 100.0,
+                        width = 180.0,
+                        height = 180.0
+                    ).apply {
+                        fill().set(SvgColors.ORANGE)
+                    },
+                    SvgCircleElement(
+                        cx = 100.0,
+                        cy = 190.0,
+                        r = 50.0
+                    ).apply {
+                        fill().set(SvgColors.DARK_RED)
+                    },
+                    SvgTextElement(100.0, 195.0, "Hello, World").apply {
+                        textAnchor().set(SVG_TEXT_ANCHOR_MIDDLE)
+                        fillColor().set(org.jetbrains.letsPlot.commons.values.Color.WHITE)
+                    },
+                )
+            )
+        }
 
+        val ccc = SkiaCanvasControl(Vector(200, 400))
+        val svgFigure = SvgCanvasFigure(svgRoot)
+        svgFigure.mapToCanvas(ccc)
+        val svgSnapshot = (svgFigure.makeSnapshot() as SkSnapshot).bitmap
+
+        val svgImage = Image.makeFromBitmap(svgSnapshot)
+
+        okio.FileSystem.SYSTEM.write("svg.png".toPath()) {
+            write(svgImage.encodeToData(EncodedImageFormat.PNG)!!.bytes)
+        }
+        //snapshot.
         // Stage 3
         /*
     SvgSkikoView.render(svgRoot, canvas, Matrix33.IDENTITY)

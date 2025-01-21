@@ -43,15 +43,7 @@ allprojects {
         sourceCompatibility = "11"
         targetCompatibility = "11"
     }
-}
 
-tasks.register<Zip>("packageSkikoJniLibs") {
-    archiveFileName = "skiko-jni-libs.zip"
-    from(layout.projectDirectory.dir("skiko-jni-libs"))
-    destinationDirectory = layout.projectDirectory
-}
-
-subprojects {
     repositories {
         mavenCentral()
         google()
@@ -71,7 +63,15 @@ subprojects {
 
         mavenLocal()
     }
+}
 
+tasks.register<Zip>("packageSkikoJniLibs") {
+    archiveFileName = "skiko-jni-libs.zip"
+    from(layout.projectDirectory.dir("skiko-jni-libs"))
+    destinationDirectory = layout.projectDirectory
+}
+
+subprojects {
     val jarJavaDocs by tasks.creating(Jar::class) {
         archiveClassifier.set("javadoc")
         group = "lets plot"

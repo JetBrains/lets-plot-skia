@@ -20,6 +20,7 @@ kotlin {
             kotlinOptions.jvmTarget = "11"
         }
     }
+    linuxX64()
 
     //androidTarget {
     //    publishLibraryVariants("release")
@@ -37,12 +38,12 @@ kotlin {
             }
         }
 
-        named("jvmMain") {
-            dependencies {
-//                compileOnly("org.jetbrains.skiko:skiko-awt:$skikoVersion")
-                compileOnly("io.github.microutils:kotlin-logging-jvm:$kotlinLoggingVersion")
-            }
-        }
+//        named("jvmMain") {
+//            dependencies {
+////                compileOnly("org.jetbrains.skiko:skiko-awt:$skikoVersion")
+//                compileOnly("io.github.microutils:kotlin-logging-jvm:$kotlinLoggingVersion")
+//            }
+//        }
 
         named("jvmTest") {
             dependencies {
@@ -54,6 +55,18 @@ kotlin {
                 implementation("org.jetbrains.lets-plot:platf-awt:$letsPlotVersion")
                 implementation("io.github.microutils:kotlin-logging:$kotlinLoggingVersion")
                 implementation("io.github.microutils:kotlin-logging-jvm:$kotlinLoggingVersion")
+            }
+        }
+
+        linuxX64Main() {
+            dependencies {
+                implementation("org.jetbrains.lets-plot:canvas:$letsPlotVersion")
+                implementation("org.jetbrains.lets-plot:commons:$letsPlotVersion")
+                implementation("org.jetbrains.lets-plot:datamodel:$letsPlotVersion")
+                implementation("org.jetbrains.lets-plot:plot-base:$letsPlotVersion")
+                implementation("org.jetbrains.lets-plot:plot-stem:$letsPlotVersion")
+                implementation("org.jetbrains.lets-plot:plot-builder:$letsPlotVersion")
+                implementation("io.github.microutils:kotlin-logging:$kotlinLoggingVersion")
             }
         }
 
