@@ -1,4 +1,4 @@
-## [2.2.0] - 2025-mm-dd
+## [2.2.1] - 2025-mm-dd
 
 ### Compatibility
 
@@ -11,6 +11,5 @@
 ### Added
 
 ### Changed
-- Reduced flickering when resizing the plot window.
 
 ### Fixed

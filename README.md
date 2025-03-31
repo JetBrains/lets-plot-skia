@@ -103,4 +103,4 @@ Please make sure you read it.
 
 Code and documentation released under
 the [MIT license](https://github.com/JetBrains/lets-plot-skia/blob/master/LICENSE).
-Copyright © 2023-2024, JetBrains s.r.o.
+Copyright © 2023-2025, JetBrains s.r.o.
