@@ -18,11 +18,10 @@ open class PlotPanelSkiaSwing(
 ) : PlotPanel(
     plotComponentProvider = PlotComponentProviderSkiaSwing(
         processedSpec = processedSpec,
-        preserveAspectRatio = preserveAspectRatio,
         computationMessagesHandler = computationMessagesHandler
     ),
     preferredSizeFromPlot = preferredSizeFromPlot,
+    sizingPolicy = SizingPolicy.fitContainerSize(preserveAspectRatio),
     repaintDelay = repaintDelay,
     applicationContext = AWT_APP_CONTEXT,
-    sizingPolicy = SizingPolicy.fitContainerSize(preserveAspectRatio)
 )

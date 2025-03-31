@@ -16,17 +16,14 @@ import javax.swing.JComponent
 
 internal class PlotComponentProviderSkiaSwing(
     private val processedSpec: MutableMap<String, Any>,
-    private val preserveAspectRatio: Boolean,
     private val computationMessagesHandler: (List<String>) -> Unit
 ) : PlotComponentProvider {
 
-    override fun createComponent(containerSize: Dimension?, sizingPolicy: SizingPolicy, specOverrideList: List<Map<String, Any>>): JComponent {
-        val plotSize = containerSize?.let {
-            SizingPolicy.fitContainerSize(preserveAspectRatio)
-            val preferredSize = containerSize
-            DoubleVector(preferredSize.width.toDouble(), preferredSize.height.toDouble())
-        }
-
+    override fun createComponent(
+        containerSize: Dimension?,
+        sizingPolicy: SizingPolicy,
+        specOverrideList: List<Map<String, Any>>
+    ): JComponent {
         return MonolithicSkiaAwt.buildPlotFromProcessedSpecs(
             plotSpec = processedSpec,
             containerSize = containerSize?.let { DoubleVector(it.width.toDouble(), it.height.toDouble()) },
