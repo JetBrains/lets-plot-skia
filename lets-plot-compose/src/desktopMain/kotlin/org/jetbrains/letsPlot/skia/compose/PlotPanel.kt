@@ -99,7 +99,7 @@ actual fun PlotPanel(
                         )
                     }
 
-                    //figureModel!!.toolEventDispatcher = viewModel.toolEventDispatcher
+                    plotFigureModel!!.toolEventDispatcher = viewModel.toolEventDispatcher
 
                     val plotWidth = viewModel.svg.width().get()!!
                     val plotHeight = viewModel.svg.height().get()!!
