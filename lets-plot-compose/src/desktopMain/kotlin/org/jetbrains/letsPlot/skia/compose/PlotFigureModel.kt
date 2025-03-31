@@ -7,10 +7,11 @@ package org.jetbrains.letsPlot.skia.compose
 
 import org.jetbrains.letsPlot.core.interact.event.ToolEventDispatcher
 import org.jetbrains.letsPlot.core.plot.builder.interact.FigureImplicitInteractionSpecs
+import org.jetbrains.letsPlot.core.plot.builder.interact.tools.FigureModel
 
-class FigureModel(
+class PlotFigureModel(
     val onUpdateView: (Map<String, Any>?) -> Unit
-) {
+) : FigureModel {
     private var toolEventCallback: ((Map<String, Any>) -> Unit)? = null
 
     var toolEventDispatcher: ToolEventDispatcher? = null
@@ -32,7 +33,7 @@ class FigureModel(
         toolEventDispatcher?.initToolEventCallback { event -> toolEventCallback?.invoke(event) }
     }
 
-    fun onToolEvent(callback: (Map<String, Any>) -> Unit) {
+    override fun onToolEvent(callback: (Map<String, Any>) -> Unit) {
         toolEventCallback = callback
 
         // Make snsure that 'implicit' interaction activated.
@@ -43,15 +44,15 @@ class FigureModel(
         )
 
     }
-    fun activateInteractions(origin: String, interactionSpecList: List<Map<String, Any>>) {
+    override fun activateInteractions(origin: String, interactionSpecList: List<Map<String, Any>>) {
         toolEventDispatcher?.activateInteractions(origin, interactionSpecList)
     }
 
-    fun deactivateInteractions(origin: String){
+    override fun deactivateInteractions(origin: String){
         toolEventDispatcher?.deactivateInteractions(origin)
     }
 
-    fun updateView(specOverride: Map<String, Any>? = null) {
+    override fun updateView(specOverride: Map<String, Any>?) {
         onUpdateView(specOverride)
     }
 }

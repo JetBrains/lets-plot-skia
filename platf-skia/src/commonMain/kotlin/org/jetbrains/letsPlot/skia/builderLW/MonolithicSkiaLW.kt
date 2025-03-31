@@ -7,8 +7,8 @@ package org.jetbrains.letsPlot.skia.builderLW
 
 import org.jetbrains.letsPlot.commons.geometry.DoubleVector
 import org.jetbrains.letsPlot.core.interact.event.UnsupportedToolEventDispatcher
-import org.jetbrains.letsPlot.core.plot.builder.FigureBuildInfo
 import org.jetbrains.letsPlot.core.util.MonolithicCommon
+import org.jetbrains.letsPlot.core.util.sizing.SizingPolicy
 import org.jetbrains.letsPlot.datamodel.svg.dom.SvgSvgElement
 import org.jetbrains.letsPlot.datamodel.svg.dom.SvgTextElement
 
@@ -18,22 +18,19 @@ import org.jetbrains.letsPlot.datamodel.svg.dom.SvgTextElement
 object MonolithicSkiaLW {
     fun buildPlotFromProcessedSpecs(
         plotSpec: MutableMap<String, Any>,
-        plotSize: DoubleVector?,
+        containerSize: DoubleVector?,
+        sizingPolicy: SizingPolicy,
         computationMessagesHandler: (List<String>) -> Unit
     ): ViewModel {
-        val buildResult = MonolithicCommon.buildPlotsFromProcessedSpecs(plotSpec, plotSize)
+        val buildResult = MonolithicCommon.buildPlotsFromProcessedSpecs(plotSpec, containerSize, sizingPolicy)
         if (buildResult is MonolithicCommon.PlotsBuildResult.Error) {
             return SimpleModel(createErrorSvgText(buildResult.error), UnsupportedToolEventDispatcher())
         }
 
         val success = buildResult as MonolithicCommon.PlotsBuildResult.Success
-        val computationMessages = success.buildInfos.flatMap(FigureBuildInfo::computationMessages)
-        computationMessagesHandler(computationMessages)
+        computationMessagesHandler(success.buildInfo.computationMessages)
 
-        require(success.buildInfos.size == 1) { "GGBunch is not supported." }
-
-        val buildInfo = success.buildInfos.single()
-        return FigureToViewModel.eval(buildInfo)
+        return FigureToViewModel.eval(success.buildInfo)
     }
 
     private fun createErrorSvgText(s: String): SvgSvgElement {

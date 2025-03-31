@@ -8,6 +8,7 @@ package org.jetbrains.letsPlot.skia.awt.builderHW
 import org.jetbrains.letsPlot.commons.geometry.DoubleVector
 import org.jetbrains.letsPlot.core.spec.FailureHandler
 import org.jetbrains.letsPlot.core.util.MonolithicCommon
+import org.jetbrains.letsPlot.core.util.sizing.SizingPolicy
 import javax.swing.JComponent
 import javax.swing.JTextArea
 
@@ -18,13 +19,14 @@ object MonolithicSkiaAwt {
 
     fun buildPlotFromRawSpecs(
         plotSpec: MutableMap<String, Any>,
-        plotSize: DoubleVector?,
+        containerSize: DoubleVector?,
+        sizingPolicy: SizingPolicy,
         computationMessagesHandler: ((List<String>) -> Unit)
     ): JComponent {
         return try {
             @Suppress("NAME_SHADOWING")
             val plotSpec = MonolithicCommon.processRawSpecs(plotSpec, frontendOnly = false)
-            buildPlotFromProcessedSpecs(plotSpec, plotSize, computationMessagesHandler)
+            buildPlotFromProcessedSpecs(plotSpec, containerSize, sizingPolicy, computationMessagesHandler)
         } catch (e: RuntimeException) {
             handleException(e)
         }
@@ -32,14 +34,14 @@ object MonolithicSkiaAwt {
 
     fun buildPlotFromProcessedSpecs(
         plotSpec: MutableMap<String, Any>,
-        plotSize: DoubleVector?,
+        containerSize: DoubleVector?,
+        sizingPolicy: SizingPolicy,
         computationMessagesHandler: (List<String>) -> Unit
     ): JComponent {
         val buildResult = MonolithicCommon.buildPlotsFromProcessedSpecs(
             plotSpec,
-            plotSize,
-            plotMaxWidth = null,
-            plotPreferredWidth = null
+            containerSize,
+            sizingPolicy,
         )
 
         if (buildResult.isError) {
@@ -49,15 +51,9 @@ object MonolithicSkiaAwt {
         }
 
         val success = buildResult as MonolithicCommon.PlotsBuildResult.Success
-        val computationMessages = success.buildInfos.flatMap { it.computationMessages }
-        computationMessagesHandler(computationMessages)
+        computationMessagesHandler(success.buildInfo.computationMessages)
 
-        return if (success.buildInfos.size == 1) {
-            val buildInfo = success.buildInfos.single()
-            FigureToSkiaAwt(buildInfo).eval()
-        } else {
-            throw IllegalArgumentException("GGBunch is not supported.")
-        }
+        return FigureToSkiaAwt(success.buildInfo).eval()
     }
 
     private fun handleException(e: RuntimeException): JComponent {

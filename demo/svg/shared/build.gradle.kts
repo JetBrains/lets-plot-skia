@@ -16,7 +16,5 @@ dependencies {
     compileOnly("org.jetbrains.lets-plot:commons:$letsPlotVersion")
     compileOnly("org.jetbrains.lets-plot:datamodel:$letsPlotVersion")
 
-    compileOnly("org.jetbrains.lets-plot:deprecated-in-v4:$letsPlotVersion")
-
     testImplementation(kotlin("test"))
 }

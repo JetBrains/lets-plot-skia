@@ -13,8 +13,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.ImageBitmap
 import androidx.compose.ui.graphics.toComposeImageBitmap
 import androidx.compose.ui.unit.dp
-import org.jetbrains.letsPlot.core.plot.builder.interact.tools.DefaultToolbarController
-import org.jetbrains.letsPlot.core.plot.builder.interact.tools.FigureModelAdapter
+import org.jetbrains.letsPlot.core.plot.builder.interact.tools.DefaultFigureToolsController
 import org.jetbrains.letsPlot.core.plot.builder.interact.tools.ToggleTool
 import org.jetbrains.letsPlot.core.plot.builder.interact.tools.ToggleToolView
 import org.jetbrains.letsPlot.core.plot.builder.interact.tools.ToolSpecs.BBOX_ZOOM_TOOL_SPEC
@@ -28,7 +27,7 @@ import javax.imageio.ImageIO
 
 @Suppress("FunctionName")
 @Composable
-fun PlotToolbar(figureModel: FigureModel) {
+fun PlotToolbar(figureModel: PlotFigureModel) {
     var panToolState by remember { mutableStateOf(false) }
     var bboxZoomToolState by remember { mutableStateOf(false) }
     var cboxZoomToolState by remember { mutableStateOf(false) }
@@ -40,7 +39,7 @@ fun PlotToolbar(figureModel: FigureModel) {
     val bboxZoomTool = remember { ToggleTool(BBOX_ZOOM_TOOL_SPEC) }
     val cboxZoomTool = remember { ToggleTool(CBOX_ZOOM_TOOL_SPEC) }
 
-    val controller = DefaultToolbarController(asFigureAdapter(figureModel))
+    val controller = DefaultFigureToolsController(figureModel) { println(it) }
     figureModel.onToolEvent { event ->
         controller.handleToolFeedback(event)
     }
@@ -105,35 +104,6 @@ fun PlotToolbar(figureModel: FigureModel) {
         )
     }
 }
-
-// Duplicate of demo.plot.batik.tools.SandboxToolbar.Companion#asFigureAdapter()
-private fun asFigureAdapter(figureModel: FigureModel): FigureModelAdapter {
-    return object : FigureModelAdapter {
-        override fun activateTool(tool: ToggleTool) {
-            if (!tool.active) {
-                figureModel.activateInteractions(
-                    origin = tool.name,
-                    interactionSpecList = tool.interactionSpecList
-                )
-            }
-        }
-
-        override fun deactivateTool(tool: ToggleTool) {
-            if (tool.active) {
-                figureModel.deactivateInteractions(tool.name)
-            }
-        }
-
-        override fun updateView(specOverride: Map<String, Any>?) {
-            figureModel.updateView(specOverride)
-        }
-
-        override fun showError(msg: String) {
-            println("Error: $msg")
-        }
-    }
-}
-
 
 
 private fun base64ToImageBitmap(base64: String): ImageBitmap {

@@ -6,6 +6,7 @@
 package org.jetbrains.letsPlot.skia.swing
 
 import org.jetbrains.letsPlot.awt.plot.component.PlotPanel
+import org.jetbrains.letsPlot.core.util.sizing.SizingPolicy
 import org.jetbrains.letsPlot.skia.swing.AwtAppEnv.AWT_APP_CONTEXT
 
 open class PlotPanelSkiaSwing(
@@ -22,5 +23,6 @@ open class PlotPanelSkiaSwing(
     ),
     preferredSizeFromPlot = preferredSizeFromPlot,
     repaintDelay = repaintDelay,
-    applicationContext = AWT_APP_CONTEXT
+    applicationContext = AWT_APP_CONTEXT,
+    sizingPolicy = SizingPolicy.fitContainerSize(preserveAspectRatio)
 )

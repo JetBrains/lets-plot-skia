@@ -8,7 +8,7 @@ package org.jetbrains.letsPlot.skia.swing
 import org.jetbrains.letsPlot.awt.plot.component.PlotComponentProvider
 import org.jetbrains.letsPlot.commons.geometry.DoubleVector
 import org.jetbrains.letsPlot.commons.unsupported.UNSUPPORTED
-import org.jetbrains.letsPlot.core.util.PlotSizeUtil
+import org.jetbrains.letsPlot.core.util.sizing.SizingPolicy
 import org.jetbrains.letsPlot.datamodel.svg.dom.SvgSvgElement
 import org.jetbrains.letsPlot.skia.awt.builderHW.MonolithicSkiaAwt
 import java.awt.Dimension
@@ -20,19 +20,17 @@ internal class PlotComponentProviderSkiaSwing(
     private val computationMessagesHandler: (List<String>) -> Unit
 ) : PlotComponentProvider {
 
-    override fun getPreferredSize(containerSize: Dimension): Dimension {
-        return getPreferredSize(processedSpec, preserveAspectRatio, containerSize)
-    }
-
-    override fun createComponent(containerSize: Dimension?, specOverrideList: List<Map<String, Any>>): JComponent {
+    override fun createComponent(containerSize: Dimension?, sizingPolicy: SizingPolicy, specOverrideList: List<Map<String, Any>>): JComponent {
         val plotSize = containerSize?.let {
-            val preferredSize = getPreferredSize(containerSize)
+            SizingPolicy.fitContainerSize(preserveAspectRatio)
+            val preferredSize = containerSize
             DoubleVector(preferredSize.width.toDouble(), preferredSize.height.toDouble())
         }
 
         return MonolithicSkiaAwt.buildPlotFromProcessedSpecs(
-            plotSize = plotSize,
             plotSpec = processedSpec,
+            containerSize = containerSize?.let { DoubleVector(it.width.toDouble(), it.height.toDouble()) },
+            sizingPolicy = sizingPolicy,
             computationMessagesHandler = computationMessagesHandler
         )
     }
@@ -43,20 +41,6 @@ internal class PlotComponentProviderSkiaSwing(
         }
         private val DUMMY_EXECUTOR: (() -> Unit) -> Unit = {
             UNSUPPORTED("This 'executor' should not be invoked.")
-        }
-
-        private fun getPreferredSize(
-            processedSpec: MutableMap<String, Any>,
-            preserveAspectRatio: Boolean,
-            containerSize: Dimension,
-        ): Dimension {
-            return PlotSizeUtil.preferredFigureSize(
-                figureSpec = processedSpec,
-                preserveAspectRatio = preserveAspectRatio,
-                containerSize = containerSize.let { DoubleVector(it.width.toDouble(), it.height.toDouble()) }
-            ).let {
-                Dimension(it.x.toInt(), it.y.toInt())
-            }
         }
     }
 }

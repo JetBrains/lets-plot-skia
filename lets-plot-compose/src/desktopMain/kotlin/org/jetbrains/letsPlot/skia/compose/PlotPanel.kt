@@ -21,7 +21,7 @@ import org.jetbrains.letsPlot.core.plot.builder.interact.tools.FigureModelHelper
 import org.jetbrains.letsPlot.core.spec.Option.Meta.Kind.GG_TOOLBAR
 import org.jetbrains.letsPlot.core.spec.front.SpecOverrideUtil
 import org.jetbrains.letsPlot.core.util.MonolithicCommon.processRawSpecs
-import org.jetbrains.letsPlot.core.util.PlotSizeUtil
+import org.jetbrains.letsPlot.core.util.sizing.SizingPolicy
 import org.jetbrains.letsPlot.intern.toSpec
 import org.jetbrains.letsPlot.skia.builderLW.MonolithicSkiaLW
 import org.jetbrains.letsPlot.skia.compose.desktop.PlotContainer
@@ -47,7 +47,7 @@ actual fun PlotPanel(
     var dispatchComputationMessages by remember { mutableStateOf(true) }
     var specOverrideList by remember { mutableStateOf(emptyList<Map<String, Any>>()) }
     val plotContainer by remember { mutableStateOf(PlotContainer()) }
-    var figureModel by remember { mutableStateOf<FigureModel?>(null) }
+    var plotFigureModel by remember { mutableStateOf<PlotFigureModel?>(null) }
 
     DisposableEffect(plotContainer) {
         onDispose {
@@ -56,8 +56,8 @@ actual fun PlotPanel(
     }
 
     Column {
-        if (figureModel != null && GG_TOOLBAR in processedPlotSpec) {
-            PlotToolbar(figureModel!!)
+        if (plotFigureModel != null && GG_TOOLBAR in processedPlotSpec) {
+            PlotToolbar(plotFigureModel!!)
         }
 
         Box(
@@ -79,13 +79,8 @@ actual fun PlotPanel(
 
                     // Calculate size here, not outside the SwingPanel.update()
                     // Otherwise on resizing the plot size will lag behind the panel size, causing rendering issues.
-                    val plotSize = PlotSizeUtil.preferredFigureSize(plotSpec, preserveAspectRatio, panelSize)
-                    val position = DoubleVector(
-                        maxOf(0.0, (panelSize.x - plotSize.x) / 2.0),
-                        maxOf(0.0, (panelSize.y - plotSize.y) / 2.0)
-                    )
 
-                    val viewModel = MonolithicSkiaLW.buildPlotFromProcessedSpecs(plotSpec, plotSize) { messages ->
+                    val viewModel = MonolithicSkiaLW.buildPlotFromProcessedSpecs(plotSpec, panelSize, SizingPolicy.fitContainerSize(preserveAspectRatio)) { messages ->
                         if (dispatchComputationMessages) {
                             // do once
                             dispatchComputationMessages = false
@@ -93,8 +88,8 @@ actual fun PlotPanel(
                         }
                     }
 
-                    if (figureModel == null) {
-                        figureModel = FigureModel(
+                    if (plotFigureModel == null) {
+                        plotFigureModel = PlotFigureModel(
                             onUpdateView = { specOverride ->
                                 specOverrideList = FigureModelHelper.updateSpecOverrideList(
                                     specOverrideList = specOverrideList,
@@ -104,9 +99,17 @@ actual fun PlotPanel(
                         )
                     }
 
-                    figureModel!!.toolEventDispatcher = viewModel.toolEventDispatcher
+                    //figureModel!!.toolEventDispatcher = viewModel.toolEventDispatcher
 
-                    plotViewContainer.updatePlotView(viewModel, plotSize, position)
+                    val plotWidth = viewModel.svg.width().get()!!
+                    val plotHeight = viewModel.svg.height().get()!!
+
+                    val position = DoubleVector(
+                        maxOf(0.0, (panelSize.x - plotWidth) / 2.0),
+                        maxOf(0.0, (panelSize.y - plotHeight) / 2.0)
+                    )
+
+                    plotViewContainer.updatePlotView(viewModel, DoubleVector(plotWidth, plotHeight), position)
                 }
             )
         }
