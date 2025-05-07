@@ -12,7 +12,7 @@ import android.widget.LinearLayout
 import demo.svgModel.ClipPathSvgModel
 import demo.svgModel.ReferenceSvgModel
 import demo.svgModel.SvgImageElementModel
-import org.jetbrains.letsPlot.skia.android.view.SvgPanel
+import org.jetbrains.letsPlot.skia.android.view.SvgCanvasPanel
 
 class MainActivity : Activity() {
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -25,8 +25,8 @@ class MainActivity : Activity() {
         setContentView(layout, layout.layoutParams)
 
         // Svg pictures A, B, C
-        layout.addView(SvgPanel(this, ReferenceSvgModel.createModel()))
-        layout.addView(SvgPanel(this, SvgImageElementModel.createModel()))
-        layout.addView(SvgPanel(this, ClipPathSvgModel.createModel()))
+        layout.addView(SvgCanvasPanel(this, ReferenceSvgModel.createModel()))
+        layout.addView(SvgCanvasPanel(this, SvgImageElementModel.createModel()))
+        layout.addView(SvgCanvasPanel(this, ClipPathSvgModel.createModel()))
     }
 }

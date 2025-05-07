@@ -15,7 +15,7 @@ import org.jetbrains.letsPlot.commons.geometry.Vector
 
 class PlotGestureDetector(
     private val context: Context,
-    private val svgPanel: SvgPanel
+    private val svgPanel: SvgCanvasPanel
 ) {
     private val gestureDetector = GestureDetector(context, object : SimpleOnGestureListener() {
         override fun onDown(e: MotionEvent): Boolean {

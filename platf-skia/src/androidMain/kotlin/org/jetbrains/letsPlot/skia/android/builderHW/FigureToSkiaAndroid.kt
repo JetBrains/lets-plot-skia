@@ -19,9 +19,9 @@ import org.jetbrains.letsPlot.core.plot.builder.FigureBuildInfo
 import org.jetbrains.letsPlot.core.plot.builder.PlotContainer
 import org.jetbrains.letsPlot.core.plot.builder.PlotSvgRoot
 import org.jetbrains.letsPlot.core.plot.builder.subPlots.CompositeFigureSvgRoot
+import org.jetbrains.letsPlot.raster.view.CanvasEventDispatcher
 import org.jetbrains.letsPlot.skia.android.builderHW.SizeConverter.boundsPxToDp
-import org.jetbrains.letsPlot.skia.android.view.SvgPanel
-import org.jetbrains.letsPlot.skia.view.SkikoViewEventDispatcher
+import org.jetbrains.letsPlot.skia.android.view.SvgCanvasPanel
 
 internal class FigureToSkiaAndroid(
     private val buildInfo: FigureBuildInfo,
@@ -49,9 +49,9 @@ internal class FigureToSkiaAndroid(
             error("LiveMap is not supported")
         } else {
             val plotContainer = PlotContainer(svgRoot)
-            return SvgPanel(context = ctx).apply {
+            return SvgCanvasPanel(context = ctx).apply {
                 svg = plotContainer.svg
-                eventDispatcher = object : SkikoViewEventDispatcher {
+                eventDispatcher = object : CanvasEventDispatcher {
                     override fun dispatchMouseEvent(kind: MouseEventSpec, e: MouseEvent) {
                         plotContainer.mouseEventPeer.dispatch(kind, e)
                     }
@@ -86,7 +86,7 @@ internal class FigureToSkiaAndroid(
             }
         }
 
-        val rootView = SvgPanel(context = ctx).apply {
+        val rootView = SvgCanvasPanel(context = ctx).apply {
             svg = svgRoot.svg
             eventDispatcher = null
         }

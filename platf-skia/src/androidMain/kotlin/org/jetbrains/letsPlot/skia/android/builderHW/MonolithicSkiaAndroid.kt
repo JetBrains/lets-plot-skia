@@ -11,6 +11,7 @@ import android.widget.TextView
 import org.jetbrains.letsPlot.commons.geometry.DoubleVector
 import org.jetbrains.letsPlot.core.spec.FailureHandler
 import org.jetbrains.letsPlot.core.util.MonolithicCommon
+import org.jetbrains.letsPlot.core.util.sizing.SizingPolicy
 
 /**
  * "heavyweight" - one android View is built per plot spec.
@@ -18,7 +19,6 @@ import org.jetbrains.letsPlot.core.util.MonolithicCommon
  * Note: "temporary" not used.
  */
 object MonolithicSkiaAndroid {
-
     fun buildPlotFromRawSpecs(
         ctx: Context,
         plotSpec: MutableMap<String, Any>,
@@ -36,36 +36,44 @@ object MonolithicSkiaAndroid {
     fun buildPlotFromProcessedSpecs(
         ctx: Context,
         plotSpec: MutableMap<String, Any>,
-        plotSize: DoubleVector?,
+        sizingPolicy: SizingPolicy,
         computationMessagesHandler: ((List<String>) -> Unit)
     ): View {
         return try {
             val buildResult = MonolithicCommon.buildPlotsFromProcessedSpecs(
-                plotSpec,
-                plotSize,
-                plotMaxWidth = null,
-                plotPreferredWidth = null
+                plotSpec = plotSpec,
+                containerSize = null,
+                sizingPolicy = sizingPolicy,
             )
+
             if (buildResult.isError) {
                 val errorMessage = (buildResult as MonolithicCommon.PlotsBuildResult.Error).error
                 return ctx.createErrorLabel(errorMessage)
             }
 
             val success = buildResult as MonolithicCommon.PlotsBuildResult.Success
-            val computationMessages = success.buildInfos.flatMap { it.computationMessages }
+            val computationMessages = success.buildInfo.computationMessages
             computationMessagesHandler(computationMessages)
-            return if (success.buildInfos.size == 1) {
-                // a single plot
-                val buildInfo = success.buildInfos[0]
-                FigureToSkiaAndroid(buildInfo).eval(ctx)
-            } else {
-                // ggbunch
-                error("GGBunch is not supported.")
-            }
 
+            val buildInfo = success.buildInfo
+            return FigureToSkiaAndroid(buildInfo).eval(ctx)
         } catch (e: RuntimeException) {
             ctx.handleException(e)
         }
+    }
+
+    fun buildPlotFromProcessedSpecs(
+        ctx: Context,
+        plotSpec: MutableMap<String, Any>,
+        plotSize: DoubleVector?,
+        computationMessagesHandler: ((List<String>) -> Unit)
+    ): View {
+        val sizingPolicy = if (plotSize == null) {
+            SizingPolicy.fitContainerSize(preserveAspectRatio = false)
+        } else {
+            SizingPolicy.fixed(plotSize.x, plotSize.y)
+        }
+        return buildPlotFromProcessedSpecs(ctx, plotSpec, sizingPolicy, computationMessagesHandler)
     }
 
     private fun Context.handleException(e: RuntimeException): View {

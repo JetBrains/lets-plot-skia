@@ -19,6 +19,7 @@ import org.jetbrains.letsPlot.datamodel.svg.dom.SvgSvgElement
 import org.jetbrains.letsPlot.datamodel.svg.event.SvgAttributeEvent
 import org.jetbrains.letsPlot.skia.view.SkikoViewEventDispatcher
 
+/*
 
 @SuppressLint("ViewConstructor")
 class SvgPanel(
@@ -123,3 +124,4 @@ class SvgPanel(
         return true
     }
 }
+*/

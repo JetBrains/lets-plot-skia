@@ -5,7 +5,7 @@
 
 plugins {
     kotlin("multiplatform")
-    //id("com.android.library")
+    id("com.android.library")
     `maven-publish`
     signing
 }
@@ -36,9 +36,9 @@ kotlin {
         }
     }
 
-    //androidTarget {
-    //    publishLibraryVariants("release")
-    //}
+    androidTarget {
+        publishLibraryVariants("release")
+    }
 
     sourceSets {
         commonMain {
@@ -72,46 +72,47 @@ kotlin {
             }
         }
 
-        //named("androidMain") {
-        //    dependencies {
-        //        compileOnly("org.jetbrains.skiko:skiko-android:$skikoVersion")
-        //        compileOnly("org.jetbrains.lets-plot:commons:$letsPlotVersion")
-        //        compileOnly("org.jetbrains.lets-plot:datamodel:$letsPlotVersion")
-        //        compileOnly("org.jetbrains.lets-plot:plot-base:$letsPlotVersion")
-        //        compileOnly("org.jetbrains.lets-plot:plot-builder:$letsPlotVersion")
-        //        compileOnly("org.jetbrains.lets-plot:plot-stem:$letsPlotVersion")
-        //    }
-        //}
+        named("androidMain") {
+            dependencies {
+                compileOnly("org.jetbrains.lets-plot:commons:$letsPlotVersion")
+                compileOnly("org.jetbrains.lets-plot:datamodel:$letsPlotVersion")
+                compileOnly("org.jetbrains.lets-plot:canvas:$letsPlotVersion")
+                compileOnly("org.jetbrains.lets-plot:plot-base:$letsPlotVersion")
+                compileOnly("org.jetbrains.lets-plot:plot-builder:$letsPlotVersion")
+                compileOnly("org.jetbrains.lets-plot:plot-stem:$letsPlotVersion")
+                compileOnly("org.jetbrains.lets-plot:plot-raster:$letsPlotVersion")
+            }
+        }
     }
 }
 
-//android {
-//    namespace = "org.jetbrains.letsPlot.skia.android"
-//
-//    compileSdk = (findProperty("android.compileSdk") as String).toInt()
-//
-//    sourceSets["main"].manifest.srcFile("src/androidMain/AndroidManifest.xml")
-//
-//    defaultConfig {
-//        minSdk = (findProperty("android.minSdk") as String).toInt()
-//    }
-//
-//    buildTypes {
-//        getByName("release") {
-//            isMinifyEnabled = false // true - error: when compiling demo cant resolve classes
-////            proguardFiles(getDefaultProguardFile("proguard-android.txt"), "proguard-rules.pro")
-//        }
-//    }
-//
-//    compileOptions {
-//        sourceCompatibility = JavaVersion.VERSION_11
-//        targetCompatibility = JavaVersion.VERSION_11
-//    }
-//
-//    kotlin {
-//        jvmToolchain(11)
-//    }
-//}
+android {
+    namespace = "org.jetbrains.letsPlot.skia.android"
+
+    compileSdk = (findProperty("android.compileSdk") as String).toInt()
+
+    sourceSets["main"].manifest.srcFile("src/androidMain/AndroidManifest.xml")
+
+    defaultConfig {
+        minSdk = (findProperty("android.minSdk") as String).toInt()
+    }
+
+    buildTypes {
+        getByName("release") {
+            isMinifyEnabled = false // true - error: when compiling demo cant resolve classes
+//            proguardFiles(getDefaultProguardFile("proguard-android.txt"), "proguard-rules.pro")
+        }
+    }
+
+    compileOptions {
+        sourceCompatibility = JavaVersion.VERSION_11
+        targetCompatibility = JavaVersion.VERSION_11
+    }
+
+    kotlin {
+        jvmToolchain(11)
+    }
+}
 
 
 ///////////////////////////////////////////////

@@ -11,28 +11,6 @@ plugins {
     id("com.android.application")
 }
 
-val skikoNativeX64: Configuration by configurations.creating
-val skikoNativeArm64: Configuration by configurations.creating
-
-//////////////////////////////////////////////////////////////////////////////////////////
-
-val copyJniLibs = tasks.register("copyJniLibs", Copy::class) {
-    val srcJniLibsDir = "${project.rootProject.projectDir}/skiko-jni-libs/"
-    val dstJniLibsDir = "${project.projectDir}/src/main/jniLibs/"
-
-    from(srcJniLibsDir)
-    into(dstJniLibsDir)
-    include("**/*")
-}
-
-tasks.withType<MergeSourceSetFolders>().configureEach {
-    dependsOn(copyJniLibs)
-}
-
-tasks.withType<KotlinJvmCompile>().configureEach {
-    dependsOn(copyJniLibs)
-}
-
 android {
     compileSdk = (findProperty("android.compileSdk") as String).toInt()
     namespace = "demo.svgMapping.SvgSkiaMappingDemo"
@@ -67,18 +45,12 @@ android {
     }
 }
 
-val skikoVersion = extra["skiko.version"] as String
 val letsPlotVersion = extra["letsPlot.version"] as String
 
 dependencies {
-    implementation("org.jetbrains.skiko:skiko-android:$skikoVersion")
-
-    skikoNativeX64("org.jetbrains.skiko:skiko-android-runtime-x64:$skikoVersion")
-    skikoNativeArm64("org.jetbrains.skiko:skiko-android-runtime-arm64:$skikoVersion")
-
     implementation(project(":platf-skia"))
-
     implementation(project(":demo-svg-shared"))
-
     implementation("org.jetbrains.lets-plot:lets-plot-common:$letsPlotVersion")
+    implementation("org.jetbrains.lets-plot:canvas:${letsPlotVersion}")
+    implementation("org.jetbrains.lets-plot:plot-raster:$letsPlotVersion")
 }
