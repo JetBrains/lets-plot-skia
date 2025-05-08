@@ -17,7 +17,7 @@ class AndroidCanvas(
     private val pixelRatio: Double
 ) : Canvas {
     companion object {
-        fun create(size: Vector, pixelRatio: Double): Canvas {
+        fun create(size: Vector, pixelRatio: Double): AndroidCanvas {
             val s = if (size == Vector.ZERO) {
                 Vector(1, 1)
             } else size
@@ -27,7 +27,7 @@ class AndroidCanvas(
     }
 
 
-    override val context2d: Context2d = AndroidContext2d()
+    override val context2d: Context2d = AndroidContext2d(bitmap)
 
     override fun immidiateSnapshot(): Canvas.Snapshot {
         TODO("Not yet implemented")

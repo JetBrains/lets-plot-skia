@@ -8,6 +8,7 @@ package org.jetbrains.letsPlot.skia.android.view
 import android.annotation.SuppressLint
 import android.content.Context
 import android.view.MotionEvent
+import android.view.View
 import android.view.ViewGroup
 import org.jetbrains.letsPlot.commons.registration.CompositeRegistration
 import org.jetbrains.letsPlot.commons.registration.Disposable
@@ -19,7 +20,6 @@ import org.jetbrains.letsPlot.datamodel.svg.dom.SvgSvgElement
 import org.jetbrains.letsPlot.datamodel.svg.event.SvgAttributeEvent
 import org.jetbrains.letsPlot.skia.view.SkikoViewEventDispatcher
 
-/*
 
 @SuppressLint("ViewConstructor")
 class SvgPanel(
@@ -28,26 +28,26 @@ class SvgPanel(
     eventDispatcher: SkikoViewEventDispatcher? = null
 ) : ViewGroup(context), Disposable, DisposingHub {
     var svg: SvgSvgElement
-        get() = skikoView.svg
+        get() = svg//skikoView.svg
         set(value) {
-            skikoView.svg = value
+            //skikoView.svg = value
         }
 
     var eventDispatcher: SkikoViewEventDispatcher?
-        get() = skikoView.eventDispatcher
-        set(value) {
-            skikoView.eventDispatcher = value
-        }
+        //get() = skikoView.eventDispatcher
+        //set(value) {
+        //    skikoView.eventDispatcher = value
+        //}
 
-    private val skikoView = SvgSkikoViewAndroid()
+    private val skikoView = View(context)//SvgSkikoViewAndroid()
     private val registrations = CompositeRegistration()
-    private val plotGestureDetector: PlotGestureDetector
+    //private val plotGestureDetector: PlotGestureDetector
 
     init {
         this.svg = svg
         this.eventDispatcher = eventDispatcher
 
-        skikoView.skiaLayer.attachTo(this)
+        //skikoView.skiaLayer.attachTo(this)
 
         registrations.add(
             svg.addListener(object : SvgElementListener {
@@ -60,7 +60,7 @@ class SvgPanel(
                 }
             })
         )
-        plotGestureDetector = PlotGestureDetector(context, this)
+        //plotGestureDetector = PlotGestureDetector(context, this)
     }
 
     override fun onMeasure(widthMeasureSpec: Int, heightMeasureSpec: Int) {
@@ -115,13 +115,12 @@ class SvgPanel(
         // Didn't see any fixes in skiko, but now it works without post().
         //post {
             registrations.dispose()
-            skikoView.dispose()
+            //skikoView.dispose()
         //}
     }
 
     override fun onTouchEvent(event: MotionEvent): Boolean {
-        plotGestureDetector.onTouchEvent(event)
+        //plotGestureDetector.onTouchEvent(event)
         return true
     }
 }
-*/

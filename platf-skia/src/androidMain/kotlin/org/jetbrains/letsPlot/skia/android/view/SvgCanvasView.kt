@@ -1,22 +1,15 @@
 package org.jetbrains.letsPlot.skia.android.view
 
 import android.content.Context
-import android.os.Handler
-import android.os.Looper
 import android.view.MotionEvent
 import android.view.ViewGroup
-import org.jetbrains.letsPlot.android.canvas.AndroidAnimationTimerPeer
 import org.jetbrains.letsPlot.android.canvas.AndroidCanvasControl
 import org.jetbrains.letsPlot.commons.event.MouseEvent
 import org.jetbrains.letsPlot.commons.event.MouseEventSource
 import org.jetbrains.letsPlot.commons.event.MouseEventSpec
 import org.jetbrains.letsPlot.commons.geometry.Vector
 import org.jetbrains.letsPlot.commons.intern.observable.event.EventHandler
-import org.jetbrains.letsPlot.commons.registration.CompositeRegistration
-import org.jetbrains.letsPlot.commons.registration.Disposable
-import org.jetbrains.letsPlot.commons.registration.DisposableRegistration
-import org.jetbrains.letsPlot.commons.registration.DisposingHub
-import org.jetbrains.letsPlot.commons.registration.Registration
+import org.jetbrains.letsPlot.commons.registration.*
 import org.jetbrains.letsPlot.core.canvas.CanvasControl
 import org.jetbrains.letsPlot.datamodel.svg.dom.SvgConstants
 import org.jetbrains.letsPlot.datamodel.svg.dom.SvgElementListener
@@ -25,13 +18,11 @@ import org.jetbrains.letsPlot.datamodel.svg.event.SvgAttributeEvent
 import org.jetbrains.letsPlot.raster.view.CanvasEventDispatcher
 import org.jetbrains.letsPlot.raster.view.SvgCanvasView
 
-class SvgCanvasPanel(
+class SvgCanvasView(
     context: Context,
     svg: SvgSvgElement = SvgSvgElement(),
     eventDispatcher: CanvasEventDispatcher? = null
 ) : ViewGroup(context), Disposable, DisposingHub {
-    private val handler = Handler(Looper.getMainLooper())
-
     var svg: SvgSvgElement
         get() = svgCanvasView.svg
         set(value) {
@@ -44,14 +35,19 @@ class SvgCanvasPanel(
             svgCanvasView.eventDispatcher = value
         }
 
+    private var androidCanvasControl: AndroidCanvasControl? = null
 
     private val svgCanvasView = object : SvgCanvasView() {
         override fun createCanvasControl(view: SvgCanvasView): CanvasControl {
-            return AndroidCanvasControl(
-                size = Vector(width, height),
-                animationTimerPeer = AndroidAnimationTimerPeer(
-                    executor = { code -> handler.post(code) }
-                ),
+            if (androidCanvasControl != null) {
+                return androidCanvasControl!!
+            }
+
+            val w = 600//width
+            val h = 400//height
+
+            val androidCanvasControl = AndroidCanvasControl(
+                size = Vector(w, h),
                 mouseEventSource = object : MouseEventSource {
                     override fun addEventHandler(eventSpec: MouseEventSpec, handler: EventHandler<MouseEvent>): Registration {
                         return eventDispatcher?.addEventHandler(eventSpec, handler)
@@ -60,6 +56,10 @@ class SvgCanvasPanel(
                 },
                 context = context
             )
+
+            this@SvgCanvasView.androidCanvasControl = androidCanvasControl
+
+            return androidCanvasControl
         }
 
         override fun onHrefClick(href: String) {
@@ -78,6 +78,7 @@ class SvgCanvasPanel(
         this.svg = svg
         this.eventDispatcher = eventDispatcher
 
+        (svgCanvasView.canvasControl as AndroidCanvasControl).attachTo(this)
         //skikoView.skiaLayer.attachTo(this)
 
         registrations.add(
@@ -98,6 +99,8 @@ class SvgCanvasPanel(
         val density = resources.displayMetrics.density
         val width = (svgCanvasView.width * density).toInt()
         val height = (svgCanvasView.height * density).toInt()
+
+        println("onMeasure: $width x $height, density: $density")
 
         measureChild(
             getChildAt(0),

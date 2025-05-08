@@ -1,7 +1,10 @@
 package org.jetbrains.letsPlot.android.canvas
 
 import android.content.Context
+import android.os.Handler
+import android.os.Looper
 import android.view.View
+import android.view.ViewGroup
 import android.widget.FrameLayout
 import org.jetbrains.letsPlot.commons.event.MouseEvent
 import org.jetbrains.letsPlot.commons.event.MouseEventSource
@@ -14,15 +17,21 @@ import org.jetbrains.letsPlot.core.canvas.AnimationProvider.AnimationEventHandle
 import org.jetbrains.letsPlot.core.canvas.AnimationProvider.AnimationTimer
 import org.jetbrains.letsPlot.core.canvas.Canvas
 import org.jetbrains.letsPlot.core.canvas.CanvasControl
-import java.util.HashMap
 
 class AndroidCanvasControl(
     override val size: Vector,
-    private val animationTimerPeer: AndroidAnimationTimerPeer,
     private val mouseEventSource: MouseEventSource,
     private val context: Context,
+    animationTimerPeer: AndroidAnimationTimerPeer? = null,
     private val myPixelRatio: Double = 1.0
 ) : CanvasControl {
+    private val handler = Handler(Looper.getMainLooper())
+    private val animationTimerPeer = animationTimerPeer
+        ?: AndroidAnimationTimerPeer(executor = { code -> handler.post(code) })
+
+    fun attachTo(view: ViewGroup) {
+        view.addView(myComponent)
+    }
 
     private val myComponent = FrameLayout(context).apply {
         layoutParams = FrameLayout.LayoutParams(
