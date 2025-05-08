@@ -3,6 +3,7 @@ package org.jetbrains.letsPlot.android.canvas
 import android.graphics.Bitmap
 import android.graphics.Canvas
 import android.graphics.Paint
+import android.graphics.Path
 import org.jetbrains.letsPlot.android.canvas.Utils.toAndroidColor
 import org.jetbrains.letsPlot.commons.values.Color
 import org.jetbrains.letsPlot.core.canvas.Context2d
@@ -14,9 +15,7 @@ class AndroidContext2d(
     bitmap: Bitmap,
     private val stateDelegate: ContextStateDelegate = ContextStateDelegate(failIfNotImplemented = false, logEnabled = false),
 ) : Context2d by stateDelegate {
-    private val nativeCanvas = Canvas(bitmap).also {
-        it.scale(2.625f, 2.625f)
-    }
+    private val nativeCanvas = Canvas(bitmap)
 
     private val strokePaint = Paint().apply {
         style = Paint.Style.STROKE
@@ -27,6 +26,8 @@ class AndroidContext2d(
         style = Paint.Style.FILL
         isAntiAlias = true
     }
+
+    private var currentPath: Path? = null
 
     override fun save() {
         stateDelegate.save()
@@ -52,6 +53,34 @@ class AndroidContext2d(
 
     override fun strokeText(text: String, x: Double, y: Double) {
         nativeCanvas.drawText(text, x.toFloat(), y.toFloat(), strokePaint)
+    }
+
+    override fun beginPath() {
+        currentPath = Path()
+        stateDelegate.beginPath()
+    }
+
+    override fun moveTo(x: Double, y: Double) {
+        currentPath?.moveTo(x.toFloat(), y.toFloat())
+        stateDelegate.moveTo(x, y)
+    }
+
+    override fun lineTo(x: Double, y: Double) {
+        currentPath?.lineTo(x.toFloat(), y.toFloat())
+        stateDelegate.lineTo(x, y)
+    }
+
+    override fun closePath() {
+        currentPath?.close()
+        stateDelegate.closePath()
+    }
+
+    override fun stroke() {
+        nativeCanvas.drawPath(currentPath!!, strokePaint)
+    }
+
+    override fun fill() {
+        nativeCanvas.drawPath(currentPath!!, fillPaint)
     }
 
     override fun setFillStyle(color: Color?) {
