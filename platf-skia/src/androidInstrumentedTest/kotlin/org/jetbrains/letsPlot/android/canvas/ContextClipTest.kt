@@ -17,6 +17,7 @@ class ContextClipTest {
         val diffImagePaths = mutableListOf<String>()
     }
 
+    private val backgroundColor = "#FFFFFF"
 
     private val w = 100.0
     private val h = 100.0
@@ -53,6 +54,12 @@ class ContextClipTest {
 
     private fun createCanvas(): Pair<AndroidCanvas, Context2d> {
         val canvas = AndroidCanvas.create(Vector(w.toInt(), h.toInt()), 1.0)
+        val ctx = canvas.context2d
+        ctx.save()
+        ctx.fillStyle = backgroundColor
+        ctx.fillRect(0.0, 0.0, w, h)
+        ctx.restore()
+
         return canvas to canvas.context2d
     }
 
@@ -184,7 +191,7 @@ class ContextClipTest {
 
         ctx.fillStyle = "black"
         ctx.strokeStyle = "black"
-        ctx.setFont(Font(fontFamily = "Times New Roman", fontSize = 50.0))
+        ctx.setFont(Font(fontFamily = "serif", fontSize = 50.0))
 
         ctx.beginPath()
         nwRect(ctx)
@@ -202,7 +209,7 @@ class ContextClipTest {
 
         ctx.fillStyle = "black"
         ctx.strokeStyle = "black"
-        ctx.setFont(Font(fontFamily = "Times New Roman", fontSize = 50.0))
+        ctx.setFont(Font(fontFamily = "serif", fontSize = 50.0))
 
         ctx.beginPath()
         nwRect(ctx)
@@ -224,7 +231,7 @@ class ContextClipTest {
 
         ctx.fillStyle = "black"
         ctx.strokeStyle = "black"
-        ctx.setFont(Font(fontFamily = "Times New Roman", fontSize = 50.0))
+        ctx.setFont(Font(fontFamily = "serif", fontSize = 50.0))
 
         ctx.beginPath()
         nwRectWithTranslates(ctx)
@@ -246,7 +253,7 @@ class ContextClipTest {
 
         ctx.fillStyle = "black"
         ctx.strokeStyle = "black"
-        ctx.setFont(Font(fontFamily = "Times New Roman", fontSize = 50.0))
+        ctx.setFont(Font(fontFamily = "serif", fontSize = 50.0))
 
         ctx.transform(sx = 1, ry = 0, rx = -0.33, sy = 1, tx = 25, ty = 0)
 
@@ -268,7 +275,7 @@ class ContextClipTest {
 
         ctx.fillStyle = "black"
         ctx.strokeStyle = "black"
-        ctx.setFont(Font(fontFamily = "Times New Roman", fontSize = 50.0))
+        ctx.setFont(Font(fontFamily = "serif", fontSize = 50.0))
 
         ctx.transform(sx = 1, ry = 0, rx = -0.33, sy = 1, tx = 25, ty = 0)
 
