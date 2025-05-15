@@ -9,13 +9,20 @@ import android.annotation.SuppressLint
 import android.content.Context
 import android.widget.RelativeLayout
 import org.jetbrains.letsPlot.Figure
+import org.jetbrains.letsPlot.commons.event.MouseEvent
+import org.jetbrains.letsPlot.commons.event.MouseEventSpec
 import org.jetbrains.letsPlot.commons.geometry.DoubleRectangle
 import org.jetbrains.letsPlot.commons.geometry.DoubleVector
 import org.jetbrains.letsPlot.commons.geometry.Vector
+import org.jetbrains.letsPlot.commons.intern.observable.event.EventHandler
+import org.jetbrains.letsPlot.commons.registration.Registration
+import org.jetbrains.letsPlot.core.plot.builder.assemble.PlotFacets
 import org.jetbrains.letsPlot.core.util.MonolithicCommon
-import org.jetbrains.letsPlot.core.util.PlotSizeUtil
+import org.jetbrains.letsPlot.core.util.PlotSizeHelper
+import org.jetbrains.letsPlot.core.util.sizing.SizingPolicy
 import org.jetbrains.letsPlot.intern.toSpec
-import org.jetbrains.letsPlot.skia.android.view.SvgPanel
+import org.jetbrains.letsPlot.raster.view.CanvasEventDispatcher
+import org.jetbrains.letsPlot.skia.android.view.SvgCanvasView
 import org.jetbrains.letsPlot.skia.builderLW.MonolithicSkiaLW
 import org.jetbrains.letsPlot.skia.builderLW.ViewModel
 import org.jetbrains.letsPlot.skia.compose.util.NaiveLogger
@@ -28,7 +35,7 @@ internal class PlotViewContainer(
     private val computationMessagesHandler: ((List<String>) -> Unit)
 ) : RelativeLayout(context) {
 
-    private lateinit var plotSvgPanel: SvgPanel
+    private lateinit var plotSvgPanel: SvgCanvasView
     private var viewModel: ViewModel? = null
 
     private lateinit var processedSpec: Map<String, Any>
@@ -116,10 +123,12 @@ internal class PlotViewContainer(
 
         val density = resources.displayMetrics.density
         val scaledSize = DoubleVector(w.toDouble(), h.toDouble()).mul(1.0 / density)
-        val plotSize = PlotSizeUtil.preferredFigureSize(
-            processedSpec,
-            preserveAspectRatio!!,
-            scaledSize
+        val plotSize = PlotSizeHelper.singlePlotSize(
+            plotSpec = processedSpec,
+            containerSize = scaledSize,
+            sizingPolicy = SizingPolicy.fitContainerSize(preserveAspectRatio!!),
+            facets = PlotFacets.UNDEFINED,
+            containsLiveMap = false
         )
         val plotX = if (plotSize.x >= scaledSize.x) 0.0 else {
             (scaledSize.x - plotSize.x) / 2
@@ -142,8 +151,9 @@ internal class PlotViewContainer(
 
         viewModel?.dispose()
         viewModel = MonolithicSkiaLW.buildPlotFromProcessedSpecs(
-            plotSize = plotSize,
             plotSpec = processedSpec as MutableMap<String, Any>,
+            containerSize = null,
+            sizingPolicy = SizingPolicy.fixed(plotSize.x, plotSize.y),
         ) { messages ->
             computationMessagesHandler(messages)
             //if (dispatchComputationMessages) {
@@ -154,7 +164,23 @@ internal class PlotViewContainer(
         }
 
         plotSvgPanel.svg = viewModel!!.svg
-        plotSvgPanel.eventDispatcher = viewModel!!.eventDispatcher
+        plotSvgPanel.eventDispatcher = object : CanvasEventDispatcher {
+            override fun addEventHandler(
+                eventSpec: MouseEventSpec,
+                eventHandler: EventHandler<MouseEvent>
+            ): Registration {
+                return viewModel!!.eventDispatcher.addEventHandler(eventSpec, eventHandler)
+            }
+
+            override fun dispatchMouseEvent(
+                kind: MouseEventSpec,
+                e: MouseEvent
+            ) {
+                viewModel!!.eventDispatcher.dispatchMouseEvent(kind, e)
+            }
+
+        }
+            viewModel!!.eventDispatcher
 
         measureChild(
             plotSvgPanel,
@@ -181,7 +207,7 @@ internal class PlotViewContainer(
             clearContainer()
         }
 
-        plotSvgPanel = SvgPanel(context)
+        plotSvgPanel = SvgCanvasView(context)
         viewModel = null
         addView(plotSvgPanel)
     }

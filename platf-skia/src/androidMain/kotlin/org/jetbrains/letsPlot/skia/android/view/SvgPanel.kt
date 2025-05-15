@@ -68,6 +68,7 @@ class SvgPanel(
         val width = (skikoView.width * density).toInt()
         val height = (skikoView.height * density).toInt()
 
+        check(childCount > 0) { "Child view is not added" }
         measureChild(
             getChildAt(0),
             MeasureSpec.makeMeasureSpec(width, MeasureSpec.EXACTLY),

@@ -7,8 +7,7 @@ package org.jetbrains.letsPlot.android.canvas
 
 
 import org.jetbrains.letsPlot.commons.registration.Disposable
-import java.util.Timer
-import java.util.TimerTask
+import java.util.*
 
 
 class AndroidAnimationTimerPeer(
@@ -35,6 +34,7 @@ class AndroidAnimationTimerPeer(
             myHandlers.add(handler)
 
             if (!isRunning) {
+                isRunning = true
                 myTimer.schedule(actionListener, 0L, 1000L / updateRate)
             }
         }
