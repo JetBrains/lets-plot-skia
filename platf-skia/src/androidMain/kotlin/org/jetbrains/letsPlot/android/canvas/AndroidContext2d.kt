@@ -33,8 +33,6 @@ class AndroidContext2d(
         color = 0xFFFFFFFF.toInt()
     }
 
-    private var currentPath: Path? = null
-
     override fun save() {
         stateDelegate.save()
         nativeCanvas.save()
@@ -57,7 +55,7 @@ class AndroidContext2d(
 
     override fun transform(sx: Double, ry: Double, rx: Double, sy: Double, tx: Double, ty: Double) {
         stateDelegate.transform(sx = sx, ry = ry, rx = rx, sy = sy, tx = tx, ty = ty)
-        nativeCanvas.concat(android.graphics.Matrix().apply {
+        nativeCanvas.concat(Matrix().apply {
             setValues(floatArrayOf(
                 sx.toFloat(), rx.toFloat(), tx.toFloat(),
                 ry.toFloat(), sy.toFloat(), ty.toFloat(),
@@ -78,7 +76,7 @@ class AndroidContext2d(
 
     override fun setTransform(m00: Double, m10: Double, m01: Double, m11: Double, m02: Double, m12: Double) {
         stateDelegate.setTransform(m00, m10, m01, m11, m02, m12)
-        nativeCanvas.setMatrix(android.graphics.Matrix().apply {
+        nativeCanvas.setMatrix(Matrix().apply {
             setValues(floatArrayOf(
                 m00.toFloat(), m10.toFloat(), 0f,
                 m01.toFloat(), m11.toFloat(), 0f,
@@ -86,7 +84,6 @@ class AndroidContext2d(
             ))
         })
     }
-
 
     override fun clearRect(rect: DoubleRectangle) {
         nativeCanvas.drawRect(rect.left.toFloat(), rect.top.toFloat(), rect.right.toFloat(), rect.bottom.toFloat(), backgroundPaint)
@@ -129,7 +126,7 @@ class AndroidContext2d(
     }
 
     override fun measureText(str: String): TextMetrics {
-        val bounds = android.graphics.Rect()
+        val bounds = Rect()
         fillPaint.getTextBounds(str, 0, str.length, bounds)
         return TextMetrics(
             ascent = bounds.top.toDouble(),
@@ -162,7 +159,7 @@ class AndroidContext2d(
 
         val phase = stateDelegate.getLineDashOffset().toFloat()
 
-        strokePaint.pathEffect = android.graphics.DashPathEffect(lineDash, phase)
+        strokePaint.pathEffect = DashPathEffect(lineDash, phase)
     }
 
 
@@ -212,15 +209,12 @@ class AndroidContext2d(
     }
 
     override fun measureTextWidth(str: String): Double {
-        val bounds = android.graphics.Rect()
+        val bounds = Rect()
         fillPaint.getTextBounds(str, 0, str.length, bounds)
         return bounds.width().toDouble()
     }
 
     private fun drawPath(nativeCanvas: Canvas, commands: List<Path2d.PathCommand>, transform: AffineTransform, paint: Paint) {
-        println("drawPath() - ${nativeCanvas.matrix}")
-        println("drawPath() - ${transform.repr()}")
-        println("drawPath() - commands: $commands")
         if (commands.isEmpty()) {
             return
         }
