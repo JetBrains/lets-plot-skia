@@ -25,6 +25,7 @@ class ContextPath2dTest {
     private val w = 100.0
     private val h = 100.0
 
+    private val backgroundColor = "#FFFFFF"
     private val strokeColor = "#000000"
     private val fillColor = "#000000"
     private val filledStrokeColor = "#000080"
@@ -33,6 +34,12 @@ class ContextPath2dTest {
 
     fun createCanvas(): Pair<AndroidCanvas, Context2d> {
         val canvas = AndroidCanvas.create(Vector(w.toInt(), h.toInt()), 1.0)
+        val ctx = canvas.context2d
+        ctx.save()
+        ctx.fillStyle = backgroundColor
+        ctx.fillRect(0.0, 0.0, w, h)
+        ctx.restore()
+
         return canvas to canvas.context2d
     }
 
@@ -427,11 +434,11 @@ class ContextPath2dTest {
         ctx.strokeStyle = strokeColor
         ctx.lineWidth = 2.0
 
-        ctx.beginPath();
-        ctx.moveTo(0, 20);
-        ctx.lineTo(20, 20);
-        ctx.bezierCurveTo(20, 80, 80, 80, 80, 20);
-        ctx.lineTo(100, 20);
+        ctx.beginPath()
+        ctx.moveTo(0, 20)
+        ctx.lineTo(20, 20)
+        ctx.bezierCurveTo(20, 80, 80, 80, 80, 20)
+        ctx.lineTo(100, 20)
         ctx.stroke()
 
         imageComparer.assertImageEquals(
@@ -447,9 +454,9 @@ class ContextPath2dTest {
         ctx.strokeStyle = strokeColor
         ctx.lineWidth = 2.0
 
-        ctx.beginPath();
-        ctx.moveTo(100, 10);
-        ctx.lineTo(80, 10);
+        ctx.beginPath()
+        ctx.moveTo(100, 10)
+        ctx.lineTo(80, 10)
         ctx.ellipse(
             x = 50,
             y = 20,
@@ -459,9 +466,9 @@ class ContextPath2dTest {
             startAngle = 0,
             endAngle = -PI,
             anticlockwise = false
-        );
-        ctx.lineTo(20, 10);
-        ctx.lineTo(0, 10);
+        )
+        ctx.lineTo(20, 10)
+        ctx.lineTo(0, 10)
         ctx.stroke()
 
         imageComparer.assertImageEquals(
