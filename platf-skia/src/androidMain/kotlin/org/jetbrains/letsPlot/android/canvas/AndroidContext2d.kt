@@ -167,13 +167,13 @@ class AndroidContext2d(
         // Make ctm identity. null for degenerate case, e.g., scale(0, 0) - skip drawing.
         val inverseCtmTransform = stateDelegate.getCTM().inverse() ?: return
 
-        drawPath(nativeCanvas, stateDelegate.getCurrentPath(), inverseCtmTransform, strokePaint)
+        nativeCanvas.drawPath(drawPath(stateDelegate.getCurrentPath(), inverseCtmTransform), strokePaint)
     }
 
     override fun fill() {
         // Make ctm identity. null for degenerate case, e.g., scale(0, 0) - skip drawing.
         val inverseCtmTransform = stateDelegate.getCTM().inverse() ?: return
-        drawPath(nativeCanvas, stateDelegate.getCurrentPath(), inverseCtmTransform, fillPaint)
+        nativeCanvas.drawPath(drawPath(stateDelegate.getCurrentPath(), inverseCtmTransform), fillPaint)
     }
 
     override fun setFillStyle(color: Color?) {
@@ -214,9 +214,17 @@ class AndroidContext2d(
         return bounds.width().toDouble()
     }
 
-    private fun drawPath(nativeCanvas: Canvas, commands: List<Path2d.PathCommand>, transform: AffineTransform, paint: Paint) {
+    override fun clip() {
+        // Make ctm identity. null for degenerate case, e.g., scale(0, 0) - skip drawing.
+        val inverseCtmTransform = stateDelegate.getCTM().inverse() ?: return
+
+        val path = drawPath(stateDelegate.getCurrentPath(), inverseCtmTransform)
+        nativeCanvas.clipPath(path)
+    }
+
+    private fun drawPath(commands: List<Path2d.PathCommand>, transform: AffineTransform): Path {
         if (commands.isEmpty()) {
-            return
+            return Path()
         }
 
         val path = Path()
@@ -244,6 +252,6 @@ class AndroidContext2d(
                 }
             }
 
-        nativeCanvas.drawPath(path, paint)
+        return path
     }
 }
