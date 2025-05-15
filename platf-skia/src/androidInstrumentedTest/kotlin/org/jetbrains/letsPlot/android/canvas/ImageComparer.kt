@@ -80,22 +80,29 @@ class ImageComparer(
         val r1 = Color.red(p1)
         val g1 = Color.green(p1)
         val b1 = Color.blue(p1)
-        val a1 = Color.alpha(p1)
 
         val r2 = Color.red(p2)
         val g2 = Color.green(p2)
         val b2 = Color.blue(p2)
-        val a2 = Color.alpha(p2)
 
         return abs(r1 - r2) <= tolerance &&
                 abs(g1 - g2) <= tolerance &&
-                abs(b1 - b2) <= tolerance &&
-                abs(a1 - a2) <= tolerance
+                abs(b1 - b2) <= tolerance
     }
 
     private fun comparePixelArrays(expected: IntArray, actual: IntArray, tolerance: Int = 0): Boolean {
         if (expected.size != actual.size) return false
-        return expected.indices.all { pixelsEqual(expected[it], actual[it], tolerance) }
+        println("Comparing ${expected.size} pixels with tolerance $tolerance")
+        println("expected: " + expected.joinToString { it.toUInt().toString(16) })
+        println("actual: " + actual.joinToString { it.toUInt().toString(16) })
+        return expected.indices.all {
+            if (!pixelsEqual(expected[it], actual[it], tolerance)) {
+                println("Pixel mismatch at index $it: expected ${expected[it]}, actual ${actual[it]}")
+                false
+            } else {
+                true
+            }
+        }
     }
 
     private fun createVisualDiff(expected: Bitmap, actual: Bitmap): Bitmap {

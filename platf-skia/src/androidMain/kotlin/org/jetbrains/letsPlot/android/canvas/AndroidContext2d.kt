@@ -37,6 +37,16 @@ class AndroidContext2d(
 
     private var currentPath: Path? = null
 
+    override fun save() {
+        stateDelegate.save()
+        nativeCanvas.save()
+    }
+
+    override fun restore() {
+        stateDelegate.restore()
+        nativeCanvas.restore()
+    }
+
     override fun rotate(angle: Double) {
         stateDelegate.rotate(angle)
         nativeCanvas.rotate(angle.toFloat())
@@ -45,6 +55,17 @@ class AndroidContext2d(
     override fun translate(x: Double, y: Double) {
         stateDelegate.translate(x, y)
         nativeCanvas.translate(x.toFloat(), y.toFloat())
+    }
+
+    override fun transform(sx: Double, ry: Double, rx: Double, sy: Double, tx: Double, ty: Double) {
+        stateDelegate.transform(sx = sx, ry = ry, rx = rx, sy = sy, tx = tx, ty = ty)
+        nativeCanvas.concat(android.graphics.Matrix().apply {
+            setValues(floatArrayOf(
+                sx.toFloat(), rx.toFloat(), tx.toFloat(),
+                ry.toFloat(), sy.toFloat(), ty.toFloat(),
+                0f, 0f, 1f
+            ))
+        })
     }
 
     override fun scale(x: Double, y: Double) {
@@ -144,6 +165,9 @@ class AndroidContext2d(
     }
 
     private fun drawPath(nativeCanvas: Canvas, commands: List<Path2d.PathCommand>, transform: AffineTransform, paint: Paint) {
+        println("drawPath() - ${nativeCanvas.matrix}")
+        println("drawPath() - ${transform.repr()}")
+        println("drawPath() - commands: $commands")
         if (commands.isEmpty()) {
             return
         }
