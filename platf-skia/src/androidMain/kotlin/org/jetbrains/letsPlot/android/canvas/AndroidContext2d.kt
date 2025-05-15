@@ -1,9 +1,7 @@
 package org.jetbrains.letsPlot.android.canvas
 
-import android.graphics.Bitmap
+import android.graphics.*
 import android.graphics.Canvas
-import android.graphics.Paint
-import android.graphics.Path
 import org.jetbrains.letsPlot.android.canvas.Utils.toAndroidColor
 import org.jetbrains.letsPlot.commons.geometry.AffineTransform
 import org.jetbrains.letsPlot.commons.geometry.DoubleRectangle
@@ -102,6 +100,26 @@ class AndroidContext2d(
         nativeCanvas.drawRect(x.toFloat(), y.toFloat(), (x+w).toFloat(), (y+h).toFloat(), strokePaint)
     }
 
+    override fun setFont(f: Font) {
+        val style = when (f.fontStyle) {
+            FontStyle.NORMAL -> when (f.fontWeight) {
+                FontWeight.NORMAL -> Typeface.NORMAL
+                FontWeight.BOLD -> Typeface.BOLD
+            }
+            FontStyle.ITALIC -> when (f.fontWeight) {
+                FontWeight.NORMAL -> Typeface.ITALIC
+                FontWeight.BOLD -> Typeface.BOLD_ITALIC
+            }
+        }
+
+        val typeface = Typeface.create(f.fontFamily, style)
+
+        fillPaint.typeface = typeface
+        strokePaint.typeface = typeface
+        fillPaint.textSize = f.fontSize.toFloat()
+        strokePaint.textSize = f.fontSize.toFloat()
+    }
+
     override fun fillText(text: String, x: Double, y: Double) {
         nativeCanvas.drawText(text, x.toFloat(), y.toFloat(), fillPaint)
     }
@@ -110,8 +128,45 @@ class AndroidContext2d(
         nativeCanvas.drawText(text, x.toFloat(), y.toFloat(), strokePaint)
     }
 
+    override fun measureText(str: String): TextMetrics {
+        val bounds = android.graphics.Rect()
+        fillPaint.getTextBounds(str, 0, str.length, bounds)
+        return TextMetrics(
+            ascent = bounds.top.toDouble(),
+            descent = bounds.bottom.toDouble(),
+            bbox = DoubleRectangle.LTRB(
+                left = bounds.left.toDouble(),
+                top = bounds.top.toDouble(),
+                right = bounds.right.toDouble(),
+                bottom = bounds.bottom.toDouble()
+            ),
+        )
+    }
+
+    override fun setLineDash(lineDash: DoubleArray) {
+        stateDelegate.setLineDash(lineDash)
+        setupPathEffect()
+    }
+
+    override fun setLineDashOffset(lineDashOffset: Double) {
+        stateDelegate.setLineDashOffset(lineDashOffset)
+        setupPathEffect()
+    }
+
+    private fun setupPathEffect() {
+        val lineDash = stateDelegate.getLineDash().map(Double::toFloat).toFloatArray()
+        if (lineDash.isEmpty()) {
+            strokePaint.pathEffect = null
+            return
+        }
+
+        val phase = stateDelegate.getLineDashOffset().toFloat()
+
+        strokePaint.pathEffect = android.graphics.DashPathEffect(lineDash, phase)
+    }
+
+
     override fun stroke() {
-        //nativeCanvas.drawPath(currentPath!!, strokePaint)
         // Make ctm identity. null for degenerate case, e.g., scale(0, 0) - skip drawing.
         val inverseCtmTransform = stateDelegate.getCTM().inverse() ?: return
 
@@ -119,8 +174,6 @@ class AndroidContext2d(
     }
 
     override fun fill() {
-        //nativeCanvas.drawPath(currentPath!!, fillPaint)
-
         // Make ctm identity. null for degenerate case, e.g., scale(0, 0) - skip drawing.
         val inverseCtmTransform = stateDelegate.getCTM().inverse() ?: return
         drawPath(nativeCanvas, stateDelegate.getCurrentPath(), inverseCtmTransform, fillPaint)

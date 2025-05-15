@@ -389,7 +389,7 @@ class ContextPath2dTest {
 
         ctx.fillStyle = strokeColor
         ctx.strokeStyle = strokeColor
-        ctx.setFont(Font(fontFamily = "Times New Roman", fontSize = 30.0))
+        ctx.setFont(Font(fontFamily = "serif", fontSize = 26.0))
 
         ctx.transform(sx = 1.0, ry = 0.0, rx = -0.33, sy = 1.0, tx = 0.0, ty = 0.0)
 
