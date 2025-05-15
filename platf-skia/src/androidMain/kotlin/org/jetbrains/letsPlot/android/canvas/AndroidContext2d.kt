@@ -5,17 +5,19 @@ import android.graphics.Canvas
 import android.graphics.Paint
 import android.graphics.Path
 import org.jetbrains.letsPlot.android.canvas.Utils.toAndroidColor
+import org.jetbrains.letsPlot.commons.geometry.AffineTransform
+import org.jetbrains.letsPlot.commons.geometry.DoubleRectangle
 import org.jetbrains.letsPlot.commons.values.Color
-import org.jetbrains.letsPlot.core.canvas.Context2d
-import org.jetbrains.letsPlot.core.canvas.ContextStateDelegate
-import org.jetbrains.letsPlot.core.canvas.LineCap
-import org.jetbrains.letsPlot.core.canvas.LineJoin
+import org.jetbrains.letsPlot.core.canvas.*
 
 class AndroidContext2d(
     bitmap: Bitmap,
-    private val stateDelegate: ContextStateDelegate = ContextStateDelegate(failIfNotImplemented = false, logEnabled = false),
+    pixelDensity: Double,
+    private val stateDelegate: ContextStateDelegate = ContextStateDelegate(failIfNotImplemented = false, logEnabled = true),
 ) : Context2d by stateDelegate {
-    private val nativeCanvas = Canvas(bitmap)
+    private val nativeCanvas = Canvas(bitmap).apply {
+        this.scale(pixelDensity.toFloat(), pixelDensity.toFloat())
+    }
 
     private val strokePaint = Paint().apply {
         style = Paint.Style.STROKE
@@ -27,69 +29,13 @@ class AndroidContext2d(
         isAntiAlias = true
     }
 
+    private val backgroundPaint = Paint().apply {
+        style = Paint.Style.FILL
+        isAntiAlias = true
+        color = 0xFFFFFFFF.toInt()
+    }
+
     private var currentPath: Path? = null
-
-    override fun save() {
-        stateDelegate.save()
-        nativeCanvas.save()
-    }
-
-    override fun restore() {
-        nativeCanvas.restore()
-        stateDelegate.restore()
-    }
-
-    override fun fillRect(x: Double, y: Double, w: Double, h: Double) {
-        nativeCanvas.drawRect(x.toFloat(), y.toFloat(), w.toFloat(), h.toFloat(), fillPaint)
-    }
-
-    override fun strokeRect(x: Double, y: Double, w: Double, h: Double) {
-        nativeCanvas.drawRect(x.toFloat(), y.toFloat(), w.toFloat(), h.toFloat(), strokePaint)
-    }
-
-    override fun fillText(text: String, x: Double, y: Double) {
-        nativeCanvas.drawText(text, x.toFloat(), y.toFloat(), fillPaint)
-    }
-
-    override fun strokeText(text: String, x: Double, y: Double) {
-        nativeCanvas.drawText(text, x.toFloat(), y.toFloat(), strokePaint)
-    }
-
-    override fun beginPath() {
-        currentPath = Path()
-        stateDelegate.beginPath()
-    }
-
-    override fun moveTo(x: Double, y: Double) {
-        currentPath?.moveTo(x.toFloat(), y.toFloat())
-        stateDelegate.moveTo(x, y)
-    }
-
-    override fun lineTo(x: Double, y: Double) {
-        currentPath?.lineTo(x.toFloat(), y.toFloat())
-        stateDelegate.lineTo(x, y)
-    }
-
-    override fun closePath() {
-        currentPath?.close()
-        stateDelegate.closePath()
-    }
-
-    override fun stroke() {
-        nativeCanvas.drawPath(currentPath!!, strokePaint)
-    }
-
-    override fun fill() {
-        nativeCanvas.drawPath(currentPath!!, fillPaint)
-    }
-
-    override fun setFillStyle(color: Color?) {
-        fillPaint.color = color?.toAndroidColor() ?: 0
-    }
-
-    override fun setStrokeStyle(color: Color?) {
-        strokePaint.color = color?.toAndroidColor() ?: 0
-    }
 
     override fun rotate(angle: Double) {
         stateDelegate.rotate(angle)
@@ -122,6 +68,51 @@ class AndroidContext2d(
         })
     }
 
+
+    override fun clearRect(rect: DoubleRectangle) {
+        nativeCanvas.drawRect(rect.left.toFloat(), rect.top.toFloat(), rect.right.toFloat(), rect.bottom.toFloat(), backgroundPaint)
+    }
+
+    override fun fillRect(x: Double, y: Double, w: Double, h: Double) {
+        nativeCanvas.drawRect(x.toFloat(), y.toFloat(), (x+w).toFloat(), (y+h).toFloat(), fillPaint)
+    }
+
+    override fun strokeRect(x: Double, y: Double, w: Double, h: Double) {
+        nativeCanvas.drawRect(x.toFloat(), y.toFloat(), (x+w).toFloat(), (y+h).toFloat(), strokePaint)
+    }
+
+    override fun fillText(text: String, x: Double, y: Double) {
+        nativeCanvas.drawText(text, x.toFloat(), y.toFloat(), fillPaint)
+    }
+
+    override fun strokeText(text: String, x: Double, y: Double) {
+        nativeCanvas.drawText(text, x.toFloat(), y.toFloat(), strokePaint)
+    }
+
+    override fun stroke() {
+        //nativeCanvas.drawPath(currentPath!!, strokePaint)
+        // Make ctm identity. null for degenerate case, e.g., scale(0, 0) - skip drawing.
+        val inverseCtmTransform = stateDelegate.getCTM().inverse() ?: return
+
+        drawPath(nativeCanvas, stateDelegate.getCurrentPath(), inverseCtmTransform, strokePaint)
+    }
+
+    override fun fill() {
+        //nativeCanvas.drawPath(currentPath!!, fillPaint)
+
+        // Make ctm identity. null for degenerate case, e.g., scale(0, 0) - skip drawing.
+        val inverseCtmTransform = stateDelegate.getCTM().inverse() ?: return
+        drawPath(nativeCanvas, stateDelegate.getCurrentPath(), inverseCtmTransform, fillPaint)
+    }
+
+    override fun setFillStyle(color: Color?) {
+        fillPaint.color = color?.toAndroidColor() ?: 0
+    }
+
+    override fun setStrokeStyle(color: Color?) {
+        strokePaint.color = color?.toAndroidColor() ?: 0
+    }
+
     override fun setLineWidth(lineWidth: Double) {
         strokePaint.strokeWidth = lineWidth.toFloat()
     }
@@ -146,4 +137,42 @@ class AndroidContext2d(
         strokePaint.strokeMiter = miterLimit.toFloat()
     }
 
+    override fun measureTextWidth(str: String): Double {
+        val bounds = android.graphics.Rect()
+        fillPaint.getTextBounds(str, 0, str.length, bounds)
+        return bounds.width().toDouble()
+    }
+
+    private fun drawPath(nativeCanvas: Canvas, commands: List<Path2d.PathCommand>, transform: AffineTransform, paint: Paint) {
+        if (commands.isEmpty()) {
+            return
+        }
+
+        val path = Path()
+
+        commands
+            .asSequence()
+            .map { cmd -> cmd.transform(transform) }
+            .forEach { cmd ->
+                when (cmd) {
+                    is Path2d.MoveTo -> path.moveTo(cmd.x.toFloat(), cmd.y.toFloat())
+                    is Path2d.LineTo -> path.lineTo(cmd.x.toFloat(), cmd.y.toFloat())
+                    is Path2d.CubicCurveTo -> {
+                        cmd.controlPoints.asSequence()
+                            .windowed(size = 3, step = 3)
+                            .forEach { (cp1, cp2, cp3) ->
+                                path.cubicTo(
+                                    cp1.x.toFloat(), cp1.y.toFloat(),
+                                    cp2.x.toFloat(), cp2.y.toFloat(),
+                                    cp3.x.toFloat(), cp3.y.toFloat()
+                                )
+                            }
+                    }
+
+                    is Path2d.ClosePath -> path.close()
+                }
+            }
+
+        nativeCanvas.drawPath(path, paint)
+    }
 }

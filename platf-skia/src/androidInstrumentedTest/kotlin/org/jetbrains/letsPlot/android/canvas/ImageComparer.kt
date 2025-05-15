@@ -18,7 +18,8 @@ class ImageComparer(
     fun assertImageEquals(expectedFileName: String, actualBitmap: Bitmap) {
         val testName = expectedFileName.removeSuffix(".bmp")
         val expectedPath = javaClass.classLoader?.getResourceAsStream(expectedFileName)
-        val actualFilePath = "${testName}.bmp"
+        val actualFilePath = absPath("${testName}.bmp")
+        val diffFilePath = absPath("${testName}_diff.bmp")
 
         val expectedBitmap = BitmapFactory.decodeStream(expectedPath)
             ?: error("Failed to read expected image: $expectedPath")
@@ -28,7 +29,7 @@ class ImageComparer(
             val actual = exportPixels(actualBitmap)
 
             if (!comparePixelArrays(expected, actual, tolerance = 0)) {
-                val diffFilePath = saveBitmap(createVisualDiff(expectedBitmap, actualBitmap), "${testName}_diff.bmp")
+                saveBitmap(createVisualDiff(expectedBitmap, actualBitmap), diffFilePath)
                 diffImagePaths += diffFilePath // log diff image path to retrieve later from the device
 
                 saveBitmap(actualBitmap, actualFilePath)
@@ -40,6 +41,10 @@ class ImageComparer(
                     |    Expected: $expectedPath""".trimMargin()
                 )
             } else {
+                // Clean up the files if the comparison passed
+                File(actualFilePath).delete()
+                File(diffFilePath).delete()
+
                 println("Image comparison passed: $expectedPath")
             }
         } finally {
@@ -48,16 +53,20 @@ class ImageComparer(
     }
 
     private fun saveBitmap(bitmap: Bitmap, filename: String): String {
-        val context = InstrumentationRegistry.getInstrumentation().targetContext
-        val dir = context.getExternalFilesDir(Environment.DIRECTORY_PICTURES)
-            ?: error("Failed to get external files directory")
-
-        val file = File(dir, filename)
+        val file = File(filename)
 
         FileOutputStream(file).use { out ->
             bitmap.compress(Bitmap.CompressFormat.PNG, 100, out)
         }
         return file.absolutePath
+    }
+
+    private fun absPath(filename: String): String {
+        val context = InstrumentationRegistry.getInstrumentation().targetContext
+        val dir = context.getExternalFilesDir(Environment.DIRECTORY_PICTURES)
+            ?: error("Failed to get external files directory")
+
+        return File(dir, filename).absolutePath
     }
 
 

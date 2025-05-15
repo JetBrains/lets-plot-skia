@@ -22,8 +22,8 @@ class AndroidCanvasControl(
     override val size: Vector,
     private val mouseEventSource: MouseEventSource,
     private val context: Context,
+    override val pixelDensity: Double,
     animationTimerPeer: AndroidAnimationTimerPeer? = null,
-    private val myPixelRatio: Double = 1.0
 ) : CanvasControl {
     private val handler = Handler(Looper.getMainLooper())
     private val animationTimerPeer = animationTimerPeer
@@ -77,7 +77,7 @@ class AndroidCanvasControl(
         }
     }
     override fun createCanvas(size: Vector): Canvas {
-        return AndroidCanvas.create(size, myPixelRatio)
+        return AndroidCanvas.create(size, pixelDensity)
     }
 
     override fun createSnapshot(

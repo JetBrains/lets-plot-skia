@@ -54,7 +54,8 @@ class SvgCanvasView(
                             ?: throw IllegalStateException("No event dispatcher")
                     }
                 },
-                context = context
+                context = context,
+                pixelDensity = resources.displayMetrics.density.toDouble()
             )
 
             this@SvgCanvasView.androidCanvasControl = androidCanvasControl

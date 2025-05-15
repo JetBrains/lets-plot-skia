@@ -169,7 +169,7 @@ object ReferenceSvgModel {
             }
 
             // Clip path
-            val absClip = false
+            val absClip = true
             if (absClip) {
                 g {
                     text("Invisible text", 180, 333, styleClass = "TEXT2")
