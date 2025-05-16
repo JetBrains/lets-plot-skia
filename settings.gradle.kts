@@ -73,13 +73,10 @@ include("demo-plot-compose-android-min")
 project(":demo-plot-compose-android-min").projectDir = File("./demo/plot/compose-android-min")
 
 
-/*
 // Android Plot Median
 include("demo-plot-compose-android-median")
 project(":demo-plot-compose-android-median").projectDir = File("./demo/plot/compose-android-median")
 
-
 // Android Plot Redraw
 include("demo-plot-compose-android-redraw")
 project(":demo-plot-compose-android-redraw").projectDir = File("./demo/plot/compose-android-redraw")
-*/

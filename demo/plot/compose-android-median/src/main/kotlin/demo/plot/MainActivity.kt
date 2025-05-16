@@ -35,7 +35,7 @@ class MainActivity : ComponentActivity() {
             )
 
             val preserveAspectRatio = rememberSaveable { mutableStateOf(false) }
-            val figureIndex = rememberSaveable { mutableStateOf(0) }
+            val figureIndex = rememberSaveable { mutableStateOf(4) }
 
             MaterialTheme {
                 Column(
