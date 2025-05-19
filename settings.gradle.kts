@@ -24,6 +24,7 @@ pluginManagement {
 
         id("io.codearte.nexus-staging") version nexusStagingVersion
         id("io.github.gradle-nexus.publish-plugin") version nexusPublishVersion
+        id("org.jetbrains.kotlin.android") version "2.1.0"
     }
 }
 
@@ -66,6 +67,11 @@ project(":demo-plot-swing").projectDir = File("./demo/plot/swing")
 // Android SVG
 include("demo-svg-android")
 project(":demo-svg-android").projectDir = File("./demo/svg/android")
+
+// Android Plot Min
+include("demo-plot-android-min")
+project(":demo-plot-android-min").projectDir = File("./demo/plot/android-min")
+
 
 /*
 // Android Plot Min
