@@ -1,10 +1,11 @@
 /*
- * Copyright (c) 2024 JetBrains s.r.o.
+ * Copyright (c) 2025 JetBrains s.r.o.
  * Use of this source code is governed by the MIT license that can be found in the LICENSE file.
  */
 
-package org.jetbrains.letsPlot.skia.android.view
+package org.jetbrains.letsPlot.android.canvas
 
+/*
 import android.content.Context
 import android.view.GestureDetector
 import android.view.GestureDetector.SimpleOnGestureListener
@@ -12,6 +13,7 @@ import android.view.MotionEvent
 import org.jetbrains.letsPlot.commons.event.MouseEvent
 import org.jetbrains.letsPlot.commons.event.MouseEventSpec
 import org.jetbrains.letsPlot.commons.geometry.Vector
+import org.jetbrains.letsPlot.skia.android.view.SvgCanvasView
 
 class PlotGestureDetector(
     private val context: Context,
@@ -56,3 +58,4 @@ class PlotGestureDetector(
     }
 
 }
+*/

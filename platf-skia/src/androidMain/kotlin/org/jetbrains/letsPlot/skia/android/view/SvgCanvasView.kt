@@ -1,5 +1,5 @@
 package org.jetbrains.letsPlot.skia.android.view
-
+/*
 import android.content.Context
 import android.view.MotionEvent
 import android.view.ViewGroup
@@ -159,4 +159,4 @@ class SvgCanvasView(
         return true
     }
 
-}
+}*/

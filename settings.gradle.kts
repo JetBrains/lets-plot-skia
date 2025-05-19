@@ -67,7 +67,7 @@ project(":demo-plot-swing").projectDir = File("./demo/plot/swing")
 include("demo-svg-android")
 project(":demo-svg-android").projectDir = File("./demo/svg/android")
 
-
+/*
 // Android Plot Min
 include("demo-plot-compose-android-min")
 project(":demo-plot-compose-android-min").projectDir = File("./demo/plot/compose-android-min")
@@ -80,3 +80,4 @@ project(":demo-plot-compose-android-median").projectDir = File("./demo/plot/comp
 // Android Plot Redraw
 include("demo-plot-compose-android-redraw")
 project(":demo-plot-compose-android-redraw").projectDir = File("./demo/plot/compose-android-redraw")
+*/

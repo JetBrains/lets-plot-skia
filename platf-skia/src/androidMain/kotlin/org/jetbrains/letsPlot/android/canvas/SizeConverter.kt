@@ -1,16 +1,15 @@
 /*
- * Copyright (c) 2023 JetBrains s.r.o.
+ * Copyright (c) 2025 JetBrains s.r.o.
  * Use of this source code is governed by the MIT license that can be found in the LICENSE file.
  */
 
-package org.jetbrains.letsPlot.skia.android.builderHW
+package org.jetbrains.letsPlot.android.canvas
 
 import android.content.Context
 import android.content.res.Resources
 import android.util.TypedValue
 import org.jetbrains.letsPlot.commons.geometry.DoubleRectangle
 import org.jetbrains.letsPlot.commons.geometry.Rectangle
-
 
 internal object SizeConverter {
 

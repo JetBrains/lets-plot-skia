@@ -10,7 +10,7 @@ import org.jetbrains.letsPlot.commons.registration.Disposable
 import java.util.*
 
 
-class AndroidAnimationTimerPeer(
+internal class AndroidAnimationTimerPeer(
     val executor: (() -> Unit) -> Unit,
     private val updateRate: Int = 60
 ) : Disposable {

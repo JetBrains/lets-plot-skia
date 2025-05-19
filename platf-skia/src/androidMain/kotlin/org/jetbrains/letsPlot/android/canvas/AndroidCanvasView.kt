@@ -15,4 +15,12 @@ class AndroidCanvasView(
         canvas.drawBitmap(this.canvas.bitmap, 0f, 0f, null)
     }
 
+    override fun onMeasure(widthMeasureSpec: Int, heightMeasureSpec: Int) {
+        val density = resources.displayMetrics.density
+
+        setMeasuredDimension(
+            (canvas.size.x * density).toInt(),
+            (canvas.size.y * density).toInt()
+        )
+    }
 }

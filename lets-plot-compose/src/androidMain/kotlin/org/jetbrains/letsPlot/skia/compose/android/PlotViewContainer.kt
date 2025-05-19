@@ -21,8 +21,6 @@ import org.jetbrains.letsPlot.core.util.MonolithicCommon
 import org.jetbrains.letsPlot.core.util.PlotSizeHelper
 import org.jetbrains.letsPlot.core.util.sizing.SizingPolicy
 import org.jetbrains.letsPlot.intern.toSpec
-import org.jetbrains.letsPlot.raster.view.CanvasEventDispatcher
-import org.jetbrains.letsPlot.skia.android.view.SvgCanvasView
 import org.jetbrains.letsPlot.skia.builderLW.MonolithicSkiaLW
 import org.jetbrains.letsPlot.skia.builderLW.ViewModel
 import org.jetbrains.letsPlot.skia.compose.util.NaiveLogger
