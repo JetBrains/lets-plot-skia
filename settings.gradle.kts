@@ -65,12 +65,12 @@ include("demo-plot-swing")
 project(":demo-plot-swing").projectDir = File("./demo/plot/swing")
 
 // Android SVG
-include("demo-svg-android")
-project(":demo-svg-android").projectDir = File("./demo/svg/android")
+include("android-svg-view")
+project(":android-svg-view").projectDir = File("./demo/android-svg-view")
 
 // Android Plot Min
-include("demo-plot-android-min")
-project(":demo-plot-android-min").projectDir = File("./demo/plot/android-min")
+include("android-plot-view")
+project(":android-plot-view").projectDir = File("./demo/android-plot-view")
 
 
 /*
