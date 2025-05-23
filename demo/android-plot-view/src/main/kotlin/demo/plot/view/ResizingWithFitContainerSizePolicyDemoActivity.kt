@@ -8,15 +8,14 @@ package demo.plot.view
 import android.app.Activity
 import android.graphics.Color
 import android.os.Bundle
-import android.widget.FrameLayout
+import demo.plot.view.ResizingWithFixedPlotSizePolicyDemoActivity.Companion.setupResizableCanvas
 import org.jetbrains.letsPlot.android.canvas.CanvasView
 import org.jetbrains.letsPlot.core.util.sizing.SizingPolicy
 import org.jetbrains.letsPlot.intern.toSpec
 import org.jetbrains.letsPlot.raster.builder.MonolithicCanvas
 import plotSpec.DensitySpec
-import java.util.*
 
-class ResizingPlotDemoActivity: Activity() {
+class ResizingWithFitContainerSizePolicyDemoActivity: Activity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         val plotFigure = DensitySpec().createFigure()
@@ -30,31 +29,8 @@ class ResizingPlotDemoActivity: Activity() {
             setBackgroundColor(Color.GREEN)
         }
 
-        setContentView(view)
 
 
-        val resizeTask = object : TimerTask() {
-            var width = 500
-            var height = 500
-            var dv = 1
-
-            override fun run() {
-                runOnUiThread {
-
-                    if (width > 1000) {
-                        dv = -1
-                    }
-                    if (width < 500) {
-                        dv = 1
-                    }
-
-                    width += dv
-                    height += dv
-
-                    view.layoutParams = FrameLayout.LayoutParams(width, height)
-                }
-            }
-        }
-        Timer().schedule(resizeTask, 0, 10)
+        setupResizableCanvas(view)
     }
 }

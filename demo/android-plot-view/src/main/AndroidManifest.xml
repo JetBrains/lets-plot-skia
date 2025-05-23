@@ -21,7 +21,17 @@
         </activity>
 
         <activity
-            android:name="demo.plot.view.ResizingPlotDemoActivity"
+            android:name="demo.plot.view.ResizingWithFitContainerSizePolicyDemoActivity"
+            android:exported="true">
+        <intent-filter>
+            <action android:name="android.intent.action.MAIN" />
+
+            <category android:name="android.intent.category.LAUNCHER" />
+        </intent-filter>
+        </activity>
+
+        <activity
+            android:name="demo.plot.view.ResizingWithFixedPlotSizePolicyDemoActivity"
             android:exported="true">
         <intent-filter>
             <action android:name="android.intent.action.MAIN" />
