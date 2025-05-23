@@ -10,8 +10,6 @@ import android.content.Context
 import android.os.Handler
 import android.os.Looper
 import android.view.View
-import android.widget.FrameLayout
-import android.widget.RelativeLayout
 import org.jetbrains.letsPlot.commons.event.MouseEvent
 import org.jetbrains.letsPlot.commons.event.MouseEventSpec
 import org.jetbrains.letsPlot.commons.geometry.Vector
@@ -28,17 +26,7 @@ import java.util.logging.Logger
 private val LOG = Logger.getLogger("CanvasView")
 
 @SuppressLint("ViewConstructor")
-class CanvasView(context: Context) : RelativeLayout(context) {
-    init {
-        layoutParams = FrameLayout.LayoutParams(
-            LayoutParams.WRAP_CONTENT,
-            LayoutParams.WRAP_CONTENT
-        )
-    }
-
-    private val canvasControl: CanvasControl = AndroidCanvasControl(context)
-    private var figureRegistration: Registration = Registration.EMPTY
-
+class CanvasView(context: Context) : View(context) {
     var figure: CanvasFigure? = null
         set(fig) {
             if (field == fig) {
@@ -53,57 +41,86 @@ class CanvasView(context: Context) : RelativeLayout(context) {
 
         }
 
+    private val canvasControl = AndroidCanvasControl(context)
+    private var figureRegistration: Registration = Registration.EMPTY
+    private val sizeListeners = mutableListOf<(Vector) -> Unit>()
+
+    override fun onSizeChanged(w: Int, h: Int, oldw: Int, oldh: Int) {
+        super.onSizeChanged(w, h, oldw, oldh)
+        val density = resources.displayMetrics.density
+        val newSize = Vector((w / density).toInt(), (h / density).toInt())
+        sizeListeners.forEach { it(newSize) }
+    }
+
+    override fun onDraw(canvas: android.graphics.Canvas) {
+        super.onDraw(canvas)
+
+        canvasControl.children.forEach {
+            canvas.drawBitmap(it.bitmap, 0f, 0f, null)
+        }
+    }
+
+    //override fun onMeasure(widthMeasureSpec: Int, heightMeasureSpec: Int) {
+    //    val density = resources.displayMetrics.density
+    //    val width = 2000
+    //    val height = 2000
+//
+    //    println("onMeasure: $width x $height, density: $density")
+//
+    //    measureChild(
+    //        getChildAt(0),
+    //        MeasureSpec.makeMeasureSpec(width, MeasureSpec.EXACTLY),
+    //        MeasureSpec.makeMeasureSpec(height, MeasureSpec.EXACTLY)
+    //    )
+//
+    //    setMeasuredDimension(width, height)
+    //}
+
     inner class AndroidCanvasControl(
-        private val context: Context,
+        context: Context,
     ) : CanvasControl {
+        private val handler = Handler(Looper.getMainLooper())
+        private val animationTimerPeer = AndroidAnimationTimerPeer(executor = { code -> handler.post(code) })
+        val children = mutableListOf<AndroidCanvas>()
+
+        override fun createCanvas(size: Vector): Canvas {
+            return AndroidCanvas.create(size, pixelDensity)
+        }
+
         override val size: Vector
-            get() = TODO()
+            get() = Vector(
+                (this@CanvasView.width / pixelDensity).toInt(),
+                (this@CanvasView.height / pixelDensity).toInt()
+            )
 
         //private val mouseEventSource: MouseEventSource = AndroidMouseEventMapper(context)
         override val pixelDensity: Double = context.resources.displayMetrics.density.toDouble()
 
-        private val handler = Handler(Looper.getMainLooper())
-        private val animationTimerPeer = AndroidAnimationTimerPeer(executor = { code -> handler.post(code) })
-
-        private val myMappedCanvases = HashMap<Canvas, View>()
-
         override fun addChild(index: Int, canvas: Canvas) {
-            val canvasComponent = AndroidCanvasView(canvas as AndroidCanvas, context)
-            addView(canvasComponent, index)
+            children.add(canvas as AndroidCanvas)
             invalidate()
-            myMappedCanvases[canvas] = canvasComponent
         }
 
         override fun addChild(canvas: Canvas) {
-            addChild(childCount, canvas)
+            addChild(children.size, canvas)
         }
 
         override fun removeChild(canvas: Canvas) {
-            removeView(myMappedCanvases[canvas])
+            children.remove(canvas)
             invalidate()
-            myMappedCanvases.remove(canvas)
         }
 
-        override fun createAnimationTimer(eventHandler: AnimationProvider.AnimationEventHandler): AnimationProvider.AnimationTimer {
-            return object : AnimationProvider.AnimationTimer {
-                override fun start() {
-                    animationTimerPeer.addHandler(::handle)
-                }
-
-                override fun stop() {
-                    animationTimerPeer.removeHandler(::handle)
-                }
-
-                fun handle(millisTime: Long) {
-                    if (eventHandler.onEvent(millisTime)) {
-                        invalidate()
-                    }
+        override fun onResize(listener: (Vector) -> Unit): Registration {
+            sizeListeners.add(listener)
+            return object : Registration() {
+                override fun doRemove() {
+                    sizeListeners.remove(listener)
                 }
             }
         }
 
-        override fun createCanvas(size: Vector): Canvas {
-            return AndroidCanvas.create(size, pixelDensity)
+        override fun snapshot(): Canvas.Snapshot {
+            TODO("Not yet implemented")
         }
 
         override fun createSnapshot(
@@ -127,6 +144,19 @@ class CanvasView(context: Context) : RelativeLayout(context) {
 
         override fun <T> schedule(f: () -> T) {
             TODO("Not yet implemented")
+        }
+
+        override fun createAnimationTimer(eventHandler: AnimationProvider.AnimationEventHandler): AnimationProvider.AnimationTimer {
+            return object : AnimationProvider.AnimationTimer {
+                override fun start() = animationTimerPeer.addHandler(::handle)
+                override fun stop() = animationTimerPeer.removeHandler(::handle)
+
+                fun handle(millisTime: Long) {
+                    if (eventHandler.onEvent(millisTime)) {
+                        invalidate()
+                    }
+                }
+            }
         }
     }
 }

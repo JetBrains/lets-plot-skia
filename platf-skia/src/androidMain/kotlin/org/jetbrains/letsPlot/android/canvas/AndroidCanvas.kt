@@ -8,6 +8,7 @@ package org.jetbrains.letsPlot.android.canvas
 import android.graphics.Bitmap
 import org.jetbrains.letsPlot.commons.geometry.Vector
 import org.jetbrains.letsPlot.commons.intern.async.Async
+import org.jetbrains.letsPlot.commons.intern.async.Asyncs
 import org.jetbrains.letsPlot.core.canvas.Canvas
 import org.jetbrains.letsPlot.core.canvas.Context2d
 import kotlin.math.roundToInt
@@ -15,32 +16,35 @@ import kotlin.math.roundToInt
 class AndroidCanvas(
     val bitmap: Bitmap,
     override val size: Vector,
-    private val pixelDensity: Double
+    pixelDensity: Double
 ) : Canvas {
     companion object {
         fun create(size: Vector, pixelDensity: Double): AndroidCanvas {
-            val s = if (size == Vector.ZERO) {
-                Vector(1, 1)
-            } else size
+            val w = (size.x * pixelDensity).roundToInt().coerceAtLeast(1)
+            val h = (size.y * pixelDensity).roundToInt().coerceAtLeast(1)
 
-            val bitmap = Bitmap.createBitmap(
-                (s.x * pixelDensity).roundToInt(),
-                (s.y * pixelDensity).roundToInt(),
-                Bitmap.Config.ARGB_8888
-            )
+            val bitmap = Bitmap.createBitmap(w, h, Bitmap.Config.ARGB_8888)
 
-            return AndroidCanvas(bitmap, s, pixelDensity)
+            return AndroidCanvas(bitmap, Vector(w, h), pixelDensity)
         }
     }
-
 
     override val context2d: Context2d = AndroidContext2d(bitmap, pixelDensity)
 
     override fun immidiateSnapshot(): Canvas.Snapshot {
-        TODO("Not yet implemented")
+        return AndroidSnapshot(bitmap.copy(this.bitmap.config, false))
     }
 
     override fun takeSnapshot(): Async<Canvas.Snapshot> {
-        TODO("Not yet implemented")
+        return Asyncs.constant(immidiateSnapshot())
+    }
+
+    class AndroidSnapshot(
+        val bitmap: Bitmap
+    ) : Canvas.Snapshot {
+        override fun copy(): Canvas.Snapshot {
+            val newBitmap = bitmap.copy(bitmap.config, false)
+            return AndroidSnapshot(newBitmap)
+        }
     }
 }

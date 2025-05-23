@@ -20,6 +20,16 @@
         </intent-filter>
         </activity>
 
+        <activity
+            android:name="demo.plot.view.ResizingPlotDemoActivity"
+            android:exported="true">
+        <intent-filter>
+            <action android:name="android.intent.action.MAIN" />
+
+            <category android:name="android.intent.category.LAUNCHER" />
+        </intent-filter>
+        </activity>
+
 
         <!-- android:theme="@style/Theme.AppCompat.Light"> -->
         <!-- android:theme="@style/Theme.AppCompat.Light.NoActionBar"> -->
@@ -32,6 +42,7 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+
     </application>
 
 </manifest>

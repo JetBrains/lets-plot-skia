@@ -7,6 +7,7 @@ import org.jetbrains.letsPlot.commons.geometry.AffineTransform
 import org.jetbrains.letsPlot.commons.geometry.DoubleRectangle
 import org.jetbrains.letsPlot.commons.values.Color
 import org.jetbrains.letsPlot.core.canvas.*
+import org.jetbrains.letsPlot.core.canvas.Canvas.Snapshot
 
 class AndroidContext2d(
     bitmap: Bitmap,
@@ -31,6 +32,16 @@ class AndroidContext2d(
         style = Paint.Style.FILL
         isAntiAlias = true
         color = 0xFFFFFFFF.toInt()
+    }
+
+    override fun drawImage(snapshot: Snapshot) {
+        snapshot as AndroidCanvas.AndroidSnapshot
+        nativeCanvas.drawBitmap(snapshot.bitmap, 0f, 0f, null)
+    }
+
+    override fun drawImage(snapshot: Snapshot, x: Double, y: Double) {
+        snapshot as AndroidCanvas.AndroidSnapshot
+        nativeCanvas.drawBitmap(snapshot.bitmap, x.toFloat(), y.toFloat(), null)
     }
 
     override fun save() {
