@@ -11,6 +11,7 @@ import android.os.Handler
 import android.os.Looper
 import android.view.View
 import org.jetbrains.letsPlot.commons.event.MouseEvent
+import org.jetbrains.letsPlot.commons.event.MouseEventSource
 import org.jetbrains.letsPlot.commons.event.MouseEventSpec
 import org.jetbrains.letsPlot.commons.geometry.Vector
 import org.jetbrains.letsPlot.commons.intern.async.Async
@@ -44,6 +45,7 @@ class CanvasView(context: Context) : View(context) {
     private val canvasControl = AndroidCanvasControl(context)
     private var figureRegistration: Registration = Registration.EMPTY
     private val sizeListeners = mutableListOf<(Vector) -> Unit>()
+    val mouseEventSource: MouseEventSource = AndroidMouseEventMapper(this, context)
 
     override fun onSizeChanged(w: Int, h: Int, oldw: Int, oldh: Int) {
         super.onSizeChanged(w, h, oldw, oldh)
@@ -138,8 +140,7 @@ class CanvasView(context: Context) : View(context) {
             eventSpec: MouseEventSpec,
             eventHandler: EventHandler<MouseEvent>
         ): Registration {
-            LOG.fine("addEventHandler $eventSpec")
-            return Registration.EMPTY  //mouseEventSource.addEventHandler(eventSpec, eventHandler)
+            return mouseEventSource.addEventHandler(eventSpec, eventHandler)
         }
 
         override fun <T> schedule(f: () -> T) {

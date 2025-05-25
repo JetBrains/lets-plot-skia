@@ -5,43 +5,59 @@
 
 package org.jetbrains.letsPlot.android.canvas
 
-/*
+
 import android.content.Context
 import android.view.GestureDetector
 import android.view.GestureDetector.SimpleOnGestureListener
 import android.view.MotionEvent
+import android.view.View
 import org.jetbrains.letsPlot.commons.event.MouseEvent
+import org.jetbrains.letsPlot.commons.event.MouseEventPeer
+import org.jetbrains.letsPlot.commons.event.MouseEventSource
 import org.jetbrains.letsPlot.commons.event.MouseEventSpec
 import org.jetbrains.letsPlot.commons.geometry.Vector
-import org.jetbrains.letsPlot.skia.android.view.SvgCanvasView
+import org.jetbrains.letsPlot.commons.intern.observable.event.EventHandler
+import org.jetbrains.letsPlot.commons.registration.Registration
 
-class PlotGestureDetector(
+class AndroidMouseEventMapper(
+    eventSource: View,
     private val context: Context,
-    private val svgPanel: SvgCanvasView
-) {
+) : MouseEventSource {
+    private val mouseEventPeer = MouseEventPeer()
+
+    override fun addEventHandler(eventSpec: MouseEventSpec, eventHandler: EventHandler<MouseEvent>): Registration {
+        return mouseEventPeer.addEventHandler(eventSpec, eventHandler)
+    }
+
+    init {
+        eventSource.setOnTouchListener { _, event ->
+            onTouchEvent(event)
+        }
+    }
+
     private val gestureDetector = GestureDetector(context, object : SimpleOnGestureListener() {
         override fun onDown(e: MotionEvent): Boolean {
             val coord = translateMouseEvent(e)
-            svgPanel.eventDispatcher?.dispatchMouseEvent(MouseEventSpec.MOUSE_PRESSED, MouseEvent.leftButton(coord))
+            mouseEventPeer.dispatch(MouseEventSpec.MOUSE_PRESSED, MouseEvent.leftButton(coord))
             return true
         }
 
         override fun onSingleTapUp(e: MotionEvent): Boolean {
             val coord = translateMouseEvent(e)
-            svgPanel.eventDispatcher?.dispatchMouseEvent(MouseEventSpec.MOUSE_MOVED, MouseEvent.noButton(coord)) // to show tooltip
-            svgPanel.eventDispatcher?.dispatchMouseEvent(MouseEventSpec.MOUSE_CLICKED, MouseEvent.leftButton(coord))
+            mouseEventPeer.dispatch(MouseEventSpec.MOUSE_MOVED, MouseEvent.noButton(coord)) // to show tooltip
+            mouseEventPeer.dispatch(MouseEventSpec.MOUSE_CLICKED, MouseEvent.leftButton(coord))
             return true
         }
 
         override fun onDoubleTap(e: MotionEvent): Boolean {
             val coord = translateMouseEvent(e)
-            svgPanel.eventDispatcher?.dispatchMouseEvent(MouseEventSpec.MOUSE_DOUBLE_CLICKED, MouseEvent.leftButton(coord))
+            mouseEventPeer.dispatch(MouseEventSpec.MOUSE_DOUBLE_CLICKED, MouseEvent.leftButton(coord))
             return true
         }
 
         override fun onScroll(e1: MotionEvent?, e2: MotionEvent, distanceX: Float, distanceY: Float): Boolean {
             val coord = translateMouseEvent(e2)
-            svgPanel.eventDispatcher?.dispatchMouseEvent(MouseEventSpec.MOUSE_MOVED, MouseEvent.leftButton(coord))
+            mouseEventPeer.dispatch(MouseEventSpec.MOUSE_MOVED, MouseEvent.leftButton(coord))
             return true
         }
     })
@@ -52,10 +68,9 @@ class PlotGestureDetector(
         return v
     }
 
-    fun onTouchEvent(event: MotionEvent): Boolean {
+    private fun onTouchEvent(event: MotionEvent): Boolean {
         gestureDetector.onTouchEvent(event)
         return true
     }
 
 }
-*/
