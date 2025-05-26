@@ -24,6 +24,7 @@ pluginManagement {
 
         id("io.codearte.nexus-staging") version nexusStagingVersion
         id("io.github.gradle-nexus.publish-plugin") version nexusPublishVersion
+        id("org.jetbrains.kotlin.android") version "2.1.0"
     }
 }
 
@@ -63,12 +64,16 @@ project(":demo-svg-swing").projectDir = File("./demo/svg/swing")
 include("demo-plot-swing")
 project(":demo-plot-swing").projectDir = File("./demo/plot/swing")
 
-/*
 // Android SVG
-include("demo-svg-android")
-project(":demo-svg-android").projectDir = File("./demo/svg/android")
+include("android-svg-view")
+project(":android-svg-view").projectDir = File("./demo/android-svg-view")
+
+// Android Plot Min
+include("android-plot-view")
+project(":android-plot-view").projectDir = File("./demo/android-plot-view")
 
 
+/*
 // Android Plot Min
 include("demo-plot-compose-android-min")
 project(":demo-plot-compose-android-min").projectDir = File("./demo/plot/compose-android-min")
@@ -77,7 +82,6 @@ project(":demo-plot-compose-android-min").projectDir = File("./demo/plot/compose
 // Android Plot Median
 include("demo-plot-compose-android-median")
 project(":demo-plot-compose-android-median").projectDir = File("./demo/plot/compose-android-median")
-
 
 // Android Plot Redraw
 include("demo-plot-compose-android-redraw")
