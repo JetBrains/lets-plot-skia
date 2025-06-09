@@ -9,6 +9,7 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.awt.SwingPanel
@@ -55,14 +56,15 @@ actual fun PlotPanel(
         }
     }
 
-    Column {
+    Column(modifier = modifier) {
         if (plotFigureModel != null && GG_TOOLBAR in processedPlotSpec) {
             PlotToolbar(plotFigureModel!!)
         }
 
         Box(
-            modifier = Modifier
-                .fillMaxSize()
+            modifier = modifier
+                .weight(1f) // Take remaining vertical space
+                .fillMaxWidth() // Fill available width
                 .onSizeChanged { newSize ->
                     panelSize = DoubleVector(newSize.width / density, newSize.height / density)
                 }
@@ -70,7 +72,7 @@ actual fun PlotPanel(
         ) {
             SwingPanel(
                 background = Color.White,
-                modifier = modifier,
+                modifier = Modifier.fillMaxSize(),
                 factory = { plotContainer },
                 update = { plotViewContainer ->
                     LOG.print("SwingPanel.update()")

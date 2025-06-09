@@ -8,12 +8,14 @@ package plotSpec
 import demoData.AutoMpg
 import org.jetbrains.letsPlot.Figure
 import org.jetbrains.letsPlot.geom.geomPoint
+import org.jetbrains.letsPlot.intern.Plot
 import org.jetbrains.letsPlot.label.labs
 import org.jetbrains.letsPlot.letsPlot
 import org.jetbrains.letsPlot.scale.scaleColorManual
 import org.jetbrains.letsPlot.themes.elementMarkdown
 import org.jetbrains.letsPlot.themes.elementText
 import org.jetbrains.letsPlot.themes.theme
+import org.jetbrains.letsPlot.tooltips.layerTooltips
 
 class MarkdownSpec : PlotDemoSpec {
     override fun createFigureList(): List<Figure> {
@@ -22,9 +24,9 @@ class MarkdownSpec : PlotDemoSpec {
         )
     }
 
-    fun mpg(): Figure {
+    fun mpg(): Plot {
         return letsPlot(AutoMpg.map()) +
-                geomPoint(size=8) { x="engine displacement (cu. inches)"; y="miles per gallon"; color="number of cylinders" }  +
+                geomPoint(size=8, tooltips = layerTooltips().line("@{vehicle name}")) { x="engine displacement (cu. inches)"; y="miles per gallon"; color="number of cylinders" }  +
                 scaleColorManual(listOf("#66c2a5", "#fc8d62", "#8da0cb"), guide="none")  +
 
                 // Enable Markdown in all titles

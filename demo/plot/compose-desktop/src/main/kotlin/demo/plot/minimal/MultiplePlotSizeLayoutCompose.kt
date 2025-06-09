@@ -12,6 +12,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.Window
 import androidx.compose.ui.window.application
 import org.jetbrains.letsPlot.skia.compose.PlotPanel
+import plotSpec.BarPlotSpec
 import plotSpec.DensitySpec
 
 fun main() = application {
@@ -22,7 +23,7 @@ fun main() = application {
             ) {
 
                 PlotPanel(
-                    figure = DensitySpec().createFigure(),
+                    figure = BarPlotSpec().createFigure(),
                     modifier = Modifier.height(100.dp).width(100.dp)
                 ) { computationMessages ->
                     computationMessages.forEach { println("[DEMO APP MESSAGE] $it") }

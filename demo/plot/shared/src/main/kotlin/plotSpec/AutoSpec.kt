@@ -9,6 +9,7 @@ import demoData.AutoMpg
 import org.jetbrains.letsPlot.Figure
 import org.jetbrains.letsPlot.geom.geomLabel
 import org.jetbrains.letsPlot.geom.geomPoint
+import org.jetbrains.letsPlot.intern.Plot
 import org.jetbrains.letsPlot.letsPlot
 
 class AutoSpec : PlotDemoSpec {
@@ -18,7 +19,7 @@ class AutoSpec : PlotDemoSpec {
         )
     }
 
-    fun scatter(): Figure {
+    fun scatter(): Plot {
         return letsPlot(AutoMpg.map()) + geomPoint {
             x = "engine horsepower"
             y = "miles per gallon"
