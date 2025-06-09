@@ -13,3 +13,5 @@
 ### Changed
 
 ### Fixed
+- The problem occurs when I put two PlotPanels in Row or Column.
+  [[#32](https://github.com/JetBrains/lets-plot-skia/issues/32)].
