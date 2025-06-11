@@ -18,7 +18,7 @@
 
 ## Dependencies
 
-See release notes for the latest version of the dependencies: [v2.2.1](https://github.com/JetBrains/lets-plot-skia/releases/tag/v2.2.1)
+See release notes for the latest version of the dependencies: [v2.2.1](https://github.com/JetBrains/lets-plot-skia/blob/main/CHANGELOG.md#compatibility)
 
 ### Compose Desktop
 
