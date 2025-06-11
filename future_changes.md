@@ -1,4 +1,4 @@
-## [2.2.1] - 2025-mm-dd
+## [2.2.2] - 2025-mm-dd
 
 ### Compatibility
 
@@ -13,5 +13,3 @@
 ### Changed
 
 ### Fixed
-- The problem occurs when I put two PlotPanels in Row or Column
-  [[#32](https://github.com/JetBrains/lets-plot-skia/issues/32)].

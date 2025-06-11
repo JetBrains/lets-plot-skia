@@ -7,13 +7,14 @@
 - Update CHANGELOG.md
 - Update the "Dependencies" section in README.md
 
-##### 2. Set release version
+##### 2. Set the release version
 
 - remove _"-SNAPSHOT"_ qualifier (the 'version' property in the root 'build.gradle.kts').
 
 ##### 3. Build and release artifacts to Sonatype repository / Maven Central
 
-Make sure that JNI libraries in the `skiko-jni-libs` directory are up-to-date and match the version of the `Skiko` library used in the `Compose Multiplatform`. Refer [DEVELOPMENT.md](DEVELOPMENT.md) for details.
+Make sure that JNI libraries in the `skiko-jni-libs` directory are up to date and 
+match the version of the `Skiko` library used in the `Compose Multiplatform`. Refer [DEVELOPMENT.md](DEVELOPMENT.md) for details.
 
 - `./gradlew clean`
 - `./gradlew build`

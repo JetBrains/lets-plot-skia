@@ -18,7 +18,7 @@
 
 ## Dependencies
 
-See release notes for the latest version of the dependencies: [v2.1.1](https://github.com/JetBrains/lets-plot-skia/releases/tag/v2.1.1)
+See release notes for the latest version of the dependencies: [v2.2.1](https://github.com/JetBrains/lets-plot-skia/releases/tag/v2.2.1)
 
 ### Compose Desktop
 
@@ -27,11 +27,11 @@ dependencies {
     ...
 
     // Lets-Plot Kotlin API 
-    implementation("org.jetbrains.lets-plot:lets-plot-kotlin-kernel:4.9.3")
+    implementation("org.jetbrains.lets-plot:lets-plot-kotlin-kernel:4.10.0")
 
     // Lets-Plot Multiplatform 
-    implementation("org.jetbrains.lets-plot:lets-plot-common:4.5.2")
-    implementation("org.jetbrains.lets-plot:platf-awt:4.5.2")
+    implementation("org.jetbrains.lets-plot:lets-plot-common:4.6.2")
+    implementation("org.jetbrains.lets-plot:platf-awt:4.6.2")
 
     // Lets-Plot Skia Frontend
     implementation("org.jetbrains.lets-plot:lets-plot-compose:2.1.1")
@@ -50,10 +50,10 @@ dependencies {
     implementation("org.jetbrains.skiko:skiko-android:0.8.4")
 
     // Lets-Plot Kotlin API 
-    implementation("org.jetbrains.lets-plot:lets-plot-kotlin-kernel:4.9.3")
+    implementation("org.jetbrains.lets-plot:lets-plot-kotlin-kernel:4.10.0")
 
     // Lets-Plot Multiplatform 
-    implementation("org.jetbrains.lets-plot:lets-plot-common:4.5.2")
+    implementation("org.jetbrains.lets-plot:lets-plot-common:4.6.2")
 
     // Lets-Plot Skia Frontend
     implementation("org.jetbrains.lets-plot:lets-plot-compose:2.0.0")
@@ -73,11 +73,11 @@ dependencies {
     implementation("org.jetbrains.skiko:skiko-awt-runtime-macos-x64:0.8.4")
 
     // Lets-Plot Kotlin API 
-    implementation("org.jetbrains.lets-plot:lets-plot-kotlin-kernel:4.9.3")
+    implementation("org.jetbrains.lets-plot:lets-plot-kotlin-kernel:4.10.0")
 
     // Lets-Plot Multiplatform 
-    implementation("org.jetbrains.lets-plot:lets-plot-common:4.5.2")
-    implementation("org.jetbrains.lets-plot:platf-awt:4.5.2")
+    implementation("org.jetbrains.lets-plot:lets-plot-common:4.6.2")
+    implementation("org.jetbrains.lets-plot:platf-awt:4.6.2")
 
     // Lets-Plot Skia Frontend
     implementation("org.jetbrains.lets-plot:lets-plot-swing-skia:2.1.1")
