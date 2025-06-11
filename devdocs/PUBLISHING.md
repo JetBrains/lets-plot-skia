@@ -2,14 +2,14 @@
 
 > **Note**: our custom local Maven repository is located at `<project root>/.maven-publish-dev-repo`.
 
-> **Note**: set **version** to "0.0.0-SNAPSHOT".
+> **Note**: set **version** to "0.0.0-SNAPSHOT"
 
 `./gradlew publishAllPublicationsToMavenLocalRepository`
 
 
 ### Publishing to Sonatype Maven Repository
 
-> **Note**: When publishing a "Release" version to Sonatype, PGP signature is required.
+> **Note**: When publishing a "Release" version to Sonatype, a PGP signature is required.
 >
 > See: https://central.sonatype.org/pages/working-with-pgp-signatures.html
         
@@ -29,7 +29,7 @@ Specify "x.y.z-SNAPSHOT" version in `build.gradle.kts` file.
 `./gradlew publishAllPublicationsToSonatypeRepository`
 
 > You can find published SNAPSHOT artifacts here https://oss.sonatype.org/index.html#view-repositories;snapshots~browsestorage \
-> In the "Browse Storage" tab enter ‘Path lookup’: org/jetbrains/lets-plot
+> In the "Browse Storage" tab, enter ‘Path lookup’: org/jetbrains/lets-plot
 
 
 #### "Release" version

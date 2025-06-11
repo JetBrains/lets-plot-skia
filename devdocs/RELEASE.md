@@ -23,7 +23,7 @@ Make sure that JNI libraries in the `skiko-jni-libs` directory are up-to-date an
 
 > **Note**: For more details see [PUBLISHING.md](PUBLISHING.md).
 
-##### 4. Prepare to the next dev cycle
+##### 4. Prepare for the next dev cycle
 
 - Increment the version and add _"-SNAPSHOT"_ qualifier (the 'version' property in the root 'build.gradle.kts')
 - Push all to git and add the version git tag:
