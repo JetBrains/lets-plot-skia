@@ -17,6 +17,7 @@ import org.jetbrains.letsPlot.commons.geometry.Vector
 import org.jetbrains.letsPlot.commons.intern.async.Async
 import org.jetbrains.letsPlot.commons.intern.observable.event.EventHandler
 import org.jetbrains.letsPlot.commons.registration.Registration
+import org.jetbrains.letsPlot.commons.values.Bitmap
 import org.jetbrains.letsPlot.core.canvas.AnimationProvider
 import org.jetbrains.letsPlot.core.canvas.Canvas
 import org.jetbrains.letsPlot.core.canvas.CanvasControl
@@ -89,6 +90,18 @@ class CanvasView(context: Context) : View(context) {
             return AndroidCanvas.create(size, pixelDensity)
         }
 
+        override fun createSnapshot(bitmap: Bitmap): Canvas.Snapshot {
+            TODO("Not yet implemented")
+        }
+
+        override fun decodeDataImageUrl(dataUrl: String): Async<Canvas.Snapshot> {
+            TODO("Not yet implemented")
+        }
+
+        override fun decodePng(png: ByteArray, size: Vector): Async<Canvas.Snapshot> {
+            TODO("Not yet implemented")
+        }
+
         override val size: Vector
             get() = Vector(
                 (this@CanvasView.width / pixelDensity).toInt(),
@@ -122,17 +135,6 @@ class CanvasView(context: Context) : View(context) {
         }
 
         override fun snapshot(): Canvas.Snapshot {
-            TODO("Not yet implemented")
-        }
-
-        override fun createSnapshot(
-            bytes: ByteArray,
-            size: Vector
-        ): Async<Canvas.Snapshot> {
-            TODO("Not yet implemented")
-        }
-
-        override fun createSnapshot(dataUrl: String): Async<Canvas.Snapshot> {
             TODO("Not yet implemented")
         }
 

@@ -21,9 +21,6 @@ android {
         versionCode = 1
         versionName = "1.0"
 
-        ndk {
-            abiFilters += listOf("x86_64", "arm64-v8a")
-        }
     }
 
     buildTypes {
@@ -46,6 +43,8 @@ val letsPlotVersion = extra["letsPlot.version"] as String
 val letsPlotKotlinVersion = extra["letsPlotKotlin.version"] as String
 
 dependencies {
+    implementation("androidx.constraintlayout:constraintlayout:2.2.1")
+
     implementation(project(":platf-skia"))
     implementation(project(":demo-plot-shared"))
     implementation("org.jetbrains.lets-plot:lets-plot-kotlin-kernel:${letsPlotKotlinVersion}")

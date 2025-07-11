@@ -7,8 +7,6 @@ package org.jetbrains.letsPlot.android.canvas
 
 import android.graphics.Bitmap
 import org.jetbrains.letsPlot.commons.geometry.Vector
-import org.jetbrains.letsPlot.commons.intern.async.Async
-import org.jetbrains.letsPlot.commons.intern.async.Asyncs
 import org.jetbrains.letsPlot.core.canvas.Canvas
 import org.jetbrains.letsPlot.core.canvas.Context2d
 import kotlin.math.roundToInt
@@ -31,19 +29,29 @@ class AndroidCanvas(
 
     override val context2d: Context2d = AndroidContext2d(bitmap, pixelDensity)
 
-    override fun immidiateSnapshot(): Canvas.Snapshot {
+    override fun takeSnapshot(): Canvas.Snapshot {
         return AndroidSnapshot(bitmap.copy(this.bitmap.config, false))
     }
 
-    override fun takeSnapshot(): Async<Canvas.Snapshot> {
-        return Asyncs.constant(immidiateSnapshot())
-    }
-
     class AndroidSnapshot(
-        val bitmap: Bitmap
+        val androidBitmap: Bitmap
     ) : Canvas.Snapshot {
+        override val bitmap: org.jetbrains.letsPlot.commons.values.Bitmap
+            get() {
+                val argbInts = IntArray(androidBitmap.width * androidBitmap.height)
+                androidBitmap.getPixels(argbInts, 0, androidBitmap.width, 0, 0, androidBitmap.width, androidBitmap.height)
+                return org.jetbrains.letsPlot.commons.values.Bitmap(
+                    androidBitmap.width,
+                    androidBitmap.height,
+                    argbInts
+                )
+            }
+
+        override val size: Vector
+            get() = Vector(androidBitmap.width, androidBitmap.height)
+
         override fun copy(): Canvas.Snapshot {
-            val newBitmap = bitmap.copy(bitmap.config, false)
+            val newBitmap = androidBitmap.copy(androidBitmap.config, false)
             return AndroidSnapshot(newBitmap)
         }
     }

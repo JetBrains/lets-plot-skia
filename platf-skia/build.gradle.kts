@@ -9,7 +9,7 @@ import java.util.*
 
 plugins {
     kotlin("multiplatform")
-    //id("com.android.library")
+    id("com.android.library")
     `maven-publish`
     signing
 }
@@ -40,9 +40,9 @@ kotlin {
         }
     }
 
-//    androidTarget {
-//        publishLibraryVariants("release")
-//    }
+    androidTarget {
+        publishLibraryVariants("release")
+    }
 
     sourceSets {
         commonMain {
@@ -59,7 +59,6 @@ kotlin {
 
         named("jvmMain") {
             dependencies {
-//                compileOnly("org.jetbrains.skiko:skiko-awt:$skikoVersion")
                 compileOnly("io.github.microutils:kotlin-logging-jvm:$kotlinLoggingVersion")
             }
         }
@@ -76,71 +75,71 @@ kotlin {
             }
         }
 
-//        named("androidMain") {
-//            dependencies {
-//                compileOnly("org.jetbrains.lets-plot:commons:$letsPlotVersion")
-//                compileOnly("org.jetbrains.lets-plot:datamodel:$letsPlotVersion")
-//                compileOnly("org.jetbrains.lets-plot:canvas:$letsPlotVersion")
-//                compileOnly("org.jetbrains.lets-plot:plot-base:$letsPlotVersion")
-//                compileOnly("org.jetbrains.lets-plot:plot-builder:$letsPlotVersion")
-//                compileOnly("org.jetbrains.lets-plot:plot-stem:$letsPlotVersion")
-//                compileOnly("org.jetbrains.lets-plot:plot-raster:$letsPlotVersion")
-//            }
-//        }
+        named("androidMain") {
+            dependencies {
+                compileOnly("org.jetbrains.lets-plot:commons:$letsPlotVersion")
+                compileOnly("org.jetbrains.lets-plot:datamodel:$letsPlotVersion")
+                compileOnly("org.jetbrains.lets-plot:canvas:$letsPlotVersion")
+                compileOnly("org.jetbrains.lets-plot:plot-base:$letsPlotVersion")
+                compileOnly("org.jetbrains.lets-plot:plot-builder:$letsPlotVersion")
+                compileOnly("org.jetbrains.lets-plot:plot-stem:$letsPlotVersion")
+                compileOnly("org.jetbrains.lets-plot:plot-raster:$letsPlotVersion")
+            }
+        }
 
-//        named("androidInstrumentedTest") {
-//            dependencies {
-//                implementation(kotlin("test"))
-//                implementation("androidx.test.ext:junit:1.1.5")
-//                implementation("androidx.test.espresso:espresso-core:3.5.1")
-//
-//                implementation("org.assertj:assertj-core:$assertjVersion")
-//                implementation("org.jetbrains.lets-plot:commons:$letsPlotVersion")
-//                implementation("org.jetbrains.lets-plot:datamodel:$letsPlotVersion")
-//                implementation("org.jetbrains.lets-plot:canvas:$letsPlotVersion")
-//                implementation("org.jetbrains.lets-plot:plot-base:$letsPlotVersion")
-//                implementation("org.jetbrains.lets-plot:plot-builder:$letsPlotVersion")
-//                implementation("org.jetbrains.lets-plot:plot-stem:$letsPlotVersion")
-//                implementation("org.jetbrains.lets-plot:plot-raster:$letsPlotVersion")
-//            }
-//        }
+        named("androidInstrumentedTest") {
+            dependencies {
+                implementation(kotlin("test"))
+                implementation("androidx.test.ext:junit:1.1.5")
+                implementation("androidx.test.espresso:espresso-core:3.5.1")
+
+                implementation("org.assertj:assertj-core:$assertjVersion")
+                implementation("org.jetbrains.lets-plot:commons:$letsPlotVersion")
+                implementation("org.jetbrains.lets-plot:datamodel:$letsPlotVersion")
+                implementation("org.jetbrains.lets-plot:canvas:$letsPlotVersion")
+                implementation("org.jetbrains.lets-plot:plot-base:$letsPlotVersion")
+                implementation("org.jetbrains.lets-plot:plot-builder:$letsPlotVersion")
+                implementation("org.jetbrains.lets-plot:plot-stem:$letsPlotVersion")
+                implementation("org.jetbrains.lets-plot:plot-raster:$letsPlotVersion")
+            }
+        }
     }
 }
 
-//android {
-//    namespace = "org.jetbrains.letsPlot.android.canvas"
-//
-//    compileSdk = (findProperty("android.compileSdk") as String).toInt()
-//
-//    sourceSets["main"].manifest.srcFile("src/androidMain/AndroidManifest.xml")
-//
-//    defaultConfig {
-//        minSdk = (findProperty("android.minSdk") as String).toInt()
-//        testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
-//    }
-//
-//    testOptions {
-//
-//        //    animationsDisabled = true
-//    //    execution = "ANDROIDX_TEST_ORCHESTRATOR"
-//    }
-//
-//    buildTypes {
-//        getByName("release") {
-//            isMinifyEnabled = false // true - error: when compiling demo cant resolve classes
-////            proguardFiles(getDefaultProguardFile("proguard-android.txt"), "proguard-rules.pro")
-//        }
-//    }
-//
-//    compileOptions {
-//        sourceCompatibility = JavaVersion.VERSION_11
-//        targetCompatibility = JavaVersion.VERSION_11
-//    }
-//
-//    kotlin {
-//        jvmToolchain(11)
-//    }
-//}
+android {
+    namespace = "org.jetbrains.letsPlot.android.canvas"
+
+    compileSdk = (findProperty("android.compileSdk") as String).toInt()
+
+    sourceSets["main"].manifest.srcFile("src/androidMain/AndroidManifest.xml")
+
+    defaultConfig {
+        minSdk = (findProperty("android.minSdk") as String).toInt()
+        testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
+    }
+
+    testOptions {
+
+        //    animationsDisabled = true
+    //    execution = "ANDROIDX_TEST_ORCHESTRATOR"
+    }
+
+    buildTypes {
+        getByName("release") {
+            isMinifyEnabled = false // true - error: when compiling demo cant resolve classes
+//            proguardFiles(getDefaultProguardFile("proguard-android.txt"), "proguard-rules.pro")
+        }
+    }
+
+    compileOptions {
+        sourceCompatibility = JavaVersion.VERSION_11
+        targetCompatibility = JavaVersion.VERSION_11
+    }
+
+    kotlin {
+        jvmToolchain(11)
+    }
+}
 
 tasks.register("pullDebugImages") {
     doLast {

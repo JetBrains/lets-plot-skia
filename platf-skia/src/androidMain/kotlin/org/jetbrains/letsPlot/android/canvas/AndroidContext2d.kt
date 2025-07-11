@@ -36,12 +36,12 @@ class AndroidContext2d(
 
     override fun drawImage(snapshot: Snapshot) {
         snapshot as AndroidCanvas.AndroidSnapshot
-        nativeCanvas.drawBitmap(snapshot.bitmap, 0f, 0f, null)
+        nativeCanvas.drawBitmap(snapshot.androidBitmap, 0f, 0f, null)
     }
 
     override fun drawImage(snapshot: Snapshot, x: Double, y: Double) {
         snapshot as AndroidCanvas.AndroidSnapshot
-        nativeCanvas.drawBitmap(snapshot.bitmap, x.toFloat(), y.toFloat(), null)
+        nativeCanvas.drawBitmap(snapshot.androidBitmap, x.toFloat(), y.toFloat(), null)
     }
 
     override fun save() {
