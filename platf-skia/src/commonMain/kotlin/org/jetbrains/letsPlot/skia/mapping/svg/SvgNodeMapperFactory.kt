@@ -8,6 +8,7 @@ package org.jetbrains.letsPlot.skia.mapping.svg
 import org.jetbrains.letsPlot.commons.encoding.Base64
 import org.jetbrains.letsPlot.commons.encoding.RGBEncoder
 import org.jetbrains.letsPlot.commons.logging.PortableLogging
+import org.jetbrains.letsPlot.commons.values.Bitmap
 import org.jetbrains.letsPlot.datamodel.mapping.framework.Mapper
 import org.jetbrains.letsPlot.datamodel.mapping.framework.MapperFactory
 import org.jetbrains.letsPlot.datamodel.svg.dom.*
@@ -41,17 +42,9 @@ internal class SvgNodeMapperFactory(private val peer: SvgSkiaPeer) : MapperFacto
     }
 
     object SkiaRGBEncoder : RGBEncoder {
-        override fun toDataUrl(width: Int, height: Int, argbValues: IntArray): String {
-            val bytes = argbValues.flatMap {
-                listOf(
-                    (it shr 0) and 0xff,
-                    (it shr 8) and 0xff,
-                    (it shr 16) and 0xff,
-                    (it shr 24) and 0xff,
-                ).map(Int::toByte)
-            }.toByteArray()
-
-            val image = SkImage.makeRaster(ImageInfo.makeN32(width, height, ColorAlphaType.UNPREMUL), bytes, width * 4)
+        override fun toDataUrl(bitmap: Bitmap): String {
+            val bytes = bitmap.rgbaBytes()
+            val image = SkImage.makeRaster(ImageInfo.makeN32(bitmap.width, bitmap.height, ColorAlphaType.UNPREMUL), bytes, bitmap.width * 4)
             val png = image.encodeToData(EncodedImageFormat.PNG)
 
             if (png == null) {
