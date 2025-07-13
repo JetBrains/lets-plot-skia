@@ -187,6 +187,15 @@ class AndroidContext2d(
         nativeCanvas.drawPath(drawPath(stateDelegate.getCurrentPath(), inverseCtmTransform), fillPaint)
     }
 
+    override fun fillEvenOdd() {
+        // Make ctm identity. null for degenerate case, e.g., scale(0, 0) - skip drawing.
+        val inverseCtmTransform = stateDelegate.getCTM().inverse() ?: return
+
+        val path = drawPath(stateDelegate.getCurrentPath(), inverseCtmTransform)
+        path.fillType = Path.FillType.EVEN_ODD
+        nativeCanvas.drawPath(path, fillPaint)
+    }
+
     override fun setFillStyle(color: Color?) {
         fillPaint.color = color?.toAndroidColor() ?: 0
     }
