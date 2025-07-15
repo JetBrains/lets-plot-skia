@@ -52,8 +52,10 @@ internal class AndroidAnimationTimerPeer(
     }
 
     override fun dispose() {
-        isRunning = false
-        myTimer.cancel()
-        myHandlers.clear()
+        synchronized(myHandlers) {
+            isRunning = false
+            myTimer.cancel()
+            myHandlers.clear()
+        }
     }
 }
