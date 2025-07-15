@@ -11,7 +11,7 @@
 
 - remove _"-SNAPSHOT"_ qualifier (the 'version' property in the root 'build.gradle.kts').
 
-##### 3. Build and release artifacts to Sonatype repository / Maven Central
+##### 3. Build and release artifacts to Sonatype Central repository
 
 Make sure that JNI libraries in the `skiko-jni-libs` directory are up to date and 
 match the version of the `Skiko` library used in the `Compose Multiplatform`. Refer [DEVELOPMENT.md](DEVELOPMENT.md) for details.
@@ -19,8 +19,14 @@ match the version of the `Skiko` library used in the `Compose Multiplatform`. Re
 - `./gradlew clean`
 - `./gradlew build`
 - `./gradlew packageSkikoJniLibs`
-- `./gradlew publishAllPublicationsToSonatypeRepository`
-- `./gradlew findSonatypeStagingRepository closeAndReleaseSonatypeStagingRepository`                   
+- `./gradlew publishAllPublicationsToMavenRepository`
+- `./gradlew uploadMavenArtifacts`
+
+Go to the Sonatype Central Repository deployments page:
+
+https://central.sonatype.com/publishing/deployments
+
+Check all artifacts were uploaded and validated, then push the "Publish" button.
 
 > **Note**: For more details see [PUBLISHING.md](PUBLISHING.md).
 
