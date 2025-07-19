@@ -58,9 +58,12 @@ class CanvasView(context: Context) : View(context) {
     override fun onDraw(canvas: android.graphics.Canvas) {
         super.onDraw(canvas)
 
-        canvasControl.children.forEach {
-            canvas.drawBitmap(it.bitmap, 0f, 0f, null)
-        }
+        val contentCanvas = canvasControl.children.last()
+        println(contentCanvas.size)
+        canvas.drawBitmap(contentCanvas.platformBitmap, 0f, 0f, null)
+        //canvasControl.children.forEach {
+        //    canvas.drawBitmap(it.platformBitmap, 0f, 0f, null)
+        //}
     }
 
     //override fun onMeasure(widthMeasureSpec: Int, heightMeasureSpec: Int) {
@@ -86,12 +89,12 @@ class CanvasView(context: Context) : View(context) {
         private val animationTimerPeer = AndroidAnimationTimerPeer(executor = { code -> handler.post(code) })
         val children = mutableListOf<AndroidCanvas>()
 
-        override fun createCanvas(size: Vector): Canvas {
+        override fun createCanvas(size: Vector): AndroidCanvas {
             return AndroidCanvas.create(size, pixelDensity)
         }
 
-        override fun createSnapshot(bitmap: Bitmap): Canvas.Snapshot {
-            TODO("Not yet implemented")
+        override fun createSnapshot(bitmap: Bitmap): AndroidSnapshot {
+            return AndroidSnapshot.fromBitmap(bitmap)
         }
 
         override fun decodeDataImageUrl(dataUrl: String): Async<Canvas.Snapshot> {

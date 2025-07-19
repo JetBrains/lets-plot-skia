@@ -49,7 +49,11 @@ fun PlotPanel(
             val plotFigure = MonolithicCanvas.buildPlotFigureFromRawSpec(
                 figure.toSpec(),
                 sizingPolicy = SizingPolicy.fitContainerSize(preserveAspectRatio)
-            ) { println("Computation messages: $it") }
+            ) {
+                if (it.isNotEmpty()) {
+                    println("Computation messages: $it")
+                }
+            }
             LOG.print { "UPDATE PlotViewContainer preserveAspectRatio ${canvasView.figure} ->  $preserveAspectRatio" }
 
             canvasView.figure = plotFigure
