@@ -43,11 +43,6 @@ internal class AndroidAnimationTimerPeer(
     fun removeHandler(handler: (Long) -> Unit) {
         synchronized(myHandlers) {
             myHandlers.remove(handler)
-
-            if (myHandlers.isEmpty() && isRunning) {
-                myTimer.cancel()
-                isRunning = false
-            }
         }
     }
 
