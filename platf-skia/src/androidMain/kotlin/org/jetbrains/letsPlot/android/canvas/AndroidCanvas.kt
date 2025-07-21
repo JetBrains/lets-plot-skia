@@ -22,7 +22,7 @@ class AndroidCanvas(
 
             val bitmap = PlatformBitmap.createBitmap(w, h, android.graphics.Bitmap.Config.ARGB_8888)
 
-            return AndroidCanvas(bitmap, Vector(w, h), pixelDensity)
+            return AndroidCanvas(bitmap, size, pixelDensity)
         }
     }
 
