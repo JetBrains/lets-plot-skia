@@ -1,11 +1,6 @@
 package org.jetbrains.letsPlot.android.canvas
 
-import android.graphics.DashPathEffect
-import android.graphics.Matrix
-import android.graphics.Paint
-import android.graphics.Path
-import android.graphics.Rect
-import android.graphics.Typeface
+import android.graphics.*
 import org.jetbrains.letsPlot.android.canvas.Utils.toAndroidColor
 import org.jetbrains.letsPlot.commons.geometry.AffineTransform
 import org.jetbrains.letsPlot.commons.geometry.DoubleRectangle
@@ -42,13 +37,36 @@ class AndroidContext2d(
     }
 
     override fun drawImage(snapshot: Snapshot) {
-        snapshot as AndroidSnapshot
+        require(snapshot is AndroidSnapshot) { "Snapshot must be of type AndroidSnapshot" }
         platformCanvas.drawBitmap(snapshot.platformBitmap, 0f, 0f, null)
     }
 
     override fun drawImage(snapshot: Snapshot, x: Double, y: Double) {
-        snapshot as AndroidSnapshot
+        require(snapshot is AndroidSnapshot) { "Snapshot must be of type AndroidSnapshot" }
         platformCanvas.drawBitmap(snapshot.platformBitmap, x.toFloat(), y.toFloat(), null)
+    }
+
+    override fun drawImage(snapshot: Snapshot, x: Double, y: Double, dw: Double, dh: Double) {
+        require(snapshot is AndroidSnapshot) { "Snapshot must be of type AndroidSnapshot" }
+        val dstRect = Rect(x.toInt(), y.toInt(), (x + dw).toInt(), (y + dh).toInt())
+        platformCanvas.drawBitmap(snapshot.platformBitmap, null, dstRect, null)
+    }
+
+    override fun drawImage(
+        snapshot: Snapshot,
+        sx: Double,
+        sy: Double,
+        sw: Double,
+        sh: Double,
+        dx: Double,
+        dy: Double,
+        dw: Double,
+        dh: Double
+    ) {
+        require(snapshot is AndroidSnapshot) { "Snapshot must be of type AndroidSnapshot" }
+        val srcRect = Rect(sx.toInt(), sy.toInt(), (sx + sw).toInt(), (sy + sh).toInt())
+        val dstRect = Rect(dx.toInt(), dy.toInt(), (dx + dw).toInt(), (dy + dh).toInt())
+        platformCanvas.drawBitmap(snapshot.platformBitmap, srcRect, dstRect, null)
     }
 
     override fun save() {
