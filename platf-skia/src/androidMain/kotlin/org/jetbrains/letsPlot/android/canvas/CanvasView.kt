@@ -65,13 +65,36 @@ class CanvasView(context: Context) : View(context) {
         super.onSizeChanged(w, h, oldw, oldh)
         val density = resources.displayMetrics.density
         val newSize = Vector((w / density).toInt(), (h / density).toInt())
+
+        //println("CanvasView.onSizeChanged: " +
+        //        "\n\tnew size: ${newSize.x} x ${newSize.y} (${newSize.x * density} x ${newSize.y * density})" +
+        //        "\n\told size: ${oldw / density} x ${oldh / density} (${oldw} x ${oldh})" +
+        //        "\n\tpixel density: $density"
+        //)
+        //val newSize = Vector((w).toInt(), (h).toInt())
         sizeListeners.forEach { it(newSize) }
     }
 
     override fun onDraw(canvas: android.graphics.Canvas) {
         super.onDraw(canvas)
 
+        //println("CanvasView.onDraw: Total children: ${canvasControl.children.size}, ${canvasControl.children.joinToString { it.size.toString() }}")
+
         val contentCanvas = canvasControl.children.last()
+
+        if (contentCanvas.size.x <= 0 || contentCanvas.size.y <= 0) {
+            // No content to draw, skip drawing
+            //println("CanvasView.onDraw: No content to draw, skipping. Total children: ${canvasControl.children.size}, ${canvasControl.children.map { it.size }.joinToString()}")
+            return
+        }
+
+        //println("CanvasView.onDraw: " +
+        //        "\n\tcontentCanvas.bitmap size: ${contentCanvas.platformBitmap.width} x ${contentCanvas.platformBitmap.height}" +
+        //        "\n\tcanvas size: ${contentCanvas.size.x} x ${contentCanvas.size.y} (${contentCanvas.size.x * canvasControl.pixelDensity} x ${contentCanvas.size.y * canvasControl.pixelDensity})" +
+        //        "\n\tcanvasControl size: ${canvasControl.size.x} x ${canvasControl.size.y} (${canvasControl.size.x * canvasControl.pixelDensity} x ${canvasControl.size.y * canvasControl.pixelDensity})" +
+        //        "\n\tpixel density: ${canvasControl.pixelDensity}"
+        //)
+
         canvas.drawBitmap(contentCanvas.platformBitmap, 0f, 0f, null)
         //canvasControl.children.forEach {
         //    canvas.drawBitmap(it.platformBitmap, 0f, 0f, null)
