@@ -13,8 +13,10 @@ import android.view.View
 import org.jetbrains.letsPlot.commons.event.MouseEvent
 import org.jetbrains.letsPlot.commons.event.MouseEventSource
 import org.jetbrains.letsPlot.commons.event.MouseEventSpec
+import org.jetbrains.letsPlot.commons.geometry.Rectangle
 import org.jetbrains.letsPlot.commons.geometry.Vector
 import org.jetbrains.letsPlot.commons.intern.observable.event.EventHandler
+import org.jetbrains.letsPlot.commons.intern.observable.property.PropertyChangeEvent
 import org.jetbrains.letsPlot.commons.registration.Registration
 import org.jetbrains.letsPlot.commons.values.Bitmap
 import org.jetbrains.letsPlot.core.canvas.AnimationProvider
@@ -23,6 +25,8 @@ import org.jetbrains.letsPlot.core.canvas.CanvasControl
 import org.jetbrains.letsPlot.core.canvasFigure.CanvasFigure
 import java.util.*
 
+val CanvasFigure.width get() = bounds().get().dimension.x
+val CanvasFigure.height get() = bounds().get().dimension.y
 
 @SuppressLint("ViewConstructor")
 class CanvasView(context: Context) : View(context) {
@@ -32,12 +36,23 @@ class CanvasView(context: Context) : View(context) {
                 return
             }
 
-            figureRegistration.remove()
-            if (fig != null) {
-                figureRegistration = fig.mapToCanvas(canvasControl)
-            }
             field = fig
 
+            figureRegistration.remove()
+            if (fig != null) {
+                figureRegistration = Registration.from(
+                    fig.mapToCanvas(canvasControl),
+                    fig.bounds().addHandler(object : EventHandler<PropertyChangeEvent<out Rectangle>> {
+                        override fun onEvent(event: PropertyChangeEvent<out Rectangle>) {
+                            requestLayout()
+                            invalidate()
+                        }
+                    })
+                )
+            }
+
+            requestLayout()
+            invalidate()
         }
 
     private val looper = Handler(Looper.getMainLooper())
@@ -66,34 +81,18 @@ class CanvasView(context: Context) : View(context) {
         val density = resources.displayMetrics.density
         val newSize = Vector((w / density).toInt(), (h / density).toInt())
 
-        //println("CanvasView.onSizeChanged: " +
-        //        "\n\tnew size: ${newSize.x} x ${newSize.y} (${newSize.x * density} x ${newSize.y * density})" +
-        //        "\n\told size: ${oldw / density} x ${oldh / density} (${oldw} x ${oldh})" +
-        //        "\n\tpixel density: $density"
-        //)
-        //val newSize = Vector((w).toInt(), (h).toInt())
         sizeListeners.forEach { it(newSize) }
     }
 
     override fun onDraw(canvas: android.graphics.Canvas) {
         super.onDraw(canvas)
 
-        //println("CanvasView.onDraw: Total children: ${canvasControl.children.size}, ${canvasControl.children.joinToString { it.size.toString() }}")
-
-        val contentCanvas = canvasControl.children.last()
+        val contentCanvas = canvasControl.children.lastOrNull() ?: return
 
         if (contentCanvas.size.x <= 0 || contentCanvas.size.y <= 0) {
             // No content to draw, skip drawing
-            //println("CanvasView.onDraw: No content to draw, skipping. Total children: ${canvasControl.children.size}, ${canvasControl.children.map { it.size }.joinToString()}")
             return
         }
-
-        //println("CanvasView.onDraw: " +
-        //        "\n\tcontentCanvas.bitmap size: ${contentCanvas.platformBitmap.width} x ${contentCanvas.platformBitmap.height}" +
-        //        "\n\tcanvas size: ${contentCanvas.size.x} x ${contentCanvas.size.y} (${contentCanvas.size.x * canvasControl.pixelDensity} x ${contentCanvas.size.y * canvasControl.pixelDensity})" +
-        //        "\n\tcanvasControl size: ${canvasControl.size.x} x ${canvasControl.size.y} (${canvasControl.size.x * canvasControl.pixelDensity} x ${canvasControl.size.y * canvasControl.pixelDensity})" +
-        //        "\n\tpixel density: ${canvasControl.pixelDensity}"
-        //)
 
         canvas.drawBitmap(contentCanvas.platformBitmap, 0f, 0f, null)
         //canvasControl.children.forEach {
@@ -116,21 +115,29 @@ class CanvasView(context: Context) : View(context) {
         }
     }
 
-    //override fun onMeasure(widthMeasureSpec: Int, heightMeasureSpec: Int) {
-    //    val density = resources.displayMetrics.density
-    //    val width = 2000
-    //    val height = 2000
-//
-    //    println("onMeasure: $width x $height, density: $density")
-//
-    //    measureChild(
-    //        getChildAt(0),
-    //        MeasureSpec.makeMeasureSpec(width, MeasureSpec.EXACTLY),
-    //        MeasureSpec.makeMeasureSpec(height, MeasureSpec.EXACTLY)
-    //    )
-//
-    //    setMeasuredDimension(width, height)
-    //}
+    override fun onMeasure(widthMeasureSpec: Int, heightMeasureSpec: Int) {
+        val density = resources.displayMetrics.density
+
+        val figureWidthInDp = figure?.width ?: 0
+        val figureHeightInDp = figure?.height ?: 0
+
+        val desiredWidth = (figureWidthInDp * density).toInt()
+        val desiredHeight = (figureHeightInDp * density).toInt()
+
+        val finalWidth = when (MeasureSpec.getMode(widthMeasureSpec)) {
+            MeasureSpec.EXACTLY -> MeasureSpec.getSize(widthMeasureSpec)
+            MeasureSpec.AT_MOST -> minOf(desiredWidth, MeasureSpec.getSize(widthMeasureSpec))
+            else -> desiredWidth
+        }
+
+        val finalHeight = when (MeasureSpec.getMode(heightMeasureSpec)) {
+            MeasureSpec.EXACTLY -> MeasureSpec.getSize(heightMeasureSpec)
+            MeasureSpec.AT_MOST -> minOf(desiredHeight, MeasureSpec.getSize(heightMeasureSpec))
+            else -> desiredHeight
+        }
+
+        setMeasuredDimension(finalWidth, finalHeight)
+    }
 
 
     inner class AndroidCanvasControl : CanvasControl {
