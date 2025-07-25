@@ -33,7 +33,7 @@ class AndroidContext2d(
     private val backgroundPaint = Paint().apply {
         style = Paint.Style.FILL
         isAntiAlias = true
-        color = 0xFFFFFFFF.toInt()
+        color = android.graphics.Color.TRANSPARENT
     }
 
     override fun drawImage(snapshot: Snapshot) {

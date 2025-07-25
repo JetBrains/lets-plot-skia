@@ -49,6 +49,7 @@
             android:layout_height="wrap_content"
             android:orientation="vertical">
         <TextView
+                android:id="@+id/plot_size_label"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center"
@@ -141,6 +142,7 @@
 
     <!-- Parent Resizing Controls -->
     <TextView
+            android:id="@+id/parent_container_size_label"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="Parent Container Size"

@@ -7,12 +7,14 @@ package org.jetbrains.letsPlot.android.canvas
 
 import android.annotation.SuppressLint
 import android.content.Context
+import android.graphics.Paint
 import android.os.Handler
 import android.os.Looper
 import android.view.View
 import org.jetbrains.letsPlot.commons.event.MouseEvent
 import org.jetbrains.letsPlot.commons.event.MouseEventSource
 import org.jetbrains.letsPlot.commons.event.MouseEventSpec
+import org.jetbrains.letsPlot.commons.geometry.DoubleVector
 import org.jetbrains.letsPlot.commons.geometry.Rectangle
 import org.jetbrains.letsPlot.commons.geometry.Vector
 import org.jetbrains.letsPlot.commons.intern.observable.event.EventHandler
@@ -24,6 +26,7 @@ import org.jetbrains.letsPlot.core.canvas.Canvas
 import org.jetbrains.letsPlot.core.canvas.CanvasControl
 import org.jetbrains.letsPlot.core.canvasFigure.CanvasFigure
 import java.util.*
+import kotlin.math.ceil
 
 val CanvasFigure.width get() = bounds().get().dimension.x
 val CanvasFigure.height get() = bounds().get().dimension.y
@@ -74,12 +77,18 @@ class CanvasView(context: Context) : View(context) {
     private val canvasControl = AndroidCanvasControl()
     private var figureRegistration: Registration = Registration.EMPTY
     private val sizeListeners = mutableListOf<(Vector) -> Unit>()
-    private val mouseEventSource: MouseEventSource = AndroidMouseEventMapper(this, context)
+    private val mouseEventSource: MouseEventSource = AndroidMouseEventMapper(this, context) { x, y -> DoubleVector(x - centerOffsetX, y - centerOffsetY) }
+    private var centerOffsetX: Float = 0f
+    private var centerOffsetY: Float = 0f
+    private val eraser = Paint().apply {
+        color = android.graphics.Color.TRANSPARENT
+        style = Paint.Style.FILL
+    }
 
     override fun onSizeChanged(w: Int, h: Int, oldw: Int, oldh: Int) {
         super.onSizeChanged(w, h, oldw, oldh)
         val density = resources.displayMetrics.density
-        val newSize = Vector((w / density).toInt(), (h / density).toInt())
+        val newSize = Vector(ceil(w / density).toInt(), ceil(h / density).toInt())
 
         sizeListeners.forEach { it(newSize) }
     }
@@ -87,6 +96,8 @@ class CanvasView(context: Context) : View(context) {
     override fun onDraw(canvas: android.graphics.Canvas) {
         super.onDraw(canvas)
 
+        // TODO: TERRIBLE HACK! Just pass the canvas to the figure and let draw it there.
+        // This also may help with resources management as figure could to not create canvases at all.
         val contentCanvas = canvasControl.children.lastOrNull() ?: return
 
         if (contentCanvas.size.x <= 0 || contentCanvas.size.y <= 0) {
@@ -94,10 +105,13 @@ class CanvasView(context: Context) : View(context) {
             return
         }
 
-        canvas.drawBitmap(contentCanvas.platformBitmap, 0f, 0f, null)
-        //canvasControl.children.forEach {
-        //    canvas.drawBitmap(it.platformBitmap, 0f, 0f, null)
-        //}
+        val fig = figure ?: return
+
+        centerOffsetX = ((width - fig.width * resources.displayMetrics.density) / 2f)
+        centerOffsetY = ((height - fig.height * resources.displayMetrics.density) / 2f)
+
+        canvas.drawRect(0f, 0f, width.toFloat(), height.toFloat(), eraser)
+        canvas.drawBitmap(contentCanvas.platformBitmap, centerOffsetX, centerOffsetY, null)
     }
 
     override fun onAttachedToWindow() {

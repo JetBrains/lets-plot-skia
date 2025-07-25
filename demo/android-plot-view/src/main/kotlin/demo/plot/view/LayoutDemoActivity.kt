@@ -19,6 +19,8 @@ class LayoutDemoActivity : Activity() {
         private const val MIN_PARENT_HEIGHT_DP = 50
         private const val MAX_PARENT_HEIGHT_DP = 390
     }
+
+    private lateinit var plotSizeLabel: TextView
     private lateinit var sizingPolicyOptions: RadioGroup
     private lateinit var preserveAspectRatio: CheckBox
     private lateinit var plotWidthSlider: SeekBar
@@ -46,6 +48,7 @@ class LayoutDemoActivity : Activity() {
         preserveAspectRatio = findViewById(R.id.preserve_aspect_ratio)
         plotWidthSlider = findViewById(R.id.plot_width_slider)
         plotHeightSlider = findViewById(R.id.plot_height_slider)
+        plotSizeLabel = findViewById(R.id.plot_size_label)
         containerOptionsGroup = findViewById(R.id.container_options_group)
         fixedSizeOptionsGroup = findViewById(R.id.fixed_size_options_group)
 
@@ -69,23 +72,23 @@ class LayoutDemoActivity : Activity() {
         findViewById<RadioButton>(R.id.sizing_policy_container).isChecked = true
         updateDemoViewLayoutParams()
         updateParentContainerSize()
-        updatePlotContent()
+        updatePlotOptions()
         updateUiEnabledState()
     }
 
     private fun setupControls() {
         sizingPolicyOptions.setOnCheckedChangeListener { _, checkedId ->
             updateUiEnabledState()
-            updatePlotContent()
+            updatePlotOptions()
         }
 
         preserveAspectRatio.setOnCheckedChangeListener { _, checkedId ->
-            updatePlotContent()
+            updatePlotOptions()
         }
 
         val plotSizeUpdateListener = object : SeekBar.OnSeekBarChangeListener {
             override fun onProgressChanged(seekBar: SeekBar?, progress: Int, fromUser: Boolean) {
-                updatePlotContent()
+                updatePlotOptions()
             }
 
             override fun onStartTrackingTouch(seekBar: SeekBar?) {}
@@ -113,17 +116,15 @@ class LayoutDemoActivity : Activity() {
         parentHeightSlider.setOnSeekBarChangeListener(parentSizeUpdateListener)
     }
 
-    private fun updatePlotContent() {
+    private fun updatePlotOptions() {
+        val plotWidth = MAX_PLOT_WIDTH_DP * plotWidthSlider.progress / 100.0
+        val plotHeight = MAX_PLOT_WIDTH_DP * plotHeightSlider.progress / 100.0
+
+        plotSizeLabel.text = "Plot size: $plotWidth x $plotHeight"
+
         val sizingPolicy = when (sizingPolicyOptions.checkedRadioButtonId) {
-            R.id.sizing_policy_fixed -> {
-                SizingPolicy.fixed(
-                    width = MAX_PLOT_WIDTH_DP * plotWidthSlider.progress / 100.0,
-                    height = MAX_PLOT_WIDTH_DP * plotHeightSlider.progress / 100.0
-                )
-            }
-
+            R.id.sizing_policy_fixed -> SizingPolicy.fixed(width = plotWidth, height = plotHeight)
             R.id.sizing_policy_container -> SizingPolicy.fitContainerSize(preserveAspectRatio.isChecked)
-
             else -> error("Unknown sizing policy option selected")
         }
 
@@ -154,6 +155,8 @@ class LayoutDemoActivity : Activity() {
         val progressHeight = parentHeightSlider.progress / 100f
 
         lp.height = (minHeightPx + (heightRangePx * progressHeight)).toInt()
+
+        findViewById<TextView>(R.id.parent_container_size_label).text = "Parent size: ${lp.width} x ${lp.height}"
 
         parentContainer.layoutParams = lp
     }
