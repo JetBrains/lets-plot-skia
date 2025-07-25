@@ -34,7 +34,7 @@ dependencies {
     implementation("org.jetbrains.lets-plot:platf-awt:4.6.2")
 
     // Lets-Plot Skia Frontend
-    implementation("org.jetbrains.lets-plot:lets-plot-compose:2.1.1")
+    implementation("org.jetbrains.lets-plot:lets-plot-compose:2.2.1")
 }
 ```
 See example: [Compose desktop](https://github.com/JetBrains/lets-plot-compose-demos/blob/main/compose-desktop/build.gradle.kts) demo.
@@ -80,7 +80,7 @@ dependencies {
     implementation("org.jetbrains.lets-plot:platf-awt:4.6.2")
 
     // Lets-Plot Skia Frontend
-    implementation("org.jetbrains.lets-plot:lets-plot-swing-skia:2.1.1")
+    implementation("org.jetbrains.lets-plot:lets-plot-swing-skia:2.2.1")
 }
 ```
 
