@@ -161,7 +161,7 @@ class CanvasView(context: Context) : View(context) {
         override fun createSnapshot(bitmap: Bitmap) = AndroidSnapshot.fromBitmap(bitmap)
         override fun snapshot() = error("Snapshot not supported in AndroidCanvasControl")
         override fun decodeDataImageUrl(dataUrl: String) = error("decodeDataImageUrl not supported in AndroidCanvasControl")
-        override fun decodePng(png: ByteArray, size: Vector) = error("decodePng not supported in AndroidCanvasControl")
+        override fun decodePng(png: ByteArray) = error("decodePng not supported in AndroidCanvasControl")
         override fun <T> schedule(f: () -> T) = error("schedule not supported in AndroidCanvasControl")
 
         override val size: Vector
