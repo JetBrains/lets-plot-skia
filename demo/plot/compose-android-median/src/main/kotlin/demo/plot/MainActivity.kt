@@ -20,7 +20,7 @@ import demo.plot.ui.DemoRadioGroup
 import org.jetbrains.letsPlot.skia.compose.PlotPanel
 import plotSpec.*
 
-class ComposeMedianMainActivity : ComponentActivity() {
+class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
@@ -34,7 +34,7 @@ class ComposeMedianMainActivity : ComponentActivity() {
                 "Violin" to ViolinSpec().createFigure(),
             )
 
-            val preserveAspectRatio = rememberSaveable { mutableStateOf(true) }
+            val preserveAspectRatio = rememberSaveable { mutableStateOf(false) }
             val figureIndex = rememberSaveable { mutableStateOf(4) }
 
             MaterialTheme {

@@ -15,7 +15,6 @@ import org.jetbrains.letsPlot.commons.event.MouseEvent
 import org.jetbrains.letsPlot.commons.event.MouseEventPeer
 import org.jetbrains.letsPlot.commons.event.MouseEventSource
 import org.jetbrains.letsPlot.commons.event.MouseEventSpec
-import org.jetbrains.letsPlot.commons.geometry.DoubleVector
 import org.jetbrains.letsPlot.commons.geometry.Vector
 import org.jetbrains.letsPlot.commons.intern.observable.event.EventHandler
 import org.jetbrains.letsPlot.commons.registration.Registration
@@ -23,7 +22,6 @@ import org.jetbrains.letsPlot.commons.registration.Registration
 class AndroidMouseEventMapper(
     eventSource: View,
     private val context: Context,
-    private val coordMapper: (x: Float, y: Float) -> DoubleVector = ::DoubleVector // Default identity mapper, can be overridden if needed
 ) : MouseEventSource {
     private val mouseEventPeer = MouseEventPeer()
 
@@ -66,8 +64,7 @@ class AndroidMouseEventMapper(
 
     fun translateMouseEvent(e: MotionEvent): Vector {
         val density = context.resources.displayMetrics.density
-        val (x, y) = coordMapper(e.x, e.y)
-        val v = Vector((x / density).toInt(), (y / density).toInt())
+        val v = Vector((e.x / density).toInt(), (e.y / density).toInt())
         return v
     }
 

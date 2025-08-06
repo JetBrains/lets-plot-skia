@@ -1,6 +1,7 @@
 package org.jetbrains.letsPlot.android.canvas
 
 import android.graphics.*
+import android.graphics.Canvas
 import org.jetbrains.letsPlot.android.canvas.Utils.toAndroidColor
 import org.jetbrains.letsPlot.commons.geometry.AffineTransform
 import org.jetbrains.letsPlot.commons.geometry.DoubleRectangle
@@ -8,15 +9,12 @@ import org.jetbrains.letsPlot.commons.values.Color
 import org.jetbrains.letsPlot.core.canvas.*
 import org.jetbrains.letsPlot.core.canvas.Canvas.Snapshot
 
-typealias PlatformBitmap = android.graphics.Bitmap
-typealias PlatformCanvas = android.graphics.Canvas
-
 class AndroidContext2d(
-    platformBitmap: PlatformBitmap,
+    bitmap: Bitmap,
     pixelDensity: Double,
     private val stateDelegate: ContextStateDelegate = ContextStateDelegate(failIfNotImplemented = false, logEnabled = true),
 ) : Context2d by stateDelegate {
-    private val platformCanvas = PlatformCanvas(platformBitmap).apply {
+    private val nativeCanvas = Canvas(bitmap).apply {
         this.scale(pixelDensity.toFloat(), pixelDensity.toFloat())
     }
 
@@ -33,65 +31,42 @@ class AndroidContext2d(
     private val backgroundPaint = Paint().apply {
         style = Paint.Style.FILL
         isAntiAlias = true
-        color = android.graphics.Color.TRANSPARENT
+        color = 0xFFFFFFFF.toInt()
     }
 
     override fun drawImage(snapshot: Snapshot) {
-        require(snapshot is AndroidSnapshot) { "Snapshot must be of type AndroidSnapshot" }
-        platformCanvas.drawBitmap(snapshot.platformBitmap, 0f, 0f, null)
+        snapshot as AndroidCanvas.AndroidSnapshot
+        nativeCanvas.drawBitmap(snapshot.androidBitmap, 0f, 0f, null)
     }
 
     override fun drawImage(snapshot: Snapshot, x: Double, y: Double) {
-        require(snapshot is AndroidSnapshot) { "Snapshot must be of type AndroidSnapshot" }
-        platformCanvas.drawBitmap(snapshot.platformBitmap, x.toFloat(), y.toFloat(), null)
-    }
-
-    override fun drawImage(snapshot: Snapshot, x: Double, y: Double, dw: Double, dh: Double) {
-        require(snapshot is AndroidSnapshot) { "Snapshot must be of type AndroidSnapshot" }
-        val dstRect = Rect(x.toInt(), y.toInt(), (x + dw).toInt(), (y + dh).toInt())
-        platformCanvas.drawBitmap(snapshot.platformBitmap, null, dstRect, null)
-    }
-
-    override fun drawImage(
-        snapshot: Snapshot,
-        sx: Double,
-        sy: Double,
-        sw: Double,
-        sh: Double,
-        dx: Double,
-        dy: Double,
-        dw: Double,
-        dh: Double
-    ) {
-        require(snapshot is AndroidSnapshot) { "Snapshot must be of type AndroidSnapshot" }
-        val srcRect = Rect(sx.toInt(), sy.toInt(), (sx + sw).toInt(), (sy + sh).toInt())
-        val dstRect = Rect(dx.toInt(), dy.toInt(), (dx + dw).toInt(), (dy + dh).toInt())
-        platformCanvas.drawBitmap(snapshot.platformBitmap, srcRect, dstRect, null)
+        snapshot as AndroidCanvas.AndroidSnapshot
+        nativeCanvas.drawBitmap(snapshot.androidBitmap, x.toFloat(), y.toFloat(), null)
     }
 
     override fun save() {
         stateDelegate.save()
-        platformCanvas.save()
+        nativeCanvas.save()
     }
 
     override fun restore() {
         stateDelegate.restore()
-        platformCanvas.restore()
+        nativeCanvas.restore()
     }
 
     override fun rotate(angle: Double) {
         stateDelegate.rotate(angle)
-        platformCanvas.rotate(angle.toFloat())
+        nativeCanvas.rotate(angle.toFloat())
     }
 
     override fun translate(x: Double, y: Double) {
         stateDelegate.translate(x, y)
-        platformCanvas.translate(x.toFloat(), y.toFloat())
+        nativeCanvas.translate(x.toFloat(), y.toFloat())
     }
 
     override fun transform(sx: Double, ry: Double, rx: Double, sy: Double, tx: Double, ty: Double) {
         stateDelegate.transform(sx = sx, ry = ry, rx = rx, sy = sy, tx = tx, ty = ty)
-        platformCanvas.concat(Matrix().apply {
+        nativeCanvas.concat(Matrix().apply {
             setValues(floatArrayOf(
                 sx.toFloat(), rx.toFloat(), tx.toFloat(),
                 ry.toFloat(), sy.toFloat(), ty.toFloat(),
@@ -102,17 +77,17 @@ class AndroidContext2d(
 
     override fun scale(x: Double, y: Double) {
         stateDelegate.scale(x, y)
-        platformCanvas.scale(x.toFloat(), y.toFloat())
+        nativeCanvas.scale(x.toFloat(), y.toFloat())
     }
 
     override fun scale(xy: Double) {
         stateDelegate.scale(xy)
-        platformCanvas.scale(xy.toFloat(), xy.toFloat())
+        nativeCanvas.scale(xy.toFloat(), xy.toFloat())
     }
 
     override fun setTransform(m00: Double, m10: Double, m01: Double, m11: Double, m02: Double, m12: Double) {
         stateDelegate.setTransform(m00, m10, m01, m11, m02, m12)
-        platformCanvas.setMatrix(Matrix().apply {
+        nativeCanvas.setMatrix(Matrix().apply {
             setValues(floatArrayOf(
                 m00.toFloat(), m10.toFloat(), 0f,
                 m01.toFloat(), m11.toFloat(), 0f,
@@ -122,15 +97,15 @@ class AndroidContext2d(
     }
 
     override fun clearRect(rect: DoubleRectangle) {
-        platformCanvas.drawRect(rect.left.toFloat(), rect.top.toFloat(), rect.right.toFloat(), rect.bottom.toFloat(), backgroundPaint)
+        nativeCanvas.drawRect(rect.left.toFloat(), rect.top.toFloat(), rect.right.toFloat(), rect.bottom.toFloat(), backgroundPaint)
     }
 
     override fun fillRect(x: Double, y: Double, w: Double, h: Double) {
-        platformCanvas.drawRect(x.toFloat(), y.toFloat(), (x+w).toFloat(), (y+h).toFloat(), fillPaint)
+        nativeCanvas.drawRect(x.toFloat(), y.toFloat(), (x+w).toFloat(), (y+h).toFloat(), fillPaint)
     }
 
     override fun strokeRect(x: Double, y: Double, w: Double, h: Double) {
-        platformCanvas.drawRect(x.toFloat(), y.toFloat(), (x+w).toFloat(), (y+h).toFloat(), strokePaint)
+        nativeCanvas.drawRect(x.toFloat(), y.toFloat(), (x+w).toFloat(), (y+h).toFloat(), strokePaint)
     }
 
     override fun setFont(f: Font) {
@@ -154,11 +129,11 @@ class AndroidContext2d(
     }
 
     override fun fillText(text: String, x: Double, y: Double) {
-        platformCanvas.drawText(text, x.toFloat(), y.toFloat(), fillPaint)
+        nativeCanvas.drawText(text, x.toFloat(), y.toFloat(), fillPaint)
     }
 
     override fun strokeText(text: String, x: Double, y: Double) {
-        platformCanvas.drawText(text, x.toFloat(), y.toFloat(), strokePaint)
+        nativeCanvas.drawText(text, x.toFloat(), y.toFloat(), strokePaint)
     }
 
     override fun measureText(str: String): TextMetrics {
@@ -203,13 +178,13 @@ class AndroidContext2d(
         // Make ctm identity. null for degenerate case, e.g., scale(0, 0) - skip drawing.
         val inverseCtmTransform = stateDelegate.getCTM().inverse() ?: return
 
-        platformCanvas.drawPath(drawPath(stateDelegate.getCurrentPath(), inverseCtmTransform), strokePaint)
+        nativeCanvas.drawPath(drawPath(stateDelegate.getCurrentPath(), inverseCtmTransform), strokePaint)
     }
 
     override fun fill() {
         // Make ctm identity. null for degenerate case, e.g., scale(0, 0) - skip drawing.
         val inverseCtmTransform = stateDelegate.getCTM().inverse() ?: return
-        platformCanvas.drawPath(drawPath(stateDelegate.getCurrentPath(), inverseCtmTransform), fillPaint)
+        nativeCanvas.drawPath(drawPath(stateDelegate.getCurrentPath(), inverseCtmTransform), fillPaint)
     }
 
     override fun fillEvenOdd() {
@@ -218,7 +193,7 @@ class AndroidContext2d(
 
         val path = drawPath(stateDelegate.getCurrentPath(), inverseCtmTransform)
         path.fillType = Path.FillType.EVEN_ODD
-        platformCanvas.drawPath(path, fillPaint)
+        nativeCanvas.drawPath(path, fillPaint)
     }
 
     override fun setFillStyle(color: Color?) {
@@ -264,7 +239,7 @@ class AndroidContext2d(
         val inverseCtmTransform = stateDelegate.getCTM().inverse() ?: return
 
         val path = drawPath(stateDelegate.getCurrentPath(), inverseCtmTransform)
-        platformCanvas.clipPath(path)
+        nativeCanvas.clipPath(path)
     }
 
     private fun drawPath(commands: List<Path2d.PathCommand>, transform: AffineTransform): Path {
