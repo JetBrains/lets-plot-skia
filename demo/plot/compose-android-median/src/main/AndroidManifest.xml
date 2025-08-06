@@ -14,7 +14,7 @@
 
     <activity
         android:exported="true"
-        android:name="demo.plot.MainActivity"
+        android:name="demo.plot.ComposeMedianMainActivity"
     >
       <intent-filter>
         <action android:name="android.intent.action.MAIN" />

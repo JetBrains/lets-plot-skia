@@ -20,8 +20,8 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import ch.qos.logback.classic.android.BasicLogcatConfigurator
 import kotlinx.coroutines.delay
+import org.jetbrains.letsPlot.geom.geomBlank
 import org.jetbrains.letsPlot.geom.geomLine
-import org.jetbrains.letsPlot.geom.geomPoint
 import org.jetbrains.letsPlot.intern.Plot
 import org.jetbrains.letsPlot.letsPlot
 import org.jetbrains.letsPlot.scale.xlim
@@ -29,7 +29,7 @@ import org.jetbrains.letsPlot.scale.ylim
 import org.jetbrains.letsPlot.skia.compose.PlotPanel
 import kotlin.math.sin
 
-class MainActivity : ComponentActivity() {
+class ComposeRedrawMainActivity : ComponentActivity() {
     private val maxPointsCount = 100
     private val step = 0.1
     private val refreshDelayMs = 32L
@@ -45,10 +45,22 @@ class MainActivity : ComponentActivity() {
             var fixedAxis by rememberSaveable { mutableStateOf(true) }
 
             fun plot(): Plot {
-                var p = letsPlot() + ylim(listOf(-1.0, 1.0)) + geomPoint() // missing geomBlank() to not fail with "no layers in plot" error on init/clean
+                val data = mapOf<String, Any>(
+                    "x" to xs,
+                    "y" to ys
+                )
+
+                var p = letsPlot() + ylim(listOf(-1.0, 1.0))
+                if (xs.isEmpty()) {
+                    p += geomBlank()
+                } else {
+                    p += geomLine(data = data, color = "black", size = 1.2) { x = "x"; y = "y" }
+                }
+
                 if (fixedAxis) {
                     p += xlim(listOf(0.0, step * maxPointsCount))
                 }
+
                 return p
             }
 
@@ -84,7 +96,7 @@ class MainActivity : ComponentActivity() {
                         "x" to xs,
                         "y" to ys
                     )
-                    figure = plot() + geomLine(data = data, color = "black", size = 1.2) { x = "x"; y = "y" }
+                    figure = plot()
                 }
             }
 

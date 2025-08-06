@@ -32,6 +32,7 @@ android {
     buildTypes {
         debug {
             isDebuggable = true
+            isProfileable = true
         }
     }
 

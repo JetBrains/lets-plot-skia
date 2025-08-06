@@ -1,0 +1,179 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+              xmlns:tools="http://schemas.android.com/tools"
+              android:layout_width="match_parent"
+              android:layout_height="match_parent"
+              android:orientation="vertical"
+              android:padding="8dp"
+              android:gravity="center_horizontal"
+              tools:context=".LayoutDemoActivity">
+
+    <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Plot Options"
+            android:textStyle="bold"/>
+
+    <!-- Main Sizing Policy - This is the primary controller -->
+    <RadioGroup
+            android:id="@+id/sizing_policy_options"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal">
+        <RadioButton android:id="@+id/sizing_policy_container" android:layout_width="wrap_content"
+                     android:layout_height="wrap_content" android:text="fitContainerSize" android:checked="true"/>
+        <RadioButton android:id="@+id/sizing_policy_fixed" android:layout_width="wrap_content"
+                     android:layout_height="wrap_content" android:text="fixed"/>
+    </RadioGroup>
+
+    <!-- ==== START OF MINIMAL CHANGES ==== -->
+
+    <!-- Group 1: Options for "fitContainerSize" -->
+    <LinearLayout
+            android:id="@+id/container_options_group"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:gravity="center"
+            android:orientation="vertical">
+        <CheckBox
+                android:id="@+id/preserve_aspect_ratio"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Preserve Aspect Ratio" />
+    </LinearLayout>
+
+    <!-- Group 2: Options for "fixed" size -->
+    <LinearLayout
+            android:id="@+id/fixed_size_options_group"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical">
+        <TextView
+                android:id="@+id/plot_size_label"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:textStyle="bold"
+                android:text="Plot Size"/>
+        <SeekBar
+                android:id="@+id/plot_width_slider"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:max="100"
+                android:progress="100" />
+        <SeekBar
+                android:id="@+id/plot_height_slider"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:max="100"
+                android:progress="50" />
+    </LinearLayout>
+
+    <!-- ==== END OF MINIMAL CHANGES ==== -->
+
+
+    <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="CanvasView Options"
+            android:textStyle="bold"
+            android:layout_marginTop="8dp"
+    />
+    <!-- Controls Section -->
+    <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:gravity="top"
+            android:paddingBottom="8dp">
+        <!-- Width Controls -->
+        <LinearLayout
+                android:layout_width="0dp"
+                android:layout_weight="1"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:gravity="center_horizontal">
+            <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Layout Width"/>
+            <RadioGroup
+                    android:id="@+id/width_options"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content">
+                <RadioButton android:id="@+id/width_wrap" android:layout_width="wrap_content"
+                             android:layout_height="wrap_content" android:text="WRAP_CONTENT"/>
+                <RadioButton android:id="@+id/width_match" android:layout_width="wrap_content"
+                             android:layout_height="wrap_content" android:text="MATCH_PARENT"/>
+                <RadioButton android:id="@+id/width_fixed" android:layout_width="wrap_content"
+                             android:layout_height="wrap_content" android:text="200dp"/>
+            </RadioGroup>
+        </LinearLayout>
+
+        <!-- Height Controls -->
+        <LinearLayout
+                android:layout_width="0dp"
+                android:layout_weight="1"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:gravity="center_horizontal">
+            <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Layout Height"/>
+            <RadioGroup
+                    android:id="@+id/height_options"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content">
+                <RadioButton android:id="@+id/height_wrap" android:layout_width="wrap_content"
+                             android:layout_height="wrap_content" android:text="WRAP_CONTENT" android:checked="true"/>
+                <RadioButton android:id="@+id/height_match" android:layout_width="wrap_content"
+                             android:layout_height="wrap_content" android:text="MATCH_PARENT"/>
+                <RadioButton android:id="@+id/height_fixed" android:layout_width="wrap_content"
+                             android:layout_height="wrap_content" android:text="200dp"/>
+            </RadioGroup>
+        </LinearLayout>
+    </LinearLayout>
+
+    <View
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:background="?android:attr/listDivider"/>
+
+    <!-- Parent Resizing Controls -->
+    <TextView
+            android:id="@+id/parent_container_size_label"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Parent Container Size"
+            android:textStyle="bold"
+            android:layout_marginTop="8dp"/>
+    <SeekBar
+            android:id="@+id/parent_width_slider"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:max="100"
+            android:progress="100"
+            android:layout_marginTop="8dp"/>
+    <SeekBar
+            android:id="@+id/parent_height_slider"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:max="100"
+            android:progress="50"
+            android:layout_marginTop="8dp"/>
+
+
+    <!-- Demo Area -->
+    <FrameLayout
+            android:id="@+id/parent_container"
+            android:layout_width="match_parent"
+            android:layout_height="300dp"
+            android:layout_marginTop="8dp"
+            android:background="#E0E0E0">
+
+        <!-- Our Custom View will be added here programmatically -->
+
+    </FrameLayout>
+
+</LinearLayout>

@@ -13,22 +13,21 @@ import org.jetbrains.letsPlot.scale.scaleFillDiscrete
 import org.jetbrains.letsPlot.scale.scaleFillHue
 
 class BarPlotSpec : PlotDemoSpec {
+    val basic = letsPlot(DATA) +
+            geomBar(alpha = 0.5) {
+                x = "time"
+                color = "time"
+                fill = "time"
+            }
+
+    // ToDo: this doesn't work the same way as in the same demo in LP.
+    val fancy = letsPlot(DATA) +
+            geomBar {
+                x = "time"
+                fill = asDiscrete("..count..")
+            } + scaleFillHue()
 
     override fun createFigureList(): List<Figure> {
-        val basic = letsPlot(DATA) +
-                geomBar(alpha = 0.5) {
-                    x = "time"
-                    color = "time"
-                    fill = "time"
-                }
-
-        // ToDo: this doesn't work the same way as in the same demo in LP.
-        val fancy = letsPlot(DATA) +
-                geomBar {
-                    x = "time"
-                    fill = asDiscrete("..count..")
-                } + scaleFillHue()
-
         return listOf(
             basic,
             fancy,
