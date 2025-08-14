@@ -10,11 +10,11 @@ import org.jetbrains.letsPlot.core.canvas.*
 import org.jetbrains.letsPlot.core.canvas.Canvas.Snapshot
 
 class AndroidContext2d(
-    bitmap: Bitmap,
+    platformBitmap: Bitmap,
     pixelDensity: Double,
     private val stateDelegate: ContextStateDelegate = ContextStateDelegate(failIfNotImplemented = false, logEnabled = true),
 ) : Context2d by stateDelegate {
-    private val nativeCanvas = Canvas(bitmap).apply {
+    private val platformCanvas = Canvas(platformBitmap).apply {
         this.scale(pixelDensity.toFloat(), pixelDensity.toFloat())
     }
 
@@ -31,42 +31,55 @@ class AndroidContext2d(
     private val backgroundPaint = Paint().apply {
         style = Paint.Style.FILL
         isAntiAlias = true
-        color = 0xFFFFFFFF.toInt()
+        color = android.graphics.Color.TRANSPARENT
     }
 
     override fun drawImage(snapshot: Snapshot) {
-        snapshot as AndroidCanvas.AndroidSnapshot
-        nativeCanvas.drawBitmap(snapshot.androidBitmap, 0f, 0f, null)
+        require(snapshot is AndroidSnapshot) { "Snapshot must be of type AndroidSnapshot" }
+        platformCanvas.drawBitmap(snapshot.platformBitmap, 0f, 0f, null)
     }
 
     override fun drawImage(snapshot: Snapshot, x: Double, y: Double) {
-        snapshot as AndroidCanvas.AndroidSnapshot
-        nativeCanvas.drawBitmap(snapshot.androidBitmap, x.toFloat(), y.toFloat(), null)
+        require(snapshot is AndroidSnapshot) { "Snapshot must be of type AndroidSnapshot" }
+        platformCanvas.drawBitmap(snapshot.platformBitmap, x.toFloat(), y.toFloat(), null)
+    }
+
+    override fun drawImage(snapshot: Snapshot, x: Double, y: Double, dw: Double, dh: Double) {
+        require(snapshot is AndroidSnapshot) { "Snapshot must be of type AndroidSnapshot" }
+        val dstRect = Rect(x.toInt(), y.toInt(), (x + dw).toInt(), (y + dh).toInt())
+        platformCanvas.drawBitmap(snapshot.platformBitmap, null, dstRect, null)
+    }
+
+    override fun drawImage(snapshot: Snapshot, sx: Double, sy: Double, sw: Double, sh: Double, dx: Double, dy: Double, dw: Double, dh: Double) {
+        require(snapshot is AndroidSnapshot) { "Snapshot must be of type AndroidSnapshot" }
+        val srcRect = Rect(sx.toInt(), sy.toInt(), (sx + sw).toInt(), (sy + sh).toInt())
+        val dstRect = Rect(dx.toInt(), dy.toInt(), (dx + dw).toInt(), (dy + dh).toInt())
+        platformCanvas.drawBitmap(snapshot.platformBitmap, srcRect, dstRect, null)
     }
 
     override fun save() {
         stateDelegate.save()
-        nativeCanvas.save()
+        platformCanvas.save()
     }
 
     override fun restore() {
         stateDelegate.restore()
-        nativeCanvas.restore()
+        platformCanvas.restore()
     }
 
     override fun rotate(angle: Double) {
         stateDelegate.rotate(angle)
-        nativeCanvas.rotate(angle.toFloat())
+        platformCanvas.rotate(angle.toFloat())
     }
 
     override fun translate(x: Double, y: Double) {
         stateDelegate.translate(x, y)
-        nativeCanvas.translate(x.toFloat(), y.toFloat())
+        platformCanvas.translate(x.toFloat(), y.toFloat())
     }
 
     override fun transform(sx: Double, ry: Double, rx: Double, sy: Double, tx: Double, ty: Double) {
         stateDelegate.transform(sx = sx, ry = ry, rx = rx, sy = sy, tx = tx, ty = ty)
-        nativeCanvas.concat(Matrix().apply {
+        platformCanvas.concat(Matrix().apply {
             setValues(floatArrayOf(
                 sx.toFloat(), rx.toFloat(), tx.toFloat(),
                 ry.toFloat(), sy.toFloat(), ty.toFloat(),
@@ -77,17 +90,17 @@ class AndroidContext2d(
 
     override fun scale(x: Double, y: Double) {
         stateDelegate.scale(x, y)
-        nativeCanvas.scale(x.toFloat(), y.toFloat())
+        platformCanvas.scale(x.toFloat(), y.toFloat())
     }
 
     override fun scale(xy: Double) {
         stateDelegate.scale(xy)
-        nativeCanvas.scale(xy.toFloat(), xy.toFloat())
+        platformCanvas.scale(xy.toFloat(), xy.toFloat())
     }
 
     override fun setTransform(m00: Double, m10: Double, m01: Double, m11: Double, m02: Double, m12: Double) {
         stateDelegate.setTransform(m00, m10, m01, m11, m02, m12)
-        nativeCanvas.setMatrix(Matrix().apply {
+        platformCanvas.setMatrix(Matrix().apply {
             setValues(floatArrayOf(
                 m00.toFloat(), m10.toFloat(), 0f,
                 m01.toFloat(), m11.toFloat(), 0f,
@@ -97,15 +110,15 @@ class AndroidContext2d(
     }
 
     override fun clearRect(rect: DoubleRectangle) {
-        nativeCanvas.drawRect(rect.left.toFloat(), rect.top.toFloat(), rect.right.toFloat(), rect.bottom.toFloat(), backgroundPaint)
+        platformCanvas.drawRect(rect.left.toFloat(), rect.top.toFloat(), rect.right.toFloat(), rect.bottom.toFloat(), backgroundPaint)
     }
 
     override fun fillRect(x: Double, y: Double, w: Double, h: Double) {
-        nativeCanvas.drawRect(x.toFloat(), y.toFloat(), (x+w).toFloat(), (y+h).toFloat(), fillPaint)
+        platformCanvas.drawRect(x.toFloat(), y.toFloat(), (x+w).toFloat(), (y+h).toFloat(), fillPaint)
     }
 
     override fun strokeRect(x: Double, y: Double, w: Double, h: Double) {
-        nativeCanvas.drawRect(x.toFloat(), y.toFloat(), (x+w).toFloat(), (y+h).toFloat(), strokePaint)
+        platformCanvas.drawRect(x.toFloat(), y.toFloat(), (x+w).toFloat(), (y+h).toFloat(), strokePaint)
     }
 
     override fun setFont(f: Font) {
@@ -129,11 +142,11 @@ class AndroidContext2d(
     }
 
     override fun fillText(text: String, x: Double, y: Double) {
-        nativeCanvas.drawText(text, x.toFloat(), y.toFloat(), fillPaint)
+        platformCanvas.drawText(text, x.toFloat(), y.toFloat(), fillPaint)
     }
 
     override fun strokeText(text: String, x: Double, y: Double) {
-        nativeCanvas.drawText(text, x.toFloat(), y.toFloat(), strokePaint)
+        platformCanvas.drawText(text, x.toFloat(), y.toFloat(), strokePaint)
     }
 
     override fun measureText(str: String): TextMetrics {
@@ -178,13 +191,13 @@ class AndroidContext2d(
         // Make ctm identity. null for degenerate case, e.g., scale(0, 0) - skip drawing.
         val inverseCtmTransform = stateDelegate.getCTM().inverse() ?: return
 
-        nativeCanvas.drawPath(drawPath(stateDelegate.getCurrentPath(), inverseCtmTransform), strokePaint)
+        platformCanvas.drawPath(drawPath(stateDelegate.getCurrentPath(), inverseCtmTransform), strokePaint)
     }
 
     override fun fill() {
         // Make ctm identity. null for degenerate case, e.g., scale(0, 0) - skip drawing.
         val inverseCtmTransform = stateDelegate.getCTM().inverse() ?: return
-        nativeCanvas.drawPath(drawPath(stateDelegate.getCurrentPath(), inverseCtmTransform), fillPaint)
+        platformCanvas.drawPath(drawPath(stateDelegate.getCurrentPath(), inverseCtmTransform), fillPaint)
     }
 
     override fun fillEvenOdd() {
@@ -193,7 +206,7 @@ class AndroidContext2d(
 
         val path = drawPath(stateDelegate.getCurrentPath(), inverseCtmTransform)
         path.fillType = Path.FillType.EVEN_ODD
-        nativeCanvas.drawPath(path, fillPaint)
+        platformCanvas.drawPath(path, fillPaint)
     }
 
     override fun setFillStyle(color: Color?) {
@@ -239,7 +252,7 @@ class AndroidContext2d(
         val inverseCtmTransform = stateDelegate.getCTM().inverse() ?: return
 
         val path = drawPath(stateDelegate.getCurrentPath(), inverseCtmTransform)
-        nativeCanvas.clipPath(path)
+        platformCanvas.clipPath(path)
     }
 
     private fun drawPath(commands: List<Path2d.PathCommand>, transform: AffineTransform): Path {

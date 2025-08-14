@@ -5,7 +5,6 @@
 
 plugins {
     kotlin("android")
-    id("org.jetbrains.compose")
     id("com.android.application")
     kotlin("plugin.compose")
 }
@@ -45,16 +44,16 @@ android {
     }
 }
 
-val composeVersion = extra["compose.version"] as String
 val androidxActivityCompose = extra["androidx.activity.compose"] as String
 val letsPlotVersion = extra["letsPlot.version"] as String
 val letsPlotKotlinVersion = extra["letsPlotKotlin.version"] as String
 
 dependencies {
-    implementation(compose.runtime)
-    implementation(compose.foundation)
-    implementation(compose.material)
-    implementation(compose.ui)
+    implementation(platform("androidx.compose:compose-bom:2023.08.00")) // Replace YYYY.MM.00 with the desired BOM version
+    implementation("androidx.compose.ui:ui")
+    implementation("androidx.compose.ui:ui-graphics")
+    implementation("androidx.compose.ui:ui-tooling-preview")
+    implementation("androidx.compose.material:material")
     implementation("androidx.activity:activity-compose:$androidxActivityCompose")
 
     implementation("org.jetbrains.lets-plot:lets-plot-kotlin-kernel:$letsPlotKotlinVersion")

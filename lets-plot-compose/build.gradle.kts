@@ -32,9 +32,6 @@ kotlin {
     sourceSets {
         named("commonMain") {
             dependencies {
-                compileOnly(compose.runtime)
-                compileOnly(compose.ui)
-
                 compileOnly("org.jetbrains.lets-plot:lets-plot-kotlin-kernel:$letsPlotKotlinVersion")
 
                 compileOnly("org.jetbrains.lets-plot:lets-plot-common:$letsPlotVersion")
@@ -43,6 +40,8 @@ kotlin {
 
         named("desktopMain") {
             dependencies {
+                compileOnly(compose.runtime)
+                compileOnly(compose.ui)
                 compileOnly(compose.desktop.currentOs)
                 compileOnly("org.jetbrains.skiko:skiko:${skikoVersion}")
 
@@ -55,6 +54,9 @@ kotlin {
 
         named("androidMain") {
             dependencies {
+                implementation(project.dependencies.platform("androidx.compose:compose-bom:2023.05.01"))
+                implementation("androidx.compose.ui:ui")
+                implementation("androidx.compose.ui:ui-graphics")
                 api(project(":platf-skia"))
                 compileOnly("org.jetbrains.lets-plot:plot-raster:${letsPlotVersion}")
                 compileOnly("org.jetbrains.lets-plot:canvas:${letsPlotVersion}")

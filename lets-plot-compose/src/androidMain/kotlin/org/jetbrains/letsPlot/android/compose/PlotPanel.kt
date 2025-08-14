@@ -9,14 +9,15 @@ import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.viewinterop.AndroidView
 import org.jetbrains.letsPlot.Figure
+import org.jetbrains.letsPlot.android.canvas.CanvasView
 import org.jetbrains.letsPlot.core.util.sizing.SizingPolicy
 import org.jetbrains.letsPlot.intern.toSpec
 import org.jetbrains.letsPlot.raster.builder.MonolithicCanvas
+import org.jetbrains.letsPlot.raster.view.PlotCanvasFigure
 import org.jetbrains.letsPlot.skia.compose.util.NaiveLogger
 
 private val LOG = NaiveLogger("PlotPanel")
 
-// TODO: Investigate memory leaks and repaints without data changes.
 @Suppress("FunctionName")
 @Composable
 fun PlotPanel(
@@ -25,34 +26,25 @@ fun PlotPanel(
     modifier: Modifier,
     computationMessagesHandler: (List<String>) -> Unit
 ) {
-    LOG.print { "Recompose PlotPanel() preserveAspectRatio: $preserveAspectRatio " }
+    var plotCanvasFigure by remember { mutableStateOf(PlotCanvasFigure()) }
 
-    val provider by remember {
-        mutableStateOf(
-            CanvasViewProvider(
-                computationMessagesHandler
-            )
-        )
-    }
-
-    DisposableEffect(provider) {
-        onDispose {
-            LOG.print { "DisposableEffect" }
-            provider.dispose()
-        }
-    }
+    LOG.print { "Recompose PlotPanel()" }
 
     AndroidView(
-        factory = provider.factory,
+        factory = { ctx ->
+            LOG.print { "PlotPanel: AndroidView factory called" }
+            val canvasView = CanvasView(ctx)
+            canvasView.figure = plotCanvasFigure
+            canvasView
+        },
         modifier = modifier,
         update = { canvasView ->
-            val plotFigure = MonolithicCanvas.buildPlotFigureFromRawSpec(
-                figure.toSpec(),
-                sizingPolicy = SizingPolicy.fitContainerSize(preserveAspectRatio)
-            ) { println("Computation messages: $it") }
-            LOG.print { "UPDATE PlotViewContainer preserveAspectRatio ${canvasView.figure} ->  $preserveAspectRatio" }
-
-            canvasView.figure = plotFigure
+            MonolithicCanvas.updatePlotFigureFromRawSpec(
+                plotCanvasFigure = plotCanvasFigure,
+                rawSpec = figure.toSpec(),
+                sizingPolicy = SizingPolicy.fitContainerSize(preserveAspectRatio),
+                computationMessagesHandler = computationMessagesHandler
+            )
         }
     )
 }
