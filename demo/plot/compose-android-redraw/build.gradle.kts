@@ -47,15 +47,14 @@ android {
     }
 }
 
+val androidComposeBom = extra["androidx.compose.bom"] as String
 val androidxActivityCompose = extra["androidx.activity.compose"] as String
 val letsPlotVersion = extra["letsPlot.version"] as String
 val letsPlotKotlinVersion = extra["letsPlotKotlin.version"] as String
 
 dependencies {
-    implementation(platform("androidx.compose:compose-bom:2023.08.00")) // Replace YYYY.MM.00 with the desired BOM version
+    implementation(platform("androidx.compose:compose-bom:$androidComposeBom"))
     implementation("androidx.compose.ui:ui")
-    implementation("androidx.compose.ui:ui-graphics")
-    implementation("androidx.compose.ui:ui-tooling-preview")
     implementation("androidx.compose.material:material")
     implementation("androidx.activity:activity-compose:$androidxActivityCompose")
 

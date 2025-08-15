@@ -30,7 +30,7 @@ class AndroidCanvas(
     override val context2d: Context2d = AndroidContext2d(platformBitmap, pixelDensity)
 
     override fun takeSnapshot(): AndroidSnapshot {
-        return AndroidSnapshot(platformBitmap.copy(this.platformBitmap.config, false))
+        return AndroidSnapshot(platformBitmap.copy(android.graphics.Bitmap.Config.ARGB_8888, false))
     }
 
 }

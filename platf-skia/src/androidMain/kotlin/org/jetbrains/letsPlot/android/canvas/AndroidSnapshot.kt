@@ -18,7 +18,7 @@ class AndroidSnapshot(
         get() = Vector(platformBitmap.width, platformBitmap.height)
 
     override fun copy(): Canvas.Snapshot {
-        val newBitmap = platformBitmap.copy(platformBitmap.config, false)
+        val newBitmap = platformBitmap.copy(android.graphics.Bitmap.Config.ARGB_8888, false)
         return AndroidSnapshot(newBitmap)
     }
 

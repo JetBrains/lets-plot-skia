@@ -12,6 +12,7 @@ plugins {
     signing
 }
 
+val androidComposeBom = extra["androidx.compose.bom"] as String
 val skikoVersion = extra["skiko.version"] as String
 val composeVersion = extra["compose.version"] as String
 val letsPlotVersion = extra["letsPlot.version"] as String
@@ -33,7 +34,6 @@ kotlin {
         named("commonMain") {
             dependencies {
                 compileOnly("org.jetbrains.lets-plot:lets-plot-kotlin-kernel:$letsPlotKotlinVersion")
-
                 compileOnly("org.jetbrains.lets-plot:lets-plot-common:$letsPlotVersion")
             }
         }
@@ -54,7 +54,7 @@ kotlin {
 
         named("androidMain") {
             dependencies {
-                implementation(project.dependencies.platform("androidx.compose:compose-bom:2023.05.01"))
+                implementation(project.dependencies.platform("androidx.compose:compose-bom:$androidComposeBom"))
                 implementation("androidx.compose.ui:ui")
                 implementation("androidx.compose.ui:ui-graphics")
                 api(project(":platf-skia"))

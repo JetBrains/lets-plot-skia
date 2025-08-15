@@ -18,20 +18,8 @@ val skikoVersion = extra["skiko.version"] as String
 val letsPlotVersion = extra["letsPlot.version"] as String
 val kotlinLoggingVersion = extra["kotlinLogging.version"] as String
 val assertjVersion = extra["assertj.version"] as String
-
-val osName = System.getProperty("os.name")!!
-val hostOs = when {
-    osName == "Mac OS X" -> "macos"
-    osName.startsWith("Win") -> "windows"
-    osName.startsWith("Linux") -> "linux"
-    else -> error("Unsupported OS: $osName")
-}
-
-var hostArch = when (val osArch = System.getProperty("os.arch")) {
-    "x86_64", "amd64" -> "x64"
-    "aarch64" -> "arm64"
-    else -> error("Unsupported arch: $osArch")
-}
+val junitVersion = extra["junit.version"] as String
+val espressoCoreVersion = extra["espresso.core.version"] as String
 
 kotlin {
     jvm {
@@ -68,7 +56,6 @@ kotlin {
                 implementation(kotlin("test"))
                 implementation("org.assertj:assertj-core:$assertjVersion")
                 implementation("org.jetbrains.skiko:skiko:$skikoVersion")
-                implementation("org.jetbrains.skiko:skiko-awt-runtime-$hostOs-$hostArch:$skikoVersion")
                 implementation("org.jetbrains.lets-plot:commons:$letsPlotVersion")
                 implementation("org.jetbrains.lets-plot:datamodel:$letsPlotVersion")
                 implementation("io.github.microutils:kotlin-logging:$kotlinLoggingVersion")
@@ -90,8 +77,8 @@ kotlin {
         named("androidInstrumentedTest") {
             dependencies {
                 implementation(kotlin("test"))
-                implementation("androidx.test.ext:junit:1.1.5")
-                implementation("androidx.test.espresso:espresso-core:3.5.1")
+                implementation("androidx.test.ext:junit:$junitVersion")
+                implementation("androidx.test.espresso:espresso-core:$espressoCoreVersion")
 
                 implementation("org.assertj:assertj-core:$assertjVersion")
                 implementation("org.jetbrains.lets-plot:commons:$letsPlotVersion")
@@ -116,12 +103,6 @@ android {
     defaultConfig {
         minSdk = (findProperty("android.minSdk") as String).toInt()
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
-    }
-
-    testOptions {
-
-        //    animationsDisabled = true
-    //    execution = "ANDROIDX_TEST_ORCHESTRATOR"
     }
 
     buildTypes {
