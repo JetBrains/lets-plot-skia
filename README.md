@@ -6,7 +6,7 @@
 [![Latest Release](https://img.shields.io/github/v/release/JetBrains/lets-plot-skia)](https://github.com/JetBrains/lets-plot-skia/releases/latest)
 
 **Lets-Plot Skia Frontend** is a Kotlin Multiplatform library that allows you to embed \
-[Lets-Plot](https://github.com/JetBrains/lets-plot) charts in a [Compose Multiplatform](https://github.com/JetBrains/compose-multiplatform) or Java Swing application.
+[Lets-Plot](https://github.com/JetBrains/lets-plot) charts in a [Compose Multiplatform](https://github.com/JetBrains/compose-multiplatform), Java Swing or Android application.
 
 ### Supported Targets
 - **Compose Desktop** (macOS, Windows, Linux)\

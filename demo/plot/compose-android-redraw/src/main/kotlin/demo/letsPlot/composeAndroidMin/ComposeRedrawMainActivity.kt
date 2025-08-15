@@ -18,7 +18,6 @@ import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
-import ch.qos.logback.classic.android.BasicLogcatConfigurator
 import kotlinx.coroutines.delay
 import org.jetbrains.letsPlot.geom.geomBlank
 import org.jetbrains.letsPlot.geom.geomLine
@@ -135,12 +134,6 @@ class ComposeRedrawMainActivity : ComponentActivity() {
                     }
                 }
             }
-        }
-    }
-
-    private companion object {
-        init {
-            BasicLogcatConfigurator.configureDefaultContext()
         }
     }
 }
