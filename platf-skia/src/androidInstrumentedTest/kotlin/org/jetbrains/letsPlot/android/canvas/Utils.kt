@@ -31,7 +31,7 @@ class ImageResultTestWatcher(private val imageComparer: ImageComparer) : TestWat
 
 
 
-val AndroidCanvas.img: Bitmap get() = this.bitmap
+val AndroidCanvas.img: Bitmap get() = this.platformBitmap
 
 var Context2d.lineWidth: Double
     get() = error("lineWidth is write only")

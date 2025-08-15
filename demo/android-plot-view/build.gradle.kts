@@ -43,8 +43,6 @@ val letsPlotVersion = extra["letsPlot.version"] as String
 val letsPlotKotlinVersion = extra["letsPlotKotlin.version"] as String
 
 dependencies {
-    implementation("androidx.constraintlayout:constraintlayout:2.2.1")
-
     implementation(project(":platf-skia"))
     implementation(project(":demo-plot-shared"))
     implementation("org.jetbrains.lets-plot:lets-plot-kotlin-kernel:${letsPlotKotlinVersion}")

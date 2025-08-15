@@ -1,10 +1,13 @@
 ### Skiko and Compose Multiplatform Versions  
 
-| Compose Multiplatform                                                                                  | Skiko |
-|--------------------------------------------------------------------------------------------------------| --- |
-| [1.7.0](https://repo1.maven.org/maven2/org/jetbrains/compose/ui/ui-desktop/1.7.0/ui-desktop-1.7.0.pom)                                                                                              | 0.8.15 |
+| Compose Multiplatform                                                                                  | Skiko  |
+|--------------------------------------------------------------------------------------------------------|--------|
+| [1.7.0](https://repo1.maven.org/maven2/org/jetbrains/compose/ui/ui-desktop/1.7.0/ui-desktop-1.7.0.pom) | 0.8.15 |
 | [1.7.1](https://repo1.maven.org/maven2/org/jetbrains/compose/ui/ui-desktop/1.7.1/ui-desktop-1.7.1.pom) | 0.8.18 |
 | [1.7.3](https://repo1.maven.org/maven2/org/jetbrains/compose/ui/ui-desktop/1.7.3/ui-desktop-1.7.3.pom) | 0.8.18 |
+| [1.8.0](https://repo1.maven.org/maven2/org/jetbrains/compose/ui/ui-desktop/1.8.0/ui-desktop-1.8.0.pom) | 0.9.4  |
+| [1.8.1](https://repo1.maven.org/maven2/org/jetbrains/compose/ui/ui-desktop/1.8.1/ui-desktop-1.8.1.pom) | 0.9.4.2 |
+| [1.8.2](https://repo1.maven.org/maven2/org/jetbrains/compose/ui/ui-desktop/1.8.2/ui-desktop-1.8.2.pom) | 0.9.4.2 |
 
 
 Changing the version of `Skiko` or `Compose Multiplatform` may lead to compatibility issues and runtime errors like `MethodNotFound` or `ClassNotFound`. 

@@ -5,7 +5,6 @@
 
 plugins {
     kotlin("android")
-    id("org.jetbrains.compose")
     id("com.android.application")
     kotlin("plugin.compose")
 }
@@ -48,16 +47,15 @@ android {
     }
 }
 
-val composeVersion = extra["compose.version"] as String
+val androidComposeBom = extra["androidx.compose.bom"] as String
 val androidxActivityCompose = extra["androidx.activity.compose"] as String
 val letsPlotVersion = extra["letsPlot.version"] as String
 val letsPlotKotlinVersion = extra["letsPlotKotlin.version"] as String
 
 dependencies {
-    implementation(compose.runtime)
-    implementation(compose.foundation)
-    implementation(compose.material)
-    implementation(compose.ui)
+    implementation(platform("androidx.compose:compose-bom:$androidComposeBom"))
+    implementation("androidx.compose.ui:ui")
+    implementation("androidx.compose.material:material")
     implementation("androidx.activity:activity-compose:$androidxActivityCompose")
 
     implementation("org.jetbrains.lets-plot:lets-plot-kotlin-kernel:$letsPlotKotlinVersion")
@@ -68,7 +66,4 @@ dependencies {
 
     implementation(project(":lets-plot-compose"))
     implementation(project(":demo-plot-shared"))
-
-    implementation("org.slf4j:slf4j-api:2.0.9")
-    implementation("com.github.tony19:logback-android:3.0.0")
 }
