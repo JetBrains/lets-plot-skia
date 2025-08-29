@@ -41,8 +41,7 @@ actual fun PlotPanel(
     // Update density on each recomposition to handle monitor DPI changes (e.g., drag between HIDPI/regular monitor)
     val density = LocalDensity.current.density.toDouble()
 
-    // Should be stored because of the spec_id change on each processRawSpecs() call.
-    // Pass figure as remember() argument or SwingPanel update will not be triggered.
+    // Cache processed plot spec to avoid reprocessing the same figure on every recomposition.
     val processedPlotSpec by remember(figure) { mutableStateOf(processRawSpecs(figure.toSpec(), frontendOnly = false)) }
     var panelSize by remember { mutableStateOf(DoubleVector.ZERO) }
     var dispatchComputationMessages by remember { mutableStateOf(true) }
@@ -102,8 +101,8 @@ actual fun PlotPanel(
 
                     plotFigureModel!!.toolEventDispatcher = viewModel.toolEventDispatcher
 
-                    val plotWidth = viewModel.svg.width().get()!!
-                    val plotHeight = viewModel.svg.height().get()!!
+                    val plotWidth = viewModel.svg.width().get() ?: panelSize.x
+                    val plotHeight = viewModel.svg.height().get() ?: panelSize.y
 
                     val position = DoubleVector(
                         maxOf(0.0, (panelSize.x - plotWidth) / 2.0),

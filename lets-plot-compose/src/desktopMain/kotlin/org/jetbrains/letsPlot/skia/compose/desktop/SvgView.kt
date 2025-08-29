@@ -22,7 +22,7 @@ import kotlin.math.roundToInt
 
 
 @OptIn(ExperimentalComposeUiApi::class)
-internal class SvgView : SkiaSvgView() {
+class SvgView : SkiaSvgView() {
 
     // Callback to notify Compose when a redrawing is needed
     var onRedrawRequested: (() -> Unit)? = null

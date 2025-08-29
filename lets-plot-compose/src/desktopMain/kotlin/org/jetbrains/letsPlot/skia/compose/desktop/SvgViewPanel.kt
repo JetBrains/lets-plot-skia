@@ -21,7 +21,7 @@ import java.awt.Cursor
 
 @OptIn(ExperimentalComposeUiApi::class)
 @Composable
-internal fun SvgViewPanel(
+fun SvgViewPanel(
     svgView: SvgView,
     modifier: Modifier = Modifier
 ) {
@@ -57,7 +57,6 @@ internal fun SvgViewPanel(
                 val width = (size.width / density).toInt()
                 val height = (size.height / density).toInt()
                 canvasSize = IntSize(width, height)
-//                svgSkikoView.updateSize(width, height)
             }
             .pointerInput(Unit) {
                 awaitPointerEventScope {

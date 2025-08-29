@@ -9,7 +9,7 @@ import org.jetbrains.letsPlot.commons.geometry.DoubleVector
 import org.jetbrains.letsPlot.commons.registration.Disposable
 import org.jetbrains.letsPlot.skia.builderLW.ViewModel
 
-internal class PlotContainer : Disposable {
+class PlotContainer : Disposable {
     internal val svgView = SvgView()
     private var viewModel: ViewModel? = null
 
