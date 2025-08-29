@@ -1,7 +1,10 @@
 plugins {
     kotlin("jvm")
+    kotlin("plugin.compose")
+    id("org.jetbrains.compose")
 }
 
+val composeVersion = extra["compose.version"] as String
 val skikoVersion = extra["skiko.version"] as String
 val letsPlotVersion = extra["letsPlot.version"] as String
 
@@ -23,13 +26,13 @@ val host = "${hostOs}-${hostArch}"
 
 
 dependencies {
+    implementation(compose.desktop.currentOs)
+    compileOnly(compose.ui)
+
     implementation("org.jetbrains.skiko:skiko:$skikoVersion")
     implementation("org.jetbrains.skiko:skiko-awt-runtime-$hostOs-$hostArch:$skikoVersion")
-
-    implementation(project(":platf-skia"))
-    implementation(project(":platf-skia-awt"))
-
-    implementation(project(":demo-svg-shared"))
-
     implementation("org.jetbrains.lets-plot:lets-plot-common:$letsPlotVersion")
+
+    implementation(project(":lets-plot-compose"))
+    implementation(project(":demo-svg-shared"))
 }

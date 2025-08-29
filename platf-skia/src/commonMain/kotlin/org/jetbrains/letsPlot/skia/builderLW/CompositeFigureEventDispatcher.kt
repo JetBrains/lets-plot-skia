@@ -12,12 +12,12 @@ import org.jetbrains.letsPlot.commons.geometry.Rectangle
 import org.jetbrains.letsPlot.commons.geometry.Vector
 import org.jetbrains.letsPlot.commons.intern.observable.event.EventHandler
 import org.jetbrains.letsPlot.commons.registration.Registration
-import org.jetbrains.letsPlot.skia.view.SkikoViewEventDispatcher
+import org.jetbrains.letsPlot.skia.view.SvgViewEventDispatcher
 
-class CompositeFigureEventDispatcher() : SkikoViewEventDispatcher {
-    private val dispatchers = LinkedHashMap<Rectangle, SkikoViewEventDispatcher>()
+class CompositeFigureEventDispatcher() : SvgViewEventDispatcher {
+    private val dispatchers = LinkedHashMap<Rectangle, SvgViewEventDispatcher>()
 
-    fun addEventDispatcher(bounds: Rectangle, eventDispatcher: SkikoViewEventDispatcher) {
+    fun addEventDispatcher(bounds: Rectangle, eventDispatcher: SvgViewEventDispatcher) {
         dispatchers[bounds] = eventDispatcher
     }
 

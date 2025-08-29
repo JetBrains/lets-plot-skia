@@ -21,18 +21,24 @@ import org.jetbrains.letsPlot.skia.mapping.svg.SvgSvgElementMapper
 import org.jetbrains.letsPlot.skia.shape.*
 import org.jetbrains.skia.Canvas
 import org.jetbrains.skia.Color
-import org.jetbrains.skia.Matrix33.Companion.makeScale
 import org.jetbrains.skia.Paint
 import org.jetbrains.skia.PathEffect.Companion.makeDash
-import org.jetbrains.skiko.SkiaLayer
-import org.jetbrains.skiko.SkikoRenderDelegate
 import kotlin.math.ceil
 
-abstract class SvgSkikoView() : SkikoRenderDelegate, Disposable {
+abstract class SkiaSvgView() : Disposable {
+    private var disposed = false
+    private val nodeContainer = SvgNodeContainer(SvgSvgElement())  // attach root
+    private var rootElement: Pane = Pane()
+    private val fontManager = FontManager()
     private var eventReg: Registration = Registration.EMPTY
     private var clickedElement: Element? = null
 
-    var eventDispatcher: SkikoViewEventDispatcher? = null
+    var width: Int = 0
+        private set
+    var height: Int = 0
+        private set
+
+    var eventDispatcher: SvgViewEventDispatcher? = null
         set(value) {
             eventReg.remove()
             if (value != null) {
@@ -51,9 +57,8 @@ abstract class SvgSkikoView() : SkikoRenderDelegate, Disposable {
             field = value
         }
 
-    private val fontManager = FontManager()
-
-    var svg: SvgSvgElement = SvgSvgElement()
+    var svg: SvgSvgElement
+        get() = nodeContainer.root().get()
         set(value) {
             nodeContainer.root().set(value)
             val rootMapper = SvgSvgElementMapper(value, SvgSkiaPeer(fontManager))
@@ -63,30 +68,8 @@ abstract class SvgSkikoView() : SkikoRenderDelegate, Disposable {
             width = value.width().get()?.let { ceil(it).toInt() } ?: 0
             height = value.height().get()?.let { ceil(it).toInt() } ?: 0
 
-            updateSkiaLayerSize(width, height)
-
             needRedraw()
         }
-
-    private val nodeContainer = SvgNodeContainer(SvgSvgElement())  // attach root
-    private var rootElement: Pane = Pane()
-    private lateinit var _nativeLayer: SkiaLayer
-
-    private var disposed = false
-
-    val skiaLayer: SkiaLayer
-        get() {
-            check(!disposed) { "SvgSkikoView is disposed." }
-            if (!this::_nativeLayer.isInitialized) {
-                _nativeLayer = createSkiaLayer(this)
-            }
-            return _nativeLayer
-        }
-
-    var width: Int = 0
-        private set
-    var height: Int = 0
-        private set
 
     init {
         nodeContainer.addListener(object : SvgNodeContainerListener {
@@ -96,27 +79,14 @@ abstract class SvgSkikoView() : SkikoRenderDelegate, Disposable {
         })
     }
 
-    protected abstract fun createSkiaLayer(view: SvgSkikoView): SkiaLayer
-    protected abstract fun updateSkiaLayerSize(width: Int, height: Int)
+    protected abstract fun needRedraw()
 
-    override fun onRender(canvas: Canvas, width: Int, height: Int, nanoTime: Long) {
+    protected fun renderIntern(canvas: Canvas) {
         if (disposed) {
-            // needRedraw() schedules render call, but SvgSkikoView may be disposed before it happens between frames.
             return
         }
-
-        if (width == 0 && height == 0) {
-            // Skiko may call onRender before SkiaLayer is initialized (width and height are 0).
-            // In this case we request another render call until SkiaLayer is initialized (width and height are not 0).
-            // Otherwise, Skiko won't call onRender again when initialization is done and screen will stay blank.
-            needRedraw()
-            return
-        }
-
-        canvas.concat(makeScale(skiaLayer.contentScale))
 
         render(rootElement, canvas)
-
 
         if (DebugOptions.DEBUG_DRAWING_ENABLED) {
             highlightElement(clickedElement, canvas)
@@ -130,21 +100,11 @@ abstract class SvgSkikoView() : SkikoRenderDelegate, Disposable {
         }
 
         disposed = true
-
         fontManager.dispose()
 
         // Detach svg root.
         nodeContainer.root().set(SvgSvgElement())
 
-        if (this::_nativeLayer.isInitialized) {
-            _nativeLayer.detach()
-        }
-    }
-
-    private fun needRedraw() {
-        if (!disposed) {
-            skiaLayer.needRedraw()
-        }
     }
 
     companion object {

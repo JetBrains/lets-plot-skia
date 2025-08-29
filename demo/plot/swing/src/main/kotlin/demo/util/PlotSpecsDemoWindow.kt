@@ -5,9 +5,14 @@
 
 package demo.util
 
+import androidx.compose.foundation.background
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.ui.Modifier
+import androidx.compose.ui.awt.ComposePanel
+import androidx.compose.ui.graphics.Color
 import org.jetbrains.letsPlot.Figure
-import org.jetbrains.letsPlot.skia.swing.createComponent
-import java.awt.Color
+//import org.jetbrains.letsPlot.skia.swing.createComponent
+import java.awt.Color as ColorAwt
 import java.awt.Dimension
 import java.awt.GridLayout
 import javax.swing.*
@@ -18,7 +23,7 @@ internal class PlotSpecsDemoWindow(
     private val figures: List<Figure>,
     maxCol: Int = 3,
     private val plotSize: Dimension? = null,
-    background: Color = Color.WHITE,
+    background: ColorAwt = ColorAwt.WHITE,
 ) : JFrame("$title (Skia Swing)") {
     private val rootPanel: JPanel
 
@@ -54,24 +59,53 @@ internal class PlotSpecsDemoWindow(
         }
     }
 
+//    private fun createWindowContent() {
+//        val preferredSizeFromPlot = (plotSize == null)
+//        val components = figures.map { figure ->
+//            val figureComponent = figure.createComponent(
+//                preferredSizeFromPlot = preferredSizeFromPlot
+//            ) { messages ->
+//                for (message in messages) {
+//                    println("[Demo Plot Viewer] $message")
+//                }
+//            }
+//
+//            plotSize?.let {
+//                figureComponent.preferredSize = it
+//            }
+//
+//            figureComponent
+//        }
+//
+//        components.forEach { rootPanel.add(it) }
+//    }
+
     private fun createWindowContent() {
-        val preferredSizeFromPlot = (plotSize == null)
-        val components = figures.map { figure ->
-            val figureComponent = figure.createComponent(
-                preferredSizeFromPlot = preferredSizeFromPlot
-            ) { messages ->
-                for (message in messages) {
-                    println("[Demo Plot Viewer] $message")
+
+        figures.forEach { figure ->
+            val composePanel = ComposePanel().apply {
+                if (plotSize != null) {
+                    preferredSize = plotSize
+                } else {
+                    preferredSize = Dimension(500, 400) // Default size
+                }
+                setContent {
+                    // Use the pure Compose PlotPanel implementation
+                    org.jetbrains.letsPlot.skia.compose.PlotPanel(
+                        figure = figure,
+                        preserveAspectRatio = true,
+                        modifier = Modifier.fillMaxSize(),
+//                            .background(Color.Green),
+                        computationMessagesHandler = { messages ->
+                            for (message in messages) {
+                                println("[Demo Plot Viewer] $message")
+                            }
+                        }
+                    )
                 }
             }
 
-            plotSize?.let {
-                figureComponent.preferredSize = it
-            }
-
-            figureComponent
+            rootPanel.add(composePanel)
         }
-
-        components.forEach { rootPanel.add(it) }
     }
 }

@@ -12,7 +12,6 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.awt.SwingPanel
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.onSizeChanged
 import androidx.compose.ui.platform.LocalDensity
@@ -26,6 +25,7 @@ import org.jetbrains.letsPlot.core.util.sizing.SizingPolicy
 import org.jetbrains.letsPlot.intern.toSpec
 import org.jetbrains.letsPlot.skia.builderLW.MonolithicSkiaLW
 import org.jetbrains.letsPlot.skia.compose.desktop.PlotContainer
+import org.jetbrains.letsPlot.skia.compose.desktop.SvgViewPanel
 import org.jetbrains.letsPlot.skia.compose.util.NaiveLogger
 
 private val LOG = NaiveLogger("PlotPanel")
@@ -38,7 +38,7 @@ actual fun PlotPanel(
     modifier: Modifier,
     computationMessagesHandler: (List<String>) -> Unit
 ) {
-    // Update density on each recomposition to handle monitor DPI changes (e.g. drag between HIDPI/regular monitor)
+    // Update density on each recomposition to handle monitor DPI changes (e.g., drag between HIDPI/regular monitor)
     val density = LocalDensity.current.density.toDouble()
 
     // Should be stored because of the spec_id change on each processRawSpecs() call.
@@ -63,26 +63,25 @@ actual fun PlotPanel(
 
         Box(
             modifier = modifier
-                .weight(1f) // Take remaining vertical space
+                .weight(1f) // Take the remaining vertical space
                 .fillMaxWidth() // Fill available width
                 .onSizeChanged { newSize ->
                     panelSize = DoubleVector(newSize.width / density, newSize.height / density)
                 }
-                .background(Color.Gray)
+                .background(Color.LightGray)
         ) {
-            SwingPanel(
-                background = Color.White,
-                modifier = Modifier.fillMaxSize(),
-                factory = { plotContainer },
-                update = { plotViewContainer ->
-                    LOG.print("SwingPanel.update()")
+            LaunchedEffect(panelSize, processedPlotSpec, specOverrideList) {
+                if (panelSize != DoubleVector.ZERO) {
+                    LOG.print("Plot update triggered")
 
-                    val plotSpec = SpecOverrideUtil.applySpecOverride(processedPlotSpec, specOverrideList).toMutableMap()
+                    val plotSpec =
+                        SpecOverrideUtil.applySpecOverride(processedPlotSpec, specOverrideList).toMutableMap()
 
-                    // Calculate size here, not outside the SwingPanel.update()
-                    // Otherwise on resizing the plot size will lag behind the panel size, causing rendering issues.
-
-                    val viewModel = MonolithicSkiaLW.buildPlotFromProcessedSpecs(plotSpec, panelSize, SizingPolicy.fitContainerSize(preserveAspectRatio)) { messages ->
+                    val viewModel = MonolithicSkiaLW.buildPlotFromProcessedSpecs(
+                        plotSpec = plotSpec,
+                        containerSize = panelSize,
+                        sizingPolicy = SizingPolicy.fitContainerSize(preserveAspectRatio)
+                    ) { messages ->
                         if (dispatchComputationMessages) {
                             // do once
                             dispatchComputationMessages = false
@@ -111,8 +110,13 @@ actual fun PlotPanel(
                         maxOf(0.0, (panelSize.y - plotHeight) / 2.0)
                     )
 
-                    plotViewContainer.updatePlotView(viewModel, DoubleVector(plotWidth, plotHeight), position)
+                    plotContainer.updateViewModel(viewModel, position)
                 }
+            }
+
+            SvgViewPanel(
+                svgView = plotContainer.svgView,
+                modifier = Modifier.fillMaxSize(),
             )
         }
     }

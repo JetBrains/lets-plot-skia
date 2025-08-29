@@ -3,17 +3,16 @@
  * Use of this source code is governed by the MIT license that can be found in the LICENSE file.
  */
 
-package demo.plot.defaultViewer
+package demo.plot.simpleViewer
 
-import org.jetbrains.letsPlot.skia.swing.PlotViewerWindowSkia
 import plotSpec.DensitySpec
 
 fun main() {
     with(DensitySpec()) {
-        PlotViewerWindowSkia(
-            "Density plot",
-            createFigure(),
-            null,
+        SimplePlotViewer(
+            title = "Density plot",
+            figure = createFigure(),
+            windowSize = null,
             preserveAspectRatio = false
         ).open()
     }

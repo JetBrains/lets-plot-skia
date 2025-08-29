@@ -13,7 +13,6 @@ dependencies {
 
     implementation("org.jetbrains.lets-plot:lets-plot-kotlin-kernel:$letsPlotKotlinVersion")
     implementation("org.jetbrains.lets-plot:lets-plot-common:$letsPlotVersion")
-    implementation("org.jetbrains.lets-plot:platf-awt:$letsPlotVersion")
 
     implementation(project(":lets-plot-compose"))
     implementation(project(":demo-plot-shared"))

@@ -1,46 +1,28 @@
 /*
- * Copyright (c) 2024 JetBrains s.r.o.
+ * Copyright (c) 2025 JetBrains s.r.o.
  * Use of this source code is governed by the MIT license that can be found in the LICENSE file.
  */
 
 package org.jetbrains.letsPlot.skia.compose.desktop
 
 import org.jetbrains.letsPlot.commons.geometry.DoubleVector
-import org.jetbrains.letsPlot.skia.awt.view.SvgPanel
+import org.jetbrains.letsPlot.commons.registration.Disposable
 import org.jetbrains.letsPlot.skia.builderLW.ViewModel
-import java.awt.Cursor
-import java.awt.Rectangle
-import javax.swing.JPanel
 
-class PlotContainer : JPanel() {
-    private val plotSvgPanel = SvgPanel()
+internal class PlotContainer : Disposable {
+    internal val svgView = SvgView()
     private var viewModel: ViewModel? = null
 
-    init {
-        layout = null // plot redraw may jump without this
-        cursor = Cursor(Cursor.CROSSHAIR_CURSOR)
-        add(plotSvgPanel)
-    }
-
-    fun updatePlotView(viewModel: ViewModel, preferredSize: DoubleVector, position: DoubleVector) {
+    fun updateViewModel(viewModel: ViewModel, position: DoubleVector) {
         this.viewModel = viewModel
 
-        plotSvgPanel.svg = viewModel.svg
-        plotSvgPanel.eventDispatcher = viewModel.eventDispatcher
-        plotSvgPanel.bounds = Rectangle(
-            position.x.toInt(),
-            position.y.toInt(),
-            preferredSize.x.toInt(),
-            preferredSize.y.toInt(),
-        )
+        svgView.svg = viewModel.svg
+        svgView.eventDispatcher = viewModel.eventDispatcher
+        svgView.setPosition(position.x.toFloat(), position.y.toFloat())
     }
 
-    fun dispose() {
-        check(componentCount == 1) { "Unexpected number of children: $componentCount" }
-        check(components[0] == plotSvgPanel) { "Unexpected child: should be SvgPanel but was ${components[0]::class.simpleName}" }
-
-        removeAll()
-        plotSvgPanel.dispose()
+    override fun dispose() {
+        svgView.dispose()
         viewModel?.dispose()
     }
 }

@@ -18,7 +18,7 @@ import org.jetbrains.letsPlot.core.plot.builder.PlotContainer
 import org.jetbrains.letsPlot.core.plot.builder.PlotSvgRoot
 import org.jetbrains.letsPlot.core.plot.builder.interact.CompositeToolEventDispatcher
 import org.jetbrains.letsPlot.core.plot.builder.subPlots.CompositeFigureSvgRoot
-import org.jetbrains.letsPlot.skia.view.SkikoViewEventDispatcher
+import org.jetbrains.letsPlot.skia.view.SvgViewEventDispatcher
 
 internal object FigureToViewModel {
     fun eval(buildInfo: FigureBuildInfo): ViewModel {
@@ -100,7 +100,7 @@ internal object FigureToViewModel {
 
         val plotContainer = PlotContainer(svgRoot)
 
-        val panelDispatcher = object : SkikoViewEventDispatcher {
+        val panelDispatcher = object : SvgViewEventDispatcher {
             override fun dispatchMouseEvent(kind: MouseEventSpec, e: MouseEvent) {
                 plotContainer.mouseEventPeer.dispatch(kind, e)
             }

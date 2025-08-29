@@ -13,12 +13,12 @@ import org.jetbrains.letsPlot.commons.registration.Disposable
 import org.jetbrains.letsPlot.commons.registration.Registration
 import org.jetbrains.letsPlot.core.interact.event.ToolEventDispatcher
 import org.jetbrains.letsPlot.datamodel.svg.dom.SvgSvgElement
-import org.jetbrains.letsPlot.skia.view.SkikoViewEventDispatcher
+import org.jetbrains.letsPlot.skia.view.SvgViewEventDispatcher
 
 sealed class ViewModel(
     val svg: SvgSvgElement,
     val toolEventDispatcher: ToolEventDispatcher,
-    val eventDispatcher: SkikoViewEventDispatcher,
+    val eventDispatcher: SvgViewEventDispatcher,
 ) : Disposable {
     internal abstract val bounds: Rectangle
 
@@ -41,7 +41,7 @@ internal class SimpleModel(
 ) : ViewModel(
     svg,
     toolEventDispatcher,
-    eventDispatcher = object : SkikoViewEventDispatcher {
+    eventDispatcher = object : SvgViewEventDispatcher {
         override fun dispatchMouseEvent(kind: MouseEventSpec, e: MouseEvent) {} // ignore events
         override fun addEventHandler(eventSpec: MouseEventSpec, eventHandler: EventHandler<MouseEvent>): Registration {
             return Registration.EMPTY
@@ -56,7 +56,7 @@ internal class SimpleModel(
 
 internal class SinglePlotModel(
     svg: SvgSvgElement,
-    eventDispatcher: SkikoViewEventDispatcher,
+    eventDispatcher: SvgViewEventDispatcher,
     toolEventDispatcher: ToolEventDispatcher,
     override val bounds: Rectangle,
     private val registration: Registration

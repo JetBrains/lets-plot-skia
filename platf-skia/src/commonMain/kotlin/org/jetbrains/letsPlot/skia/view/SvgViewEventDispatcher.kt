@@ -10,7 +10,7 @@ import org.jetbrains.letsPlot.commons.event.MouseEventSpec
 import org.jetbrains.letsPlot.commons.intern.observable.event.EventHandler
 import org.jetbrains.letsPlot.commons.registration.Registration
 
-interface SkikoViewEventDispatcher {
+interface SvgViewEventDispatcher {
     fun dispatchMouseEvent(kind: MouseEventSpec, e: MouseEvent)
     fun addEventHandler(eventSpec: MouseEventSpec, eventHandler: EventHandler<MouseEvent>): Registration
 }

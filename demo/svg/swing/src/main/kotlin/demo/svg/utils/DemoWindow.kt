@@ -5,9 +5,15 @@
 
 package demo.svg.utils
 
+import androidx.compose.foundation.border
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.ui.Modifier
+import androidx.compose.ui.awt.ComposePanel
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.unit.dp
 import org.jetbrains.letsPlot.datamodel.svg.dom.SvgSvgElement
-import org.jetbrains.letsPlot.skia.awt.view.SvgPanel
-import java.awt.Color
+import org.jetbrains.letsPlot.skia.compose.SimpleSvgPanel
+import java.awt.Dimension
 import java.awt.GridLayout
 import javax.swing.*
 import kotlin.math.min
@@ -55,8 +61,20 @@ internal class DemoWindow(
     }
 
     private fun createSvgPanel(svgRoot: SvgSvgElement): JComponent {
-        val component = SvgPanel(svgRoot)
-        component.border = BorderFactory.createLineBorder(Color.ORANGE, 1)
-        return component
+        return ComposePanel().apply {
+            preferredSize = Dimension(
+                svgRoot.width().get()?.toInt() ?: 800,
+                svgRoot.height().get()?.toInt() ?: 600
+            )
+
+            setContent {
+                SimpleSvgPanel(
+                    svg = svgRoot,
+                    modifier = Modifier
+                        .fillMaxSize()
+                        .border(1.dp, Color(0xFF, 0xA5, 0x00)) // Orange border
+                )
+            }
+        }
     }
 }

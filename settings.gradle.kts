@@ -29,9 +29,7 @@ pluginManagement {
 }
 
 include("platf-skia")
-include("platf-skia-awt")
 include("lets-plot-compose")
-include("lets-plot-swing-skia")
 
 //----- Demos -----
 

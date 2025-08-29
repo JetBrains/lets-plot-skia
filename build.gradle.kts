@@ -42,7 +42,7 @@ if (project.file("local.properties").exists()) {
 
 allprojects {
     group = "org.jetbrains.lets-plot"
-    version = "2.2.2-SNAPSHOT"
+    version = "3.0.0-SNAPSHOT"
 //    version = "0.0.0-SNAPSHOT" // for local publishing only
 
     tasks.withType<org.jetbrains.kotlin.gradle.tasks.KotlinCompile>().all {
@@ -155,77 +155,5 @@ subprojects {
     tasks.withType<AbstractPublishToMaven>().configureEach {
         val signingTasks = tasks.withType<Sign>()
         mustRunAfter(signingTasks)
-    }
-
-    afterEvaluate {
-        // Disabled due to the error:
-        // > Cannot change hierarchy of dependency configuration ':lets-plot-compose:desktopCompilationApi' after it has been included in dependency resolution.
-
-        // Add LICENSE file to the META-INF folder inside published JAR files
-        //tasks.filterIsInstance(org.gradle.jvm.tasks.Jar::class.java)
-        //    .forEach {
-        //        it.metaInf {
-        //            from("$rootDir") {
-        //                include("LICENSE")
-        //            }
-        //        }
-        //    }
-
-        // Configure publications
-        if (name in listOf(
-                "platf-skia-awt",
-                "lets-plot-swing-skia",
-            )
-        ) {
-            apply(plugin = "maven-publish")
-
-            configure<PublishingExtension> {
-                publications.forEach { pub ->
-                    with(pub as MavenPublication) {
-                        artifact(jarJavaDocs)
-
-                        pom {
-                            name.set("Lets-Plot Skia Frontend")
-                            description.set("Skia frontend for Lets-Plot multiplatform plotting library.")
-                            url.set("https://github.com/JetBrains/lets-plot-skia")
-                            licenses {
-                                license {
-                                    name.set("MIT")
-                                    url.set("https://raw.githubusercontent.com/JetBrains/lets-plot-skia/master/LICENSE")
-                                }
-                            }
-                            developers {
-                                developer {
-                                    id.set("jetbrains")
-                                    name.set("JetBrains")
-                                    email.set("lets-plot@jetbrains.com")
-                                }
-                            }
-                            scm {
-                                url.set("https://github.com/JetBrains/lets-plot-skia")
-                            }
-                        }
-                    }
-                }
-
-                repositories {
-                    mavenLocal {
-                        url = uri("$rootDir/.maven-publish-dev-repo")
-                    }
-                    maven {
-                        if (version.toString().endsWith("-SNAPSHOT")) {
-                            url = uri(mavenSnapshotPublishUrl)
-
-                            credentials {
-                                username = sonatypeUsername.toString()
-                                password = sonatypePassword.toString()
-                            }
-                        } else {
-                            url = uri(mavenReleasePublishUrl)
-                        }
-                    }
-                }
-            }
-        }
     }
 }

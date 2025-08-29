@@ -11,11 +11,9 @@ val letsPlotVersion = extra["letsPlot.version"] as String
 
 dependencies {
     implementation(compose.desktop.currentOs)
-
-    implementation(project(":platf-skia"))
-    implementation(project(":platf-skia-awt"))
-
-    implementation(project(":demo-svg-shared"))
-
+    
     implementation("org.jetbrains.lets-plot:lets-plot-common:$letsPlotVersion")
+
+    implementation(project(":lets-plot-compose"))
+    implementation(project(":demo-svg-shared"))
 }
