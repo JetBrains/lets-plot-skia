@@ -13,12 +13,13 @@ class PlotContainer : Disposable {
     internal val svgView = SvgView()
     private var viewModel: ViewModel? = null
 
-    fun updateViewModel(viewModel: ViewModel, position: DoubleVector) {
+    fun updateViewModel(viewModel: ViewModel, position: DoubleVector, pixelDensity: Float) {
         this.viewModel = viewModel
 
         svgView.svg = viewModel.svg
         svgView.eventDispatcher = viewModel.eventDispatcher
         svgView.setPosition(position.x.toFloat(), position.y.toFloat())
+        svgView.setPixelDensity(pixelDensity)
     }
 
     override fun dispose() {

@@ -60,7 +60,7 @@ fun main() = application {
                     // Plot panel that reacts to pixel density changes
                     PlotPanel(
                         figure = createTestFigure(),
-                        preserveAspectRatio = false,
+                        preserveAspectRatio = true,
                         modifier = Modifier.fillMaxSize(),
                         computationMessagesHandler = { messages ->
                             messages.forEach { println("Plot: $it") }

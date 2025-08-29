@@ -65,6 +65,7 @@ actual fun PlotPanel(
                 .weight(1f) // Take the remaining vertical space
                 .fillMaxWidth() // Fill available width
                 .onSizeChanged { newSize ->
+                    // Convert logical pixels (from Compose layout) to physical pixels (plot SVG pixels)
                     panelSize = DoubleVector(newSize.width / density, newSize.height / density)
                 }
                 .background(Color.LightGray)
@@ -104,12 +105,14 @@ actual fun PlotPanel(
                     val plotWidth = viewModel.svg.width().get() ?: panelSize.x
                     val plotHeight = viewModel.svg.height().get() ?: panelSize.y
 
+                    // Calculate centering position in physical pixels
+                    // Both panelSize and plot dimensions are in physical pixels
                     val position = DoubleVector(
                         maxOf(0.0, (panelSize.x - plotWidth) / 2.0),
                         maxOf(0.0, (panelSize.y - plotHeight) / 2.0)
                     )
 
-                    plotContainer.updateViewModel(viewModel, position)
+                    plotContainer.updateViewModel(viewModel, position, density.toFloat())
                 }
             }
 

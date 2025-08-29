@@ -54,6 +54,7 @@ fun SvgViewPanel(
         modifier = modifier
             .pointerHoverIcon(PointerIcon(Cursor(Cursor.CROSSHAIR_CURSOR)))
             .onSizeChanged { size ->
+                // Convert canvas logical pixels (from Compose layout) to physical pixels (plot SVG pixels)
                 val width = (size.width / density).toInt()
                 val height = (size.height / density).toInt()
                 canvasSize = IntSize(width, height)

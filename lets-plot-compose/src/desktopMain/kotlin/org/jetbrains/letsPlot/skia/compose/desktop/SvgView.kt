@@ -30,10 +30,18 @@ class SvgView : SkiaSvgView() {
     // Position offset for centering the plot
     private var offsetX: Float = 0f
     private var offsetY: Float = 0f
+    
+    private var pixelDensity: Float = 1.0f
 
     fun setPosition(x: Float, y: Float) {
+        // physical pixels (plot SVG pixels)
         offsetX = x
         offsetY = y
+        needRedraw()
+    }
+    
+    fun setPixelDensity(density: Float) {
+        pixelDensity = density
         needRedraw()
     }
 
@@ -50,10 +58,15 @@ class SvgView : SkiaSvgView() {
         @Suppress("USELESS_CAST")
         val canvas = drawScope.drawContext.canvas.nativeCanvas as org.jetbrains.skia.Canvas
 
-        // Apply position offset for centering
+        // Apply density scaling and position offset
         canvas.save()
         try {
+            // Scale from physical pixels (plot SVG pixels) back to logical pixels (canvas pixels)
+            canvas.scale(pixelDensity, pixelDensity)
+            
+            // Apply position offset for centering (also in physical pixels, so gets scaled too)
             canvas.translate(offsetX, offsetY)
+            
             renderIntern(canvas)
         } finally {
             canvas.restore()
@@ -64,9 +77,11 @@ class SvgView : SkiaSvgView() {
         val change = pointerEvent.changes.first()
         val position = change.position
 
-        // Adjust coordinates to account for the position offset
-        val adjustedX = (position.x - offsetX).roundToInt()
-        val adjustedY = (position.y - offsetY).roundToInt()
+        // Convert logical pixel coordinates to physical pixel coordinates for SVG interaction
+        // 1. Scale down by density (logical → physical pixels)
+        // 2. Subtract position offset (which is also in physical pixels)
+        val adjustedX = ((position.x / pixelDensity) - offsetX).roundToInt()
+        val adjustedY = ((position.y / pixelDensity) - offsetY).roundToInt()
         val vector = Vector(adjustedX, adjustedY)
 
         // Translate PointerEvent to lets-plot MouseEvent
@@ -123,9 +138,9 @@ class SvgView : SkiaSvgView() {
     }
 
     fun handleClick(position: Offset, clickCount: Int) {
-        // Adjust coordinates to account for the position offset
-        val adjustedX = (position.x - offsetX).roundToInt()
-        val adjustedY = (position.y - offsetY).roundToInt()
+        // Convert logical pixel coordinates to physical pixel coordinates for SVG interaction
+        val adjustedX = ((position.x / pixelDensity) - offsetX).roundToInt()
+        val adjustedY = ((position.y / pixelDensity) - offsetY).roundToInt()
         val vector = Vector(adjustedX, adjustedY)
         val mouseEvent = MouseEvent.leftButton(vector)
 
