@@ -41,8 +41,14 @@ actual fun PlotPanel(
     // Update density on each recomposition to handle monitor DPI changes (e.g., drag between HIDPI/regular monitor)
     val density = LocalDensity.current.density.toDouble()
 
-    // Cache processed plot spec to avoid reprocessing the same figure on every recomposition.
-    val processedPlotSpec by remember(figure) { mutableStateOf(processRawSpecs(figure.toSpec(), frontendOnly = false)) }
+    // Cache plot processed spec to avoid reprocessing the same figure on every recomposition.
+    val processedPlotSpec by remember(figure) {
+        val rawSpec = when (figure) {
+            is WithRawSpec -> figure.rawSpec
+            else -> figure.toSpec()
+        }
+        mutableStateOf(processRawSpecs(rawSpec, frontendOnly = false))
+    }
     var panelSize by remember { mutableStateOf(DoubleVector.ZERO) }
     var dispatchComputationMessages by remember { mutableStateOf(true) }
     var specOverrideList by remember { mutableStateOf(emptyList<Map<String, Any>>()) }
