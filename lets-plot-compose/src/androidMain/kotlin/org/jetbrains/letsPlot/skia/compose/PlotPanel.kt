@@ -5,14 +5,19 @@
 
 package org.jetbrains.letsPlot.skia.compose
 
-import androidx.compose.runtime.Composable
+import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.viewinterop.AndroidView
 import org.jetbrains.letsPlot.Figure
+import org.jetbrains.letsPlot.android.canvas.CanvasView
+import org.jetbrains.letsPlot.core.util.sizing.SizingPolicy
+import org.jetbrains.letsPlot.intern.toSpec
+import org.jetbrains.letsPlot.raster.builder.MonolithicCanvas
+import org.jetbrains.letsPlot.raster.view.PlotCanvasFigure
 import org.jetbrains.letsPlot.skia.compose.util.NaiveLogger
 
 private val LOG = NaiveLogger("PlotPanel")
 
-// TODO: update pacakge? Skia is not used in Android anymore.
 @Suppress("FunctionName")
 @Composable
 actual fun PlotPanel(
@@ -21,10 +26,25 @@ actual fun PlotPanel(
     modifier: Modifier,
     computationMessagesHandler: (List<String>) -> Unit
 ) {
-    org.jetbrains.letsPlot.android.compose.PlotPanel(
-        figure = figure,
-        preserveAspectRatio = preserveAspectRatio,
+    var plotCanvasFigure by remember { mutableStateOf(PlotCanvasFigure()) }
+
+    LOG.print { "Recompose PlotPanel()" }
+
+    AndroidView(
+        factory = { ctx ->
+            LOG.print { "PlotPanel: AndroidView factory called" }
+            val canvasView = CanvasView(ctx)
+            canvasView.figure = plotCanvasFigure
+            canvasView
+        },
         modifier = modifier,
-        computationMessagesHandler = computationMessagesHandler
+        update = { canvasView ->
+            MonolithicCanvas.updatePlotFigureFromRawSpec(
+                plotCanvasFigure = plotCanvasFigure,
+                rawSpec = figure.toSpec(),
+                sizingPolicy = SizingPolicy.fitContainerSize(preserveAspectRatio),
+                computationMessagesHandler = computationMessagesHandler
+            )
+        }
     )
 }
