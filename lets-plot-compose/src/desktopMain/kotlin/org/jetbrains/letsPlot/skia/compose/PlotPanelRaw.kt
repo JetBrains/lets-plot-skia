@@ -15,14 +15,12 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.onSizeChanged
 import androidx.compose.ui.platform.LocalDensity
-import org.jetbrains.letsPlot.Figure
 import org.jetbrains.letsPlot.commons.geometry.DoubleVector
 import org.jetbrains.letsPlot.core.plot.builder.interact.tools.FigureModelHelper
 import org.jetbrains.letsPlot.core.spec.Option.Meta.Kind.GG_TOOLBAR
 import org.jetbrains.letsPlot.core.spec.front.SpecOverrideUtil
 import org.jetbrains.letsPlot.core.util.MonolithicCommon.processRawSpecs
 import org.jetbrains.letsPlot.core.util.sizing.SizingPolicy
-import org.jetbrains.letsPlot.intern.toSpec
 import org.jetbrains.letsPlot.skia.builderLW.MonolithicSkiaLW
 import org.jetbrains.letsPlot.skia.compose.desktop.PlotContainer
 import org.jetbrains.letsPlot.skia.compose.desktop.SvgViewPanel
@@ -32,8 +30,8 @@ private val LOG = NaiveLogger("PlotPanel")
 
 @Suppress("FunctionName")
 @Composable
-actual fun PlotPanel(
-    figure: Figure,
+actual fun PlotPanelRaw(
+    rawSpec: MutableMap<String, Any>,
     preserveAspectRatio: Boolean,
     modifier: Modifier,
     computationMessagesHandler: (List<String>) -> Unit
@@ -41,12 +39,8 @@ actual fun PlotPanel(
     // Update density on each recomposition to handle monitor DPI changes (e.g., drag between HIDPI/regular monitor)
     val density = LocalDensity.current.density.toDouble()
 
-    // Cache plot processed spec to avoid reprocessing the same figure on every recomposition.
-    val processedPlotSpec by remember(figure) {
-        val rawSpec = when (figure) {
-            is WithRawSpec -> figure.rawSpec
-            else -> figure.toSpec()
-        }
+    // Cache processed plot spec to avoid reprocessing the same raw spec on every recomposition.
+    val processedPlotSpec by remember(rawSpec) {
         mutableStateOf(processRawSpecs(rawSpec, frontendOnly = false))
     }
     var panelSize by remember { mutableStateOf(DoubleVector.ZERO) }
