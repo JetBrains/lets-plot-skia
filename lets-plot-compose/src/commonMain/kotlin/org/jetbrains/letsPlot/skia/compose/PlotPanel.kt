@@ -5,9 +5,14 @@
 
 package org.jetbrains.letsPlot.skia.compose
 
+import androidx.compose.foundation.layout.padding
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.text.TextStyle
+import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import org.jetbrains.letsPlot.Figure
 import org.jetbrains.letsPlot.intern.toSpec
 
@@ -17,6 +22,8 @@ fun PlotPanel(
     figure: Figure,
     preserveAspectRatio: Boolean = false,
     modifier: Modifier,
+    errorTextStyle: TextStyle = TextStyle(color = Color.Red, fontSize = 14.sp),
+    errorModifier: Modifier = Modifier.padding(16.dp),
     computationMessagesHandler: (List<String>) -> Unit
 ) {
     // Cache the raw spec conversion to avoid recomputing on every recomposition
@@ -26,6 +33,8 @@ fun PlotPanel(
         rawSpec = rawSpec,
         preserveAspectRatio = preserveAspectRatio,
         modifier = modifier,
+        errorTextStyle = errorTextStyle,
+        errorModifier = errorModifier,
         computationMessagesHandler = computationMessagesHandler
     )
 }

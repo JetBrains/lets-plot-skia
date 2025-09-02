@@ -7,6 +7,7 @@ package org.jetbrains.letsPlot.skia.compose
 
 import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.viewinterop.AndroidView
 import org.jetbrains.letsPlot.android.canvas.CanvasView
 import org.jetbrains.letsPlot.core.util.sizing.SizingPolicy
@@ -22,6 +23,8 @@ actual fun PlotPanelRaw(
     rawSpec: MutableMap<String, Any>,
     preserveAspectRatio: Boolean,
     modifier: Modifier,
+    errorTextStyle: TextStyle,
+    errorModifier: Modifier,
     computationMessagesHandler: (List<String>) -> Unit
 ) {
     var plotCanvasFigure by remember { mutableStateOf(PlotCanvasFigure()) }

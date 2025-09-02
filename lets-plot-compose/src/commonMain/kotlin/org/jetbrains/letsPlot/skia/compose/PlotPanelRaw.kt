@@ -5,8 +5,13 @@
 
 package org.jetbrains.letsPlot.skia.compose
 
+import androidx.compose.foundation.layout.padding
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.text.TextStyle
+import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 
 // Core expect function - works with raw specs
 @Suppress("FunctionName")
@@ -15,5 +20,7 @@ expect fun PlotPanelRaw(
     rawSpec: MutableMap<String, Any>,
     preserveAspectRatio: Boolean,
     modifier: Modifier,
+    errorTextStyle: TextStyle = TextStyle(color = Color.Red, fontSize = 14.sp),
+    errorModifier: Modifier = Modifier.padding(16.dp),
     computationMessagesHandler: (List<String>) -> Unit
 )

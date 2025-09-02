@@ -35,6 +35,7 @@ kotlin {
             dependencies {
                 compileOnly(compose.runtime)
                 compileOnly(compose.ui)
+                compileOnly(compose.foundation)
 
                 compileOnly("org.jetbrains.lets-plot:lets-plot-kotlin-kernel:$letsPlotKotlinVersion")
                 compileOnly("org.jetbrains.lets-plot:lets-plot-common:$letsPlotVersion")
