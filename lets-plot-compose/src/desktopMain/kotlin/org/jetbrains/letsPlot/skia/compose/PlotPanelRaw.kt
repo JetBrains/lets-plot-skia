@@ -14,13 +14,13 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.onSizeChanged
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.text.TextStyle
-import androidx.compose.ui.unit.dp
 import org.jetbrains.letsPlot.commons.geometry.DoubleVector
 import org.jetbrains.letsPlot.core.plot.builder.interact.tools.FigureModelHelper
 import org.jetbrains.letsPlot.core.spec.Option.Meta.Kind.GG_TOOLBAR
 import org.jetbrains.letsPlot.core.spec.config.PlotConfig
 import org.jetbrains.letsPlot.core.spec.front.SpecOverrideUtil
 import org.jetbrains.letsPlot.core.util.MonolithicCommon.processRawSpecs
+import org.jetbrains.letsPlot.core.util.PlotThemeHelper
 import org.jetbrains.letsPlot.core.util.sizing.SizingPolicy
 import org.jetbrains.letsPlot.skia.builderLW.MonolithicSkiaLW
 import org.jetbrains.letsPlot.skia.compose.desktop.PlotContainer
@@ -39,6 +39,25 @@ actual fun PlotPanelRaw(
     errorModifier: Modifier,
     computationMessagesHandler: (List<String>) -> Unit
 ) {
+
+    // Background
+
+    // Check if the modifier already has a background
+    val hasBackground = modifier.foldIn(false) { hasBg, element ->
+        hasBg || element.toString().contains("BackgroundElement")
+    }
+
+    // Apply a plot background only if the user hasn't set one
+    val finalModifier = if (!hasBackground) {
+        val lpBackground = rawSpec.let {
+            val lpColor = PlotThemeHelper.plotBackground(rawSpec)
+            Color(lpColor.red, lpColor.green, lpColor.blue, lpColor.alpha)
+        }
+        modifier.background(lpBackground)
+    } else {
+        modifier
+    }
+
     // Update density on each recomposition to handle monitor DPI changes (e.g., drag between HIDPI/regular monitor)
     val density = LocalDensity.current.density.toDouble()
 
@@ -59,20 +78,19 @@ actual fun PlotPanelRaw(
         }
     }
 
-    Column(modifier = modifier) {
+    Column(modifier = finalModifier) {
         if (plotFigureModel != null && GG_TOOLBAR in processedPlotSpec) {
             PlotToolbar(plotFigureModel!!)
         }
 
         Box(
-            modifier = modifier
+            modifier = finalModifier
                 .weight(1f) // Take the remaining vertical space
                 .fillMaxWidth() // Fill available width
                 .onSizeChanged { newSize ->
                     // Convert logical pixels (from Compose layout) to physical pixels (plot SVG pixels)
                     panelSize = DoubleVector(newSize.width / density, newSize.height / density)
                 }
-                .background(Color.LightGray)
         ) {
             if (PlotConfig.isFailure(processedPlotSpec)) {
                 BasicTextField(

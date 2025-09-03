@@ -5,14 +5,15 @@
 
 package demo.plot.pixeldensity
 
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.material.Button
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Slider
 import androidx.compose.material.Text
 import androidx.compose.runtime.*
-import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.unit.Density
 import androidx.compose.ui.unit.dp
@@ -22,10 +23,12 @@ import org.jetbrains.letsPlot.Figure
 import org.jetbrains.letsPlot.geom.geomPoint
 import org.jetbrains.letsPlot.letsPlot
 import org.jetbrains.letsPlot.skia.compose.PlotPanel
+import org.jetbrains.letsPlot.themes.flavorDarcula
+import org.jetbrains.letsPlot.themes.flavorHighContrastDark
 
 fun main() = application {
     var pixelDensity by remember { mutableFloatStateOf(1.0f) }
-    
+
     Window(onCloseRequest = ::exitApplication, title = "Pixel Density Test Demo") {
         MaterialTheme {
             CompositionLocalProvider(LocalDensity provides Density(pixelDensity)) {
@@ -38,14 +41,14 @@ fun main() = application {
                         Column(modifier = Modifier.padding(16.dp)) {
                             Text("Current Pixel Density: ${String.format("%.2f", pixelDensity)}")
                             Text("Effective DPI: ${String.format("%.0f", pixelDensity * 96)}")
-                            
+
                             Slider(
                                 value = pixelDensity,
                                 onValueChange = { pixelDensity = it },
                                 valueRange = 0.5f..3.0f,
                                 modifier = Modifier.fillMaxWidth()
                             )
-                            
+
                             Row(
                                 horizontalArrangement = Arrangement.spacedBy(8.dp)
                             ) {
@@ -56,7 +59,7 @@ fun main() = application {
                             }
                         }
                     }
-                    
+
                     // Plot panel that reacts to pixel density changes
                     PlotPanel(
                         figure = createTestFigure(),
@@ -89,15 +92,15 @@ private fun Card(
 private fun createTestFigure(): Figure {
     val n = 100
     val rand = kotlin.random.Random(42)
-    
+
     val data = mapOf(
         "x" to List(n) { rand.nextDouble() * 10 },
         "y" to List(n) { rand.nextDouble() * 10 },
         "color" to List(n) { listOf("A", "B", "C", "D").random(rand) }
     )
-    
-    return letsPlot(data) + 
-           geomPoint(size = 3.0, alpha = 0.7) { 
-               x = "x"; y = "y"; color = "color" 
-           }
+
+    return letsPlot(data) +
+            geomPoint(size = 3.0, alpha = 0.7) {
+                x = "x"; y = "y"; color = "color"
+            } + flavorHighContrastDark()
 }
