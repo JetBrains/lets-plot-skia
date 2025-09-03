@@ -18,6 +18,7 @@ import androidx.compose.ui.layout.onSizeChanged
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.text.TextStyle
 import org.jetbrains.letsPlot.commons.geometry.DoubleVector
+import org.jetbrains.letsPlot.commons.logging.PortableLogging
 import org.jetbrains.letsPlot.core.plot.builder.interact.tools.FigureModelHelper
 import org.jetbrains.letsPlot.core.spec.Option.Meta.Kind.GG_TOOLBAR
 import org.jetbrains.letsPlot.core.spec.config.PlotConfig
@@ -28,9 +29,11 @@ import org.jetbrains.letsPlot.core.util.sizing.SizingPolicy
 import org.jetbrains.letsPlot.skia.builderLW.MonolithicSkiaLW
 import org.jetbrains.letsPlot.skia.compose.desktop.PlotContainer
 import org.jetbrains.letsPlot.skia.compose.desktop.SvgViewPanel
-import org.jetbrains.letsPlot.skia.compose.util.NaiveLogger
 
-private val LOG = NaiveLogger("PlotPanel")
+//import org.jetbrains.letsPlot.skia.compose.util.NaiveLogger
+
+//private val LOG = NaiveLogger("PlotPanel")
+private val LOG = PortableLogging.logger(name = "[PlotPanelRaw]")
 
 @Suppress("FunctionName")
 @Composable
@@ -112,8 +115,6 @@ actual fun PlotPanelRaw(
                 // Render the plot
                 LaunchedEffect(panelSize, processedPlotSpec, specOverrideList) {
                     if (panelSize != DoubleVector.ZERO) {
-                        LOG.print("Plot update triggered")
-
                         val plotSpec =
                             SpecOverrideUtil.applySpecOverride(processedPlotSpec, specOverrideList).toMutableMap()
 
