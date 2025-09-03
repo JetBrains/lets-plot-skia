@@ -6,7 +6,10 @@
 package org.jetbrains.letsPlot.skia.compose
 
 import androidx.compose.foundation.background
-import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.text.BasicTextField
 import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
@@ -40,24 +43,6 @@ actual fun PlotPanelRaw(
     computationMessagesHandler: (List<String>) -> Unit
 ) {
 
-    // Background
-
-    // Check if the modifier already has a background
-    val hasBackground = modifier.foldIn(false) { hasBg, element ->
-        hasBg || element.toString().contains("BackgroundElement")
-    }
-
-    // Apply a plot background only if the user hasn't set one
-    val finalModifier = if (!hasBackground) {
-        val lpBackground = rawSpec.let {
-            val lpColor = PlotThemeHelper.plotBackground(rawSpec)
-            Color(lpColor.red, lpColor.green, lpColor.blue, lpColor.alpha)
-        }
-        modifier.background(lpBackground)
-    } else {
-        modifier
-    }
-
     // Update density on each recomposition to handle monitor DPI changes (e.g., drag between HIDPI/regular monitor)
     val density = LocalDensity.current.density.toDouble()
 
@@ -71,6 +56,25 @@ actual fun PlotPanelRaw(
     var specOverrideList by remember { mutableStateOf(emptyList<Map<String, Any>>()) }
     val plotContainer by remember { mutableStateOf(PlotContainer()) }
     var plotFigureModel by remember { mutableStateOf<PlotFigureModel?>(null) }
+
+
+    val showErrorMessage = PlotConfig.isFailure(processedPlotSpec)
+
+    // Background
+    val finalModifier = if (showErrorMessage) {
+        modifier.background(Color.LightGray)
+    } else {
+        if (containsBackground(modifier)) {
+            // Do not change the user-defined background
+            modifier
+        } else {
+            // Use background color from the plot theme
+            val lpColor = PlotThemeHelper.plotBackground(processedPlotSpec)
+            val lpBackground = Color(lpColor.red, lpColor.green, lpColor.blue, lpColor.alpha)
+            modifier.background(lpBackground)
+        }
+    }
+
 
     DisposableEffect(plotContainer) {
         onDispose {
@@ -92,7 +96,8 @@ actual fun PlotPanelRaw(
                     panelSize = DoubleVector(newSize.width / density, newSize.height / density)
                 }
         ) {
-            if (PlotConfig.isFailure(processedPlotSpec)) {
+            if (showErrorMessage) {
+                // Show error message
                 BasicTextField(
                     value = PlotConfig.getErrorMessage(processedPlotSpec),
                     onValueChange = { },
@@ -101,6 +106,7 @@ actual fun PlotPanelRaw(
                     modifier = errorModifier
                 )
             } else {
+                // Render the plot
                 LaunchedEffect(panelSize, processedPlotSpec, specOverrideList) {
                     if (panelSize != DoubleVector.ZERO) {
                         LOG.print("Plot update triggered")
@@ -153,5 +159,11 @@ actual fun PlotPanelRaw(
                 )
             }
         }
+    }
+}
+
+private fun containsBackground(modifier: Modifier): Boolean {
+    return modifier.foldIn(false) { hasBg, element ->
+        hasBg || element.toString().contains("BackgroundElement")
     }
 }

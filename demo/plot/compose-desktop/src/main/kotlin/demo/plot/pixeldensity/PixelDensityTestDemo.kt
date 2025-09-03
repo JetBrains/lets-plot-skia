@@ -5,7 +5,6 @@
 
 package demo.plot.pixeldensity
 
-import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.material.Button
 import androidx.compose.material.MaterialTheme
@@ -13,7 +12,6 @@ import androidx.compose.material.Slider
 import androidx.compose.material.Text
 import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.unit.Density
 import androidx.compose.ui.unit.dp
@@ -23,7 +21,6 @@ import org.jetbrains.letsPlot.Figure
 import org.jetbrains.letsPlot.geom.geomPoint
 import org.jetbrains.letsPlot.letsPlot
 import org.jetbrains.letsPlot.skia.compose.PlotPanel
-import org.jetbrains.letsPlot.themes.flavorDarcula
 import org.jetbrains.letsPlot.themes.flavorHighContrastDark
 
 fun main() = application {
