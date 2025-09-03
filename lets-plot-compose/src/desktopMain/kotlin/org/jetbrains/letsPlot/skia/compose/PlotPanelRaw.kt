@@ -57,7 +57,7 @@ actual fun PlotPanelRaw(
     var panelSize by remember { mutableStateOf(DoubleVector.ZERO) }
     var dispatchComputationMessages by remember { mutableStateOf(true) }
     var specOverrideList by remember { mutableStateOf(emptyList<Map<String, Any>>()) }
-    val plotContainer by remember { mutableStateOf(PlotContainer()) }
+    val plotContainer = remember { PlotContainer() }
     var plotFigureModel by remember { mutableStateOf<PlotFigureModel?>(null) }
 
 
