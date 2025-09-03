@@ -47,8 +47,11 @@ actual fun PlotPanelRaw(
     val density = LocalDensity.current.density.toDouble()
 
     // Cache processed plot spec to avoid reprocessing the same raw spec on every recomposition.
-    val processedPlotSpec by remember(rawSpec) {
-        mutableStateOf(processRawSpecs(rawSpec, frontendOnly = false))
+
+    // Note: Use remember(rawSpec.hashCode()), to bypass the equality check and use the content hash directly.
+    // The issue was that remember(rawSpec) uses some kind of comparison (equals()?) which somehow not working for `MutableMap`.
+    val processedPlotSpec = remember(rawSpec.hashCode()) {
+        processRawSpecs(rawSpec, frontendOnly = false)
     }
 
     var panelSize by remember { mutableStateOf(DoubleVector.ZERO) }
