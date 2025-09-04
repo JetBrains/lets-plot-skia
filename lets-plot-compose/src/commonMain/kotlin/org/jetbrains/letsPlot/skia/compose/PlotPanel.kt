@@ -22,7 +22,7 @@ fun PlotPanel(
     figure: Figure,
     preserveAspectRatio: Boolean = false,
     modifier: Modifier,
-    errorTextStyle: TextStyle = TextStyle(color = Color.Red, fontSize = 14.sp),
+    errorTextStyle: TextStyle = TextStyle(color = Color(0xFF700000), fontSize = 14.sp),
     errorModifier: Modifier = Modifier.padding(16.dp),
     computationMessagesHandler: (List<String>) -> Unit
 ) {
