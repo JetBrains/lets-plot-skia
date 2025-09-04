@@ -12,7 +12,6 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
 import org.jetbrains.letsPlot.Figure
 import org.jetbrains.letsPlot.intern.toSpec
 
@@ -22,7 +21,7 @@ fun PlotPanel(
     figure: Figure,
     preserveAspectRatio: Boolean = false,
     modifier: Modifier,
-    errorTextStyle: TextStyle = TextStyle(color = Color(0xFF700000), fontSize = 14.sp),
+    errorTextStyle: TextStyle = TextStyle(color = Color(0xFF700000)),
     errorModifier: Modifier = Modifier.padding(16.dp),
     computationMessagesHandler: (List<String>) -> Unit
 ) {

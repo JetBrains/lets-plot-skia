@@ -11,7 +11,6 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
 
 // Core expect function - works with raw specs
 @Suppress("FunctionName")
@@ -20,7 +19,7 @@ expect fun PlotPanelRaw(
     rawSpec: MutableMap<String, Any>,
     preserveAspectRatio: Boolean,
     modifier: Modifier,
-    errorTextStyle: TextStyle = TextStyle(color = Color(0xFF700000), fontSize = 14.sp),
+    errorTextStyle: TextStyle = TextStyle(color = Color(0xFF700000)),
     errorModifier: Modifier = Modifier.padding(16.dp),
     computationMessagesHandler: (List<String>) -> Unit
 )
