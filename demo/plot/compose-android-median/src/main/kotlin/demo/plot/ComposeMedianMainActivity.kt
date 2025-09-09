@@ -31,10 +31,11 @@ class ComposeMedianMainActivity : ComponentActivity() {
                 "Raster" to RasterSpec().createFigure(),
                 "Bar" to BarPlotSpec().createFigure(),
                 "Violin" to ViolinSpec().createFigure(),
+                "Error" to IllegalArgumentSpec().createFigure()
             )
 
             val preserveAspectRatio = rememberSaveable { mutableStateOf(true) }
-            val figureIndex = rememberSaveable { mutableStateOf(4) }
+            val figureIndex = rememberSaveable { mutableStateOf(3) }
 
             MaterialTheme {
                 Column(
