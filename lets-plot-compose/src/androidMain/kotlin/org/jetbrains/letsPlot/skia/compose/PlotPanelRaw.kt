@@ -66,8 +66,13 @@ actual fun PlotPanelRaw(
 
 //    LOG.info { "Recompose PlotPanel()" }
     if (showErrorMessage) {
+        // Reset the figure to resolve the 'Registration already removed' error.
+        // On error, the CanvasView is removed and the plotCanvasFigure changes state to 'detached',
+        // meaning it cannot be reused.
+        @Suppress("AssignedValueIsNeverRead")  // false positive? The variable is used in AndroidView below.
+        plotCanvasFigure = PlotCanvasFigure()
+
         // Show error message
-        plotCanvasFigure.update(processedPlotSpec, SizingPolicy.fitContainerSize(preserveAspectRatio), computationMessagesHandler)
         BasicTextField(
             value = PlotConfig.getErrorMessage(processedPlotSpec),
             onValueChange = { },
@@ -78,16 +83,18 @@ actual fun PlotPanelRaw(
     } else {
         @Suppress("COMPOSE_APPLIER_CALL_MISMATCH") // Gemini says that this is a false positive
         AndroidView(
-            factory = { ctx ->
-            println("PlotPanel: AndroidView factory called")
-                val canvasView = CanvasView(ctx)
-                canvasView.figure = plotCanvasFigure
-                canvasView
-            },
             modifier = finalModifier,
+            factory = { ctx ->
+                CanvasView(ctx).apply {
+                    figure = plotCanvasFigure
+                }
+            },
             update = { _ ->
-                println("PlotPanel: AndroidView update called")
-                plotCanvasFigure.update(processedPlotSpec, SizingPolicy.fitContainerSize(preserveAspectRatio), computationMessagesHandler)
+                plotCanvasFigure.update(
+                    processedPlotSpec,
+                    SizingPolicy.fitContainerSize(preserveAspectRatio),
+                    computationMessagesHandler
+                )
             }
         )
     }
