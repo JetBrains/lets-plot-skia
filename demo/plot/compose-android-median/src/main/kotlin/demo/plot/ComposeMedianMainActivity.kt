@@ -35,7 +35,7 @@ class ComposeMedianMainActivity : ComponentActivity() {
             )
 
             val preserveAspectRatio = rememberSaveable { mutableStateOf(true) }
-            val figureIndex = rememberSaveable { mutableStateOf(5) }
+            val figureIndex = rememberSaveable { mutableStateOf(3) }
 
             MaterialTheme {
                 Column(
