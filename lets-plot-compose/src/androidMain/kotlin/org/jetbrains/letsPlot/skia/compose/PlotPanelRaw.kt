@@ -25,6 +25,10 @@ import org.jetbrains.letsPlot.raster.view.PlotCanvasFigure
 //private val LOG = NaiveLogger("PlotPanel")
 private val LOG = PortableLogging.logger(name = "[PlotPanelRaw]")
 
+// This flag is mentioned in the ComposeMinDemoActivity.kt
+// In a case of changes update the comment there too.
+private const val logRecompositions = false
+
 @Suppress("FunctionName")
 @Composable
 actual fun PlotPanelRaw(
@@ -47,7 +51,9 @@ actual fun PlotPanelRaw(
 
     val showErrorMessage = PlotConfig.isFailure(processedPlotSpec)
 
-    println("PlotPanel: recomposition")
+    if (logRecompositions) {
+        println("PlotPanel: recomposition")
+    }
 
     // Background
     val finalModifier = if (showErrorMessage) {
