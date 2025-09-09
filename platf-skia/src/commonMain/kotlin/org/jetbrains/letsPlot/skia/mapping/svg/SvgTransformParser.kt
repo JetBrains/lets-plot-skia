@@ -203,10 +203,7 @@ internal object SvgTransformParser {
         }
 
         fun getParam(i: Int): Float? {
-            if (!containsParam(i)) {
-                throw IndexOutOfBoundsException("index: $i; size: $paramCount; name: $name")
-            }
-            return myParams[i]
+            return myParams.getOrNull(i)
         }
 
         fun getVector(startIndex: Int): Point {
