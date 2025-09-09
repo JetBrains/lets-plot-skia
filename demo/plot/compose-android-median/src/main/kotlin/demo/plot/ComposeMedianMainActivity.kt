@@ -13,10 +13,13 @@ import androidx.compose.material.MaterialTheme
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.unit.dp
 import demo.plot.ui.DemoDropdownMenu
 import demo.plot.ui.DemoRadioGroup
 import org.jetbrains.letsPlot.skia.compose.PlotPanel
+import org.jetbrains.letsPlot.skia.compose.PlotPanelRaw
 import plotSpec.*
 
 class ComposeMedianMainActivity : ComponentActivity() {
@@ -31,7 +34,8 @@ class ComposeMedianMainActivity : ComponentActivity() {
                 "Raster" to RasterSpec().createFigure(),
                 "Bar" to BarPlotSpec().createFigure(),
                 "Violin" to ViolinSpec().createFigure(),
-                "Error" to IllegalArgumentSpec().createFigure()
+                "BackendError" to IllegalArgumentSpec().createFigure(),
+                "FrontendError" to FrontendExceptionSpec().createFigure(),
             )
 
             val preserveAspectRatio = rememberSaveable { mutableStateOf(true) }
@@ -55,12 +59,26 @@ class ComposeMedianMainActivity : ComponentActivity() {
                         )
                     }
 
-                    PlotPanel(
-                        figure = figures[figureIndex.value].second,
-                        preserveAspectRatio = preserveAspectRatio.value,
-                        modifier = Modifier.fillMaxSize()
-                    ) { computationMessages ->
-                        computationMessages.forEach { println("[DEMO APP MESSAGE] $it") }
+                    val fig = figures[figureIndex.value].second
+                    if (fig is RawSpecFigure) {
+                        PlotPanelRaw(
+                            rawSpec = fig.rawSpec.toMutableMap(),
+                            preserveAspectRatio = preserveAspectRatio.value,
+                            modifier = Modifier.fillMaxSize(),
+                            errorModifier = Modifier.padding(16.dp),
+                            errorTextStyle = TextStyle(color = Color(0xFF700000)),
+                            computationMessagesHandler = { messages ->
+                                messages.forEach { println("[DEMO APP MESSAGE] $it") }
+                            }
+                        )
+                    } else {
+                        PlotPanel(
+                            figure = fig,
+                            preserveAspectRatio = preserveAspectRatio.value,
+                            modifier = Modifier.fillMaxSize()
+                        ) { computationMessages ->
+                            computationMessages.forEach { println("[DEMO APP MESSAGE] $it") }
+                        }
                     }
                 }
             }
