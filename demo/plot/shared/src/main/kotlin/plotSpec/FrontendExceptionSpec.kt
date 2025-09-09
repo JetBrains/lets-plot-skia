@@ -3,7 +3,7 @@ package plotSpec
 import org.jetbrains.letsPlot.Figure
 
 class FrontendExceptionSpec : PlotDemoSpec {
-    override fun createFigure(): Figure {
+    override fun createFigure(): RawSpecFigure {
         return RawSpecFigure(
             mapOf(
                 "kind" to "plot",
