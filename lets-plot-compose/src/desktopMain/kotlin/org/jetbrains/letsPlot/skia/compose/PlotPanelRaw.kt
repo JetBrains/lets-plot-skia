@@ -84,7 +84,13 @@ actual fun PlotPanelRaw(
 
     DisposableEffect(plotContainer) {
         onDispose {
-            plotContainer.dispose()
+            // Try/catch to ensure that any exception in dispose() does not break the Composable lifecycle
+            // Otherwise, the app window gets unclosable.
+            try {
+                plotContainer.dispose()
+            } catch (e: Exception) {
+                LOG.error(e) { "PlotContainer.dispose() failed" }
+            }
         }
     }
 
