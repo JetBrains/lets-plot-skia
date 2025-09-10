@@ -13,6 +13,7 @@ import androidx.compose.ui.window.Window
 import androidx.compose.ui.window.application
 import org.jetbrains.letsPlot.interact.ggtb
 import org.jetbrains.letsPlot.skia.compose.PlotPanel
+import org.jetbrains.letsPlot.skia.compose.PlotPanelRaw
 import plotSpec.AutoSpec
 import plotSpec.MarkdownSpec
 
@@ -32,8 +33,9 @@ fun main() = application {
                     computationMessages.forEach { println("[DEMO APP MESSAGE] $it") }
                 }
 
-                PlotPanel(
-                    figure = MarkdownSpec().mpg() + ggtb(),
+                PlotPanelRaw(
+                    rawSpec = MarkdownSpec().mpg().rawSpec.also { it["ggtoolbar"] = emptyMap<String, Any>() },
+                    preserveAspectRatio = false,
                     modifier = Modifier.fillMaxHeight().weight(1f)
                 ) { computationMessages ->
                     computationMessages.forEach { println("[DEMO APP MESSAGE] $it") }

@@ -15,7 +15,7 @@ class MarkdownSpec : PlotDemoSpec {
         )
     }
 
-    fun mpgTitleOnly(): Figure {
+    fun mpgTitleOnly(): RawSpecFigure {
         return RawSpecFigure.fromJson("""
             |{
             |  "theme": {
@@ -39,7 +39,7 @@ class MarkdownSpec : PlotDemoSpec {
         """.trimMargin())
     }
 
-    fun mpg(): Figure {
+    fun mpg(): RawSpecFigure {
         return RawSpecFigure.fromJson("""
             |{
             |  "theme": {
