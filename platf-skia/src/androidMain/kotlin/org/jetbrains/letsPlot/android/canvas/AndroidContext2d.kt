@@ -150,18 +150,21 @@ class AndroidContext2d(
     }
 
     override fun measureText(str: String): TextMetrics {
-        val bounds = Rect()
-        fillPaint.getTextBounds(str, 0, str.length, bounds)
-        return TextMetrics(
-            ascent = bounds.top.toDouble(),
-            descent = bounds.bottom.toDouble(),
-            bbox = DoubleRectangle.LTRB(
-                left = bounds.left.toDouble(),
-                top = bounds.top.toDouble(),
-                right = bounds.right.toDouble(),
-                bottom = bounds.bottom.toDouble()
+        val width = fillPaint.measureText(str, 0, str.length) // logical width. Always > 0 for a non-empty string.
+        val visualBounds = Rect()
+        fillPaint.getTextBounds(str, 0, str.length, visualBounds) // pixel bounds. Can be empty (e.g., for space character)
+        val textMetrics = TextMetrics(
+            ascent = visualBounds.top.toDouble(),
+            descent = visualBounds.bottom.toDouble(),
+            bbox = DoubleRectangle.XYWH(
+                x = visualBounds.left,
+                y = visualBounds.top,
+                width = width,
+                height = visualBounds.height()
             ),
         )
+
+        return textMetrics
     }
 
     override fun setLineDash(lineDash: DoubleArray) {

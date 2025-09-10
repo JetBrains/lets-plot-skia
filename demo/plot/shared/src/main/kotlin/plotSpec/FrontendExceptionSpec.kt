@@ -4,7 +4,7 @@ import org.jetbrains.letsPlot.Figure
 
 class FrontendExceptionSpec : PlotDemoSpec {
     override fun createFigure(): RawSpecFigure {
-        return RawSpecFigure(
+        return RawSpecFigure.fromMap(
             mapOf(
                 "kind" to "plot",
                 "layers" to listOf(

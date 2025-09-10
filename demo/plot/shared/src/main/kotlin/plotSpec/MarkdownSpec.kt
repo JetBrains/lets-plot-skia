@@ -5,58 +5,76 @@
 
 package plotSpec
 
-import demoData.AutoMpg
 import org.jetbrains.letsPlot.Figure
-import org.jetbrains.letsPlot.geom.geomPoint
-import org.jetbrains.letsPlot.intern.Plot
-import org.jetbrains.letsPlot.label.labs
-import org.jetbrains.letsPlot.letsPlot
-import org.jetbrains.letsPlot.scale.scaleColorManual
-import org.jetbrains.letsPlot.themes.elementMarkdown
-import org.jetbrains.letsPlot.themes.elementText
-import org.jetbrains.letsPlot.themes.theme
-import org.jetbrains.letsPlot.tooltips.layerTooltips
 
 class MarkdownSpec : PlotDemoSpec {
     override fun createFigureList(): List<Figure> {
         return listOf(
-            mpg()
+            mpg(),
+            mpgTitleOnly(),
         )
     }
 
-    fun mpg(): Plot {
-        return letsPlot(AutoMpg.map()) +
-                geomPoint(size=8, tooltips = layerTooltips().line("@{vehicle name}")) { x="engine displacement (cu. inches)"; y="miles per gallon"; color="number of cylinders" }  +
-                scaleColorManual(listOf("#66c2a5", "#fc8d62", "#8da0cb"), guide="none")  +
+    fun mpgTitleOnly(): Figure {
+        return RawSpecFigure.fromJson("""
+            |{
+            |  "theme": {
+            |    "title": { "markdown": true, "blank": false },
+            |    "axis_title": { "blank": true },
+            |    "text": { "blank": true },
+            |    "plot_title": { "size": 30.0, "hjust": 0.5, "blank": false }
+            |  },
+            |  "ggtitle": {
+            |    "text": "<span style=\"color:#66c2a5\">**Forward**</span>, <span style=\"color:#8da0cb\">**Rear**</span> and <span style=\"color:#fc8d62\">**4WD**</span> Drivetrain"
+            |  },
+            |  "kind": "plot",
+            |  "layers": [
+            |    {
+            |      "geom": "blank",
+            |      "inherit_aes": false,
+            |      "tooltips": "none"
+            |    }
+            |  ]
+            |}
+        """.trimMargin())
+    }
 
-                // Enable Markdown in all titles
-                theme(title=elementMarkdown()) +
-
-                // Adjust style of title and subtitle
-                theme(plotTitle=elementText(size=30, family="Georgia", hjust=0.5),
-                    plotSubtitle=elementText(family="Georgia", hjust=0.5)) +
-
-                labs(
-
-                    // Span styling, mixing style and emphasis
-                    title=
-                        """<span style="color:#66c2a5">**4**</span>, """ +
-                                """<span style="color:#8da0cb">**6**</span> and """ +
-                                """<span style="color:#fc8d62">**8**</span> cylinders""",
-
-                    // Simple emphasis
-                    subtitle="**City milage** *vs* **displacement**",
-
-                    // multiline caption, multiline style span, links
-                    caption="<span style='color:grey'>" +
-                            "Powered by <a href='https://lets-plot.org'>Lets-Plot</a>.  \n" +
-                            "Visit the <a href='https://github.com/jetbrains/lets-plot/issues'>issue tracker</a> for feedback." +
-                            "</span>",
-
-                    // Axis titles
-                    x="Displacement (***inches***)",
-                    y="Miles per gallon (***cty***)"
-                )
+    fun mpg(): Figure {
+        return RawSpecFigure.fromJson("""
+            |{
+            |  "theme": {
+            |    "title": { "markdown": true, "blank": false },
+            |    "plot_title": { "size": 30.0, "hjust": 0.5, "blank": false },
+            |    "plot_subtitle": { "hjust": 0.5, "blank": false }
+            |  },
+            |  "ggtitle": {
+            |    "text": "<span style=\"color:#66c2a5\">**Forward**</span>, <span style=\"color:#8da0cb\">**Rear**</span> and <span style=\"color:#fc8d62\">**4WD**</span> Drivetrain",
+            |    "subtitle": "**City milage** *vs* **displacement**"
+            |  },
+            |  "caption": {
+            |    "text": "<span style='color:grey'>Powered by <a href='https://lets-plot.org'>Lets-Plot</a>.  \nVisit the <a href='https://github.com/jetbrains/lets-plot/issues'>issue tracker</a> for feedback.</span>"
+            |  },
+            |  "guides": {
+            |    "x": { "title": "Displacement (***inches***)" },
+            |    "y": { "title": "Miles per gallon (***cty***)" }
+            |  },
+            |  "kind": "plot",
+            |  "scales": [
+            |    {
+            |      "aesthetic": "color",
+            |      "guide": "none",
+            |      "values": [ "#66c2a5", "#fc8d62", "#8da0cb" ]
+            |    }
+            |  ],
+            |  "layers": [
+            |    {
+            |      "geom": "blank",
+            |      "inherit_aes": false,
+            |      "tooltips": "none"
+            |    }
+            |  ]
+            |}
+        """.trimMargin())
 
     }
 }

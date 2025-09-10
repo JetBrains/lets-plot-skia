@@ -34,6 +34,7 @@ class ComposeMedianMainActivity : ComponentActivity() {
                 "Raster" to RasterSpec().createFigure(),
                 "Bar" to BarPlotSpec().createFigure(),
                 "Violin" to ViolinSpec().createFigure(),
+                "Markdown" to MarkdownSpec().mpg(),
                 "BackendError" to IllegalArgumentSpec().createFigure(),
                 "FrontendError" to FrontendExceptionSpec().createFigure(),
             )
