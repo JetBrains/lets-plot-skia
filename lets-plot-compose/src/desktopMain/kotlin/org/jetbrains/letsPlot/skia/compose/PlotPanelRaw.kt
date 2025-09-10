@@ -64,10 +64,10 @@ actual fun PlotPanelRaw(
     var plotFigureModel by remember { mutableStateOf<PlotFigureModel?>(null) }
 
 
-    val showErrorMessage = PlotConfig.isFailure(processedPlotSpec)
+    var errorMessage: String? by remember { mutableStateOf(null) }
 
     // Background
-    val finalModifier = if (showErrorMessage) {
+    val finalModifier = if (errorMessage != null) {
         modifier.background(Color.LightGray)
     } else {
         if (containsBackground(modifier)) {
@@ -102,10 +102,11 @@ actual fun PlotPanelRaw(
                     panelSize = DoubleVector(newSize.width / density, newSize.height / density)
                 }
         ) {
-            if (showErrorMessage) {
+            val errMsg = errorMessage
+            if (errMsg != null) {
                 // Show error message
                 BasicTextField(
-                    value = PlotConfig.getErrorMessage(processedPlotSpec),
+                    value = errMsg,
                     onValueChange = { },
                     readOnly = true,
                     textStyle = errorTextStyle,
@@ -114,46 +115,58 @@ actual fun PlotPanelRaw(
             } else {
                 // Render the plot
                 LaunchedEffect(panelSize, processedPlotSpec, specOverrideList) {
-                    if (panelSize != DoubleVector.ZERO) {
-                        val plotSpec =
-                            SpecOverrideUtil.applySpecOverride(processedPlotSpec, specOverrideList).toMutableMap()
 
-                        val viewModel = MonolithicSkiaLW.buildPlotFromProcessedSpecs(
-                            plotSpec = plotSpec,
-                            containerSize = panelSize,
-                            sizingPolicy = SizingPolicy.fitContainerSize(preserveAspectRatio)
-                        ) { messages ->
-                            if (dispatchComputationMessages) {
-                                // do once
-                                dispatchComputationMessages = false
-                                computationMessagesHandler(messages)
-                            }
-                        }
+                    if (PlotConfig.isFailure(processedPlotSpec)) {
+                        errorMessage = PlotConfig.getErrorMessage(processedPlotSpec)
+                        return@LaunchedEffect
+                    }
 
-                        if (plotFigureModel == null) {
-                            plotFigureModel = PlotFigureModel(
-                                onUpdateView = { specOverride ->
-                                    specOverrideList = FigureModelHelper.updateSpecOverrideList(
-                                        specOverrideList = specOverrideList,
-                                        newSpecOverride = specOverride
-                                    )
+                    runCatching {
+                        if (panelSize != DoubleVector.ZERO) {
+                            val plotSpec =
+                                SpecOverrideUtil.applySpecOverride(processedPlotSpec, specOverrideList).toMutableMap()
+
+                            val viewModel = MonolithicSkiaLW.buildPlotFromProcessedSpecs(
+                                plotSpec = plotSpec,
+                                containerSize = panelSize,
+                                sizingPolicy = SizingPolicy.fitContainerSize(preserveAspectRatio)
+                            ) { messages ->
+                                if (dispatchComputationMessages) {
+                                    // do once
+                                    dispatchComputationMessages = false
+                                    computationMessagesHandler(messages)
                                 }
+                            }
+
+
+                            if (plotFigureModel == null) {
+                                plotFigureModel = PlotFigureModel(
+                                    onUpdateView = { specOverride ->
+                                        specOverrideList = FigureModelHelper.updateSpecOverrideList(
+                                            specOverrideList = specOverrideList,
+                                            newSpecOverride = specOverride
+                                        )
+                                    }
+                                )
+                            }
+
+                            plotFigureModel!!.toolEventDispatcher = viewModel.toolEventDispatcher
+
+                            val plotWidth = viewModel.svg.width().get() ?: panelSize.x
+                            val plotHeight = viewModel.svg.height().get() ?: panelSize.y
+
+                            // Calculate centering position in physical pixels
+                            // Both panelSize and plot dimensions are in physical pixels
+                            val position = DoubleVector(
+                                maxOf(0.0, (panelSize.x - plotWidth) / 2.0),
+                                maxOf(0.0, (panelSize.y - plotHeight) / 2.0)
                             )
+
+                            plotContainer.updateViewModel(viewModel, position, density.toFloat())
                         }
-
-                        plotFigureModel!!.toolEventDispatcher = viewModel.toolEventDispatcher
-
-                        val plotWidth = viewModel.svg.width().get() ?: panelSize.x
-                        val plotHeight = viewModel.svg.height().get() ?: panelSize.y
-
-                        // Calculate centering position in physical pixels
-                        // Both panelSize and plot dimensions are in physical pixels
-                        val position = DoubleVector(
-                            maxOf(0.0, (panelSize.x - plotWidth) / 2.0),
-                            maxOf(0.0, (panelSize.y - plotHeight) / 2.0)
-                        )
-
-                        plotContainer.updateViewModel(viewModel, position, density.toFloat())
+                    }.getOrElse { e ->
+                        errorMessage = "${e.message}"
+                        return@LaunchedEffect
                     }
                 }
 
