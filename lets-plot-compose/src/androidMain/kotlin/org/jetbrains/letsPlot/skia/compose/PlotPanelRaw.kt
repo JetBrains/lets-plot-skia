@@ -27,7 +27,7 @@ private val LOG = PortableLogging.logger(name = "[PlotPanelRaw]")
 
 // This flag is mentioned in the ComposeMinDemoActivity.kt
 // In a case of changes update the comment there too.
-private const val logRecompositions = true
+private const val logRecompositions = false
 
 @Suppress("FunctionName")
 @Composable
