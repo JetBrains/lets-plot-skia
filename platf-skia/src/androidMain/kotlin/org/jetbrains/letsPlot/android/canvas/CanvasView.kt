@@ -32,7 +32,10 @@ val CanvasFigure.width get() = bounds().get().dimension.x
 val CanvasFigure.height get() = bounds().get().dimension.y
 
 @SuppressLint("ViewConstructor")
-class CanvasView(context: Context) : View(context) {
+class CanvasView(
+    context: Context,
+) : View(context) {
+    var onError: (Throwable) -> Unit = { _ -> }
     var figure: CanvasFigure? = null
         set(fig) {
             if (field == fig) {
@@ -90,7 +93,8 @@ class CanvasView(context: Context) : View(context) {
         val density = resources.displayMetrics.density
         val newSize = Vector(ceil(w / density).toInt(), ceil(h / density).toInt())
 
-        sizeListeners.forEach { it(newSize) }
+        runCatching { sizeListeners.forEach { it(newSize) } }
+            .onFailure() { onError(it) }
     }
 
     override fun onDraw(canvas: android.graphics.Canvas) {

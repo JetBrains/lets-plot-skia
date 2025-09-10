@@ -27,7 +27,7 @@ private val LOG = PortableLogging.logger(name = "[PlotPanelRaw]")
 
 // This flag is mentioned in the ComposeMinDemoActivity.kt
 // In a case of changes update the comment there too.
-private const val logRecompositions = false
+private const val logRecompositions = true
 
 @Suppress("FunctionName")
 @Composable
@@ -39,7 +39,12 @@ actual fun PlotPanelRaw(
     errorModifier: Modifier,
     computationMessagesHandler: (List<String>) -> Unit
 ) {
-    var plotCanvasFigure by remember { mutableStateOf(PlotCanvasFigure()) }
+    if (logRecompositions) {
+        println("PlotPanel: recomposition")
+    }
+
+    var plotCanvasFigure: PlotCanvasFigure? by remember { mutableStateOf(null) }
+    val sizingPolicy = SizingPolicy.fitContainerSize(preserveAspectRatio)
 
     // Cache processed plot spec to avoid reprocessing the same raw spec on every recomposition.
 
@@ -48,15 +53,14 @@ actual fun PlotPanelRaw(
     val processedPlotSpec = remember(rawSpec.hashCode()) {
         processRawSpecs(rawSpec, frontendOnly = false)
     }
+    var errorMessage: String? by remember { mutableStateOf(null) }
 
-    val showErrorMessage = PlotConfig.isFailure(processedPlotSpec)
-
-    if (logRecompositions) {
-        println("PlotPanel: recomposition")
+    if (PlotConfig.isFailure(processedPlotSpec)) {
+        errorMessage = PlotConfig.getErrorMessage(processedPlotSpec)
     }
 
     // Background
-    val finalModifier = if (showErrorMessage) {
+    val finalModifier = if (errorMessage != null) {
         modifier.background(Color.LightGray)
     } else {
         if (containsBackground(modifier)) {
@@ -70,37 +74,46 @@ actual fun PlotPanelRaw(
         }
     }
 
-//    LOG.info { "Recompose PlotPanel()" }
-    if (showErrorMessage) {
+    LaunchedEffect(processedPlotSpec, sizingPolicy, computationMessagesHandler) {
+        runCatching {
+            plotCanvasFigure?.update(processedPlotSpec, sizingPolicy, computationMessagesHandler)
+                ?: LOG.info { "Error updating plot figure - plotCanvasFigure is null" }
+        }.onFailure { e ->
+            errorMessage = e.message ?: "Unknown error: ${e::class.simpleName}"
+            LOG.error(e) { "Error updating plot figure" }
+        }
+
+    }
+
+    errorMessage?.let { errMsg ->
         // Reset the figure to resolve the 'Registration already removed' error.
         // On error, the CanvasView is removed and the plotCanvasFigure changes state to 'detached',
         // meaning it cannot be reused.
-        @Suppress("AssignedValueIsNeverRead")  // false positive? The variable is used in AndroidView below.
-        plotCanvasFigure = PlotCanvasFigure()
+        plotCanvasFigure = null
 
         // Show error message
         BasicTextField(
-            value = PlotConfig.getErrorMessage(processedPlotSpec),
+            value = errMsg,
             onValueChange = { },
             readOnly = true,
             textStyle = errorTextStyle,
             modifier = errorModifier
         )
-    } else {
+    } ?: run {
         @Suppress("COMPOSE_APPLIER_CALL_MISMATCH") // Gemini says that this is a false positive
         AndroidView(
             modifier = finalModifier,
             factory = { ctx ->
+                plotCanvasFigure = plotCanvasFigure ?: PlotCanvasFigure()
+
                 CanvasView(ctx).apply {
                     figure = plotCanvasFigure
+                    onError = { e ->
+                        @Suppress("AssignedValueIsNeverRead")
+                        errorMessage = e.message ?: "Unknown error: ${e::class.simpleName}"
+                        LOG.error(e) { "Error in CanvasView" }
+                    }
                 }
-            },
-            update = { _ ->
-                plotCanvasFigure.update(
-                    processedPlotSpec,
-                    SizingPolicy.fitContainerSize(preserveAspectRatio),
-                    computationMessagesHandler
-                )
             }
         )
     }
