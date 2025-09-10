@@ -23,11 +23,16 @@ internal class TSpan(
     var fontScale: Float by visualProp(1f)
 
     var fontFamily: List<String> by visualProp(emptyList())
-    var fontStyle: FontStyle by visualProp(FontStyle.NORMAL)
+    var fontSlant: FontSlant by visualProp(FontSlant.UPRIGHT)
+    var fontWeight: Int by visualProp(FontWeight.NORMAL)
     var fontSize by visualProp(Text.DEFAULT_FONT_SIZE)
 
     var layoutX: Float by visualProp(0.0f)
     var layoutY: Float by visualProp(0.0f)
+
+    private val fontStyle: FontStyle by computedProp(TSpan::fontSlant, TSpan::fontWeight) {
+        FontStyle(fontWeight, FontWidth.NORMAL, fontSlant)
+    }
 
     private val typeface by computedProp(TSpan::fontFamily, TSpan::fontStyle) {
         fontManager.matchFamiliesStyle(fontFamily, fontStyle)

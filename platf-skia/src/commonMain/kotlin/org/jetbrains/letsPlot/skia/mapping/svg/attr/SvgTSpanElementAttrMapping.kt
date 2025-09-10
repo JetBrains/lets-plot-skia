@@ -11,6 +11,8 @@ import org.jetbrains.letsPlot.skia.mapping.svg.SvgUtils.toColor
 import org.jetbrains.letsPlot.skia.shape.TSpan
 import org.jetbrains.letsPlot.skia.shape.Text.BaselineShift
 import org.jetbrains.letsPlot.skia.shape.Text.Companion.DEFAULT_FONT_FAMILY
+import org.jetbrains.skia.FontSlant
+import org.jetbrains.skia.FontWeight
 
 internal object SvgTSpanElementAttrMapping : SvgShapeMapping<TSpan>() {
     override fun setAttribute(target: TSpan, name: String, value: Any?) {
@@ -34,6 +36,16 @@ internal object SvgTSpanElementAttrMapping : SvgShapeMapping<TSpan>() {
                 "sub" -> BaselineShift.SUB
                 "super" -> BaselineShift.SUPER
                 else -> error("Unexpected baseline-shift value: $value")
+            }
+
+            "font-style" -> target.fontSlant = when(value) {
+                "italic" -> FontSlant.ITALIC
+                else -> FontSlant.UPRIGHT // normal and others
+            }
+
+            "font-weight" -> target.fontWeight = when(value) {
+                "bold" -> FontWeight.BOLD
+                else -> FontWeight.NORMAL // normal and others
             }
 
             "dy" -> {

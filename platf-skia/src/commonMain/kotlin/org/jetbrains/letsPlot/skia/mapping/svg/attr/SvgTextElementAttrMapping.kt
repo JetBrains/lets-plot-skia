@@ -17,12 +17,25 @@ import org.jetbrains.letsPlot.skia.shape.Text.Companion.DEFAULT_FONT_FAMILY
 import org.jetbrains.letsPlot.skia.shape.Text.Companion.DEFAULT_FONT_SIZE
 import org.jetbrains.letsPlot.skia.shape.Text.HorizontalAlignment
 import org.jetbrains.letsPlot.skia.shape.Text.VerticalAlignment
+import org.jetbrains.skia.FontSlant
+import org.jetbrains.skia.FontWeight
 
 internal object SvgTextElementAttrMapping : SvgAttrMapping<Text>() {
     override fun setAttribute(target: Text, name: String, value: Any?) {
         when (name) {
             "font-size" -> target.fontSize = value?.asPxSize ?: DEFAULT_FONT_SIZE
             "font-family" -> target.fontFamily = value?.asFontFamily ?: DEFAULT_FONT_FAMILY
+
+            "font-style" -> target.fontSlant = when(value) {
+                "italic" -> FontSlant.ITALIC
+                else -> FontSlant.UPRIGHT // normal and others
+            }
+
+            "font-weight" -> target.fontWeight = when(value) {
+                "bold" -> FontWeight.BOLD
+                else -> FontWeight.NORMAL // normal and others
+            }
+
             SvgTextElement.X.name -> target.x = value?.asFloat ?: 0.0f
             SvgTextElement.Y.name -> target.y = value?.asFloat ?: 0.0f
             SvgTextContent.TEXT_ANCHOR.name -> {

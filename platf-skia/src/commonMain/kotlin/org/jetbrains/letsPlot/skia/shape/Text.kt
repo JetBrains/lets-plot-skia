@@ -7,10 +7,7 @@ package org.jetbrains.letsPlot.skia.shape
 
 import org.jetbrains.letsPlot.commons.intern.observable.collections.CollectionItemEvent
 import org.jetbrains.letsPlot.skia.mapping.svg.FontManager
-import org.jetbrains.skia.Canvas
-import org.jetbrains.skia.Color
-import org.jetbrains.skia.Color4f
-import org.jetbrains.skia.FontStyle
+import org.jetbrains.skia.*
 import kotlin.reflect.KProperty
 
 internal class Text(
@@ -31,10 +28,15 @@ internal class Text(
     var fillOpacity: Float by visualProp(1f)
 
     var fontFamily: List<String> by visualProp(emptyList())
-    var fontStyle: FontStyle by visualProp(FontStyle.NORMAL)
+    var fontSlant: FontSlant by visualProp(FontSlant.UPRIGHT)
+    var fontWeight: Int by visualProp(FontWeight.NORMAL)
     var fontSize by visualProp(DEFAULT_FONT_SIZE)
 
     private var needLayout = true
+
+    private val fontStyle by computedProp(Text::fontSlant, Text::fontWeight) {
+        FontStyle(fontWeight, FontWidth.NORMAL, fontSlant)
+    }
 
     private val typeface by computedProp(Text::fontFamily, Text::fontStyle) {
         fontManager.matchFamiliesStyle(fontFamily, fontStyle)
@@ -112,7 +114,8 @@ internal class Text(
                 Text::stroke -> el.inheritValue(TSpan::stroke, stroke)
                 Text::strokeDashArray -> el.inheritValue(TSpan::strokeDashArray, strokeDashArray)
                 Text::fontFamily -> el.inheritValue(TSpan::fontFamily, fontFamily)
-                Text::fontStyle -> el.inheritValue(TSpan::fontStyle, fontStyle)
+                Text::fontSlant -> el.inheritValue(TSpan::fontSlant, fontSlant)
+                Text::fontWeight -> el.inheritValue(TSpan::fontWeight, fontWeight)
                 Text::fontSize -> el.inheritValue(TSpan::fontSize, fontSize)
                 Text::strokeWidth -> el.inheritValue(TSpan::strokeWidth, strokeWidth)
                 Text::strokeOpacity -> el.inheritValue(TSpan::strokeOpacity, strokeOpacity)
@@ -128,7 +131,8 @@ internal class Text(
         el.inheritValue(TSpan::strokeOpacity, strokeOpacity)
         el.inheritValue(TSpan::strokeDashArray, strokeDashArray)
         el.inheritValue(TSpan::fontFamily, fontFamily)
-        el.inheritValue(TSpan::fontStyle, fontStyle)
+        el.inheritValue(TSpan::fontSlant, fontSlant)
+        el.inheritValue(TSpan::fontWeight, fontWeight)
         el.inheritValue(TSpan::fontSize, fontSize)
 
         invalidateLayout()

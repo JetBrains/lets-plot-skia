@@ -56,7 +56,10 @@ internal class SvgTextElementMapper(
             target.fill = style.color.asSkiaColor
             target.fontFamily = style.family.split(",").map { it.trim(' ', '"') }
             target.fontSize = style.size.toFloat()
-            target.fontStyle = toFontStyle(style.face)
+
+            val fontStyle = toFontStyle(style.face)
+            target.fontSlant = fontStyle.slant
+            target.fontWeight = fontStyle.weight
 
             myTextAttrSupport.setAttribute(SvgConstants.SVG_STYLE_ATTRIBUTE, "fill:${style.color.toHexColor()};")
         }
@@ -133,7 +136,9 @@ internal class SvgTextElementMapper(
                         tspan.fontFamily = it
                     }
 
-                    tspan.fontStyle = toFontStyle(classStyle.face)
+                    val fontStyle = toFontStyle(classStyle.face)
+                    tspan.fontSlant = fontStyle.slant
+                    tspan.fontWeight = fontStyle.weight
                 }
 
                 return@map tspan
