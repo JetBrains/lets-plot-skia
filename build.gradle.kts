@@ -57,12 +57,6 @@ allprojects {
     }
 }
 
-tasks.register<Zip>("packageSkikoJniLibs") {
-    archiveFileName = "skiko-jni-libs.zip"
-    from(layout.projectDirectory.dir("skiko-jni-libs"))
-    destinationDirectory = layout.projectDirectory
-}
-
 // define the Maven Repository URL. Currently set to a local path for uploading
 // artifacts to the Sonatype Central Repository.
 val mavenReleasePublishUrl by extra { layout.buildDirectory.dir("maven/artifacts").get().toString() }

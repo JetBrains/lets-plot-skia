@@ -9,16 +9,15 @@
 
 ##### 2. Set the Release Version
 
-- remove _"-SNAPSHOT"_ qualifier (the 'version' property in the root 'build.gradle.kts').
+Update the 'version' property in the root "build.gradle.kts":                                     
+
+- Remove the "-SNAPSHOT" qualifier 
+- For pre-release add "-alpha1", "-rc1" etc. qualifier 
 
 ##### 3. Build and Release Artifacts to Sonatype Central Repository
 
-Make sure that JNI libraries in the `skiko-jni-libs` directory are up to date and 
-match the version of the `Skiko` library used in the `Compose Multiplatform`. Refer [DEVELOPMENT.md](DEVELOPMENT.md) for details.
-
 - `./gradlew clean`
 - `./gradlew build`
-- `./gradlew packageSkikoJniLibs`
 - `./gradlew publishAllPublicationsToMavenRepository`
 - `./gradlew uploadMavenArtifacts`
 
@@ -42,9 +41,6 @@ Check all artifacts were uploaded and validated, then push the "Publish" button.
  * Open the link: https://github.com/JetBrains/lets-plot-skia/releases/new
  * Fill `Tag version` and `Release title` with the released version: "vX.X.X"
  * Fill the description field - copy from the CHANGELOG.md
- * **Attach the artifacts:**
-   - `skiko-jni-libs.zip` from the project root
-
 
 ### Update Dependant Projects 
 

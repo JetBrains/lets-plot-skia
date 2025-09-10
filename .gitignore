@@ -17,6 +17,5 @@ demo-android-app/src/main/jniLibs/x86_64/META-INF/*
 /kotlin-js-store/yarn.lock
 
 local.properties
-skiko-jni-libs.zip
 
 .maven-publish-dev-repo/*
