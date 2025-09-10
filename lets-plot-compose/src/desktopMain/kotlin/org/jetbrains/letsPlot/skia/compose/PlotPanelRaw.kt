@@ -114,7 +114,7 @@ actual fun PlotPanelRaw(
                 )
             } else {
                 // Render the plot
-                LaunchedEffect(panelSize, processedPlotSpec, specOverrideList) {
+                LaunchedEffect(panelSize, processedPlotSpec, specOverrideList, preserveAspectRatio) {
 
                     if (PlotConfig.isFailure(processedPlotSpec)) {
                         errorMessage = PlotConfig.getErrorMessage(processedPlotSpec)
