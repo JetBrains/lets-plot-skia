@@ -137,7 +137,8 @@ tasks.register("pullDebugImages") {
         }
 
         // 2. Get sdk.dir from local.properties
-        val sdkDir = localProperties.getProperty("sdk.dir") ?: System.getenv("ANDROID_HOME") ?: System.getProperty("android.home")
+        val sdkDir = localProperties.getProperty("sdk.dir") ?: System.getenv("ANDROID_HOME")
+        ?: System.getProperty("android.home")
         if (sdkDir == null) {
             throw GradleException("sdk.dir not found in local.properties and ANDROID_HOME or android.home not set")
         }
@@ -174,7 +175,8 @@ tasks.register("pullDebugImages") {
             println("Pulling images from device: $deviceSerial")
 
             //The directory on device to pull from
-            val devicePicturesDir = "/storage/emulated/0/Android/data/org.jetbrains.letsPlot.android.canvas.test/files/Pictures/"
+            val devicePicturesDir =
+                "/storage/emulated/0/Android/data/org.jetbrains.letsPlot.android.canvas.test/files/Pictures/"
             //The local directory to initially pull the images to
             val tempLocalDir = File(destDir, "temp_pictures")
             if (tempLocalDir.exists()) {

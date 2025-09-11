@@ -3,7 +3,6 @@
 ### Compatibility
 
 - [Compose Multiplatform](https://github.com/JetBrains/compose-multiplatform) 1.8.2
-- [Skiko](https://github.com/JetBrains/skiko) 0.9.4.2
 - [Lets-Plot Kotlin API](https://github.com/JetBrains/lets-plot-kotlin) 4.11.1
 - [Lets-Plot Multiplatform](https://github.com/JetBrains/lets-plot) 4.7.2
 
