@@ -12,7 +12,7 @@ import org.jetbrains.letsPlot.letsPlot
 import org.jetbrains.letsPlot.sampling.samplingNone
 import kotlin.random.Random
 
-class PerfSpec : PlotDemoSpec {
+class PerfSpec : PlotDemoFigure {
 
     private fun points(): Plot {
         val rand = Random(12)

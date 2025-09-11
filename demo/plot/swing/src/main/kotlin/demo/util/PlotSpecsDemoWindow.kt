@@ -5,22 +5,21 @@
 
 package demo.util
 
-import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.awt.ComposePanel
-import androidx.compose.ui.graphics.Color
 import org.jetbrains.letsPlot.Figure
-//import org.jetbrains.letsPlot.skia.swing.createComponent
-import java.awt.Color as ColorAwt
+import org.jetbrains.letsPlot.skia.compose.PlotPanel
+import org.jetbrains.letsPlot.skia.compose.PlotPanelRaw
 import java.awt.Dimension
 import java.awt.GridLayout
 import javax.swing.*
 import kotlin.math.min
+import java.awt.Color as ColorAwt
 
 internal class PlotSpecsDemoWindow(
     title: String,
-    private val figures: List<Figure>,
+    private val figures: List<Any>, // Element can be Figure or MutableMap<String, Any> (raw plot spec)
     maxCol: Int = 3,
     private val plotSize: Dimension? = null,
     background: ColorAwt = ColorAwt.WHITE,
@@ -59,27 +58,6 @@ internal class PlotSpecsDemoWindow(
         }
     }
 
-//    private fun createWindowContent() {
-//        val preferredSizeFromPlot = (plotSize == null)
-//        val components = figures.map { figure ->
-//            val figureComponent = figure.createComponent(
-//                preferredSizeFromPlot = preferredSizeFromPlot
-//            ) { messages ->
-//                for (message in messages) {
-//                    println("[Demo Plot Viewer] $message")
-//                }
-//            }
-//
-//            plotSize?.let {
-//                figureComponent.preferredSize = it
-//            }
-//
-//            figureComponent
-//        }
-//
-//        components.forEach { rootPanel.add(it) }
-//    }
-
     private fun createWindowContent() {
 
         figures.forEach { figure ->
@@ -89,19 +67,38 @@ internal class PlotSpecsDemoWindow(
                 } else {
                     preferredSize = Dimension(500, 400) // Default size
                 }
+
                 setContent {
-                    // Use the pure Compose PlotPanel implementation
-                    org.jetbrains.letsPlot.skia.compose.PlotPanel(
-                        figure = figure,
-                        preserveAspectRatio = true,
-                        modifier = Modifier.fillMaxSize(),
-//                            .background(Color.Green),
-                        computationMessagesHandler = { messages ->
-                            for (message in messages) {
-                                println("[Demo Plot Viewer] $message")
-                            }
+                    when (figure) {
+                        is Figure -> {
+                            PlotPanel(
+                                figure = figure,
+                                preserveAspectRatio = true,
+                                modifier = Modifier.fillMaxSize(),
+                                computationMessagesHandler = { messages ->
+                                    for (message in messages) {
+                                        println("[Demo Plot Viewer] $message")
+                                    }
+                                }
+                            )
                         }
-                    )
+
+                        is Map<*, *> -> {
+                            @Suppress("UNCHECKED_CAST")
+                            PlotPanelRaw(
+                                rawSpec = figure as MutableMap<String, Any>,
+                                preserveAspectRatio = true,
+                                modifier = Modifier.fillMaxSize(),
+                                computationMessagesHandler = { messages ->
+                                    for (message in messages) {
+                                        println("[Demo Plot Viewer] $message")
+                                    }
+                                }
+                            )
+                        }
+
+                        else -> error("Unexpected figure type: ${figure::class}")
+                    }
                 }
             }
 

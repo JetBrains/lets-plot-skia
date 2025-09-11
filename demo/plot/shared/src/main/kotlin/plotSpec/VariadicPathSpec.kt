@@ -10,7 +10,7 @@ import org.jetbrains.letsPlot.geom.geomPath
 import org.jetbrains.letsPlot.label.ggtitle
 import org.jetbrains.letsPlot.letsPlot
 
-class VariadicPathSpec : PlotDemoSpec {
+class VariadicPathSpec : PlotDemoFigure {
     override fun createFigureList(): List<Figure> {
         return listOf(
             variadicPathPlot()

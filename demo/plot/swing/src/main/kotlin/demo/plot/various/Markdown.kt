@@ -12,7 +12,7 @@ fun main() {
     with(MarkdownSpec()) {
         PlotSpecsDemoWindow(
             "Markdown",
-            createFigureList(),
+            createRawSpecList(),
         ).open()
     }
 }

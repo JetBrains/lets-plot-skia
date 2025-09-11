@@ -13,7 +13,7 @@ import org.jetbrains.letsPlot.intern.Plot
 import org.jetbrains.letsPlot.letsPlot
 import org.jetbrains.letsPlot.themes.themeGrey
 
-class FacetWrapSpec : PlotDemoSpec {
+class FacetWrapSpec : PlotDemoFigure {
 
     override fun createFigureList(): List<Figure> {
         val oneFacetDef = commonSpecs() + facetWrap(facets = "number of cylinders", format = "{d} cyl")

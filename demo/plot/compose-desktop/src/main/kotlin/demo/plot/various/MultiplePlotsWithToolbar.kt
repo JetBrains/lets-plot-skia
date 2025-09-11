@@ -34,7 +34,7 @@ fun main() = application {
                 }
 
                 PlotPanelRaw(
-                    rawSpec = MarkdownSpec().mpg().rawSpec.also { it["ggtoolbar"] = emptyMap<String, Any>() },
+                    rawSpec = MarkdownSpec().mpg().also { it["ggtoolbar"] = emptyMap<String, Any>() },
                     preserveAspectRatio = false,
                     modifier = Modifier.fillMaxHeight().weight(1f)
                 ) { computationMessages ->

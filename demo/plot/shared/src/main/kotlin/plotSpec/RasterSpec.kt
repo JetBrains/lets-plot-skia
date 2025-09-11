@@ -12,7 +12,7 @@ import org.jetbrains.letsPlot.geom.geomRaster
 import org.jetbrains.letsPlot.letsPlot
 import org.jetbrains.letsPlot.scale.scaleFillIdentity
 
-class RasterSpec : PlotDemoSpec {
+class RasterSpec : PlotDemoFigure {
 
     override fun createFigureList(): List<Figure> {
         return listOf(

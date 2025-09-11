@@ -17,7 +17,7 @@ import kotlin.math.PI
 import kotlin.math.cos
 import kotlin.math.sin
 
-class PolarHeatmapSpec : PlotDemoSpec {
+class PolarHeatmapSpec : PlotDemoFigure {
     override fun createFigureList(): List<Figure> {
         return listOf(
             polarHeatmap()

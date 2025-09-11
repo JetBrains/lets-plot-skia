@@ -5,18 +5,19 @@
 
 package plotSpec
 
-import org.jetbrains.letsPlot.Figure
+import org.jetbrains.letsPlot.commons.intern.json.JsonSupport
 
 class MarkdownSpec : PlotDemoSpec {
-    override fun createFigureList(): List<Figure> {
+    override fun createRawSpecList(): List<MutableMap<String, Any>> {
         return listOf(
             mpg(),
             mpgTitleOnly(),
         )
     }
 
-    fun mpgTitleOnly(): RawSpecFigure {
-        return RawSpecFigure.fromJson("""
+    fun mpgTitleOnly(): MutableMap<String, Any> {
+        return JsonSupport.parseJson(
+            """
             |{
             |  "theme": {
             |    "title": { "markdown": true, "blank": false },
@@ -36,11 +37,13 @@ class MarkdownSpec : PlotDemoSpec {
             |    }
             |  ]
             |}
-        """.trimMargin())
+        """.trimMargin()
+        ) as MutableMap<String, Any>
     }
 
-    fun mpg(): RawSpecFigure {
-        return RawSpecFigure.fromJson("""
+    fun mpg(): MutableMap<String, Any> {
+        return JsonSupport.parseJson(
+            """
             |{
             |  "theme": {
             |    "title": { "markdown": true, "blank": false },
@@ -74,7 +77,7 @@ class MarkdownSpec : PlotDemoSpec {
             |    }
             |  ]
             |}
-        """.trimMargin())
-
+        """.trimMargin()
+        ) as MutableMap<String, Any>
     }
 }

@@ -10,7 +10,7 @@ import org.jetbrains.letsPlot.Stat
 import org.jetbrains.letsPlot.geom.geomPie
 import org.jetbrains.letsPlot.letsPlot
 
-class PieSpec : PlotDemoSpec {
+class PieSpec : PlotDemoFigure {
     override fun createFigureList(): List<Figure> {
         return listOf(
             simplePie(),

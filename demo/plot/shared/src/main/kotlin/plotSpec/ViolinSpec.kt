@@ -16,7 +16,7 @@ import org.jetbrains.letsPlot.themes.elementText
 import org.jetbrains.letsPlot.themes.theme
 import java.lang.Double.NaN
 
-class ViolinSpec : PlotDemoSpec {
+class ViolinSpec : PlotDemoFigure {
 
     override fun createFigureList(): List<Figure> {
         return listOf(

@@ -12,7 +12,7 @@ import org.jetbrains.letsPlot.letsPlot
 import org.jetbrains.letsPlot.themes.theme
 import kotlin.math.pow
 
-class SuperscriptExponentNotationSpec : PlotDemoSpec {
+class SuperscriptExponentNotationSpec : PlotDemoFigure {
     override fun createFigureList(): List<Figure> {
         return listOf(
             simple()

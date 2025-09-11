@@ -26,7 +26,7 @@ fun main() = application {
             ) {
 
                 PlotPanelRaw(
-                    rawSpec = FrontendExceptionSpec().createFigure().rawSpec.toMutableMap(),
+                    rawSpec = FrontendExceptionSpec().createRawSpec(),
                     modifier = Modifier.fillMaxSize(),
                     errorModifier = Modifier.padding(16.dp),
                     errorTextStyle = TextStyle(color = Color(0xFF700000)),

@@ -20,7 +20,7 @@ import org.jetbrains.letsPlot.label.ggtitle
 import org.jetbrains.letsPlot.letsPlot
 import org.jetbrains.letsPlot.themes.themeGrey
 
-class MarginalLayersFacetsSpec : PlotDemoSpec {
+class MarginalLayersFacetsSpec : PlotDemoFigure {
 
     override fun createFigureList(): List<Figure> {
         val grid = commonSpecs("Grid") + facetGrid(y = "origin of car")

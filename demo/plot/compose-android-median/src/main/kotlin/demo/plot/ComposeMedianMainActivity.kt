@@ -18,6 +18,7 @@ import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.unit.dp
 import demo.plot.ui.DemoDropdownMenu
 import demo.plot.ui.DemoRadioGroup
+import org.jetbrains.letsPlot.Figure
 import org.jetbrains.letsPlot.skia.compose.PlotPanel
 import org.jetbrains.letsPlot.skia.compose.PlotPanelRaw
 import plotSpec.*
@@ -36,7 +37,7 @@ class ComposeMedianMainActivity : ComponentActivity() {
                 "Violin" to ViolinSpec().createFigure(),
                 "Markdown" to MarkdownSpec().mpg(),
                 "BackendError" to IllegalArgumentSpec().createFigure(),
-                "FrontendError" to FrontendExceptionSpec().createFigure(),
+                "FrontendError" to FrontendExceptionSpec().createRawSpec(),
             )
 
             val preserveAspectRatio = rememberSaveable { mutableStateOf(true) }
@@ -61,9 +62,9 @@ class ComposeMedianMainActivity : ComponentActivity() {
                     }
 
                     val fig = figures[figureIndex.value].second
-                    if (fig is RawSpecFigure) {
+                    if (fig is Map<*, *>) {
                         PlotPanelRaw(
-                            rawSpec = fig.rawSpec.toMutableMap(),
+                            rawSpec = fig as MutableMap<String, Any>,
                             preserveAspectRatio = preserveAspectRatio.value,
                             modifier = Modifier.fillMaxSize(),
                             errorModifier = Modifier.padding(16.dp),
@@ -72,7 +73,7 @@ class ComposeMedianMainActivity : ComponentActivity() {
                                 messages.forEach { println("[DEMO APP MESSAGE] $it") }
                             }
                         )
-                    } else {
+                    } else if (fig is Figure) {
                         PlotPanel(
                             figure = fig,
                             preserveAspectRatio = preserveAspectRatio.value,

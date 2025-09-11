@@ -16,7 +16,7 @@ import org.jetbrains.letsPlot.letsPlot
 import org.jetbrains.letsPlot.scale.scaleYContinuous
 import org.jetbrains.letsPlot.themes.themeBW
 
-class PlotGridSpec : PlotDemoSpec {
+class PlotGridSpec : PlotDemoFigure {
 
     override fun createFigure(): Figure {
         return irisTriple_compositeCell(innerAlignment = true)

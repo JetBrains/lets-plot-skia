@@ -24,7 +24,7 @@ fun main() = application {
             ) {
 
                 PlotPanelRaw(
-                    rawSpec = MarkdownSpec().mpg().rawSpec,
+                    rawSpec = MarkdownSpec().mpg(),
                     modifier = Modifier.fillMaxSize(),
                     preserveAspectRatio = true,
                 ) { computationMessages ->

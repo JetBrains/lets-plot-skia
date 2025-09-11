@@ -5,12 +5,10 @@
 
 package plotSpec
 
-import org.jetbrains.letsPlot.Figure
-
 interface PlotDemoSpec {
-    fun createFigure(): Figure {
-        return createFigureList().first()
+    fun createRawSpec(): MutableMap<String, Any> {
+        return createRawSpecList().first()
     }
 
-    fun createFigureList(): List<Figure>
+    fun createRawSpecList(): List<MutableMap<String, Any>>
 }

@@ -12,7 +12,7 @@ import org.jetbrains.letsPlot.coord.coordFixed
 import org.jetbrains.letsPlot.geom.geomDensity
 import org.jetbrains.letsPlot.letsPlot
 
-class DensitySpec : PlotDemoSpec {
+class DensitySpec : PlotDemoFigure {
     override fun createFigure(): Figure {
         val rand = java.util.Random()
         val n = 200

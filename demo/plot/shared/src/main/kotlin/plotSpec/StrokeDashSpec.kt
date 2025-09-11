@@ -9,7 +9,7 @@ import org.jetbrains.letsPlot.Figure
 import org.jetbrains.letsPlot.geom.geomSegment
 import org.jetbrains.letsPlot.ggplot
 
-class StrokeDashSpec : PlotDemoSpec {
+class StrokeDashSpec : PlotDemoFigure {
     override fun createFigureList(): List<Figure> {
         return listOf(
             ggplot()

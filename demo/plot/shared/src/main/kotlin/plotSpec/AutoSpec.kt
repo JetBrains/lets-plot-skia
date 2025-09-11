@@ -12,7 +12,7 @@ import org.jetbrains.letsPlot.geom.geomPoint
 import org.jetbrains.letsPlot.intern.Plot
 import org.jetbrains.letsPlot.letsPlot
 
-class AutoSpec : PlotDemoSpec {
+class AutoSpec : PlotDemoFigure {
     override fun createFigureList(): List<Figure> {
         return listOf(
             scatter()

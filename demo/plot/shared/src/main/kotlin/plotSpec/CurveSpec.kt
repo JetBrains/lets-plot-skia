@@ -13,7 +13,7 @@ import org.jetbrains.letsPlot.label.ggtitle
 import org.jetbrains.letsPlot.letsPlot
 import org.jetbrains.letsPlot.scale.xlim
 
-class CurveSpec : PlotDemoSpec {
+class CurveSpec : PlotDemoFigure {
 
     override fun createFigureList(): List<Figure> {
 

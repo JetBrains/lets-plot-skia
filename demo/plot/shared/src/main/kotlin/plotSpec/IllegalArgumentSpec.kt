@@ -9,7 +9,7 @@ import org.jetbrains.letsPlot.Figure
 import org.jetbrains.letsPlot.geom.geomPoint
 import org.jetbrains.letsPlot.letsPlot
 
-class IllegalArgumentSpec : PlotDemoSpec {
+class IllegalArgumentSpec : PlotDemoFigure {
     override fun createFigure(): Figure {
         val data = mapOf<String, Any>(
             "x" to listOf(0, 1),

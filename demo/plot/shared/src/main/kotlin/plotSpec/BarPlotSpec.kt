@@ -12,7 +12,7 @@ import org.jetbrains.letsPlot.letsPlot
 import org.jetbrains.letsPlot.scale.scaleFillDiscrete
 import org.jetbrains.letsPlot.scale.scaleFillHue
 
-class BarPlotSpec : PlotDemoSpec {
+class BarPlotSpec : PlotDemoFigure {
     val basic = letsPlot(DATA) +
             geomBar(alpha = 0.5) {
                 x = "time"

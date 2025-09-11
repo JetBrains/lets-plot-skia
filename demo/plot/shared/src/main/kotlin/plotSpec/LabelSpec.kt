@@ -9,7 +9,7 @@ import org.jetbrains.letsPlot.Figure
 import org.jetbrains.letsPlot.geom.geomLabel
 import org.jetbrains.letsPlot.letsPlot
 
-class LabelSpec : PlotDemoSpec {
+class LabelSpec : PlotDemoFigure {
     override fun createFigureList(): List<Figure> {
         val fonts = run {
             val families = listOf(

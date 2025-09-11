@@ -18,7 +18,7 @@ import org.jetbrains.letsPlot.scale.scaleYContinuous
 import org.jetbrains.letsPlot.themes.*
 import org.jetbrains.letsPlot.tooltips.layerTooltips
 
-class ThemeOptionsSpec : PlotDemoSpec {
+class ThemeOptionsSpec : PlotDemoFigure {
 
 
     // ToDo: "italic" doesn't seem to work.

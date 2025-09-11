@@ -20,7 +20,7 @@ import org.jetbrains.letsPlot.tooltips.layerTooltips
 import org.jetbrains.letsPlot.tooltips.tooltipsNone
 import kotlin.random.Random
 
-class HyperlinkSpec : PlotDemoSpec {
+class HyperlinkSpec : PlotDemoFigure {
     override fun createFigureList(): List<Figure> {
         return listOf(
             ggplot() + geomLabel(x=0, y=0, label = "Visit <a href=\"https://lets-plot.org\">lets-plot.org</a> !", size = 10) + themeVoid(),

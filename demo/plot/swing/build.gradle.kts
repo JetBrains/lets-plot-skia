@@ -26,8 +26,8 @@ dependencies {
     implementation(compose.desktop.currentOs)
     compileOnly(compose.ui)
 
-    implementation("org.jetbrains.skiko:skiko:$skikoVersion")
-    implementation("org.jetbrains.skiko:skiko-awt-runtime-$hostOs-$hostArch:$skikoVersion")
+//    implementation("org.jetbrains.skiko:skiko:$skikoVersion")
+//    implementation("org.jetbrains.skiko:skiko-awt-runtime-$hostOs-$hostArch:$skikoVersion")
 
     implementation("org.jetbrains.lets-plot:lets-plot-kotlin-kernel:$letsPlotKotlinVersion")
     implementation("org.jetbrains.lets-plot:lets-plot-common:$letsPlotVersion")

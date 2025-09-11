@@ -16,7 +16,7 @@ import org.jetbrains.letsPlot.letsPlot
 import org.jetbrains.letsPlot.tooltips.layerTooltips
 import kotlin.random.Random
 
-class TooltipAnchorSpec : PlotDemoSpec {
+class TooltipAnchorSpec : PlotDemoFigure {
 
     override fun createFigureList(): List<Figure> {
         return listOf(
