@@ -16,7 +16,7 @@ import org.jetbrains.letsPlot.core.plot.base.layout.TextJustification
 import org.jetbrains.letsPlot.core.plot.base.layout.TextJustification.Companion.TextRotation
 import org.jetbrains.letsPlot.core.plot.base.layout.TextJustification.Companion.applyJustification
 import org.jetbrains.letsPlot.core.plot.base.render.svg.GroupComponent
-import org.jetbrains.letsPlot.core.plot.base.render.svg.MultilineLabel
+import org.jetbrains.letsPlot.core.plot.base.render.svg.Label
 import org.jetbrains.letsPlot.core.plot.builder.presentation.Defaults.FONT_FAMILY_NORMAL
 import org.jetbrains.letsPlot.core.plot.builder.presentation.PlotLabelSpec
 import org.jetbrains.letsPlot.datamodel.svg.dom.SvgElement
@@ -102,12 +102,12 @@ private class TextJustificationDemo: DemoBase(DoubleVector(1600.0, 1200.0)) {
             boundRect: DoubleRectangle,
             justification: TextJustification,
             rotation: TextRotation?
-        ): MultilineLabel {
+        ): Label {
             val text = "Horizontal justification:" + justification.x + "\n" +
                     "Vertical justification:" + justification.y + "\n" +
                     "Angle: " + rotation.toString()
 
-            val label = MultilineLabel(text)
+            val label = Label(text)
             label.addClassName(LABEL_CLASS_NAME)
             label.textColor().set(Color.DARK_BLUE)
 

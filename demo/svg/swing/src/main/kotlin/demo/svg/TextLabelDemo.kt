@@ -10,8 +10,8 @@ import demo.svg.utils.DemoWindow
 import org.jetbrains.letsPlot.commons.geometry.DoubleVector
 import org.jetbrains.letsPlot.commons.values.Color
 import org.jetbrains.letsPlot.core.plot.base.render.svg.GroupComponent
+import org.jetbrains.letsPlot.core.plot.base.render.svg.Label
 import org.jetbrains.letsPlot.core.plot.base.render.svg.Text
-import org.jetbrains.letsPlot.core.plot.base.render.svg.TextLabel
 import org.jetbrains.letsPlot.datamodel.svg.dom.*
 
 fun main() {
@@ -121,9 +121,9 @@ private class TextLabelDemo : DemoBase(DEMO_BOX_SIZE) {
             hAnchor: Text.HorizontalAnchor,
             vAnchor: Text.VerticalAnchor,
             angle: Double
-        ): TextLabel {
+        ): Label {
             val text = "Anchor: " + hAnchor.name + "-" + vAnchor.name + " angle: " + angle + "°"
-            val label = TextLabel(text)
+            val label = Label(text)
             label.addClassName(LABEL_CLASS_NAME)
             label.setHorizontalAnchor(hAnchor)
             label.setVerticalAnchor(vAnchor)

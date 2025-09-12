@@ -9,9 +9,8 @@ import demo.svg.utils.DemoBase
 import demo.svg.utils.DemoWindow
 import org.jetbrains.letsPlot.commons.geometry.DoubleVector
 import org.jetbrains.letsPlot.core.plot.base.render.svg.GroupComponent
-import org.jetbrains.letsPlot.core.plot.base.render.svg.MultilineLabel
+import org.jetbrains.letsPlot.core.plot.base.render.svg.Label
 import org.jetbrains.letsPlot.core.plot.base.render.svg.Text
-import org.jetbrains.letsPlot.core.plot.base.render.svg.TextLabel
 import org.jetbrains.letsPlot.datamodel.svg.dom.*
 
 fun main() {
@@ -101,7 +100,7 @@ private class SuperscriptExponentNotationDemo: DemoBase(DoubleVector(800.0, 1200
 
     fun createItalicModel(): GroupComponent {
         val groupComponent = GroupComponent()
-        val label = MultilineLabel("""Power text: -1.5·\(10^{-15}\)""")
+        val label = Label("""Power text: -1.5·\(10^{-15}\)""")
         SvgUtils.transformTranslate(label.rootGroup, 300.0, 300.0)
 
         groupComponent.add(createLabelExample(12, DoubleVector.ZERO))
@@ -111,7 +110,7 @@ private class SuperscriptExponentNotationDemo: DemoBase(DoubleVector(800.0, 1200
 
     fun createSimpleModel(): GroupComponent {
         val groupComponent = GroupComponent()
-        val label = MultilineLabel("""Power text: -1.5·\(10^{-15}\)""")
+        val label = Label("""Power text: -1.5·\(10^{-15}\)""")
         SvgUtils.transformTranslate(label.rootGroup, 300.0, 300.0)
 
         groupComponent.add(label)
@@ -237,8 +236,8 @@ private class SuperscriptExponentNotationDemo: DemoBase(DoubleVector(800.0, 1200
             hAnchor: Text.HorizontalAnchor,
             vAnchor: Text.VerticalAnchor,
             angle: Double,
-        ): TextLabel {
-            val label = TextLabel("$FORMULA ($exampleId)")
+        ): Label {
+            val label = Label("$FORMULA ($exampleId)")
             label.addClassName("LBL_$exampleId")
             label.setHorizontalAnchor(hAnchor)
             label.setVerticalAnchor(vAnchor)
