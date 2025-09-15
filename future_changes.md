@@ -30,3 +30,4 @@ All artifacts were built with the following versions of dependencies:
 - When using a dark theme, white lines appear on the sides of the plot [[#37](https://github.com/JetBrains/lets-plot-skia/issues/37)]
 - Plot rendering issues when switching between tabs in the tabbed pane [[#38](https://github.com/JetBrains/lets-plot-skia/issues/38)]
 - Display problem of lets-plot-skia when switching pages [[#42](https://github.com/JetBrains/lets-plot-skia/issues/42)]
+- Markdown: missing bold and italic text style support [[#44](https://github.com/JetBrains/lets-plot-skia/issues/44)]
