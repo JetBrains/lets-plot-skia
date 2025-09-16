@@ -7,7 +7,7 @@ package org.jetbrains.letsPlot.skia.compose.desktop
 
 import org.jetbrains.letsPlot.commons.geometry.DoubleVector
 import org.jetbrains.letsPlot.commons.registration.Disposable
-import org.jetbrains.letsPlot.skia.builderLW.ViewModel
+import org.jetbrains.letsPlot.skia.builder.ViewModel
 
 class PlotContainer : Disposable {
     internal val svgView = SvgView()

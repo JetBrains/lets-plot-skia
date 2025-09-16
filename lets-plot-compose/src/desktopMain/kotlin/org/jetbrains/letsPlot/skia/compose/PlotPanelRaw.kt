@@ -26,7 +26,7 @@ import org.jetbrains.letsPlot.core.spec.front.SpecOverrideUtil
 import org.jetbrains.letsPlot.core.util.MonolithicCommon.processRawSpecs
 import org.jetbrains.letsPlot.core.util.PlotThemeHelper
 import org.jetbrains.letsPlot.core.util.sizing.SizingPolicy
-import org.jetbrains.letsPlot.skia.builderLW.MonolithicSkia
+import org.jetbrains.letsPlot.skia.builder.MonolithicSkia
 import org.jetbrains.letsPlot.skia.compose.desktop.PlotContainer
 import org.jetbrains.letsPlot.skia.compose.desktop.SvgViewPanel
 
