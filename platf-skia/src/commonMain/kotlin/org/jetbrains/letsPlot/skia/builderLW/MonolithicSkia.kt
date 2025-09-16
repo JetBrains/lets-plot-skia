@@ -12,10 +12,7 @@ import org.jetbrains.letsPlot.core.util.sizing.SizingPolicy
 import org.jetbrains.letsPlot.datamodel.svg.dom.SvgSvgElement
 import org.jetbrains.letsPlot.datamodel.svg.dom.SvgTextElement
 
-/**
- * "lightweight" - no JComponents or Views are created here.
- */
-object MonolithicSkiaLW {
+object MonolithicSkia {
     fun buildPlotFromProcessedSpecs(
         plotSpec: MutableMap<String, Any>,
         containerSize: DoubleVector?,

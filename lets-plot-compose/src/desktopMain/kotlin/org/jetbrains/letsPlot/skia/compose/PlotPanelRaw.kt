@@ -26,7 +26,7 @@ import org.jetbrains.letsPlot.core.spec.front.SpecOverrideUtil
 import org.jetbrains.letsPlot.core.util.MonolithicCommon.processRawSpecs
 import org.jetbrains.letsPlot.core.util.PlotThemeHelper
 import org.jetbrains.letsPlot.core.util.sizing.SizingPolicy
-import org.jetbrains.letsPlot.skia.builderLW.MonolithicSkiaLW
+import org.jetbrains.letsPlot.skia.builderLW.MonolithicSkia
 import org.jetbrains.letsPlot.skia.compose.desktop.PlotContainer
 import org.jetbrains.letsPlot.skia.compose.desktop.SvgViewPanel
 
@@ -132,7 +132,7 @@ actual fun PlotPanelRaw(
                             val plotSpec =
                                 SpecOverrideUtil.applySpecOverride(processedPlotSpec, specOverrideList).toMutableMap()
 
-                            val viewModel = MonolithicSkiaLW.buildPlotFromProcessedSpecs(
+                            val viewModel = MonolithicSkia.buildPlotFromProcessedSpecs(
                                 plotSpec = plotSpec,
                                 containerSize = panelSize,
                                 sizingPolicy = SizingPolicy.fitContainerSize(preserveAspectRatio)
