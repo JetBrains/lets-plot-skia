@@ -56,7 +56,6 @@ include("demo-plot-compose-android-redraw")
 project(":demo-plot-compose-android-redraw").projectDir = File("./demo/plot/compose-android-redraw")
 
 
-
 // =============================
 // Pure SVG Rendering
 // Internal - for testing.
