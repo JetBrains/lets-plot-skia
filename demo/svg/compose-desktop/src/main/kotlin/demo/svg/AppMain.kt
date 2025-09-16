@@ -20,7 +20,7 @@ import androidx.compose.ui.window.application
 import demo.svgModel.ClipPathSvgModel
 import demo.svgModel.OpacityDemoModel
 import demo.svgModel.SvgImageElementModel
-import org.jetbrains.letsPlot.skia.compose.SimpleSvgPanel
+import org.jetbrains.letsPlot.compose.SimpleSvgPanel
 
 fun main() = application {
     val items = listOf(

@@ -20,12 +20,12 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.Window
 import androidx.compose.ui.window.application
-import org.jetbrains.letsPlot.skia.compose.PlotPanel
+import org.jetbrains.letsPlot.compose.PlotPanel
 import plotSpec.DensitySpec
 
 
 // Enable logging to see recompositions:
-// org.jetbrains.letsPlot.skia.compose.util.NaiveLoggerKt.ENABLED
+// org.jetbrains.letsPlot.compose.util.NaiveLoggerKt.ENABLED
 fun main() = application {
     Window(onCloseRequest = ::exitApplication, title = "Density Plot (Compose Desktop)") {
         var counter by remember { mutableStateOf(0) }

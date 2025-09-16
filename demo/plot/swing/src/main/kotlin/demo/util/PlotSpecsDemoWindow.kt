@@ -9,8 +9,8 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.awt.ComposePanel
 import org.jetbrains.letsPlot.Figure
-import org.jetbrains.letsPlot.skia.compose.PlotPanel
-import org.jetbrains.letsPlot.skia.compose.PlotPanelRaw
+import org.jetbrains.letsPlot.compose.PlotPanel
+import org.jetbrains.letsPlot.compose.PlotPanelRaw
 import java.awt.Dimension
 import java.awt.GridLayout
 import javax.swing.*
@@ -23,7 +23,7 @@ internal class PlotSpecsDemoWindow(
     maxCol: Int = 3,
     private val plotSize: Dimension? = null,
     background: ColorAwt = ColorAwt.WHITE,
-) : JFrame("$title (Skia Swing)") {
+) : JFrame("$title (Compose in Swing)") {
     private val rootPanel: JPanel
 
     init {

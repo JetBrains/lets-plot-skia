@@ -11,16 +11,18 @@ All artifacts were built with the following versions of dependencies:
 ### Added
 
 ### Changed
+
+- [**BREAKING**]  `PlotPanel` is moved to package `org.jetbrains.letsPlot.compose` (from `org.jetbrains.letsPlot.skia.compose`).
                              
 #### Android
 
-- Removed dependency on Skiko.
+- Removed dependency on the Skiko library.
 - 
 
 #### Desktop
 
 - Pure compose implementation.
-- The following artifacts are no longer published: 
+- The following artifacts are no longer provided: 
   - `platf-skia-awt`
   - `lets-plot-swing-skia`
 

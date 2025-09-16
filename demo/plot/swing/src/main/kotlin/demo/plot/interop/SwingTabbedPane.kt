@@ -19,7 +19,7 @@ import androidx.compose.ui.unit.dp
 import org.jetbrains.letsPlot.Figure
 import org.jetbrains.letsPlot.geom.geomDensity
 import org.jetbrains.letsPlot.letsPlot
-import org.jetbrains.letsPlot.skia.compose.PlotPanel
+import org.jetbrains.letsPlot.compose.PlotPanel
 import org.jetbrains.letsPlot.themes.theme
 import org.jetbrains.letsPlot.themes.elementRect
 import java.awt.BorderLayout

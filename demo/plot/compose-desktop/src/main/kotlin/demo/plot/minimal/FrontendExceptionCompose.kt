@@ -15,7 +15,7 @@ import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.Window
 import androidx.compose.ui.window.application
-import org.jetbrains.letsPlot.skia.compose.PlotPanelRaw
+import org.jetbrains.letsPlot.compose.PlotPanelRaw
 import plotSpec.FrontendExceptionSpec
 
 fun main() = application {

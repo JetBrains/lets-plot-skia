@@ -1,9 +1,9 @@
 /*
- * Copyright (c) 2023 JetBrains s.r.o.
+ * Copyright (c) 2025 JetBrains s.r.o.
  * Use of this source code is governed by the MIT license that can be found in the LICENSE file.
  */
 
-package org.jetbrains.letsPlot.skia.compose
+package org.jetbrains.letsPlot.compose
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
@@ -27,10 +27,10 @@ import org.jetbrains.letsPlot.core.util.MonolithicCommon.processRawSpecs
 import org.jetbrains.letsPlot.core.util.PlotThemeHelper
 import org.jetbrains.letsPlot.core.util.sizing.SizingPolicy
 import org.jetbrains.letsPlot.skia.builder.MonolithicSkia
-import org.jetbrains.letsPlot.skia.compose.desktop.PlotContainer
-import org.jetbrains.letsPlot.skia.compose.desktop.SvgViewPanel
+import org.jetbrains.letsPlot.compose.desktop.PlotContainer
+import org.jetbrains.letsPlot.compose.desktop.SvgViewPanel
 
-//import org.jetbrains.letsPlot.skia.compose.util.NaiveLogger
+//import org.jetbrains.letsPlot.compose.util.NaiveLogger
 
 //private val LOG = NaiveLogger("PlotPanel")
 private val LOG = PortableLogging.logger(name = "[PlotPanelRaw]")

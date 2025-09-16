@@ -20,7 +20,7 @@ import androidx.compose.ui.window.application
 import org.jetbrains.letsPlot.Figure
 import org.jetbrains.letsPlot.geom.geomPoint
 import org.jetbrains.letsPlot.letsPlot
-import org.jetbrains.letsPlot.skia.compose.PlotPanel
+import org.jetbrains.letsPlot.compose.PlotPanel
 import org.jetbrains.letsPlot.themes.flavorHighContrastDark
 
 fun main() = application {

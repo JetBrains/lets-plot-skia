@@ -3,7 +3,7 @@
  * Use of this source code is governed by the MIT license that can be found in the LICENSE file.
  */
 
-package org.jetbrains.letsPlot.skia.compose.desktop
+package org.jetbrains.letsPlot.compose.desktop
 
 import javax.swing.Timer
 

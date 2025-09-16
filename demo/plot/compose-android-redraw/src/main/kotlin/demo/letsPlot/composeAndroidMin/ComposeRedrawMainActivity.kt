@@ -25,7 +25,7 @@ import org.jetbrains.letsPlot.intern.Plot
 import org.jetbrains.letsPlot.letsPlot
 import org.jetbrains.letsPlot.scale.xlim
 import org.jetbrains.letsPlot.scale.ylim
-import org.jetbrains.letsPlot.skia.compose.PlotPanel
+import org.jetbrains.letsPlot.compose.PlotPanel
 import kotlin.math.sin
 
 class ComposeRedrawMainActivity : ComponentActivity() {

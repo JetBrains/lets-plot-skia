@@ -12,7 +12,7 @@ import androidx.compose.ui.awt.ComposePanel
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import org.jetbrains.letsPlot.datamodel.svg.dom.SvgSvgElement
-import org.jetbrains.letsPlot.skia.compose.SimpleSvgPanel
+import org.jetbrains.letsPlot.compose.SimpleSvgPanel
 import java.awt.Dimension
 import java.awt.GridLayout
 import javax.swing.*
@@ -22,7 +22,7 @@ internal class DemoWindow(
     title: String,
     private val svgRoots: List<SvgSvgElement>,
     private val maxCol: Int = 2,
-) : JFrame("$title (Skia Swing)") {
+) : JFrame("$title (Compose in Swing)") {
     private val rootPanel: JPanel
 
     init {

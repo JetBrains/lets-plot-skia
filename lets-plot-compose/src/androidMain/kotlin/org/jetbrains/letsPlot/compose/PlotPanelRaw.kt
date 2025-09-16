@@ -1,9 +1,9 @@
 /*
- * Copyright (c) 2023 JetBrains s.r.o.
+ * Copyright (c) 2025 JetBrains s.r.o.
  * Use of this source code is governed by the MIT license that can be found in the LICENSE file.
  */
 
-package org.jetbrains.letsPlot.skia.compose
+package org.jetbrains.letsPlot.compose
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.text.BasicTextField
@@ -20,7 +20,7 @@ import org.jetbrains.letsPlot.core.util.PlotThemeHelper
 import org.jetbrains.letsPlot.core.util.sizing.SizingPolicy
 import org.jetbrains.letsPlot.raster.view.PlotCanvasFigure
 
-//import org.jetbrains.letsPlot.skia.compose.util.NaiveLogger
+//import org.jetbrains.letsPlot.compose.util.NaiveLogger
 
 //private val LOG = NaiveLogger("PlotPanel")
 private val LOG = PortableLogging.logger(name = "[PlotPanelRaw]")

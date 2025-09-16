@@ -3,7 +3,7 @@
  * Use of this source code is governed by the MIT license that can be found in the LICENSE file.
  */
 
-package org.jetbrains.letsPlot.skia.compose.desktop
+package org.jetbrains.letsPlot.compose.desktop
 
 import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.geometry.Offset
@@ -11,13 +11,16 @@ import androidx.compose.ui.graphics.drawscope.DrawScope
 import androidx.compose.ui.graphics.nativeCanvas
 import androidx.compose.ui.input.pointer.PointerEvent
 import androidx.compose.ui.input.pointer.PointerEventType
+import org.jetbrains.letsPlot.commons.event.Button
 import org.jetbrains.letsPlot.commons.event.KeyModifiers
 import org.jetbrains.letsPlot.commons.event.MouseEvent
 import org.jetbrains.letsPlot.commons.event.MouseEventSpec.*
 import org.jetbrains.letsPlot.commons.event.MouseWheelEvent
 import org.jetbrains.letsPlot.commons.geometry.Vector
 import org.jetbrains.letsPlot.skia.view.SkiaSvgView
+import org.jetbrains.skia.Canvas
 import java.awt.Desktop
+import java.net.URI
 import kotlin.math.roundToInt
 
 
@@ -51,12 +54,12 @@ class SvgView : SkiaSvgView() {
     }
 
     override fun onHrefClick(href: String) {
-        Desktop.getDesktop().browse(java.net.URI(href))
+        Desktop.getDesktop().browse(URI(href))
     }
 
     fun render(drawScope: DrawScope) {
         @Suppress("USELESS_CAST")
-        val canvas = drawScope.drawContext.canvas.nativeCanvas as org.jetbrains.skia.Canvas
+        val canvas = drawScope.drawContext.canvas.nativeCanvas as Canvas
 
         // Apply density scaling and position offset
         canvas.save()
@@ -125,7 +128,7 @@ class SvgView : SkiaSvgView() {
                 val wheelMouseEvent = MouseWheelEvent(
                     x = vector.x,
                     y = vector.y,
-                    button = org.jetbrains.letsPlot.commons.event.Button.NONE,
+                    button = Button.NONE,
                     modifiers = KeyModifiers.emptyModifiers(),
                     scrollAmount = scrollDelta.y.toDouble()
                 )

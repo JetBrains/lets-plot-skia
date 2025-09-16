@@ -3,15 +3,15 @@
  * Use of this source code is governed by the MIT license that can be found in the LICENSE file.
  */
 
-package org.jetbrains.letsPlot.skia.compose
+package org.jetbrains.letsPlot.compose
 
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import org.jetbrains.letsPlot.datamodel.svg.dom.SvgSvgElement
-import org.jetbrains.letsPlot.skia.compose.desktop.SvgView
-import org.jetbrains.letsPlot.skia.compose.desktop.SvgViewPanel
+import org.jetbrains.letsPlot.compose.desktop.SvgView
+import org.jetbrains.letsPlot.compose.desktop.SvgViewPanel
 
 /**
  * Renders SVG content using Compose Canvas and Skia.
@@ -35,7 +35,6 @@ fun SimpleSvgPanel(
         }
     }
 
-    // Render using our pure Compose SvgView
     SvgViewPanel(
         svgView = svgView,
         modifier = modifier

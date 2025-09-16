@@ -19,7 +19,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.Window
 import androidx.compose.ui.window.application
 import demo.plot.median.ui.DemoList
-import org.jetbrains.letsPlot.skia.compose.PlotPanel
+import org.jetbrains.letsPlot.compose.PlotPanel
 import plotSpec.DensitySpec
 import plotSpec.PerfSpec
 import plotSpec.PlotGridSpec

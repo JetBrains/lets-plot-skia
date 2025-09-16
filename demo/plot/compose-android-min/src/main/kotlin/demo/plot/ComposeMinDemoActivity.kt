@@ -25,7 +25,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import org.jetbrains.letsPlot.skia.compose.PlotPanel
+import org.jetbrains.letsPlot.compose.PlotPanel
 import plotSpec.DensitySpec
 
 class ComposeMinDemoActivity : ComponentActivity() {
@@ -45,7 +45,7 @@ class ComposeMinDemoActivity : ComponentActivity() {
                     Text(
                         text = """
                             Enable logging to see recompositions:
-                            org.jetbrains.letsPlot.skia.compose.PlotPanelRawKt.logRecompositions
+                            org.jetbrains.letsPlot.compose.PlotPanelRawKt.logRecompositions
                             """.trimIndent(),
                         fontSize = 10.sp,
                     )

@@ -19,8 +19,8 @@ import androidx.compose.ui.unit.dp
 import demo.plot.ui.DemoDropdownMenu
 import demo.plot.ui.DemoRadioGroup
 import org.jetbrains.letsPlot.Figure
-import org.jetbrains.letsPlot.skia.compose.PlotPanel
-import org.jetbrains.letsPlot.skia.compose.PlotPanelRaw
+import org.jetbrains.letsPlot.compose.PlotPanel
+import org.jetbrains.letsPlot.compose.PlotPanelRaw
 import plotSpec.*
 
 class ComposeMedianMainActivity : ComponentActivity() {
