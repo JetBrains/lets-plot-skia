@@ -16,6 +16,7 @@ class MarkdownSpec : PlotDemoSpec {
     }
 
     fun mpgTitleOnly(): MutableMap<String, Any> {
+        @Suppress("UNCHECKED_CAST")
         return JsonSupport.parseJson(
             """
             |{
@@ -42,6 +43,7 @@ class MarkdownSpec : PlotDemoSpec {
     }
 
     fun mpg(): MutableMap<String, Any> {
+        @Suppress("UNCHECKED_CAST")
         return JsonSupport.parseJson(
             """
             |{

@@ -14,7 +14,6 @@ plugins {
 
 val androidComposeBom = extra["androidx.compose.bom"] as String
 val skikoVersion = extra["skiko.version"] as String
-val composeVersion = extra["compose.version"] as String
 val letsPlotVersion = extra["letsPlot.version"] as String
 val letsPlotKotlinVersion = extra["letsPlotKotlin.version"] as String
 val kotlinLoggingVersion = extra["kotlinLogging.version"] as String
@@ -58,7 +57,7 @@ kotlin {
                 implementation(project.dependencies.platform("androidx.compose:compose-bom:$androidComposeBom"))
                 implementation("androidx.compose.ui:ui")
                 implementation("androidx.compose.ui:ui-graphics")
-                api(project(":platf-skia"))
+                api(project(":platf-android"))
                 compileOnly("org.jetbrains.lets-plot:plot-raster:${letsPlotVersion}")
                 compileOnly("org.jetbrains.lets-plot:canvas:${letsPlotVersion}")
             }

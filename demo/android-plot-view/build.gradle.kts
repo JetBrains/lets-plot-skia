@@ -43,7 +43,7 @@ val letsPlotVersion = extra["letsPlot.version"] as String
 val letsPlotKotlinVersion = extra["letsPlotKotlin.version"] as String
 
 dependencies {
-    implementation(project(":platf-skia"))
+    implementation(project(":platf-android"))
     implementation(project(":demo-plot-shared"))
     implementation("org.jetbrains.lets-plot:lets-plot-kotlin-kernel:${letsPlotKotlinVersion}")
     implementation("org.jetbrains.lets-plot:lets-plot-common:$letsPlotVersion")
