@@ -1,11 +1,11 @@
-import java.io.ByteArrayOutputStream
-import java.io.FileInputStream
-import java.util.*
-
 /*
  * Copyright (c) 2023. JetBrains s.r.o.
  * Use of this source code is governed by the MIT license that can be found in the LICENSE file.
  */
+
+import java.io.ByteArrayOutputStream
+import java.io.FileInputStream
+import java.util.*
 
 plugins {
     kotlin("multiplatform")
@@ -31,35 +31,6 @@ kotlin {
     }
 
     sourceSets {
-//        commonMain {
-//            dependencies {
-//                compileOnly("org.jetbrains.skiko:skiko:$skikoVersion")
-//
-//                compileOnly("org.jetbrains.lets-plot:commons:$letsPlotVersion")
-//                compileOnly("org.jetbrains.lets-plot:datamodel:$letsPlotVersion")
-//                compileOnly("org.jetbrains.lets-plot:plot-base:$letsPlotVersion")
-//                compileOnly("org.jetbrains.lets-plot:plot-stem:$letsPlotVersion")
-//                compileOnly("org.jetbrains.lets-plot:plot-builder:$letsPlotVersion")
-//            }
-//        }
-
-//        named("jvmMain") {
-//            dependencies {
-//                compileOnly("io.github.microutils:kotlin-logging-jvm:$kotlinLoggingVersion")
-//            }
-//        }
-
-//        named("jvmTest") {
-//            dependencies {
-//                implementation(kotlin("test"))
-//                implementation("org.assertj:assertj-core:$assertjVersion")
-//                implementation("org.jetbrains.skiko:skiko:$skikoVersion")
-//                implementation("org.jetbrains.lets-plot:commons:$letsPlotVersion")
-//                implementation("org.jetbrains.lets-plot:datamodel:$letsPlotVersion")
-//                implementation("io.github.microutils:kotlin-logging:$kotlinLoggingVersion")
-//            }
-//        }
-
         named("androidMain") {
             dependencies {
                 compileOnly("org.jetbrains.lets-plot:commons:$letsPlotVersion")

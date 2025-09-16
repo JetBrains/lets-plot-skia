@@ -25,12 +25,27 @@ sonatype.profileID=<your Sonatype profile ID>
 
 #### SNAPSHOT version
 
-Specify "x.y.z-SNAPSHOT" version in `build.gradle.kts` file.
+- Specify "x.y.z-SNAPSHOT" version in `build.gradle.kts` file.
+
+- Publish  
 
 `./gradlew publishAllPublicationsToMavenRepository`
 
-> You can find published SNAPSHOT artifacts here https://central.sonatype.com/repository/maven-snapshots/
+- Check Uploaded Artifacts
 
+https://central.sonatype.com/service/rest/repository/browse/maven-snapshots/org/jetbrains/lets-plot/
+
+- Use SNAPSHOT artifacts
+
+Add snapshot repository to the `repositories` section of the `build.gradle.kts` file:
+
+```kotlin
+repositories {
+    mavenCentral()
+    // SNAPSHOTS
+    maven(url = "https://central.sonatype.com/repository/maven-snapshots/")
+}
+```
 
 #### "Release" version
 
