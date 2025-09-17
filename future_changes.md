@@ -1,5 +1,8 @@
 ## [3.0.0] - 2025-mm-dd
 
+> [!NOTE]
+> The GitHub repository was renamed from `lets-plot-skia` to `lets-plot-compose`.
+
 ### Compatibility
                                                  
 All artifacts were built with the following versions of dependencies:
@@ -13,6 +16,7 @@ All artifacts were built with the following versions of dependencies:
 ### Changed
 
 - [**BREAKING**]  `PlotPanel` is moved to package `org.jetbrains.letsPlot.compose` (from `org.jetbrains.letsPlot.skia.compose`).
+
                              
 #### Android
 
