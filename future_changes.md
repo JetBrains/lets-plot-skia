@@ -15,7 +15,7 @@ All artifacts were built with the following versions of dependencies:
 
 ### Changed
 
-- [**BREAKING**]  `PlotPanel` is moved to package `org.jetbrains.letsPlot.compose` (from `org.jetbrains.letsPlot.skia.compose`).
+- [ **BREAKING** ]  `PlotPanel` has been moved to package `org.jetbrains.letsPlot.compose` (from `org.jetbrains.letsPlot.skia.compose`).
 
                              
 #### Android
