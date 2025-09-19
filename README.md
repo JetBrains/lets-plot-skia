@@ -20,7 +20,7 @@ For more details see [Compose multiplatform compatibility and versioning overvie
 
 ## Dependencies
 
-See release notes for the latest version of the dependencies: [v2.2.1](https://github.com/JetBrains/lets-plot-compose/blob/main/CHANGELOG.md#compatibility)
+See [Compatibility](https://github.com/JetBrains/lets-plot-compose/releases/latest) in the release notes.
 
 ### Compose Multiplatform for Desktop
 
@@ -61,7 +61,7 @@ dependencies {
 See example: [Android minimal](https://github.com/JetBrains/lets-plot-compose-demos/blob/main/compose-android-min/build.gradle.kts) demo.
 
 
-## Examples
+## More Examples
 
 You will find complete examples of using **Lets-Plot Kotlin API** with **Lets-Plot Compose Frontend** in the following\
 GitHub repository: [JetBrains/lets-plot-compose-demos](https://github.com/JetBrains/lets-plot-compose-demos).
