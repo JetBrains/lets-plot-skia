@@ -19,6 +19,8 @@ import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.text.TextStyle
 import org.jetbrains.letsPlot.commons.geometry.DoubleVector
 import org.jetbrains.letsPlot.commons.logging.PortableLogging
+import org.jetbrains.letsPlot.compose.desktop.PlotContainer
+import org.jetbrains.letsPlot.compose.desktop.SvgViewPanel
 import org.jetbrains.letsPlot.core.plot.builder.interact.tools.FigureModelHelper
 import org.jetbrains.letsPlot.core.spec.Option.Meta.Kind.GG_TOOLBAR
 import org.jetbrains.letsPlot.core.spec.config.PlotConfig
@@ -27,13 +29,13 @@ import org.jetbrains.letsPlot.core.util.MonolithicCommon.processRawSpecs
 import org.jetbrains.letsPlot.core.util.PlotThemeHelper
 import org.jetbrains.letsPlot.core.util.sizing.SizingPolicy
 import org.jetbrains.letsPlot.skia.builder.MonolithicSkia
-import org.jetbrains.letsPlot.compose.desktop.PlotContainer
-import org.jetbrains.letsPlot.compose.desktop.SvgViewPanel
 
 //import org.jetbrains.letsPlot.compose.util.NaiveLogger
 
 //private val LOG = NaiveLogger("PlotPanel")
 private val LOG = PortableLogging.logger(name = "[PlotPanelRaw]")
+
+private const val logRecompositions = true
 
 @Suppress("FunctionName")
 @Composable
@@ -45,6 +47,9 @@ actual fun PlotPanelRaw(
     errorModifier: Modifier,
     computationMessagesHandler: (List<String>) -> Unit
 ) {
+    if (logRecompositions) {
+        println("PlotPanelRaw: recomposition")
+    }
 
     // Update density on each recomposition to handle monitor DPI changes (e.g., drag between HIDPI/regular monitor)
     val density = LocalDensity.current.density.toDouble()
@@ -60,11 +65,14 @@ actual fun PlotPanelRaw(
     var panelSize by remember { mutableStateOf(DoubleVector.ZERO) }
     var dispatchComputationMessages by remember { mutableStateOf(true) }
     var specOverrideList by remember { mutableStateOf(emptyList<Map<String, Any>>()) }
-    val plotContainer = remember { PlotContainer() }
     var plotFigureModel by remember { mutableStateOf<PlotFigureModel?>(null) }
 
 
-    var errorMessage: String? by remember { mutableStateOf(null) }
+    var errorMessage: String? by remember(processedPlotSpec) { mutableStateOf(null) }
+
+    // Reset the old plot on error to prevent blinking
+    // We can't reset PlotContainer using updateViewmodel(), so we create a new one.
+    val plotContainer = remember(errorMessage) { PlotContainer() }
 
     // Background
     val finalModifier = if (errorMessage != null) {
@@ -123,6 +131,7 @@ actual fun PlotPanelRaw(
                 LaunchedEffect(panelSize, processedPlotSpec, specOverrideList, preserveAspectRatio) {
 
                     if (PlotConfig.isFailure(processedPlotSpec)) {
+                        plotFigureModel = null
                         errorMessage = PlotConfig.getErrorMessage(processedPlotSpec)
                         return@LaunchedEffect
                     }
