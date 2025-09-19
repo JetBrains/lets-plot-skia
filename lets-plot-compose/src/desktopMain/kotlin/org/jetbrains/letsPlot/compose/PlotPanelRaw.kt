@@ -35,7 +35,7 @@ import org.jetbrains.letsPlot.skia.builder.MonolithicSkia
 //private val LOG = NaiveLogger("PlotPanel")
 private val LOG = PortableLogging.logger(name = "[PlotPanelRaw]")
 
-private const val logRecompositions = true
+private const val logRecompositions = false
 
 @Suppress("FunctionName")
 @Composable
