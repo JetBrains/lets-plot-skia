@@ -20,7 +20,9 @@ For more details see [Compose multiplatform compatibility and versioning overvie
 
 ## Dependencies
 
-See [Compatibility](https://github.com/JetBrains/lets-plot-compose/releases/latest) in the release notes.
+- Compose Multiplatform: [1.8.2](https://github.com/JetBrains/compose-multiplatform/releases/tag/v1.8.2) or later
+- Lets-Plot Kotlin API: [4.11.2](https://github.com/JetBrains/lets-plot-kotlin/releases/tag/v4.11.2) or later
+- Lets-Plot Multiplatform: [4.7.3](https://github.com/JetBrains/lets-plot/releases/tag/v4.7.3) or later
 
 ### Compose Multiplatform for Desktop
 
