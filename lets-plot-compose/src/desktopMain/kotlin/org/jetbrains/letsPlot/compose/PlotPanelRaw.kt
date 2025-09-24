@@ -21,7 +21,7 @@ import org.jetbrains.letsPlot.commons.geometry.DoubleVector
 import org.jetbrains.letsPlot.commons.logging.PortableLogging
 import org.jetbrains.letsPlot.compose.desktop.PlotContainer
 import org.jetbrains.letsPlot.compose.desktop.SvgViewPanel
-import org.jetbrains.letsPlot.core.plot.builder.interact.tools.FigureModelHelper
+import org.jetbrains.letsPlot.core.plot.builder.interact.tools.*
 import org.jetbrains.letsPlot.core.spec.Option.Meta.Kind.GG_TOOLBAR
 import org.jetbrains.letsPlot.core.spec.config.PlotConfig
 import org.jetbrains.letsPlot.core.spec.front.SpecOverrideUtil
@@ -45,7 +45,8 @@ actual fun PlotPanelRaw(
     modifier: Modifier,
     errorTextStyle: TextStyle,
     errorModifier: Modifier,
-    computationMessagesHandler: (List<String>) -> Unit
+    interactiveTool: PlotTool?,
+    computationMessagesHandler: (List<String>) -> Unit,
 ) {
     if (logRecompositions) {
         println("PlotPanelRaw: recomposition")
@@ -74,7 +75,56 @@ actual fun PlotPanelRaw(
     // We can't reset PlotContainer using updateViewmodel(), so we create a new one.
     val plotContainer = remember(errorMessage) { PlotContainer() }
 
-    // Background
+    val showToolbar = GG_TOOLBAR in processedPlotSpec
+
+    var panToolState by remember { mutableStateOf(false) }
+    var bboxZoomToolState by remember { mutableStateOf(false) }
+    var cboxZoomToolState by remember { mutableStateOf(false) }
+    var panToolHandler: (() -> Unit)? by remember { mutableStateOf(null) }
+    var bboxZoomToolHandler: (() -> Unit)? by remember { mutableStateOf(null) }
+    var cboxZoomToolHandler: (() -> Unit)? by remember { mutableStateOf(null) }
+
+    var controller by remember { mutableStateOf<DefaultFigureToolsController?>(null) }
+
+    LaunchedEffect(plotFigureModel) {
+        if (plotFigureModel == null) return@LaunchedEffect
+
+        val newController = DefaultFigureToolsController(plotFigureModel!!) { println(it) }
+        plotFigureModel!!.onToolEvent { event ->
+            newController.handleToolFeedback(event)
+        }
+
+        val panTool = ToggleTool(ToolSpecs.PAN_TOOL_SPEC)
+        val bboxZoomTool = ToggleTool(ToolSpecs.BBOX_ZOOM_TOOL_SPEC)
+        val cboxZoomTool = ToggleTool(ToolSpecs.CBOX_ZOOM_TOOL_SPEC)
+
+        newController.registerTool(panTool, object : ToggleToolView {
+            override fun setState(selected: Boolean) { panToolState = selected }
+            override fun onAction(handler: () -> Unit) { panToolHandler = handler }
+        })
+        newController.registerTool(bboxZoomTool, object : ToggleToolView {
+            override fun setState(selected: Boolean) { bboxZoomToolState = selected }
+            override fun onAction(handler: () -> Unit) { bboxZoomToolHandler = handler }
+        })
+        newController.registerTool(cboxZoomTool, object : ToggleToolView {
+            override fun setState(selected: Boolean) { cboxZoomToolState = selected }
+            override fun onAction(handler: () -> Unit) { cboxZoomToolHandler = handler }
+        })
+
+        controller = newController
+    }
+
+    LaunchedEffect(interactiveTool, panToolHandler, bboxZoomToolHandler, cboxZoomToolHandler) {
+        val c = controller ?: return@LaunchedEffect
+        c.resetFigure(deactiveTools = true)
+        when (interactiveTool) {
+            PlotTool.PAN -> panToolHandler?.invoke()
+            PlotTool.BBOX_ZOOM -> bboxZoomToolHandler?.invoke()
+            PlotTool.CBOX_ZOOM -> cboxZoomToolHandler?.invoke()
+            null -> { /* no tool active */}
+        }
+    }
+
     val finalModifier = if (errorMessage != null) {
         modifier.background(Color.LightGray)
     } else {
@@ -89,7 +139,6 @@ actual fun PlotPanelRaw(
         }
     }
 
-
     DisposableEffect(plotContainer) {
         onDispose {
             // Try/catch to ensure that any exception in dispose() does not break the Composable lifecycle
@@ -103,14 +152,22 @@ actual fun PlotPanelRaw(
     }
 
     Column(modifier = finalModifier) {
-        if (plotFigureModel != null && GG_TOOLBAR in processedPlotSpec) {
-            PlotToolbar(plotFigureModel!!)
+        if (showToolbar && controller != null) {
+            PlotToolbar(
+                panToolState = panToolState,
+                bboxZoomToolState = bboxZoomToolState,
+                cboxZoomToolState = cboxZoomToolState,
+                onPanClick = { panToolHandler?.invoke() },
+                onBboxZoomClick = { bboxZoomToolHandler?.invoke() },
+                onCboxZoomClick = { cboxZoomToolHandler?.invoke() },
+                onResetClick = { controller?.resetFigure(deactiveTools = true) }
+            )
         }
 
         Box(
             modifier = finalModifier
-                .weight(1f) // Take the remaining vertical space
-                .fillMaxWidth() // Fill available width
+                .weight(1f)
+                .fillMaxWidth()
                 .onSizeChanged { newSize ->
                     // Convert logical pixels (from Compose layout) to physical pixels (plot SVG pixels)
                     panelSize = DoubleVector(newSize.width / density, newSize.height / density)
@@ -154,14 +211,12 @@ actual fun PlotPanelRaw(
 
 
                             if (plotFigureModel == null) {
-                                plotFigureModel = PlotFigureModel(
-                                    onUpdateView = { specOverride ->
-                                        specOverrideList = FigureModelHelper.updateSpecOverrideList(
-                                            specOverrideList = specOverrideList,
-                                            newSpecOverride = specOverride
-                                        )
-                                    }
-                                )
+                                plotFigureModel = PlotFigureModel { specOverride ->
+                                    specOverrideList = FigureModelHelper.updateSpecOverrideList(
+                                        specOverrideList = specOverrideList,
+                                        newSpecOverride = specOverride
+                                    )
+                                }
                             }
 
                             plotFigureModel!!.toolEventDispatcher = viewModel.toolEventDispatcher

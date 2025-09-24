@@ -21,5 +21,12 @@ expect fun PlotPanelRaw(
     modifier: Modifier,
     errorTextStyle: TextStyle = TextStyle(color = Color(0xFF700000)),
     errorModifier: Modifier = Modifier.padding(16.dp),
-    computationMessagesHandler: (List<String>) -> Unit
+    interactiveTool: PlotTool? = null,
+    computationMessagesHandler: (List<String>) -> Unit,
 )
+
+enum class PlotTool {
+    PAN,
+    BBOX_ZOOM,
+    CBOX_ZOOM
+}

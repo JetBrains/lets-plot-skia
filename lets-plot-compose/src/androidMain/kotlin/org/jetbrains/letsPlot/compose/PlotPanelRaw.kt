@@ -37,7 +37,8 @@ actual fun PlotPanelRaw(
     modifier: Modifier,
     errorTextStyle: TextStyle,
     errorModifier: Modifier,
-    computationMessagesHandler: (List<String>) -> Unit
+    computationMessagesHandler: (List<String>) -> Unit,
+    interactiveTool: PlotTool? = null,
 ) {
     if (logRecompositions) {
         println("PlotPanel: recomposition")

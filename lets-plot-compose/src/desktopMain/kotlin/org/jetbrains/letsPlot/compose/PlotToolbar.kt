@@ -8,73 +8,27 @@ package org.jetbrains.letsPlot.compose
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
-import androidx.compose.runtime.*
+import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.ImageBitmap
 import androidx.compose.ui.graphics.toComposeImageBitmap
 import androidx.compose.ui.unit.dp
-import org.jetbrains.letsPlot.core.plot.builder.interact.tools.DefaultFigureToolsController
-import org.jetbrains.letsPlot.core.plot.builder.interact.tools.ToggleTool
-import org.jetbrains.letsPlot.core.plot.builder.interact.tools.ToggleToolView
-import org.jetbrains.letsPlot.core.plot.builder.interact.tools.ToolSpecs.BBOX_ZOOM_TOOL_SPEC
-import org.jetbrains.letsPlot.core.plot.builder.interact.tools.ToolSpecs.CBOX_ZOOM_TOOL_SPEC
-import org.jetbrains.letsPlot.core.plot.builder.interact.tools.ToolSpecs.PAN_TOOL_SPEC
 import java.awt.image.BufferedImage
 import java.io.ByteArrayInputStream
 import java.util.*
 import javax.imageio.ImageIO
 
-
 @Suppress("FunctionName")
 @Composable
-fun PlotToolbar(figureModel: PlotFigureModel) {
-    var panToolState by remember { mutableStateOf(false) }
-    var bboxZoomToolState by remember { mutableStateOf(false) }
-    var cboxZoomToolState by remember { mutableStateOf(false) }
-    var panToolHandler: (() -> Unit)? by remember { mutableStateOf(null) }
-    var bboxZoomToolHandler: (() -> Unit)? by remember { mutableStateOf(null) }
-    var cboxZoomToolHandler: (() -> Unit)? by remember { mutableStateOf(null) }
-
-    val panTool = remember { ToggleTool(PAN_TOOL_SPEC) }
-    val bboxZoomTool = remember { ToggleTool(BBOX_ZOOM_TOOL_SPEC) }
-    val cboxZoomTool = remember { ToggleTool(CBOX_ZOOM_TOOL_SPEC) }
-
-    val controller = DefaultFigureToolsController(figureModel) { println(it) }
-    figureModel.onToolEvent { event ->
-        controller.handleToolFeedback(event)
-    }
-
-    // In Compose we can't have references to the view components.
-    // To work around this limitation we use the state variables to store the state of the tools.
-    // This work around expects that onAction handler will be called only once right in the controller.registerTool().
-    // Better API could the following:
-    /*
-        var panToolTitle by remember { mutableStateOf(false) }
-        var panTool by remember { mutableStateOf(ToggleTool(PAN_TOOL_SPEC)) }
-        panTool.onStateChange { stateUpdated -> panToolState = stateUpdated }
-
-        controller.registerTool(panTool)
-
-        Button(onClick = { panTool.toggle() }) {
-            Text("${panTool.label} ${if (panToolState) "on" else "off"}")
-        }
-     */
-
-    controller.registerTool(panTool, object : ToggleToolView {
-        override fun setState(selected: Boolean) { panToolState = selected }
-        override fun onAction(handler: () -> Unit) { panToolHandler = handler }
-    })
-
-    controller.registerTool(bboxZoomTool, object : ToggleToolView {
-        override fun setState(selected: Boolean) { bboxZoomToolState = selected }
-        override fun onAction(handler: () -> Unit) { bboxZoomToolHandler = handler }
-    })
-
-    controller.registerTool(cboxZoomTool, object : ToggleToolView {
-        override fun setState(selected: Boolean) { cboxZoomToolState = selected }
-        override fun onAction(handler: () -> Unit) { cboxZoomToolHandler = handler }
-    })
-
+fun PlotToolbar(
+    panToolState: Boolean,
+    bboxZoomToolState: Boolean,
+    cboxZoomToolState: Boolean,
+    onPanClick: () -> Unit,
+    onBboxZoomClick: () -> Unit,
+    onCboxZoomClick: () -> Unit,
+    onResetClick: () -> Unit
+) {
     Row(
         modifier = Modifier.fillMaxWidth(),
         horizontalArrangement = Arrangement.Center
@@ -82,25 +36,25 @@ fun PlotToolbar(figureModel: PlotFigureModel) {
         IconButton(
             icon = base64ToImageBitmap(if (panToolState) PAN_ACTIVE_ICON else PAN_ICON),
             modifier = Modifier.padding(3.dp).size(24.dp),
-            onClick = { panToolHandler?.invoke() }
+            onClick = onPanClick
         )
 
         IconButton(
             icon = base64ToImageBitmap(if (bboxZoomToolState) BBOX_ZOOM_ACTIVE_ICON else BBOX_ZOOM_ICON),
             modifier = Modifier.padding(3.dp).size(24.dp),
-            onClick = { bboxZoomToolHandler?.invoke() }
+            onClick = onBboxZoomClick
         )
 
         IconButton(
             icon = base64ToImageBitmap(if (cboxZoomToolState) CBOX_ZOOM_ACTIVE_ICON else CBOX_ZOOM_ICON),
             modifier = Modifier.padding(3.dp).size(24.dp),
-            onClick = { cboxZoomToolHandler?.invoke() }
+            onClick = onCboxZoomClick
         )
 
         IconButton(
             icon = base64ToImageBitmap(RESET_ICON),
             modifier = Modifier.padding(3.dp).size(24.dp),
-            onClick = { controller.resetFigure(deactiveTools = true) }
+            onClick = onResetClick
         )
     }
 }
