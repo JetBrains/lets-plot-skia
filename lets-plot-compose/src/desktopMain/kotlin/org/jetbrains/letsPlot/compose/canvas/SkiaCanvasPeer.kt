@@ -1,4 +1,4 @@
-package org.jetbrains.letsPlot.skia.canvas
+package org.jetbrains.letsPlot.compose.canvas
 
 import org.jetbrains.letsPlot.commons.geometry.Vector
 import org.jetbrains.letsPlot.commons.intern.async.Async
@@ -9,6 +9,8 @@ import org.jetbrains.letsPlot.core.canvas.Font
 import org.jetbrains.letsPlot.core.canvas.TextMetrics
 
 class SkiaCanvasPeer : CanvasPeer {
+    val measureCanvas = SkiaCanvas.create(0, 0)
+
     override fun createCanvas(size: Vector): Canvas {
         TODO("Not yet implemented")
     }
@@ -30,6 +32,12 @@ class SkiaCanvasPeer : CanvasPeer {
     }
 
     override fun measureText(text: String, font: Font): TextMetrics {
-        TODO("Not yet implemented")
+        val ctx = measureCanvas.context2d
+        ctx.save()
+        ctx.setFont(font)
+        val textMetrics = ctx.measureText(text)
+        ctx.restore()
+
+        return textMetrics
     }
 }

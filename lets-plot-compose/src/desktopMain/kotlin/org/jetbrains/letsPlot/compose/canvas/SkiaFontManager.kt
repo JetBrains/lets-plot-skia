@@ -3,13 +3,10 @@
  * Use of this source code is governed by the MIT license that can be found in the LICENSE file.
  */
 
-package org.jetbrains.letsPlot.skia.canvas
+package org.jetbrains.letsPlot.compose.canvas
 
 import org.jetbrains.letsPlot.core.canvas.FontWeight
-import org.jetbrains.skia.Font
-import org.jetbrains.skia.FontMgr
-import org.jetbrains.skia.FontStyle
-import org.jetbrains.skia.Typeface
+import org.jetbrains.skia.*
 
 class SkiaFontManager {
     fun matchFamiliesStyle(fontFamily: List<String>, fontStyle: FontStyle): Typeface {
@@ -64,8 +61,8 @@ class SkiaFontManager {
                 FontWeight.NORMAL -> org.jetbrains.skia.FontWeight.NORMAL
                 FontWeight.BOLD -> org.jetbrains.skia.FontWeight.BOLD
             },
-            org.jetbrains.skia.FontWidth.NORMAL,
-            org.jetbrains.skia.FontSlant.UPRIGHT
+            FontWidth.NORMAL,
+            FontSlant.UPRIGHT
         )
 
         val typeface =  matchFamiliesStyle(listOf(f.fontFamily), fontStyle)

@@ -15,6 +15,9 @@ dependencies {
     implementation("org.jetbrains.lets-plot:lets-plot-common:$letsPlotVersion")
 
     implementation(project(":lets-plot-compose"))
+    implementation("org.jetbrains.lets-plot:canvas:0.0.0-SNAPSHOT")
+    implementation("org.jetbrains.lets-plot:plot-raster:0.0.0-SNAPSHOT")
+
     implementation(project(":demo-plot-shared"))
 
     implementation("org.slf4j:slf4j-simple:2.0.9")  // Enable logging to console

@@ -1,16 +1,16 @@
-package org.jetbrains.letsPlot.skia.canvas
+package org.jetbrains.letsPlot.compose.canvas
 
+import androidx.compose.ui.graphics.NativeCanvas
 import org.jetbrains.letsPlot.commons.geometry.AffineTransform
 import org.jetbrains.letsPlot.commons.geometry.DoubleRectangle
 import org.jetbrains.letsPlot.commons.values.Color
 import org.jetbrains.letsPlot.core.canvas.*
 import org.jetbrains.letsPlot.core.canvas.Canvas.Snapshot
 import org.jetbrains.skia.*
-import org.jetbrains.skia.Canvas
 import org.jetbrains.skia.Color.TRANSPARENT
 
 class SkiaContext2d(
-    val platformCanvas: Canvas,
+    val platformCanvas: NativeCanvas,
     private val skiaFontManager: SkiaFontManager,
     private val contextState: ContextStateDelegate = ContextStateDelegate(failIfNotImplemented = false, logEnabled = true),
 ) : Context2d by contextState {
@@ -196,7 +196,7 @@ class SkiaContext2d(
         val inverseCtmTransform = contextState.getCTM().inverse() ?: return
 
         val path = drawPath(contextState.getCurrentPath(), inverseCtmTransform)
-        path.fillMode = org.jetbrains.skia.PathFillMode.EVEN_ODD
+        path.fillMode = PathFillMode.EVEN_ODD
         platformCanvas.drawPath(path, fillPaint)
     }
 
@@ -244,12 +244,12 @@ class SkiaContext2d(
         platformCanvas.clipPath(path)
     }
 
-    private fun drawPath(commands: List<Path2d.PathCommand>, transform: AffineTransform): org.jetbrains.skia.Path {
+    private fun drawPath(commands: List<Path2d.PathCommand>, transform: AffineTransform): Path {
         if (commands.isEmpty()) {
-            return org.jetbrains.skia.Path()
+            return Path()
         }
 
-        val path = org.jetbrains.skia.Path()
+        val path = Path()
 
         commands
             .asSequence()
@@ -309,5 +309,6 @@ class SkiaContext2d(
                 a = (color.alpha / 255.0).toFloat()
             ).toColor()
         }
+
     }
 }

@@ -19,21 +19,18 @@ import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.layout.onSizeChanged
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.text.TextStyle
-import androidx.compose.ui.unit.IntSize
 import androidx.compose.ui.unit.dp
 import org.jetbrains.letsPlot.commons.geometry.DoubleVector
 import org.jetbrains.letsPlot.commons.logging.PortableLogging
-import org.jetbrains.letsPlot.core.plot.builder.interact.tools.FigureModelHelper
+import org.jetbrains.letsPlot.compose.canvas.SkiaCanvasPeer
+import org.jetbrains.letsPlot.compose.canvas.SkiaContext2d
+import org.jetbrains.letsPlot.compose.canvas.SkiaFontManager
 import org.jetbrains.letsPlot.core.spec.config.PlotConfig
 import org.jetbrains.letsPlot.core.spec.front.SpecOverrideUtil.applySpecOverride
-import org.jetbrains.letsPlot.core.util.MonolithicCommon
 import org.jetbrains.letsPlot.core.util.MonolithicCommon.processRawSpecs
 import org.jetbrains.letsPlot.core.util.PlotThemeHelper
 import org.jetbrains.letsPlot.core.util.sizing.SizingPolicy
 import org.jetbrains.letsPlot.raster.view.PlotCanvasFigure2
-import org.jetbrains.letsPlot.skia.builder.MonolithicSkia
-import org.jetbrains.letsPlot.skia.canvas.SkiaCanvasPeer
-import org.jetbrains.letsPlot.skia.canvas.SkiaContext2d
 import java.awt.Cursor
 
 //import org.jetbrains.letsPlot.compose.util.NaiveLogger
@@ -81,13 +78,11 @@ fun PlotPanelRaw2(
     // Reset the old plot on error to prevent blinking
     // We can't reset PlotContainer using updateViewmodel(), so we create a new one.
     val skiaCanvasPeer = SkiaCanvasPeer()
-    val plotCanvasFigure2 = remember(errorMessage) { PlotCanvasFigure2() }
-    plotCanvasFigure2.mapToCanvas(skiaCanvasPeer)
-
-    var clickCount by remember { mutableStateOf(0) }
-    var lastClickTime by remember { mutableStateOf(0L) }
-    var canvasSize by remember { mutableStateOf(IntSize.Zero) }
-    var redrawTrigger by remember { mutableStateOf(0) }
+    val plotCanvasFigure2 = remember(errorMessage) {
+        PlotCanvasFigure2().apply {
+            mapToCanvas(skiaCanvasPeer)
+        }
+    }
 
     // Background
     val finalModifier = if (errorMessage != null) {
@@ -153,7 +148,6 @@ fun PlotPanelRaw2(
                     runCatching {
                         if (panelSize != DoubleVector.ZERO) {
                             val plotSpec = applySpecOverride(processedPlotSpec, specOverrideList).toMutableMap()
-                            val proccesdSpec = MonolithicCommon.processRawSpecs(processedPlotSpec)
 
                             plotCanvasFigure2.update(plotSpec, SizingPolicy.fitContainerSize(preserveAspectRatio)) { messages ->
                                 if (dispatchComputationMessages) {
@@ -163,34 +157,8 @@ fun PlotPanelRaw2(
                                 }
                             }
 
-                            val viewModel = MonolithicSkia.buildPlotFromProcessedSpecs(
-                                plotSpec = plotSpec,
-                                containerSize = panelSize,
-                                sizingPolicy = SizingPolicy.fitContainerSize(preserveAspectRatio)
-                            ) { messages ->
-                                if (dispatchComputationMessages) {
-                                    // do once
-                                    dispatchComputationMessages = false
-                                    computationMessagesHandler(messages)
-                                }
-                            }
-
-
-                            if (plotFigureModel == null) {
-                                plotFigureModel = PlotFigureModel(
-                                    onUpdateView = { specOverride ->
-                                        specOverrideList = FigureModelHelper.updateSpecOverrideList(
-                                            specOverrideList = specOverrideList,
-                                            newSpecOverride = specOverride
-                                        )
-                                    }
-                                )
-                            }
-
-                            plotFigureModel!!.toolEventDispatcher = viewModel.toolEventDispatcher
-
-                            val plotWidth = viewModel.svg.width().get() ?: panelSize.x
-                            val plotHeight = viewModel.svg.height().get() ?: panelSize.y
+                            val plotWidth = plotCanvasFigure2.size.x
+                            val plotHeight = plotCanvasFigure2.size.y
 
                             // Calculate centering position in physical pixels
                             // Both panelSize and plot dimensions are in physical pixels
@@ -198,8 +166,6 @@ fun PlotPanelRaw2(
                                 maxOf(0.0, (panelSize.x - plotWidth) / 2.0),
                                 maxOf(0.0, (panelSize.y - plotHeight) / 2.0)
                             )
-
-                            plotContainer.updateViewModel(viewModel, position, density.toFloat())
                         }
                     }.getOrElse { e ->
                         errorMessage = "${e.message}"
@@ -215,11 +181,11 @@ fun PlotPanelRaw2(
                             // Convert canvas logical pixels (from Compose layout) to physical pixels (plot SVG pixels)
                             val width = (size.width / density).toInt()
                             val height = (size.height / density).toInt()
-                            canvasSize = IntSize(width, height)
+                            plotCanvasFigure2.resize(width, height)
                         }
                         .pointerInput(composeMouseEventMapper, composeMouseEventMapper)
                 ) {
-                    val ctx = SkiaContext2d(drawContext.canvas.nativeCanvas)
+                    val ctx = SkiaContext2d(drawContext.canvas.nativeCanvas, SkiaFontManager())
 
                     plotCanvasFigure2.paint(ctx)
                     //drawSvgContent(svgView, this, canvasSize, redrawTrigger)
