@@ -22,6 +22,7 @@ import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.unit.dp
 import org.jetbrains.letsPlot.commons.geometry.DoubleVector
 import org.jetbrains.letsPlot.commons.logging.PortableLogging
+import org.jetbrains.letsPlot.commons.registration.CompositeRegistration
 import org.jetbrains.letsPlot.compose.canvas.SkiaCanvasPeer
 import org.jetbrains.letsPlot.compose.canvas.SkiaContext2d
 import org.jetbrains.letsPlot.compose.canvas.SkiaFontManager
@@ -54,12 +55,12 @@ fun PlotPanelRaw2(
         println("PlotPanelRaw: recomposition")
     }
 
+    val skiaFontManager = remember { SkiaFontManager() }
     val composeMouseEventMapper = remember { ComposeMouseEventMapper() }
     // Update density on each recomposition to handle monitor DPI changes (e.g., drag between HIDPI/regular monitor)
-    val density = LocalDensity.current.density.toDouble()
+    val density = LocalDensity.current.density
 
     // Cache processed plot spec to avoid reprocessing the same raw spec on every recomposition.
-
     // Note: Use remember(rawSpec.hashCode()), to bypass the equality check and use the content hash directly.
     // The issue was that remember(rawSpec) uses some kind of comparison (equals()?) which somehow not working for `MutableMap`.
     val processedPlotSpec = remember(rawSpec.hashCode()) {
@@ -67,21 +68,31 @@ fun PlotPanelRaw2(
     }
 
     var panelSize by remember { mutableStateOf(DoubleVector.ZERO) }
+    var plotPosition by remember { mutableStateOf(DoubleVector.ZERO) }
     var dispatchComputationMessages by remember { mutableStateOf(true) }
     var specOverrideList by remember { mutableStateOf(emptyList<Map<String, Any>>()) }
 
     //var plotFigureModel by remember { mutableStateOf<PlotFigureModel?>(null) }
 
-
     var errorMessage: String? by remember(processedPlotSpec) { mutableStateOf(null) }
+
+    var redrawTrigger by remember { mutableStateOf(0) }
 
     // Reset the old plot on error to prevent blinking
     // We can't reset PlotContainer using updateViewmodel(), so we create a new one.
     val skiaCanvasPeer = SkiaCanvasPeer()
     val plotCanvasFigure2 = remember(errorMessage) {
         PlotCanvasFigure2().apply {
-            mapToCanvas(skiaCanvasPeer)
+            eventPeer.addEventSource(composeMouseEventMapper)
         }
+    }
+
+    val reg = remember {
+        CompositeRegistration(
+            // trigger recomposition on repaint request
+            plotCanvasFigure2.onRepaintRequested { redrawTrigger++ },
+            plotCanvasFigure2.mapToCanvas(skiaCanvasPeer)
+        )
     }
 
     // Background
@@ -105,6 +116,7 @@ fun PlotPanelRaw2(
             // Try/catch to ensure that any exception in dispose() does not break the Composable lifecycle
             // Otherwise, the app window gets unclosable.
             try {
+                reg.dispose()
                 //plotCanvasFigure2.dispose()
             } catch (e: Exception) {
                 LOG.error(e) { "PlotContainer.dispose() failed" }
@@ -149,7 +161,10 @@ fun PlotPanelRaw2(
                         if (panelSize != DoubleVector.ZERO) {
                             val plotSpec = applySpecOverride(processedPlotSpec, specOverrideList).toMutableMap()
 
-                            plotCanvasFigure2.update(plotSpec, SizingPolicy.fitContainerSize(preserveAspectRatio)) { messages ->
+                            plotCanvasFigure2.update(
+                                plotSpec,
+                                SizingPolicy.fitContainerSize(preserveAspectRatio)
+                            ) { messages ->
                                 if (dispatchComputationMessages) {
                                     // do once
                                     dispatchComputationMessages = false
@@ -162,10 +177,12 @@ fun PlotPanelRaw2(
 
                             // Calculate centering position in physical pixels
                             // Both panelSize and plot dimensions are in physical pixels
-                            val position = DoubleVector(
+                            plotPosition = DoubleVector(
                                 maxOf(0.0, (panelSize.x - plotWidth) / 2.0),
                                 maxOf(0.0, (panelSize.y - plotHeight) / 2.0)
                             )
+
+                            redrawTrigger++ // trigger repaint
                         }
                     }.getOrElse { e ->
                         errorMessage = "${e.message}"
@@ -179,18 +196,21 @@ fun PlotPanelRaw2(
                         .pointerHoverIcon(PointerIcon(Cursor(Cursor.CROSSHAIR_CURSOR)))
                         .onSizeChanged { size ->
                             // Convert canvas logical pixels (from Compose layout) to physical pixels (plot SVG pixels)
-                            val width = (size.width / density).toInt()
-                            val height = (size.height / density).toInt()
-                            plotCanvasFigure2.resize(width, height)
+                            plotCanvasFigure2.resize(size.width / density, size.height / density)
                         }
                         .pointerInput(composeMouseEventMapper, composeMouseEventMapper)
                 ) {
-                    val ctx = SkiaContext2d(drawContext.canvas.nativeCanvas, SkiaFontManager())
+                    // By reading redrawTrigger here, Compose knows to recompose
+                    // this Canvas block whenever it changes.
+                    redrawTrigger
 
+                    val ctx = SkiaContext2d(drawContext.canvas.nativeCanvas, skiaFontManager)
+                    
+                    ctx.translate(plotPosition.x, plotPosition.y)
                     plotCanvasFigure2.paint(ctx)
-                    //drawSvgContent(svgView, this, canvasSize, redrawTrigger)
-                }
 
+                    ctx.dispose()
+                }
             }
         }
     }

@@ -3,6 +3,7 @@ package org.jetbrains.letsPlot.compose.canvas
 import androidx.compose.ui.graphics.NativeCanvas
 import org.jetbrains.letsPlot.commons.geometry.AffineTransform
 import org.jetbrains.letsPlot.commons.geometry.DoubleRectangle
+import org.jetbrains.letsPlot.commons.registration.Disposable
 import org.jetbrains.letsPlot.commons.values.Color
 import org.jetbrains.letsPlot.core.canvas.*
 import org.jetbrains.letsPlot.core.canvas.Canvas.Snapshot
@@ -12,8 +13,8 @@ import org.jetbrains.skia.Color.TRANSPARENT
 class SkiaContext2d(
     val platformCanvas: NativeCanvas,
     private val skiaFontManager: SkiaFontManager,
-    private val contextState: ContextStateDelegate = ContextStateDelegate(failIfNotImplemented = false, logEnabled = true),
-) : Context2d by contextState {
+    private val contextState: ContextStateDelegate = ContextStateDelegate(failIfNotImplemented = false),
+) : Context2d by contextState, Disposable {
 
     private val strokePaint = Paint().apply {
         setStroke(true)
@@ -45,7 +46,17 @@ class SkiaContext2d(
         //platformCanvas.drawBitmap(snapshot.platformBitmap, null, dstRect, null)
     }
 
-    override fun drawImage(snapshot: Snapshot, sx: Double, sy: Double, sw: Double, sh: Double, dx: Double, dy: Double, dw: Double, dh: Double) {
+    override fun drawImage(
+        snapshot: Snapshot,
+        sx: Double,
+        sy: Double,
+        sw: Double,
+        sh: Double,
+        dx: Double,
+        dy: Double,
+        dw: Double,
+        dh: Double
+    ) {
         //require(snapshot is AndroidSnapshot) { "Snapshot must be of type AndroidSnapshot" }
         //val srcRect = Rect(sx.toInt(), sy.toInt(), (sx + sw).toInt(), (sy + sh).toInt())
         //val dstRect = Rect(dx.toInt(), dy.toInt(), (dx + dw).toInt(), (dy + dh).toInt())
@@ -74,7 +85,8 @@ class SkiaContext2d(
 
     override fun transform(sx: Double, ry: Double, rx: Double, sy: Double, tx: Double, ty: Double) {
         contextState.transform(sx = sx, ry = ry, rx = rx, sy = sy, tx = tx, ty = ty)
-        platformCanvas.concat(Matrix33(
+        platformCanvas.concat(
+            Matrix33(
                 sx.toFloat(), rx.toFloat(), tx.toFloat(),
                 ry.toFloat(), sy.toFloat(), ty.toFloat(),
                 0f, 0f, 1f
@@ -94,11 +106,12 @@ class SkiaContext2d(
 
     override fun setTransform(m00: Double, m10: Double, m01: Double, m11: Double, m02: Double, m12: Double) {
         contextState.setTransform(m00, m10, m01, m11, m02, m12)
-        platformCanvas.setMatrix(Matrix33(
+        platformCanvas.setMatrix(
+            Matrix33(
                 m00.toFloat(), m10.toFloat(), 0f,
                 m01.toFloat(), m11.toFloat(), 0f,
                 m02.toFloat(), m12.toFloat(), 1f
-        )
+            )
         )
     }
 
@@ -182,22 +195,27 @@ class SkiaContext2d(
         // Make ctm identity. null for degenerate case, e.g., scale(0, 0) - skip drawing.
         val inverseCtmTransform = contextState.getCTM().inverse() ?: return
 
-        platformCanvas.drawPath(drawPath(contextState.getCurrentPath(), inverseCtmTransform), strokePaint)
+        withPath(contextState.getCurrentPath(), inverseCtmTransform) { path ->
+            platformCanvas.drawPath(path, strokePaint)
+        }
     }
 
     override fun fill() {
         // Make ctm identity. null for degenerate case, e.g., scale(0, 0) - skip drawing.
         val inverseCtmTransform = contextState.getCTM().inverse() ?: return
-        platformCanvas.drawPath(drawPath(contextState.getCurrentPath(), inverseCtmTransform), fillPaint)
+        withPath(contextState.getCurrentPath(), inverseCtmTransform) { path ->
+            platformCanvas.drawPath(path, fillPaint)
+        }
     }
 
     override fun fillEvenOdd() {
         // Make ctm identity. null for degenerate case, e.g., scale(0, 0) - skip drawing.
         val inverseCtmTransform = contextState.getCTM().inverse() ?: return
 
-        val path = drawPath(contextState.getCurrentPath(), inverseCtmTransform)
-        path.fillMode = PathFillMode.EVEN_ODD
-        platformCanvas.drawPath(path, fillPaint)
+        withPath(contextState.getCurrentPath(), inverseCtmTransform) { path ->
+            path.fillMode = PathFillMode.EVEN_ODD
+            platformCanvas.drawPath(path, fillPaint)
+        }
     }
 
     override fun setFillStyle(color: Color?) {
@@ -240,13 +258,14 @@ class SkiaContext2d(
         // Make ctm identity. null for degenerate case, e.g., scale(0, 0) - skip drawing.
         val inverseCtmTransform = contextState.getCTM().inverse() ?: return
 
-        val path = drawPath(contextState.getCurrentPath(), inverseCtmTransform)
-        platformCanvas.clipPath(path)
+        withPath(contextState.getCurrentPath(), inverseCtmTransform) { path ->
+            platformCanvas.clipPath(path)
+        }
     }
 
-    private fun drawPath(commands: List<Path2d.PathCommand>, transform: AffineTransform): Path {
+    private fun withPath(commands: List<Path2d.PathCommand>, transform: AffineTransform, block: (Path) -> Unit) {
         if (commands.isEmpty()) {
-            return Path()
+            return
         }
 
         val path = Path()
@@ -270,13 +289,19 @@ class SkiaContext2d(
                             }
                     }
 
-                    is Path2d.ClosePath -> path.close()
+                    is Path2d.ClosePath -> path.closePath()
                 }
             }
 
-        return path
+        block(path)
+        path.close()
     }
 
+    override fun dispose() {
+        strokePaint.close()
+        fillPaint.close()
+        backgroundPaint.close()
+    }
 
     companion object {
         private fun skiaRectFromDoubleRectangle(rect: DoubleRectangle): Rect {
@@ -297,7 +322,7 @@ class SkiaContext2d(
             )
         }
 
-        internal fun skiaIntFromColor(color: Color?, def: Int = 0) : Int {
+        internal fun skiaIntFromColor(color: Color?, def: Int = 0): Int {
             if (color == null) {
                 return def
             }
