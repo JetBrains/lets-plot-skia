@@ -11,9 +11,10 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.Window
 import androidx.compose.ui.window.application
+import org.jetbrains.letsPlot.compose.PlotPanelRaw2
 import org.jetbrains.letsPlot.interact.ggtb
 import org.jetbrains.letsPlot.intern.Plot
-import org.jetbrains.letsPlot.compose.PlotPanel
+import org.jetbrains.letsPlot.intern.toSpec
 import plotSpec.AutoSpec
 
 
@@ -26,8 +27,9 @@ fun main() = application {
             ) {
                 AutoSpec().createFigureList().forEach { figure ->
                     Column {
-                        PlotPanel(
-                            figure = (figure as Plot) + ggtb(),
+                        PlotPanelRaw2(
+                            rawSpec = ((figure as Plot) + ggtb()).toSpec(),
+                            preserveAspectRatio = false,
                             modifier = Modifier.fillMaxSize()
                         ) { computationMessages ->
                             computationMessages.forEach { println("[DEMO APP MESSAGE] $it") }

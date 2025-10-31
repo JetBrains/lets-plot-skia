@@ -26,11 +26,13 @@ import org.jetbrains.letsPlot.commons.registration.CompositeRegistration
 import org.jetbrains.letsPlot.compose.canvas.SkiaCanvasPeer
 import org.jetbrains.letsPlot.compose.canvas.SkiaContext2d
 import org.jetbrains.letsPlot.compose.canvas.SkiaFontManager
+import org.jetbrains.letsPlot.core.plot.builder.interact.tools.FigureModelHelper
+import org.jetbrains.letsPlot.core.spec.Option.Meta.Kind.GG_TOOLBAR
 import org.jetbrains.letsPlot.core.spec.config.PlotConfig
 import org.jetbrains.letsPlot.core.spec.front.SpecOverrideUtil.applySpecOverride
 import org.jetbrains.letsPlot.core.util.MonolithicCommon.processRawSpecs
 import org.jetbrains.letsPlot.core.util.PlotThemeHelper
-import org.jetbrains.letsPlot.core.util.sizing.SizingPolicy
+import org.jetbrains.letsPlot.core.util.sizing.SizingPolicy.Companion.fitContainerSize
 import org.jetbrains.letsPlot.raster.view.PlotCanvasFigure2
 import java.awt.Cursor
 
@@ -72,7 +74,7 @@ fun PlotPanelRaw2(
     var dispatchComputationMessages by remember { mutableStateOf(true) }
     var specOverrideList by remember { mutableStateOf(emptyList<Map<String, Any>>()) }
 
-    //var plotFigureModel by remember { mutableStateOf<PlotFigureModel?>(null) }
+    var plotFigureModel by remember { mutableStateOf<PlotFigureModel?>(null) }
 
     var errorMessage: String? by remember(processedPlotSpec) { mutableStateOf(null) }
 
@@ -125,9 +127,9 @@ fun PlotPanelRaw2(
     }
 
     Column(modifier = finalModifier) {
-        //if (plotFigureModel != null && GG_TOOLBAR in processedPlotSpec) {
-        //    PlotToolbar(plotFigureModel!!)
-        //}
+        if (plotFigureModel != null && GG_TOOLBAR in processedPlotSpec) {
+            PlotToolbar(plotFigureModel!!)
+        }
 
         Box(
             modifier = finalModifier
@@ -161,16 +163,27 @@ fun PlotPanelRaw2(
                         if (panelSize != DoubleVector.ZERO) {
                             val plotSpec = applySpecOverride(processedPlotSpec, specOverrideList).toMutableMap()
 
-                            plotCanvasFigure2.update(
-                                plotSpec,
-                                SizingPolicy.fitContainerSize(preserveAspectRatio)
-                            ) { messages ->
+                            plotCanvasFigure2.update(plotSpec, fitContainerSize(preserveAspectRatio)) { messages ->
                                 if (dispatchComputationMessages) {
                                     // do once
                                     dispatchComputationMessages = false
                                     computationMessagesHandler(messages)
                                 }
                             }
+
+                            if (plotFigureModel == null) {
+                                plotFigureModel = PlotFigureModel(
+                                    onUpdateView = { specOverride ->
+                                        specOverrideList = FigureModelHelper.updateSpecOverrideList(
+                                            specOverrideList = specOverrideList,
+                                            newSpecOverride = specOverride
+                                        )
+                                    }
+                                )
+                            }
+
+                            plotFigureModel!!.toolEventDispatcher = plotCanvasFigure2.toolEventDispatcher
+
 
                             val plotWidth = plotCanvasFigure2.size.x
                             val plotHeight = plotCanvasFigure2.size.y
